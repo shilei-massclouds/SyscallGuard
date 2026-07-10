@@ -1,0 +1,361 @@
+schema_version: 1
+kind: syscallguard_starry_static_check_results
+ref_kind: local_tool_run
+tool: skills/syscallguard-flow/scripts/run_starry_static_check.py
+rules: /home/cloud/gitLinux/SyscallGuard/skills/syscallguard-flow/references/starry-static-rules.yaml
+starry_repo: /home/cloud/gitLinux/tgoskits
+starry_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+starry_dirty: false
+generated_at_utc: '2026-07-10T08:22:01Z'
+batch_id: 001-syscall-batch-ioctl-renameat2
+rules_evaluated: 9
+summary:
+  static_audit_supports: 3
+  static_audit_supports_for_bad_fd: 1
+  partial_static_audit_supports: 5
+outputs:
+  structured_results: outputs/starry-static-check-results.yaml
+  summary: outputs/starry-static-check-summary.md
+review_policy: static_audit_input_only_not_coverage_closeout
+results:
+- id: SG001_ENTRY_DISPATCH
+  title: Batch 001 syscall dispatch entries exist
+  rule_refs:
+  - SYSCALL_ENTRY_ALIAS
+  applies_to_syscalls:
+  - ioctl
+  - chdir
+  - fchdir
+  - chroot
+  - mkdir
+  - mkdirat
+  - mknod
+  - mknodat
+  - getdents64
+  - link
+  - linkat
+  - rmdir
+  - unlink
+  - unlinkat
+  - getcwd
+  - symlink
+  - symlinkat
+  - rename
+  - renameat
+  - renameat2
+  path: os/StarryOS/kernel/src/syscall/mod.rs
+  status: static_audit_supports
+  patterns:
+  - label: ioctl dispatch
+    regex: Sysno::ioctl\s*=>\s*sys_ioctl\(
+    matched: true
+    line: 84
+  - label: chdir dispatch
+    regex: Sysno::chdir\s*=>\s*sys_chdir\(
+    matched: true
+    line: 85
+  - label: fchdir dispatch
+    regex: Sysno::fchdir\s*=>\s*sys_fchdir\(
+    matched: true
+    line: 86
+  - label: chroot dispatch
+    regex: Sysno::chroot\s*=>\s*sys_chroot\(
+    matched: true
+    line: 87
+  - label: mkdir dispatch
+    regex: Sysno::mkdir\s*=>\s*sys_mkdir\(
+    matched: true
+    line: 89
+  - label: mkdirat dispatch
+    regex: Sysno::mkdirat\s*=>\s*sys_mkdirat\(
+    matched: true
+    line: 90
+  - label: mknod dispatch
+    regex: Sysno::mknod\s*=>\s*sys_mknod\(
+    matched: true
+    line: 92
+  - label: mknodat dispatch
+    regex: Sysno::mknodat\s*=>\s*sys_mknodat\(
+    matched: true
+    line: 93
+  - label: getdents64 dispatch
+    regex: Sysno::getdents64\s*=>\s*sys_getdents64\(
+    matched: true
+    line: 99
+  - label: link dispatch
+    regex: Sysno::link\s*=>\s*sys_link\(
+    matched: true
+    line: 101
+  - label: linkat dispatch
+    regex: Sysno::linkat\s*=>\s*sys_linkat\(
+    matched: true
+    line: 102
+  - label: rmdir dispatch
+    regex: Sysno::rmdir\s*=>\s*sys_rmdir\(
+    matched: true
+    line: 110
+  - label: unlink dispatch
+    regex: Sysno::unlink\s*=>\s*sys_unlink\(
+    matched: true
+    line: 112
+  - label: unlinkat dispatch
+    regex: Sysno::unlinkat\s*=>\s*sys_unlinkat\(
+    matched: true
+    line: 113
+  - label: getcwd dispatch
+    regex: Sysno::getcwd\s*=>\s*sys_getcwd\(
+    matched: true
+    line: 114
+  - label: symlink dispatch
+    regex: Sysno::symlink\s*=>\s*sys_symlink\(
+    matched: true
+    line: 116
+  - label: symlinkat dispatch
+    regex: Sysno::symlinkat\s*=>\s*sys_symlinkat\(
+    matched: true
+    line: 117
+  - label: rename dispatch
+    regex: Sysno::rename\s*=>\s*sys_rename\(
+    matched: true
+    line: 119
+  - label: renameat dispatch
+    regex: Sysno::renameat\s*=>\s*sys_renameat\(
+    matched: true
+    line: 121
+  - label: renameat2 dispatch
+    regex: Sysno::renameat2\s*=>\s*sys_renameat2\(
+    matched: true
+    line: 127
+- id: SG001_LEGACY_WRAPPERS
+  title: Legacy path syscalls delegate to at-family handlers
+  rule_refs:
+  - SYSCALL_ENTRY_ALIAS
+  applies_to_syscalls:
+  - mkdir
+  - mknod
+  - link
+  - rmdir
+  - unlink
+  - symlink
+  - rename
+  - renameat
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  status: static_audit_supports
+  patterns:
+  - label: mkdir delegates to mkdirat
+    regex: pub fn sys_mkdir[\s\S]*?sys_mkdirat\(AT_FDCWD,\s*path,\s*mode\)
+    matched: true
+    line: 105
+  - label: mknod delegates to mknodat
+    regex: pub fn sys_mknod[\s\S]*?sys_mknodat\(AT_FDCWD,\s*path,\s*mode,\s*dev\)
+    matched: true
+    line: 110
+  - label: link delegates to linkat
+    regex: pub fn sys_link[\s\S]*?sys_linkat\(AT_FDCWD,\s*old_path,\s*AT_FDCWD,\s*new_path,\s*0\)
+    matched: true
+    line: 328
+  - label: rmdir delegates to unlinkat
+    regex: pub fn sys_rmdir[\s\S]*?sys_unlinkat\(AT_FDCWD,\s*path,\s*AT_REMOVEDIR
+      as _\)
+    matched: true
+    line: 409
+  - label: unlink delegates to unlinkat
+    regex: pub fn sys_unlink[\s\S]*?sys_unlinkat\(AT_FDCWD,\s*path,\s*0\)
+    matched: true
+    line: 378
+  - label: symlink delegates to symlinkat
+    regex: pub fn sys_symlink[\s\S]*?sys_symlinkat\(target,\s*AT_FDCWD,\s*linkpath\)
+    matched: true
+    line: 436
+  - label: rename delegates to renameat
+    regex: pub fn sys_rename[\s\S]*?sys_renameat\(AT_FDCWD,\s*old_path,\s*AT_FDCWD,\s*new_path\)
+    matched: true
+    line: 758
+  - label: renameat delegates to renameat2
+    regex: pub fn sys_renameat[\s\S]*?sys_renameat2\(old_dirfd,\s*old_path,\s*new_dirfd,\s*new_path,\s*0\)
+    matched: true
+    line: 763
+- id: SG001_BAD_FD_EBADF
+  title: fd table lookup reports BadFileDescriptor
+  rule_refs:
+  - BAD_FD_EBADF
+  applies_to_syscalls:
+  - ioctl
+  - fchdir
+  - getdents64
+  path: os/StarryOS/kernel/src/file/mod.rs
+  status: static_audit_supports_for_bad_fd
+  patterns:
+  - label: get_file_like maps missing fd to BadFileDescriptor
+    regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?FD_TABLE[\s\S]*?ok_or\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 275
+- id: SG001_FD_TYPE_ERRNO
+  title: File and directory fd downcasts preserve type errors
+  rule_refs:
+  - FD_TYPE_ERRNO
+  applies_to_syscalls:
+  - fchdir
+  - getdents64
+  - linkat
+  - chroot
+  path: os/StarryOS/kernel/src/file/fs.rs
+  status: partial_static_audit_supports
+  patterns:
+  - label: File::from_fd distinguishes directory and other types
+    regex: 'fn from_fd\(fd: c_int\) -> AxResult<Arc<Self>>[\s\S]*?AxError::IsADirectory[\s\S]*?AxError::InvalidInput'
+    matched: true
+    line: 252
+  - label: Directory::from_fd maps non-directory to NotADirectory
+    regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?AxError::NotADirectory'
+    matched: true
+    line: 312
+- id: SG001_FLAG_MASKS
+  title: Known at-family flag masks reject unknown bits
+  rule_refs:
+  - FLAG_MASK_REJECTS_UNKNOWN
+  applies_to_syscalls:
+  - linkat
+  - unlinkat
+  - renameat2
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  status: static_audit_supports
+  patterns:
+  - label: linkat valid flags mask
+    regex: const LINKAT_VALID_FLAGS[\s\S]*?flags & !LINKAT_VALID_FLAGS[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 335
+  - label: unlinkat rejects unknown flags
+    regex: flags & !\(AT_REMOVEDIR as usize\) != 0[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 386
+  - label: renameat2 supported flags mask
+    regex: const RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?flags & !RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 780
+- id: SG001_PATHMAX_HELPER
+  title: Path loader enforces PATH_MAX with NameTooLong
+  rule_refs:
+  - PATH_LONG_ENAMETOOLONG
+  applies_to_syscalls:
+  - chdir
+  - chroot
+  - mkdir
+  - mkdirat
+  - mknod
+  - mknodat
+  - link
+  - linkat
+  - rmdir
+  - unlink
+  - unlinkat
+  - symlink
+  - symlinkat
+  - rename
+  - renameat
+  - renameat2
+  path: os/StarryOS/kernel/src/mm/access.rs
+  status: partial_static_audit_supports
+  patterns:
+  - label: PATH_MAX constant
+    regex: 'pub const PATH_MAX: usize = 4096;'
+    matched: true
+    line: 288
+  - label: vm_load_path_string rejects long paths
+    regex: pub fn vm_load_path_string[\s\S]*?path\.len\(\) >= PATH_MAX[\s\S]*?AxError::NameTooLong
+    matched: true
+    line: 296
+- id: SG001_PATH_HANDLER_LOADS
+  title: Path handlers use vm_load_path_string for path inputs
+  rule_refs:
+  - PATH_LONG_ENAMETOOLONG
+  - PATH_RESOLUTION_ERRNO
+  - DIRFD_AND_AT_FLAGS
+  applies_to_syscalls:
+  - chdir
+  - chroot
+  - mkdirat
+  - mknodat
+  - linkat
+  - unlinkat
+  - symlinkat
+  - renameat2
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  status: partial_static_audit_supports
+  patterns:
+  - label: chdir path loader
+    regex: pub fn sys_chdir[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 86
+  - label: chroot path loader
+    regex: pub fn sys_chroot[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 114
+  - label: mkdirat path loader
+    regex: pub fn sys_mkdirat[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 160
+  - label: mknodat path loader
+    regex: pub fn sys_mknodat[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 193
+  - label: linkat old/new path loaders
+    regex: pub fn sys_linkat[\s\S]*?map\(vm_load_path_string\)[\s\S]*?vm_load_path_string\(new_path\)\?
+    matched: true
+    line: 328
+  - label: unlinkat path loader
+    regex: pub fn sys_unlinkat[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 378
+  - label: symlinkat linkpath loader
+    regex: pub fn sys_symlinkat[\s\S]*?vm_load_path_string\(linkpath\)\?
+    matched: true
+    line: 440
+  - label: renameat2 old/new path loaders
+    regex: pub fn sys_renameat2[\s\S]*?vm_load_path_string\(old_path\)\?[\s\S]*?vm_load_path_string\(new_path\)\?
+    matched: true
+    line: 773
+- id: SG001_USERPTR_EFAULT
+  title: User pointer paths use VM read/write helpers
+  rule_refs:
+  - USERPTR_EFAULT
+  applies_to_syscalls:
+  - ioctl
+  - getdents64
+  - getcwd
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  status: partial_static_audit_supports
+  patterns:
+  - label: ioctl reads user integer pointer
+    regex: pub fn sys_ioctl[\s\S]*?\.vm_read\(\)\?
+    matched: true
+    line: 47
+  - label: getdents64 writes user buffer
+    regex: pub fn sys_getdents64[\s\S]*?vm_write_slice\(buf,\s*&buffer\.buf\)\?
+    matched: true
+    line: 294
+  - label: getcwd writes user buffer
+    regex: pub fn sys_getcwd[\s\S]*?vm_write_slice\(buf,\s*cwd\)\?
+    matched: true
+    line: 418
+- id: SG001_MODE_NODE_GUARD
+  title: mkdirat and mknodat apply mode, uid/gid, and node type guards
+  rule_refs:
+  - MODE_UID_GID_GUARD
+  applies_to_syscalls:
+  - mkdir
+  - mkdirat
+  - mknod
+  - mknodat
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  status: partial_static_audit_supports
+  patterns:
+  - label: mkdirat applies umask and fs ids
+    regex: pub fn sys_mkdirat[\s\S]*?umask\(\)[\s\S]*?NodePermission::from_bits_truncate[\s\S]*?fsuid[\s\S]*?fsgid
+    matched: true
+    line: 160
+  - label: mknodat rejects directory and unknown node types
+    regex: pub fn sys_mknodat[\s\S]*?let ftype = mode & S_IFMT[\s\S]*?S_IFDIR => return
+      Err\(AxError::OperationNotPermitted\)[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 193
