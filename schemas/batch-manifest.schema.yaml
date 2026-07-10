@@ -1,0 +1,20 @@
+schema_name: batch-manifest
+version: 1
+description: Structure for batches/<id>/manifest.yaml.
+required_top_level_keys:
+  - batch_id
+  - title
+  - status
+  - created_at_utc
+  - scope
+  - workflow
+  - artifacts
+fields:
+  batch_id: Stable directory-compatible identifier.
+  title: Human-readable batch title.
+  status: draft, ready_for_review, closed, or archived.
+  created_at_utc: ISO 8601 timestamp or date.
+  scope: List of behavior IDs and exclusions.
+  workflow: Ordered list of the ten required workflow steps.
+  artifacts: Expected input, step, review, and output files.
+

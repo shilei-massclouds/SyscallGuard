@@ -1,0 +1,19 @@
+batch_id: "000-regression-baseline"
+snapshot_refs:
+  - snapshot_id: "ltp-starry-local-2026-07-10"
+    path: "snapshots/ltp/source-index.yaml"
+    captured_at_utc: "2026-07-10T00:00:00Z"
+    repositories:
+      - source_id: "tgoskits-local"
+        branch: "dev-ltp-spec-2"
+        commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+inputs:
+  behavior_specs: "snapshots/ltp/specs/regression-behavior-specs.yaml"
+  test_sources_root: "snapshots/ltp/test-sources"
+  starry_sources_root: "snapshots/ltp/starry-sources"
+snapshot_gaps:
+  - "No separate LTP repository was available in the workspace."
+  - "No new_specs four-layer syscall specs were available in the workspace."
+  - "No 100 syscall spec summary was available in the workspace."
+traceability_rule: "Coverage items must cite behavior_specs and either copied Starry evidence or a triaged gap."
+

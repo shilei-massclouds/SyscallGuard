@@ -1,0 +1,21 @@
+schema_name: step-status
+version: 1
+description: Structure embedded in step reports or extracted into YAML.
+required_fields:
+  - batch_id
+  - step_id
+  - status
+  - inputs
+  - outputs
+  - review
+status_values:
+  - draft
+  - ready_for_review
+  - accepted
+  - blocked
+fields:
+  inputs: Paths or external references used by the step.
+  outputs: Paths produced by the step.
+  review: Path to the review sign-off file.
+  blockers: Missing inputs, unresolved gaps, or review changes.
+

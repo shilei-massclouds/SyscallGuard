@@ -1,0 +1,10 @@
+batch_id: "000-regression-baseline"
+step_id: "04-checkability-classification"
+artifact: "steps/04-checkability-classification.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "Awaiting human confirmation of checkability labels."
+required_changes: []
+follow_up: []
+

@@ -1,0 +1,45 @@
+snapshot_id: "ltp-starry-local-2026-07-10"
+captured_at_utc: "2026-07-10T00:00:00Z"
+source_repositories:
+  - source_id: "tgoskits-local"
+    kind: "starry-test-and-kernel"
+    path: "/home/cloud/gitLinux/tgoskits"
+    branch: "dev-ltp-spec-2"
+    commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    captured_paths:
+      - "test-suit/starryos/qemu-smp1/system/bugfix-bug-open-pathmax-no-enametoolong"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-pipe-syscalls"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-eventfd2"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-open-family"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-ltp-pilot-min"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-mmap-family"
+      - "test-suit/starryos/qemu-smp1/system/syscall-test-madvise"
+      - "test-suit/starryos/qemu-smp1/system/c-regression-test-mremap"
+      - "os/StarryOS/kernel/src/mm/access.rs"
+      - "os/StarryOS/kernel/src/syscall/mod.rs"
+      - "os/StarryOS/kernel/src/syscall/fs/pipe.rs"
+      - "os/StarryOS/kernel/src/syscall/fs/event.rs"
+      - "os/StarryOS/kernel/src/syscall/fs/fd_ops.rs"
+      - "os/StarryOS/kernel/src/syscall/fs/io.rs"
+      - "os/StarryOS/kernel/src/syscall/mm/mmap.rs"
+      - "os/StarryOS/kernel/src/syscall/mm/mincore.rs"
+      - "os/StarryOS/kernel/src/pseudofs/proc.rs"
+copied_snapshots:
+  tests_root: "snapshots/ltp/test-sources"
+  starry_sources_root: "snapshots/ltp/starry-sources"
+  behavior_specs: "snapshots/ltp/specs/regression-behavior-specs.yaml"
+missing_expected_materials:
+  - material: "LTP method document"
+    status: "not_found_in_workspace"
+    note: "No separate LTP repository was present under /home/cloud/gitLinux."
+  - material: "100 syscall spec summary"
+    status: "not_found_in_workspace"
+    note: "No file matching syscall spec summary was found locally."
+  - material: "new_specs four-layer specs"
+    status: "not_found_in_workspace"
+    note: "No new_specs directory was found under /home/cloud/gitLinux."
+snapshot_policy:
+  copied_not_referenced: true
+  external_paths_recorded: true
+  future_refresh_requires_new_snapshot_id: true
+

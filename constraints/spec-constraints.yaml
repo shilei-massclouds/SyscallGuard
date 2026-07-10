@@ -1,0 +1,31 @@
+version: 1
+behavior_spec:
+  required_fields:
+    - behavior_id
+    - title
+    - syscall_area
+    - source_refs
+    - preconditions
+    - action
+    - expected_result
+    - errno
+    - checkability
+  checkability_values:
+    - static
+    - partial_static
+    - dynamic
+    - unsupported
+    - needs_review
+normalization_rules:
+  - Preserve source-level errno and ABI details.
+  - Split multi-behavior tests into separately reviewable behavior records.
+  - Record architecture qualifiers such as x86_64 when behavior is arch-specific.
+  - Prefer snapshot references over live external paths.
+  - If a source is unavailable, record an explicit snapshot gap.
+source_ref_required_fields:
+  - source_id
+  - snapshot_path
+  - external_path
+  - repository_commit
+  - captured_at_utc
+

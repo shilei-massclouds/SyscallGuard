@@ -1,0 +1,10 @@
+batch_id: "000-regression-baseline"
+step_id: "05-starry-evidence-mapping"
+artifact: "steps/05-starry-evidence-mapping.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "Awaiting human confirmation of Starry evidence paths."
+required_changes: []
+follow_up: []
+

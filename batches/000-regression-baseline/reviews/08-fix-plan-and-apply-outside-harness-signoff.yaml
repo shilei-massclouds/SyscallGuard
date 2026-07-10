@@ -1,0 +1,10 @@
+batch_id: "000-regression-baseline"
+step_id: "08-fix-plan-and-apply-outside-harness"
+artifact: "steps/08-fix-plan-and-apply-outside-harness.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "Awaiting human confirmation that fixes are external and already represented by evidence."
+required_changes: []
+follow_up: []
+

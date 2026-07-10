@@ -1,0 +1,19 @@
+batch_id: "NNN-short-name"
+title: "Batch title"
+status: "draft"
+created_at_utc: "YYYY-MM-DDT00:00:00Z"
+scope:
+  included_behaviors: []
+  excluded_behaviors: []
+  priority: "P0|P1|P2"
+workflow:
+  - step_id: "01-scope-selection"
+    report: "steps/01-scope-selection.md"
+    review: "reviews/01-scope-selection-signoff.yaml"
+artifacts:
+  inputs:
+    source_index: "inputs/source-index.yaml"
+  outputs:
+    coverage_matrix: "outputs/coverage-matrix.yaml"
+    batch_report: "outputs/batch-report.md"
+

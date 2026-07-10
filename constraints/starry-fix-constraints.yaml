@@ -1,0 +1,23 @@
+version: 1
+boundary:
+  harness_modifies_starry: false
+  harness_modifies_ltp: false
+external_fix_record_required_fields:
+  - behavior_id
+  - external_repository
+  - branch
+  - commit_or_pr
+  - affected_paths
+  - validation_reference
+  - reviewer_notes
+allowed_fix_status_values:
+  - already_fixed
+  - planned_external
+  - in_progress_external
+  - not_required
+  - unsupported
+rules:
+  - Record Starry fix plans in SyscallGuard, but apply fixes in tgoskits.
+  - Evidence may reference copied snapshots or immutable external commits.
+  - A fix is not accepted by SyscallGuard until validation is recorded.
+

@@ -1,0 +1,167 @@
+batch_id: "000-regression-baseline"
+generated_at_utc: "2026-07-10T00:00:00Z"
+source_spec: "snapshots/ltp/specs/regression-behavior-specs.yaml"
+coverage:
+  - behavior_id: "path-max-enametoolong"
+    title: "Pathname length >= PATH_MAX is rejected with ENAMETOOLONG"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#path-max-enametoolong"
+      - "snapshots/ltp/test-sources/bugfix-bug-open-pathmax-no-enametoolong/src/main.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/mm/access.rs"
+        note: "PATH_MAX constant and vm_load_path_string length guard."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/bugfix-bug-open-pathmax-no-enametoolong"
+      note: "Test source copied; no fresh harness run."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "pipe2-copyout-fd-rollback"
+    title: "pipe2 closes allocated fds when userspace copyout fails"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#pipe2-copyout-fd-rollback"
+      - "snapshots/ltp/test-sources/syscall-test-pipe-syscalls/src/main.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/fs/pipe.rs"
+        note: "copyout failure closes read_fd and write_fd before returning error."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/syscall-test-pipe-syscalls"
+      note: "Test source includes SYS_pipe2 invalid fds EFAULT case."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "x86-creat-alias"
+    title: "x86_64 creat is equivalent to open with O_CREAT|O_WRONLY|O_TRUNC"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#x86-creat-alias"
+      - "snapshots/ltp/test-sources/syscall-test-open-family/src/open_creat_alias.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mod.rs"
+        note: "x86_64 Sysno::creat dispatch."
+      - path: "snapshots/ltp/starry-sources/syscall/fs/fd_ops.rs"
+        note: "sys_creat delegates to sys_openat with O_CREAT|O_WRONLY|O_TRUNC."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/syscall-test-open-family"
+      note: "open_creat_alias module copied."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "x86-eventfd-alias"
+    title: "x86_64 eventfd aliases to eventfd2(initval, 0)"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#x86-eventfd-alias"
+      - "snapshots/ltp/test-sources/syscall-test-eventfd2/src/main.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mod.rs"
+        note: "x86_64 Sysno::eventfd dispatch."
+      - path: "snapshots/ltp/starry-sources/syscall/fs/event.rs"
+        note: "sys_eventfd calls sys_eventfd2(initval, 0)."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/syscall-test-eventfd2"
+      note: "eventfd2 semantic test source copied."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "mmap04-visible-prot"
+    title: "mmap-visible protection appears correctly in /proc/self/maps"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#mmap04-visible-prot"
+      - "snapshots/ltp/test-sources/syscall-test-ltp-pilot-min/src/main.c"
+    checkability: "dynamic"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mm/mmap.rs"
+        note: "Mappings preserve reported flags."
+      - path: "snapshots/ltp/starry-sources/pseudofs/proc.rs"
+        note: "/proc maps renderer uses area.reported_flags()."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/syscall-test-ltp-pilot-min"
+      note: "Pilot test includes /proc/self/maps permission checks."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "p2-iov-guard"
+    title: "Vectored I/O validates iovec count, segment length, userspace access, and total length"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#p2-iov-guard"
+    checkability: "static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/fs/io.rs"
+        note: "validate_user_iov_buf_regions checks iovcnt, iov_len, user access, and total overflow."
+    validation:
+      result: "manual_audit_only"
+      evidence: "snapshots/ltp/starry-sources/syscall/fs/io.rs"
+      note: "Static manual audit only."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "p2-offset-guard"
+    title: "Offset-based file syscalls reject invalid negative or overflowing offsets"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#p2-offset-guard"
+    checkability: "static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/fs/io.rs"
+        note: "Offset paths use negative checks and checked arithmetic."
+      - path: "snapshots/ltp/starry-sources/syscall/mm/mmap.rs"
+        note: "mmap offset uses try_into, alignment, and checked range guards."
+    validation:
+      result: "manual_audit_only"
+      evidence: "snapshots/ltp/starry-sources/syscall/fs/io.rs"
+      note: "Static manual audit only."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "p2-mremap-guard"
+    title: "mremap rejects invalid sizes, flags, alignment, overlap, and unmapped input"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#p2-mremap-guard"
+      - "snapshots/ltp/test-sources/c-regression-test-mremap/src/main.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mm/mmap.rs"
+        note: "sys_mremap guard logic."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/c-regression-test-mremap"
+      note: "Regression test source copied."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "p2-mincore-guard"
+    title: "mincore validates page alignment, output pointer, zero length, and mapped range"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#p2-mincore-guard"
+    checkability: "static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mm/mincore.rs"
+        note: "sys_mincore guard logic."
+    validation:
+      result: "manual_audit_only"
+      evidence: "snapshots/ltp/starry-sources/syscall/mm/mincore.rs"
+      note: "No dedicated copied dynamic test found in local workspace."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+  - behavior_id: "p2-madvise-guard"
+    title: "madvise validates advice, page alignment, and mapped range"
+    source_refs:
+      - "snapshots/ltp/specs/regression-behavior-specs.yaml#p2-madvise-guard"
+      - "snapshots/ltp/test-sources/syscall-test-madvise/src/main.c"
+    checkability: "partial_static"
+    starry_evidence:
+      - path: "snapshots/ltp/starry-sources/syscall/mm/mmap.rs"
+        note: "sys_madvise implementation location."
+    validation:
+      result: "not_run"
+      evidence: "snapshots/ltp/test-sources/syscall-test-madvise"
+      note: "Regression test source copied."
+    triage: "covered_pending_human_review"
+    review_status: "pending_human_review"
+gaps:
+  - gap_id: "missing-upstream-ltp-spec-snapshot"
+    triage: "risk"
+    note: "Independent LTP method docs, 100 syscall summary, and new_specs were not found locally."
+  - gap_id: "fresh-dynamic-validation-not-run"
+    triage: "risk"
+    note: "No Starry build or QEMU run logs were captured by SyscallGuard version 1."
+

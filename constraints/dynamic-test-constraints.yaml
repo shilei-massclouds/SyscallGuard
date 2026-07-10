@@ -1,0 +1,22 @@
+version: 1
+dynamic_validation_required_fields:
+  - behavior_id
+  - test_source
+  - command
+  - target_arch
+  - external_repository
+  - commit
+  - result
+  - captured_log
+result_values:
+  - pass
+  - fail
+  - skipped
+  - not_run
+  - manual_audit_only
+rules:
+  - Dynamic tests run outside SyscallGuard unless a future tool step is defined.
+  - A not-run validation must include a reason and next action.
+  - Logs or summaries should be copied into batch outputs when available.
+  - Manual validation is allowed only with concrete source and evidence paths.
+

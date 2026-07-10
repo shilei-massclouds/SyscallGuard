@@ -1,0 +1,19 @@
+schema_name: review-record
+version: 1
+description: Structure for batches/<id>/reviews/*-signoff.yaml.
+required_fields:
+  - batch_id
+  - step_id
+  - artifact
+  - status
+  - reviewer
+  - reviewed_at_utc
+  - decision_summary
+  - required_changes
+  - follow_up
+status_values:
+  - pending_human_review
+  - confirmed
+  - changes_requested
+  - not_applicable
+
