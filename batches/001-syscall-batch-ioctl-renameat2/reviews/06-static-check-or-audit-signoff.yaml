@@ -1,0 +1,9 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "06-static-check-or-audit"
+artifact: "steps/06-static-check-or-audit.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "等待人工确认第 06 步静态人工审计结果。"
+required_changes: []
+follow_up: []

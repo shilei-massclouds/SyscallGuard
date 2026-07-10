@@ -13,6 +13,8 @@ Starry 仓库，也不内置自动化 checker。
 - `batches/001-syscall-batch-ioctl-renameat2/`：当前 syscall 检查批次。
 - `templates/`：后续批次复用的 manifest、步骤、审核、gap 和验证模板。
 
+外部工具接入计划记录在 `docs/tooling-roadmap.md`。
+
 ## 运行模型
 
 每个批次都遵循 `docs/batch-process.md` 中固定的十步流程。每一步都要产出

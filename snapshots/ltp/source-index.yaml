@@ -12,6 +12,8 @@ source_repositories:
       - "os/StarryOS/kernel/src/syscall/mod.rs"
       - "os/StarryOS/kernel/src/syscall/fs/fd_ops.rs"
       - "os/StarryOS/kernel/src/syscall/fs/io.rs"
+      - "os/StarryOS/kernel/src/file/fs.rs"
+      - "os/StarryOS/kernel/src/file/mod.rs"
 external_sources:
   syscall_dispatch:
     source_id: "tgoskits-local"
@@ -43,6 +45,18 @@ external_sources:
     external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/io.rs"
     repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
     sha256: "b9e10af30a6666c2862ad30987365afba0f5ef1f24e643de9528fd12f1acb731"
+  file_fs:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/file/fs.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "868e194dee5abd23e083fbc0d981c31b0763778770a3a485191a3836a20087cf"
+  file_mod:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/file/mod.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "947f33b7804d97e7634818f94d78b594966c8884d7abd548a6ddf6dda2fe1dd4"
 copied_snapshots: {}
 missing_expected_materials:
   - material: "LTP 方法文档"

@@ -20,6 +20,18 @@ inputs:
     external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/ctl.rs"
     repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
     sha256: "17bad888fff91bad602afbfae77ae880a1ee6d1b4cba12d1b560f00e0d02904e"
+  file_fs:
+    ref_kind: "external_commit"
+    source_id: "tgoskits-local"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/file/fs.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "868e194dee5abd23e083fbc0d981c31b0763778770a3a485191a3836a20087cf"
+  file_mod:
+    ref_kind: "external_commit"
+    source_id: "tgoskits-local"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/file/mod.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "947f33b7804d97e7634818f94d78b594966c8884d7abd548a6ddf6dda2fe1dd4"
   syscall_check_history: "batches/syscall-check-history.yaml"
   default_batch_size: 20
 selection:

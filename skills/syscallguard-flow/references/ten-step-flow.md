@@ -11,6 +11,28 @@ Use this reference after selecting exactly one step to execute or inspect. Prese
 - A newly completed step normally stops with `status: "pending_human_review"`.
 - Do not continue into the next step until the user confirms the current step's sign-off.
 
+## Screen Review Contract
+
+At every stop condition, the assistant response must show a concrete review block in chat. This
+block is user guidance, not part of the step report.
+
+Use this order:
+
+1. Current step and status.
+2. Files to review.
+3. Concrete list of items produced or checked in this step.
+4. Numbered confirmation checklist tied to that concrete list.
+5. Accepted responses, such as `批准进入下一步` or `修改 <编号>: ...`.
+
+Examples of concrete lists:
+
+- Step 01 lists the selected syscall names.
+- Step 03 lists reusable rule IDs and any syscall groups with special handling.
+- Step 04 lists rule classification rows such as `static`, `partial_static`, and `dynamic`.
+- Step 05 lists evidence refs or source files located.
+- Step 06 lists audited rule IDs and syscall groups before asking for confirmation.
+- Step 07 lists each gap/risk/needs_review item before asking for triage confirmation.
+
 ## Step Checklist
 
 | Step | Inputs | Work | Outputs | Required Checks | Stop Condition |
@@ -20,7 +42,7 @@ Use this reference after selecting exactly one step to execute or inspect. Prese
 | `03-normalization-review` | Imported behavior specs from step 02; for syscall batches, any available reference model for reusable rules | Normalize into stable IDs. For syscall batches, use `syscall -> rule_refs -> target mappings`: a syscall reference table, a reusable check rule table, and target-specific mapping drafts. | `steps/03-normalization-review.md`, `reviews/03-normalization-review-signoff.yaml`, normalized spec updates if needed. | Each scoped syscall references reusable rules; reusable rules are defined once; target mapping drafts do not inherit external pass/fix status unless imported as batch evidence. | Ask for human confirmation of normalized semantics and rule reuse. |
 | `04-checkability-classification` | Normalized behavior specs and syscall rule refs | Assign `static`, `partial_static`, `dynamic`, `unsupported`, or `needs_review` per behavior or per `syscall + rule_id`. | `steps/04-checkability-classification.md`, `reviews/04-checkability-classification-signoff.yaml`. | Classification is justified at rule granularity; `unsupported` and `needs_review` have reasons. | Ask for human confirmation of checkability labels. |
 | `05-starry-evidence-mapping` | Scoped behaviors or `syscall + rule_id` pairs, Starry source refs or minimal snapshots, tests, logs, audit notes | Map each behavior or syscall-rule pair to Starry code, test source, log, manual audit evidence, or a recorded source/evidence limitation. | `steps/05-starry-evidence-mapping.md`, `reviews/05-starry-evidence-mapping-signoff.yaml`. | Evidence paths exist as copied snapshots or documented external references. "Not captured in snapshot" is not the same as "absent from Starry"; leave gap/risk triage to step 07. | Ask for human confirmation of evidence paths and sufficiency. |
-| `06-static-check-or-audit` | Checkability labels, Starry evidence | Run available static checks or perform manual audit for static/partial_static items. | `steps/06-static-check-or-audit.md`, `reviews/06-static-check-or-audit-signoff.yaml`. | Results are tied to behavior IDs; manual audit notes name files and logic reviewed. | Ask for human confirmation of audit/check result. |
+| `06-static-check-or-audit` | Checkability labels, Starry evidence | Run available static checks or perform manual audit for static/partial_static items. | `steps/06-static-check-or-audit.md`, `reviews/06-static-check-or-audit-signoff.yaml`. | Results are tied to behavior IDs; manual audit notes name files and logic reviewed. | Ask for human confirmation in chat with this checklist: static/partial-static scope is correct; source refs and hashes are acceptable; support/deferred labels are reasonable; items needing step 07 triage are visible. |
 | `07-gap-triage` | Evidence gaps, source gaps, unsupported/needs_review items | Classify each gap or risk and decide whether it blocks this batch. | `steps/07-gap-triage.md`, `reviews/07-gap-triage-signoff.yaml`, gap records. | Every gap/risk has a triage decision and follow-up or non-blocking rationale. | Ask for human confirmation of triage decisions. |
 | `08-fix-plan-and-apply-outside-harness` | Gap triage and evidence status | Record external Starry fix plan, links, commits, or decision that no harness-side fix is applied. | `steps/08-fix-plan-and-apply-outside-harness.md`, `reviews/08-fix-plan-and-apply-outside-harness-signoff.yaml`. | Any implementation change is outside the harness and referenced as evidence; the harness itself only records the plan/result. | Ask for human confirmation of external-fix boundary and evidence. |
 | `09-validation` | Fix evidence, tests, build logs, static checks, manual validation | Record validation performed or explicitly not run. | `steps/09-validation.md`, `reviews/09-validation-signoff.yaml`, validation report if used. | Each behavior has validation status; missing fresh runs are recorded as risk or limitation. | Ask for human confirmation of validation state. |

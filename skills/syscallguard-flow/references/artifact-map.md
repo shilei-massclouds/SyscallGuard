@@ -86,6 +86,11 @@ Start reports from `templates/step-report.md`. Keep these sections unless a step
 
 The report status should reflect the batch state for that step, commonly `draft`, `ready_for_human_review`, or `closed`.
 
+Step reports are batch evidence artifacts. Keep them focused on inputs, work performed, evidence,
+outputs, and limitations. Do not add conversational review instructions, command prompts such as
+"type approve", or general tool suitability discussion unless the tool was actually used to produce
+or validate the step artifact. Put review guidance in the assistant response or human-review docs.
+
 ## Review Sign-Off
 
 Start reviews from `templates/review-signoff.yaml`. Required fields are:

@@ -14,6 +14,7 @@ description: Orchestrate SyscallGuard's fixed ten-step batch workflow. Use when 
 - Exclude syscalls already recorded as checked in `batches/syscall-check-history.yaml`. If the history file is absent, say that no prior syscall history was found and start from the dispatch order.
 - Record completed syscall check results in `batches/syscall-check-history.yaml` after human review confirms the relevant batch result, so future batches do not repeat them. Use `next_syscalls.py record` for this; do not record unresolved review results unless the user explicitly asks for dry review work.
 - Process exactly one workflow step per user request. After producing or checking that step, stop at review sign-off and do not advance automatically.
+- Keep batch artifacts factual. Do not put conversational review instructions, "what the user should do next", or tool suitability discussion into step reports unless that tool was actually used as evidence for the step.
 - Before continuing to a later step, require the previous step sign-off status to be `confirmed` or a justified `not_applicable`. If it is `pending_human_review` or `changes_requested`, stop and tell the user which review file must be resolved.
 - Write new or refreshed sign-off files with `status: "pending_human_review"` unless the user explicitly provides a reviewer decision.
 - Preserve the harness boundary: SyscallGuard records specifications, evidence, gaps, review gates, and coverage. Do not modify Starry or LTP sources from this skill unless the user explicitly asks for work outside the harness.
@@ -47,7 +48,11 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
 
 - On entry, respond within the first message with the current step and candidate syscall list. Do not wait until all analysis is complete.
 - Before reading many files or running scripts, say what is being checked and which artifact will be produced.
-- When a step finishes, tell the user which intermediate files to review or edit, and wait for "批准进入下一步".
+- When a step finishes, show a screen review block in chat and wait for "批准进入下一步".
+  The review block must first list the concrete items produced or checked by that step, then list what
+  the user should confirm about those items. For example, step 01 lists the selected syscall names
+  before asking whether the scope is right; step 06 lists the audited rule/syscall groups before asking
+  whether the audit scope, evidence refs, and result labels are acceptable.
 - Treat "批准进入下一步" as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
 
