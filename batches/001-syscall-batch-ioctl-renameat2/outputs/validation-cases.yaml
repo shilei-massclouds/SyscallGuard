@@ -3,7 +3,9 @@ artifact_type: "dynamic_validation_case_plan"
 batch_id: "001-syscall-batch-ioctl-renameat2"
 generated_at_utc: "2026-07-10T00:00:00Z"
 generated_by_step: "08-fix-plan-and-apply-outside-harness"
-approval_status: "pending_human_review"
+approval_status: "confirmed"
+approved_by: "user"
+approved_at_utc: "2026-07-10T00:00:00Z"
 source_steps:
   - "steps/07-gap-triage.md"
   - "steps/08-fix-plan-and-apply-outside-harness.md"
@@ -22,7 +24,7 @@ dynamic_cases:
   - case_id: "V09-PERMISSION-MATRIX"
     source_triage_id: "T07-DYNAMIC-PERMISSION"
     rule_id: "VFS_PERMISSION"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "chroot"
       - "mkdir"
@@ -60,7 +62,7 @@ dynamic_cases:
   - case_id: "V09-FS-SIDE-EFFECT"
     source_triage_id: "T07-DYNAMIC-FS-SIDE-EFFECT"
     rule_id: "FS_SIDE_EFFECT"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "chdir"
       - "fchdir"
@@ -103,7 +105,7 @@ dynamic_cases:
   - case_id: "V09-DIRENT-ENUMERATION"
     source_triage_id: "T07-DYNAMIC-DIRENT"
     rule_id: "DIRENT_ENUMERATION"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "getdents64"
     scenarios:
@@ -129,7 +131,7 @@ dynamic_cases:
   - case_id: "V09-FD-TYPE-MATRIX"
     source_triage_id: "T07-FD-TYPE-MATRIX"
     rule_id: "FD_TYPE_ERRNO"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "ioctl"
       - "fchdir"
@@ -159,7 +161,7 @@ dynamic_cases:
       - "PATH_LONG_ENAMETOOLONG"
       - "PATH_RESOLUTION_ERRNO"
       - "DIRFD_AND_AT_FLAGS"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "chdir"
       - "chroot"
@@ -202,7 +204,7 @@ dynamic_cases:
   - case_id: "V09-USERPTR-EFAULT"
     source_triage_id: "T07-USERPTR-EFAULT"
     rule_id: "USERPTR_EFAULT"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "ioctl"
       - "getcwd"
@@ -229,7 +231,7 @@ dynamic_cases:
   - case_id: "V09-MODE-UID-GID"
     source_triage_id: "T07-MODE-UID-GID"
     rule_id: "MODE_UID_GID_GUARD"
-    case_status: "planned_pending_review"
+    case_status: "approved_for_execution"
     syscalls:
       - "mkdir"
       - "mkdirat"

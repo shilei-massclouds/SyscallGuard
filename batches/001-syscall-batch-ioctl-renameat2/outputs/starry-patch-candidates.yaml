@@ -1,0 +1,15 @@
+schema_version: 1
+artifact_type: "starry_patch_candidates"
+batch_id: "001-syscall-batch-ioctl-renameat2"
+generated_at_utc: "2026-07-10T00:00:00Z"
+generated_by_step: "09-validation"
+source_static_step: "steps/06-static-check-or-audit.md"
+source_dynamic_results: "outputs/validation-results.yaml"
+candidate_summary:
+  candidates_generated: 0
+  apply_in_step10: false
+  reason: "No Starry implementation gap was confirmed. Dynamic validation did not run because all approved cases are missing execution commands."
+candidates: []
+next_action:
+  if_user_accepts: "Step 10 records that no patch is applied and reports unresolved execution blockers."
+  if_user_rejects: "Return to Step 08 to add runnable dynamic test commands or adjust validation cases."

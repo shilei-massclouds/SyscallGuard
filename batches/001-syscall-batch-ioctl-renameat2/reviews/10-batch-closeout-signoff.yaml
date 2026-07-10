@@ -1,0 +1,11 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "10-batch-closeout"
+artifact: "steps/10-batch-closeout.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "等待人工确认第 10 步 no patch applied、回归阻塞和批次不能关闭的结果。"
+required_changes: []
+follow_up:
+  - "如果接受本步结果，批次保持 not closed，后续应回到第 08 步补充动态测试命令/环境。"
+  - "coverage matrix 已生成，但所有 scoped syscalls 仍为 risk 或 needs_review。"

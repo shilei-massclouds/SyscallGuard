@@ -67,6 +67,8 @@ artifacts:
     coverage_matrix: "outputs/coverage-matrix.yaml"
     batch_report: "outputs/batch-report.md"
     validation_cases: "outputs/validation-cases.yaml"
+    validation_results: "outputs/validation-results.yaml"
+    starry_patch_candidates: "outputs/starry-patch-candidates.yaml"
 review_gate:
   required: true
   current_state: "pending_human_review"
