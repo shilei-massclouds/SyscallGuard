@@ -1,0 +1,9 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "05-starry-evidence-mapping"
+artifact: "steps/05-starry-evidence-mapping.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "等待人工确认本批 syscall-rule Starry 证据映射；证据引用 source index 中的 external_commit，不再依赖提交的源码快照。"
+required_changes: []
+follow_up: []

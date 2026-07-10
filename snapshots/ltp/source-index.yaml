@@ -1,4 +1,4 @@
-snapshot_id: "ltp-starry-local-2026-07-10"
+source_index_id: "ltp-starry-local-2026-07-10"
 captured_at_utc: "2026-07-10T00:00:00Z"
 source_repositories:
   - source_id: "tgoskits-local"
@@ -7,38 +7,61 @@ source_repositories:
     branch: "dev-ltp-spec-2"
     commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
     captured_paths:
-      - "test-suit/starryos/qemu-smp1/system/bugfix-bug-open-pathmax-no-enametoolong"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-pipe-syscalls"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-eventfd2"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-open-family"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-ltp-pilot-min"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-mmap-family"
-      - "test-suit/starryos/qemu-smp1/system/syscall-test-madvise"
-      - "test-suit/starryos/qemu-smp1/system/c-regression-test-mremap"
+      - "os/StarryOS/kernel/src/syscall/fs/ctl.rs"
       - "os/StarryOS/kernel/src/mm/access.rs"
       - "os/StarryOS/kernel/src/syscall/mod.rs"
-      - "os/StarryOS/kernel/src/syscall/fs/pipe.rs"
-      - "os/StarryOS/kernel/src/syscall/fs/event.rs"
       - "os/StarryOS/kernel/src/syscall/fs/fd_ops.rs"
       - "os/StarryOS/kernel/src/syscall/fs/io.rs"
-      - "os/StarryOS/kernel/src/syscall/mm/mmap.rs"
-      - "os/StarryOS/kernel/src/syscall/mm/mincore.rs"
-      - "os/StarryOS/kernel/src/pseudofs/proc.rs"
-copied_snapshots:
-  tests_root: "snapshots/ltp/test-sources"
-  starry_sources_root: "snapshots/ltp/starry-sources"
-  behavior_specs: "snapshots/ltp/specs/regression-behavior-specs.yaml"
+external_sources:
+  syscall_dispatch:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/mod.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "0abe6a7c907f27e4be5013cad243cbf159edddd851d801530b60710103af344f"
+  syscall_fs_ctl:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/ctl.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "17bad888fff91bad602afbfae77ae880a1ee6d1b4cba12d1b560f00e0d02904e"
+  mm_access:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/mm/access.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "f8f26299218dc2c2a97329f426c2574ce4c218a771bee8fae4cb71d4ce6982b7"
+  fs_fd_ops:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/fd_ops.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "4b500524f8f906373cf501c404ea25be1ba8771f55b60fd420d21e3ac95cd841"
+  fs_io:
+    source_id: "tgoskits-local"
+    ref_kind: "external_commit"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/io.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "b9e10af30a6666c2862ad30987365afba0f5ef1f24e643de9528fd12f1acb731"
+copied_snapshots: {}
 missing_expected_materials:
   - material: "LTP 方法文档"
-    status: "not_found_in_workspace"
-    note: "/home/cloud/gitLinux 下没有单独的 LTP 仓库。"
+    status: "external_reference_only"
+    note: "如需作为权威输入，应在具体批次 inputs/source-index.yaml 中登记外部 LTP 路径和 commit。"
   - material: "100 syscall 规格摘要"
-    status: "not_found_in_workspace"
-    note: "本地没有找到匹配 syscall spec summary 的文件。"
+    status: "external_reference_only"
+    note: "当前 001 批次仅参考 ~/gitStudy/ltp/new_specs 的模型，不继承其处理进度。"
   - material: "new_specs 四层规格"
-    status: "not_found_in_workspace"
-    note: "/home/cloud/gitLinux 下没有找到 new_specs 目录。"
+    status: "external_reference_only"
+    note: "当前 001 批次不把 new_specs 复制进本仓库。"
 snapshot_policy:
-  copied_not_referenced: true
+  default_external_source_refs: true
+  commit_external_source_trees_by_default: false
+  copied_not_referenced: false
   external_paths_recorded: true
   future_refresh_requires_new_snapshot_id: true
+  copy_minimal_evidence_only_when:
+    - "external source cannot be restored reliably"
+    - "review must be self-contained"
+    - "a small source excerpt must be frozen as evidence"
+  existing_copied_snapshots_note: "Retired copied baseline snapshots were removed. Future batches should prefer source-index external refs and copy only minimal evidence subsets."

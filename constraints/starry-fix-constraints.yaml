@@ -18,5 +18,5 @@ allowed_fix_status_values:
   - unsupported
 rules:
   - 在 SyscallGuard 中记录 Starry 修复计划，但实际修复在 tgoskits 中完成。
-  - 证据可以引用复制快照或不可变的外部 commit。
+  - 证据优先引用不可变的外部 commit；必要时可以引用最小复制快照。
   - 只有记录验证结果后，SyscallGuard 才接受该修复。

@@ -21,7 +21,20 @@ batches/<batch-id>/
 batches/syscall-check-history.yaml
 ```
 
-Snapshot paths such as `snapshots/ltp/...` are repository-root relative. Batch-local paths such as `steps/...`, `reviews/...`, `inputs/...`, and `outputs/...` are relative to `batches/<batch-id>/`.
+Snapshot paths such as `snapshots/ltp/...` are repository-root relative. Batch-local paths such as `steps/...`, `reviews/...`, `inputs/...`, and `outputs/...` are relative to `batches/<batch-id>/`. External source paths or URLs belong in `inputs/source-index.yaml`; do not add large external source trees to the manifest by default.
+
+## Source Evidence Policy
+
+Use `inputs/source-index.yaml` to record source evidence. Prefer immutable external references:
+
+- source ID and kind;
+- repository path or URL;
+- branch, tag, and commit;
+- captured paths;
+- file hash when available;
+- captured timestamp.
+
+Only copy source files into `snapshots/` when the external source cannot be restored reliably, the review must be self-contained, or the copied file is a small evidence excerpt. Record the reason in the source index. For copied evidence, keep the subset minimal and avoid committing whole external source trees.
 
 ## Fixed Step IDs
 

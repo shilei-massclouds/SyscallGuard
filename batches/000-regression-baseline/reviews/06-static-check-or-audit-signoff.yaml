@@ -1,9 +1,0 @@
-batch_id: "000-regression-baseline"
-step_id: "06-static-check-or-audit"
-artifact: "steps/06-static-check-or-audit.md"
-status: "pending_human_review"
-reviewer: ""
-reviewed_at_utc: ""
-decision_summary: "等待人工确认手工静态审计记录。"
-required_changes: []
-follow_up: []

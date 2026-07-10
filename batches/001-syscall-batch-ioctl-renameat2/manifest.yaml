@@ -62,7 +62,6 @@ workflow:
 artifacts:
   inputs:
     source_index: "inputs/source-index.yaml"
-    syscall_dispatch: "snapshots/ltp/starry-sources/syscall/mod.rs"
     syscall_check_history: "batches/syscall-check-history.yaml"
   outputs:
     coverage_matrix: "outputs/coverage-matrix.yaml"

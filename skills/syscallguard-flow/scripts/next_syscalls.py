@@ -17,10 +17,12 @@ except ImportError:  # pragma: no cover - environment failure path
 
 
 DEFAULT_SOURCE = Path("snapshots/ltp/starry-sources/syscall/mod.rs")
+DEFAULT_SOURCE_INDEX = Path("snapshots/ltp/source-index.yaml")
 DEFAULT_HISTORY = Path("batches/syscall-check-history.yaml")
 DEFAULT_LIMIT = 20
 REVIEWED_HISTORY_STATUSES = {"covered", "gap", "risk", "unsupported", "needs_review"}
 RESOLVED_REVIEW_STATUSES = {"confirmed", "not_applicable"}
+STARRY_DISPATCH_REL = "os/StarryOS/kernel/src/syscall/mod.rs"
 
 
 def read_text(path: Path) -> str:
@@ -51,6 +53,51 @@ def extract_syscalls(source_path: Path) -> list[str]:
         seen.add(name)
         syscalls.append(name)
     return syscalls
+
+
+def source_from_index(index_path: Path) -> Path | None:
+    data = load_yaml(index_path)
+    if not isinstance(data, dict):
+        return None
+
+    sources = data.get("external_sources")
+    if isinstance(sources, dict):
+        dispatch = sources.get("syscall_dispatch")
+        if isinstance(dispatch, dict):
+            raw_path = dispatch.get("external_path")
+            if isinstance(raw_path, str):
+                return Path(raw_path)
+
+    repositories = data.get("source_repositories")
+    if not isinstance(repositories, list):
+        return None
+    for repo in repositories:
+        if not isinstance(repo, dict):
+            continue
+        repo_path = repo.get("path")
+        captured_paths = repo.get("captured_paths")
+        if (
+            isinstance(repo_path, str)
+            and isinstance(captured_paths, list)
+            and STARRY_DISPATCH_REL in captured_paths
+        ):
+            return Path(repo_path) / STARRY_DISPATCH_REL
+    return None
+
+
+def resolve_source_path(source_arg: Path | None, source_index: Path) -> Path:
+    if source_arg is not None:
+        if not source_arg.exists():
+            raise SystemExit(f"ERROR: source file not found: {source_arg}")
+        return source_arg
+    if DEFAULT_SOURCE.exists():
+        return DEFAULT_SOURCE
+    indexed = source_from_index(source_index)
+    if indexed is not None and indexed.exists():
+        return indexed
+    raise SystemExit(
+        "ERROR: no syscall dispatch source found; pass --source or update snapshots/ltp/source-index.yaml"
+    )
 
 
 def load_yaml(path: Path) -> Any:
@@ -128,7 +175,7 @@ def load_mapping(path: Path) -> dict[str, Any]:
 
 
 def list_next(args: argparse.Namespace) -> int:
-    source_path = args.source
+    source_path = resolve_source_path(args.source, args.source_index)
     history_path = args.history
     candidates = extract_syscalls(source_path)
     checked = checked_syscalls(history_path)
@@ -278,7 +325,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     list_parser = subparsers.add_parser("list", help="List the next unchecked syscalls")
     list_parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
-    list_parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
+    list_parser.add_argument("--source", type=Path)
+    list_parser.add_argument("--source-index", type=Path, default=DEFAULT_SOURCE_INDEX)
     list_parser.add_argument("--history", type=Path, default=DEFAULT_HISTORY)
     list_parser.add_argument("--format", choices=("yaml", "text"), default="yaml")
     list_parser.set_defaults(func=list_next)

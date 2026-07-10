@@ -6,7 +6,7 @@
 | Step | Name | 必需输出 |
 | --- | --- | --- |
 | 01 | `scope-selection` | 范围、来源、优先级、排除项 |
-| 02 | `spec-ingestion` | 来源快照版本和导入行为 |
+| 02 | `spec-ingestion` | 来源索引、外部 commit、必要快照和导入行为 |
 | 03 | `normalization-review` | 归一化行为规格和审核备注 |
 | 04 | `checkability-classification` | `static`、`partial_static`、`dynamic`、`unsupported`、`needs_review` |
 | 05 | `starry-evidence-mapping` | Starry 代码、测试、日志或人工审计证据 |
@@ -23,13 +23,13 @@
 - Markdown 步骤报告。
 - YAML review sign-off。
 - 明确的输入和输出路径。
-- 能追溯到快照、外部证据引用或已记录 gap。
+- 能追溯到来源索引、复制快照、不可变外部 commit 或已记录 gap。
 
 ## 关闭门禁
 
 批次必须满足以下条件后才能标记为 closed：
 
 - 范围内每个行为都出现在 coverage matrix 中。
-- 每个 coverage 条目都引用来源规格，以及 Starry 证据或 gap。
+- 每个 coverage 条目都引用来源规格，以及 Starry 证据、不可变外部引用或 gap。
 - 每个 gap 或 risk 都有 triage 决策。
 - 每个步骤 sign-off 都是 `confirmed`，或明确为 `not_applicable`。

@@ -435,7 +435,7 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         description="Check SyscallGuard batch structure, review gates, and coverage."
     )
-    parser.add_argument("batch_dir", type=Path, help="Path such as batches/000-regression-baseline")
+    parser.add_argument("batch_dir", type=Path, help="Path such as batches/001-syscall-batch-ioctl-renameat2")
     args = parser.parse_args(argv)
 
     batch_dir = args.batch_dir

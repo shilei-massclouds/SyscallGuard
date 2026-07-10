@@ -17,6 +17,7 @@ description: Orchestrate SyscallGuard's fixed ten-step batch workflow. Use when 
 - Before continuing to a later step, require the previous step sign-off status to be `confirmed` or a justified `not_applicable`. If it is `pending_human_review` or `changes_requested`, stop and tell the user which review file must be resolved.
 - Write new or refreshed sign-off files with `status: "pending_human_review"` unless the user explicitly provides a reviewer decision.
 - Preserve the harness boundary: SyscallGuard records specifications, evidence, gaps, review gates, and coverage. Do not modify Starry or LTP sources from this skill unless the user explicitly asks for work outside the harness.
+- Do not default to copying or committing external Starry/LTP source trees. Prefer source-index entries with repository path/URL, branch or tag, commit, captured paths, and hashes. Copy only a minimal evidence subset when the source cannot be restored reliably or review must be self-contained.
 - Do not mark a batch `closed` unless all closeout gates pass.
 
 ## Workflow

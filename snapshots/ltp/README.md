@@ -1,14 +1,15 @@
-# LTP 和测试输入快照
+# LTP 和 Starry 来源索引
 
-本目录保存 SyscallGuard 批次可用的来源输入。首个快照来自本地 `tgoskits`
-checkout，因为工作区中没有单独的 LTP 仓库，也没有 `new_specs/` 目录。
+本目录保存 SyscallGuard 批次可用的共享来源索引。它不默认保存外部 Starry/LTP
+源码树。
 
-该快照包含：
+当前 `source-index.yaml` 记录：
 
-- 与 baseline 回归批次相关的 Starry 系统测试源码。
-- 用于人工审计证据的 Starry 实现文件。
-- 针对 baseline 项的手工归一化行为摘要。
-- 记录缺失预期材料的来源索引。
+- 外部 `tgoskits` checkout 的路径、branch 和 commit。
+- 当前 syscall 批次需要的关键 Starry 文件路径和 hash。
+- 缺失或仅作为参考的外部规格材料。
 
-如果后续拿到上游 LTP 材料或四层 syscall 规格，应作为复制快照加入本目录，并
-更新 `source-index.yaml`。
+后续批次不默认复制并提交外部 Starry/LTP 源码树。应优先在 `source-index.yaml`
+中记录外部仓库路径或 URL、branch/tag、commit、相关文件路径和 hash。只有在来源
+不可稳定恢复、review 必须离线自包含，或需要冻结很小的证据片段时，才复制最小文件
+子集到本目录，并写明复制原因。

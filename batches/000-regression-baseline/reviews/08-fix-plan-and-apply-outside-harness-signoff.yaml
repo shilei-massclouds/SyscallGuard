@@ -1,9 +1,0 @@
-batch_id: "000-regression-baseline"
-step_id: "08-fix-plan-and-apply-outside-harness"
-artifact: "steps/08-fix-plan-and-apply-outside-harness.md"
-status: "pending_human_review"
-reviewer: ""
-reviewed_at_utc: ""
-decision_summary: "等待人工确认修复发生在外部，并已由证据表示。"
-required_changes: []
-follow_up: []

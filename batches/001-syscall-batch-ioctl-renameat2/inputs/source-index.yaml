@@ -1,6 +1,6 @@
 batch_id: "001-syscall-batch-ioctl-renameat2"
-snapshot_refs:
-  - snapshot_id: "ltp-starry-local-2026-07-10"
+source_refs:
+  - source_index_id: "ltp-starry-local-2026-07-10"
     path: "snapshots/ltp/source-index.yaml"
     captured_at_utc: "2026-07-10T00:00:00Z"
     repositories:
@@ -8,7 +8,18 @@ snapshot_refs:
         branch: "dev-ltp-spec-2"
         commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
 inputs:
-  syscall_dispatch: "snapshots/ltp/starry-sources/syscall/mod.rs"
+  syscall_dispatch:
+    ref_kind: "external_commit"
+    source_id: "tgoskits-local"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/mod.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "0abe6a7c907f27e4be5013cad243cbf159edddd851d801530b60710103af344f"
+  syscall_fs_ctl:
+    ref_kind: "external_commit"
+    source_id: "tgoskits-local"
+    external_path: "/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel/src/syscall/fs/ctl.rs"
+    repository_commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+    sha256: "17bad888fff91bad602afbfae77ae880a1ee6d1b4cba12d1b560f00e0d02904e"
   syscall_check_history: "batches/syscall-check-history.yaml"
   default_batch_size: 20
 selection:

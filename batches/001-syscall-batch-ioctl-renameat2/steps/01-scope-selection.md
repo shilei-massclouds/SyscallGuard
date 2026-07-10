@@ -12,14 +12,15 @@
 
 - `manifest.yaml`
 - `inputs/source-index.yaml`
-- `snapshots/ltp/starry-sources/syscall/mod.rs`
+- `inputs/source-index.yaml#inputs.syscall_dispatch`
 - `batches/syscall-check-history.yaml`
 
 ## 执行内容
 
-- 运行 `python3 skills/syscallguard-flow/scripts/next_syscalls.py list --limit 20 --format text`。
+- 运行 `python3 skills/syscallguard-flow/scripts/next_syscalls.py list --limit 20 --format text`，
+  脚本从 `snapshots/ltp/source-index.yaml` 解析外部 Starry dispatch 源文件。
 - 未发现 `batches/syscall-check-history.yaml`，因此没有可排除的已检查 syscall。
-- 从 Starry syscall dispatch 快照中识别到 280 个候选 syscall。
+- 从 Starry syscall dispatch source ref 中识别到 280 个候选 syscall。
 - 选取 dispatch 顺序中的前 20 个 syscall 作为本批范围。
 
 ## 待检查 syscall

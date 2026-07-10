@@ -14,7 +14,7 @@
 - `manifest.yaml`
 - `steps/01-scope-selection.md`
 - `steps/02-spec-ingestion.md`
-- `snapshots/ltp/starry-sources/syscall/mod.rs`
+- `inputs/source-index.yaml#inputs.syscall_dispatch`
 - 参考模型：`~/gitStudy/ltp/syscalls-100-check-specs.zh.md`
 - 参考模型：`~/gitStudy/ltp/new_specs/syscalls-100-spec-refs.yaml`
 - 参考模型：`~/gitStudy/ltp/new_specs/ltp-check-specs.yaml`
@@ -76,7 +76,7 @@
 
 | Mapping ID | Source rules | 后续 Starry 证据需求 |
 | --- | --- | --- |
-| `M_ENTRY_DISPATCH` | `SYSCALL_ENTRY_ALIAS` | `snapshots/ltp/starry-sources/syscall/mod.rs` 中有 `Sysno::*` dispatch；legacy alias 需有 wrapper 等价关系。 |
+| `M_ENTRY_DISPATCH` | `SYSCALL_ENTRY_ALIAS` | source index 登记的外部 `os/StarryOS/kernel/src/syscall/mod.rs` 中有 `Sysno::*` dispatch；legacy alias 需有 wrapper 等价关系。 |
 | `M_PATHMAX` | `PATH_LONG_ENAMETOOLONG` | pathname 参数使用 `vm_load_path_string` 或等价 helper；`AxError::NameTooLong` 映射到 `ENAMETOOLONG`。 |
 | `M_PATH_DIRFD_FLAGS` | `DIRFD_AND_AT_FLAGS`, `PATH_RESOLUTION_ERRNO` | handler 解析 dirfd/path/flags；非法 flags 返回 `EINVAL`；路径错误映射稳定。 |
 | `M_FD_EBADF` | `BAD_FD_EBADF` | fd table lookup 在对象使用前发生；bad fd 映射 `EBADF`。 |
@@ -108,7 +108,7 @@
 
 ## 缺口和风险
 
-- 当前 SyscallGuard 快照未复制 `~/gitStudy/ltp/new_specs`，本步只参考其模型，不把它登记为本批输入事实。
+- 当前 SyscallGuard 不复制 `~/gitStudy/ltp/new_specs`，本步只参考其模型，不把它登记为本批输入事实。
 - `ioctl` 的规则拆分不足，后续很可能需要根据具体 fd/request 增补专项规则。
 - 动态规则 `VFS_PERMISSION`、`FS_SIDE_EFFECT`、`DIRENT_ENUMERATION` 不能靠静态审计完全关闭。
 

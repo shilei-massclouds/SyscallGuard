@@ -1,9 +1,9 @@
 batch_id: "001-syscall-batch-ioctl-renameat2"
 step_id: "03-normalization-review"
 artifact: "steps/03-normalization-review.md"
-status: "pending_human_review"
-reviewer: ""
-reviewed_at_utc: ""
-decision_summary: "等待人工确认本批 syscall 归一化行为草案。"
+status: "confirmed"
+reviewer: "user"
+reviewed_at_utc: "2026-07-10T00:00:00Z"
+decision_summary: "用户输入“批准进入下一步”，确认第 03 步两表/三层归一化模型。"
 required_changes: []
 follow_up: []
