@@ -1,0 +1,7 @@
+V09-PERMISSION-MATRIX	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-PERMISSION-MATRIX-riscv64.log
+V09-FS-SIDE-EFFECT	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-FS-SIDE-EFFECT-riscv64.log
+V09-DIRENT-ENUMERATION	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-DIRENT-ENUMERATION-riscv64.log
+V09-FD-TYPE-MATRIX	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-FD-TYPE-MATRIX-riscv64.log
+V09-PATH-ERRNO-PRIORITY	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-PATH-ERRNO-PRIORITY-riscv64.log
+V09-USERPTR-EFAULT	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-USERPTR-EFAULT-riscv64.log
+V09-MODE-UID-GID	fail	1	/home/cloud/gitLinux/SyscallGuard/batches/001-syscall-batch-ioctl-renameat2/outputs/logs/starry-dynamic/V09-MODE-UID-GID-riscv64.log

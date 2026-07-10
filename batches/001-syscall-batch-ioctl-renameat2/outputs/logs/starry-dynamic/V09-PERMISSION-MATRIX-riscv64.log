@@ -1,0 +1,61 @@
+case_id=V09-PERMISSION-MATRIX
+subcase=syscallguard-b001-permission-matrix
+command=cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-permission-matrix
+--- command output ---
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 15.00s
+     Running `target/debug/tg-xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-permission-matrix`
+[2026-07-10T10:56:20Z INFO  axbuild::context] Workspace root: /home/cloud/gitLinux/tgoskits
+running starry qemu tests for package starryos on arch: riscv64 (target: riscv64gc-unknown-none-elf)
+Using build config: /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/build-riscv64gc-unknown-none-elf.toml
+[2026-07-10T10:56:20Z INFO  axbuild::build::config_file] Found build config at /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/build-riscv64gc-unknown-none-elf.toml
+AXBUILD_TIMING: scope=starry-qemu phase=prepare-build-groups arch=riscv64 target=riscv64gc-unknown-none-elf elapsed_s=0.192
+[axbuild] starry build package=starryos target=riscv64gc-unknown-none-elf arch=riscv64 ...
+[axbuild] cargo build package=starryos target=scripts/targets/std/pie/riscv64gc-unknown-linux-musl.json config=/home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/build-riscv64gc-unknown-none-elf.toml ...
+sh -c /home/cloud/gitLinux/tgoskits/tmp/axbuild/std/prebuild/prebuild-riscv64gc-unknown-linux-musl-33255f2a0d4116d8.sh
+AR_riscv64gc_unknown_linux_musl=riscv64-linux-musl-ar
+AX_ARCH=riscv64
+AX_LOG=warn
+AX_TARGET=riscv64gc-unknown-none-elf
+BINDGEN_EXTRA_CLANG_ARGS_riscv64gc_unknown_linux_musl=--target=riscv64-linux-musl --sysroot=/home/cloud/opt/riscv64-linux-musl-cross/bin/../riscv64-linux-musl --gcc-toolchain=/home/cloud/opt/riscv64-linux-musl-cross -isystem /home/cloud/opt/riscv64-linux-musl-cross/bin/../riscv64-linux-musl/include -isystem /home/cloud/opt/riscv64-linux-musl-cross/lib/gcc/riscv64-linux-musl/11.2.1/include -march=rv64gc -mabi=lp64d -mcmodel=medany
+CARGO_UNSTABLE_JSON_TARGET_SPEC=true
+CC_riscv64gc_unknown_linux_musl=riscv64-linux-musl-cc
+CFLAGS_riscv64gc_unknown_linux_musl=-march=rv64gc -mabi=lp64d -mcmodel=medany
+CXXFLAGS_riscv64gc_unknown_linux_musl=-march=rv64gc -mabi=lp64d -mcmodel=medany
+cargo build --config /home/cloud/gitLinux/tgoskits/tmp/axbuild/std/config-riscv64gc-unknown-linux-musl-dynamic.toml -p starryos --target scripts/targets/std/pie/riscv64gc-unknown-linux-musl.json -Z unstable-options --target-dir /home/cloud/gitLinux/tgoskits/target --features ax-driver/nvme,ax-driver/serial,ax-driver/xhci-pci,ax-std/rtc,ax-std/smp,ax-std/std-compat,ax-std/virtio-gpu,ax-std/virtio-input,ax-std/virtio-net,ax-std/virtio-socket,plat-dyn,smp,starry-kernel/input,plat-dyn -Z json-target-spec --bin starryos --release --message-format json-render-diagnostics
+   Compiling starry-kernel v0.6.6 (/home/cloud/gitLinux/tgoskits/os/StarryOS/kernel)
+   Compiling starryos v0.5.20 (/home/cloud/gitLinux/tgoskits/os/StarryOS/starryos)
+    Finished `release` profile [optimized] target(s) in 37.72s
+Converting ELF to BIN format...
+  elf: /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos
+  bin: /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos.bin
+/home/cloud/.rustup/toolchains/nightly-2026-05-28-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objcopy --strip-all -O binary /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos.bin
+[axbuild] cargo build package=starryos target=scripts/targets/std/pie/riscv64gc-unknown-linux-musl.json config=/home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/build-riscv64gc-unknown-none-elf.toml ... done (39.12s)
+[axbuild] cargo build elf=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos
+[axbuild] cargo build artifact_dir=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release
+[axbuild] starry build package=starryos target=riscv64gc-unknown-none-elf arch=riscv64 ... done (39.12s)
+[axbuild] starry artifact elf=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos
+[axbuild] starry kallsyms elf=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos ...
+[axbuild] starry kallsyms symbols=12166
+rust-objcopy --update-section .kallsyms=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/.starryos.kallsyms.28108.tmp /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos
+[axbuild] starry kallsyms elf=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos ... done (692.47ms)
+[axbuild] starry bin refresh /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos.bin ...
+rust-objcopy --strip-all -O binary /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos.bin
+[axbuild] starry bin refresh /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-linux-musl/release/starryos.bin ... done (141.32ms)
+AXBUILD_TIMING: scope=starry-qemu build_group=qemu-smp1 phase=build elapsed_s=39.952
+[2026-07-10T10:57:01Z INFO  ostool::run::qemu] Using QEMU config file: /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/system/qemu-riscv64.toml
+AXBUILD_TIMING: scope=starry-qemu case=qemu-smp1/system phase=read-qemu-config elapsed_s=0.068
+AXBUILD_TIMING: scope=starry-qemu case=qemu-smp1/system phase=prepare-qemu-config elapsed_s=0.001
+error while loading local storage: Failed to read image registry from /tmp/.tgos-images/images.toml: No such file or directory (os error 2)
+auto syncing from registry https://raw.githubusercontent.com/rcore-os/tgosimages/refs/heads/main/registry/default.toml...
+bootstrapping local image registry from included registry from default.toml: https://raw.githubusercontent.com/rcore-os/tgosimages/refs/heads/main/registry/v0.0.8.toml
+image archive verified at /tmp/.tgos-images/rootfs-riscv64-alpine.img.tar.xz
+AXBUILD_TIMING: scope=starry-qemu phase=ensure-rootfs-path rootfs_kind=default rootfs=/tmp/.tgos-images/rootfs-riscv64-alpine.img/rootfs-riscv64-alpine.img elapsed_s=1567.125
+AXBUILD_TIMING: scope=starry-qemu phase=ensure-rootfs-paths rootfs_count=2 elapsed_s=1567.125
+AXBUILD_TIMING: scope=starry-qemu build_group=qemu-smp1 phase=prepare-qemu-cases elapsed_s=1567.193
+Error: failed to load Starry qemu test cases for build group `qemu-smp1` (/home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu-smp1/build-riscv64gc-unknown-none-elf.toml)
+
+Caused by:
+    0: failed to extract into /tmp/.tgos-images/rootfs-riscv64-alpine.img
+    1: failed to unpack `/tmp/.tgos-images/rootfs-riscv64-alpine.img/rootfs-riscv64-alpine.img`
+    2: failed to unpack `rootfs-riscv64-alpine.img` into `/tmp/.tgos-images/rootfs-riscv64-alpine.img/rootfs-riscv64-alpine.img`
+    3: No space left on device (os error 28)

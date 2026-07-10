@@ -8,7 +8,8 @@ Status: not closed
 - Starry patch candidates from Step 09: 0
 - Starry patches applied in Step 10: 0
 - Dynamic validation cases: 7
-- Dynamic validation executed: 0
+- Dynamic validation commands attempted: 7
+- Dynamic validation executed inside guest: 0
 - Dynamic validation blocked: 7
 - Coverage result: all scoped syscalls remain `risk` or `needs_review`
 
@@ -19,8 +20,8 @@ The batch is not eligible for `closed`.
 Reasons:
 
 - Step 09 produced no Starry patch candidates.
-- All dynamic validation cases were blocked because no runnable command or environment binding was registered.
-- Runtime risks from Step 07 remain unresolved.
+- All dynamic validation commands were bound and attempted, but each stopped before guest execution because rootfs extraction failed with `No space left on device (os error 28)`.
+- Runtime risks from Step 07 remain unresolved because the generated C tests did not run inside the guest.
 - `ioctl` request split, source/spec basis, and automated static checker coverage remain `needs_review`.
 
 ## Outputs

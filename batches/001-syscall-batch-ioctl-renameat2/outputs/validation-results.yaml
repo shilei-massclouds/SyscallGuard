@@ -5,13 +5,28 @@ generated_at_utc: "2026-07-10T00:00:00Z"
 generated_by_step: "09-validation"
 source_static_step: "steps/06-static-check-or-audit.md"
 source_validation_cases: "outputs/validation-cases.yaml"
+source_dynamic_patch: "outputs/starry-dynamic-tests.patch"
 execution_summary:
   approved_cases: 7
   execution_attempted: true
   executed_cases: 0
   blocked_cases: 7
+  failed_cases: 0
+  passed_cases: 0
   result: "execution_blocked"
-  blocker_summary: "All approved dynamic validation cases are missing runnable commands and environment bindings."
+  blocker_summary: "All approved dynamic validation commands were attempted, but each stopped before guest test execution because Starry rootfs extraction failed with No space left on device."
+patch_application:
+  target_repository: "/home/cloud/gitLinux/tgoskits"
+  patch_file: "outputs/starry-dynamic-tests.patch"
+  apply_check_log: "outputs/logs/starry-dynamic/patch-apply-check.log"
+  apply_log: "outputs/logs/starry-dynamic/patch-apply.log"
+  result: "applied"
+  worktree_status_after_step09: "tgoskits has seven untracked syscallguard-b001-* system test directories from the applied Step 08 test patch."
+environment:
+  target_arch: "riscv64"
+  runner_log_status_file: "outputs/logs/starry-dynamic/run-status.tsv"
+  disk_observation: "df reported /tmp and the workspace filesystem at 99% used with about 1.4G available after the run."
+  blocker_detail: "Starry image preparation verified /tmp/.tgos-images/rootfs-riscv64-alpine.img.tar.xz, then failed unpacking rootfs-riscv64-alpine.img into /tmp/.tgos-images/rootfs-riscv64-alpine.img/rootfs-riscv64-alpine.img with os error 28."
 static_context:
   source: "steps/06-static-check-or-audit.md"
   summary:
@@ -54,52 +69,59 @@ static_context:
 dynamic_results:
   - case_id: "V09-PERMISSION-MATRIX"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable permission-matrix command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-permission-matrix"
+    captured_log: "outputs/logs/starry-dynamic/V09-PERMISSION-MATRIX-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-FS-SIDE-EFFECT"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable filesystem side-effect command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-fs-side-effect"
+    captured_log: "outputs/logs/starry-dynamic/V09-FS-SIDE-EFFECT-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-DIRENT-ENUMERATION"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable getdents64 enumeration command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-dirent-enumeration"
+    captured_log: "outputs/logs/starry-dynamic/V09-DIRENT-ENUMERATION-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-FD-TYPE-MATRIX"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable fd-type matrix command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-fd-type-matrix"
+    captured_log: "outputs/logs/starry-dynamic/V09-FD-TYPE-MATRIX-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-PATH-ERRNO-PRIORITY"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable path errno priority command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-path-errno-priority"
+    captured_log: "outputs/logs/starry-dynamic/V09-PATH-ERRNO-PRIORITY-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-USERPTR-EFAULT"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable user-pointer EFAULT command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-userptr-efault"
+    captured_log: "outputs/logs/starry-dynamic/V09-USERPTR-EFAULT-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
   - case_id: "V09-MODE-UID-GID"
     result: "not_run"
-    execution_status: "blocked_missing_command"
-    command: null
-    captured_log: null
-    blocker: "No runnable mode/uid/gid command is registered yet."
+    execution_status: "blocked_rootfs_no_space"
+    exit_code: 1
+    command: "cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-mode-uid-gid"
+    captured_log: "outputs/logs/starry-dynamic/V09-MODE-UID-GID-riscv64.log"
+    blocker: "Rootfs extraction failed before QEMU guest execution: No space left on device (os error 28)."
 patch_generation:
   attempted: true
   candidates_generated: 0
   result: "no_patch_candidates"
-  reason: "Step 06 did not identify a direct implementation gap, and Step 09 produced no dynamic failure evidence because all dynamic cases were blocked before execution."
+  reason: "Step 06 did not identify a direct implementation gap, and Step 09 produced no guest-level dynamic failure evidence because all dynamic commands were blocked during rootfs preparation."
 closeout_impact:
   can_apply_patch_in_step10: false
   can_close_batch: false
-  reason: "Runtime risks remain unvalidated and no Starry patch candidate exists."
+  reason: "Runtime risks remain unvalidated; current blocker is host/rootfs preparation space, not a confirmed Starry syscall implementation gap."

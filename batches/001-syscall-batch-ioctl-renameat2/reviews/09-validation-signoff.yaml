@@ -4,8 +4,9 @@ artifact: "steps/09-validation.md"
 status: "confirmed"
 reviewer: "user"
 reviewed_at_utc: "2026-07-10T00:00:00Z"
-decision_summary: "用户输入“批准进入下一步”，确认第 09 步动态执行阻塞结果和 Starry patch 候选为空。"
+decision_summary: "用户输入“批准进入下一步”，确认第 09 步动态命令均因 rootfs 解包阶段磁盘空间不足而阻塞，且没有生成 Starry patch 候选。"
 required_changes: []
 follow_up:
-  - "如果接受本步结果，第 10 步应记录 no patch applied，并列出未解决的动态执行阻塞项。"
-  - "如果不接受本步结果，应回到第 08 步补充可执行命令、环境和日志路径。"
+  - "确认 7 个动态命令均已尝试执行，但均在 rootfs 准备阶段因 No space left on device 阻塞。"
+  - "确认当前没有 guest-level 动态失败证据，因此不生成 Starry 修复 patch 候选。"
+  - "若不接受本结果，应释放或迁移 rootfs 准备空间后重跑第 09 步。"

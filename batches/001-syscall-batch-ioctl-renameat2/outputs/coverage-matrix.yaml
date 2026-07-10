@@ -12,7 +12,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#ioctl"
     validation:
       result: "not_run"
-      blocker: "V09-FD-TYPE-MATRIX and V09-USERPTR-EFAULT have no runnable command binding; ioctl request classes remain unsplit."
+      blocker: "V09-FD-TYPE-MATRIX and V09-USERPTR-EFAULT were attempted but blocked before guest execution by rootfs extraction failure (No space left on device); ioctl request classes remain unsplit."
       result_ref: "outputs/validation-results.yaml"
     triage: "needs_review"
     review_status: "pending_human_review"
@@ -27,7 +27,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#chdir-chroot"
     validation:
       result: "not_run"
-      blocker: "V09-FS-SIDE-EFFECT and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-FS-SIDE-EFFECT and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -42,7 +42,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#fchdir"
     validation:
       result: "not_run"
-      blocker: "V09-FD-TYPE-MATRIX and V09-FS-SIDE-EFFECT have no runnable command binding."
+      blocker: "V09-FD-TYPE-MATRIX and V09-FS-SIDE-EFFECT were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -57,7 +57,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#chdir-chroot"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -72,7 +72,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#mkdir-mkdirat-mknod-mknodat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -87,7 +87,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#mkdir-mkdirat-mknod-mknodat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -102,7 +102,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#mkdir-mkdirat-mknod-mknodat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -117,7 +117,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#mkdir-mkdirat-mknod-mknodat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, V09-PATH-ERRNO-PRIORITY, and V09-MODE-UID-GID were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -132,7 +132,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#getdents64"
     validation:
       result: "not_run"
-      blocker: "V09-DIRENT-ENUMERATION, V09-FD-TYPE-MATRIX, and V09-USERPTR-EFAULT have no runnable command binding."
+      blocker: "V09-DIRENT-ENUMERATION, V09-FD-TYPE-MATRIX, and V09-USERPTR-EFAULT were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -147,7 +147,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#link-linkat-unlink-unlinkat-rmdir"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -162,7 +162,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#link-linkat-unlink-unlinkat-rmdir"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -177,7 +177,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#link-linkat-unlink-unlinkat-rmdir"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -192,7 +192,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#link-linkat-unlink-unlinkat-rmdir"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -207,7 +207,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#link-linkat-unlink-unlinkat-rmdir"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -222,7 +222,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#getcwd"
     validation:
       result: "not_run"
-      blocker: "V09-FS-SIDE-EFFECT and V09-USERPTR-EFAULT have no runnable command binding."
+      blocker: "V09-FS-SIDE-EFFECT and V09-USERPTR-EFAULT were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -237,7 +237,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#symlink-symlinkat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -252,7 +252,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#symlink-symlinkat"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -267,7 +267,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#rename-renameat-renameat2"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -282,7 +282,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#rename-renameat-renameat2"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"
@@ -297,7 +297,7 @@ coverage:
       - "steps/06-static-check-or-audit.md#rename-renameat-renameat2"
     validation:
       result: "not_run"
-      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY have no runnable command binding."
+      blocker: "V09-PERMISSION-MATRIX, V09-FS-SIDE-EFFECT, and V09-PATH-ERRNO-PRIORITY were attempted but blocked before guest execution by rootfs extraction failure (No space left on device)."
       result_ref: "outputs/validation-results.yaml"
     triage: "risk"
     review_status: "pending_human_review"

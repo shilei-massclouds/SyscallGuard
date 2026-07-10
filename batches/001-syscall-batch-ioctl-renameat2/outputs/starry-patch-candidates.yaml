@@ -8,8 +8,8 @@ source_dynamic_results: "outputs/validation-results.yaml"
 candidate_summary:
   candidates_generated: 0
   apply_in_step10: false
-  reason: "No Starry implementation gap was confirmed. Dynamic validation did not run because all approved cases are missing execution commands."
+  reason: "No Starry implementation gap was confirmed. Dynamic validation commands were bound and attempted, but all stopped before guest execution because rootfs extraction failed with No space left on device."
 candidates: []
 next_action:
-  if_user_accepts: "Step 10 records that no patch is applied and reports unresolved execution blockers."
-  if_user_rejects: "Return to Step 08 to add runnable dynamic test commands or adjust validation cases."
+  if_user_accepts: "Step 10 records that no Starry repair patch is applied and reports unresolved dynamic execution blockers."
+  if_user_rejects: "Free or relocate rootfs preparation storage, then return to Step 09 to rerun the already-bound dynamic test commands."
