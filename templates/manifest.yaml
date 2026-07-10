@@ -1,5 +1,5 @@
 batch_id: "NNN-short-name"
-title: "Batch title"
+title: "批次标题"
 status: "draft"
 created_at_utc: "YYYY-MM-DDT00:00:00Z"
 scope:
@@ -16,4 +16,3 @@ artifacts:
   outputs:
     coverage_matrix: "outputs/coverage-matrix.yaml"
     batch_report: "outputs/batch-report.md"
-

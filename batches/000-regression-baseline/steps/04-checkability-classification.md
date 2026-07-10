@@ -1,32 +1,31 @@
-# Step 04 - Checkability Classification
+# 步骤 04 - Checkability Classification
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Classify each behavior by how SyscallGuard can check it in version 1.
+按 SyscallGuard 第一版可检查方式，为每个行为分类。
 
-## Classification
+## 分类
 
-| Behavior | Checkability | Rationale |
+| 行为 | Checkability | 理由 |
 | --- | --- | --- |
-| `path-max-enametoolong` | `partial_static` | Static path length guard plus copied dynamic regression test. |
-| `pipe2-copyout-fd-rollback` | `partial_static` | Code audit can see rollback; fd leak still benefits from dynamic validation. |
-| `x86-creat-alias` | `partial_static` | Dispatch and helper are static; test checks mode and fd behavior. |
-| `x86-eventfd-alias` | `partial_static` | Dispatch and helper are static; eventfd2 behavior is dynamic. |
-| `mmap04-visible-prot` | `dynamic` | Requires observing `/proc/self/maps`. |
-| `p2-iov-guard` | `static` | Guard logic is local and source-readable. |
-| `p2-offset-guard` | `static` | Guard logic is local and source-readable. |
-| `p2-mremap-guard` | `partial_static` | Static guard plus broad regression test. |
-| `p2-mincore-guard` | `static` | Guard logic is local and source-readable. |
-| `p2-madvise-guard` | `partial_static` | Static guard plus copied regression test. |
+| `path-max-enametoolong` | `partial_static` | 有静态路径长度 guard，也有复制的动态回归测试。 |
+| `pipe2-copyout-fd-rollback` | `partial_static` | 代码审计能看到 rollback；fd leak 仍适合动态验证。 |
+| `x86-creat-alias` | `partial_static` | dispatch 和 helper 可静态审计；测试检查 mode 和 fd 行为。 |
+| `x86-eventfd-alias` | `partial_static` | dispatch 和 helper 可静态审计；eventfd2 行为需要动态验证。 |
+| `mmap04-visible-prot` | `dynamic` | 需要观察 `/proc/self/maps`。 |
+| `p2-iov-guard` | `static` | guard 逻辑本地可读。 |
+| `p2-offset-guard` | `static` | guard 逻辑本地可读。 |
+| `p2-mremap-guard` | `partial_static` | 静态 guard 加较完整回归测试。 |
+| `p2-mincore-guard` | `static` | guard 逻辑本地可读。 |
+| `p2-madvise-guard` | `partial_static` | 静态 guard 加复制的回归测试。 |
 
-## Outputs
+## 输出
 
-- Checkability values in `outputs/coverage-matrix.yaml`.
+- Checkability 值记录在 `outputs/coverage-matrix.yaml`。
 
-## Gaps And Risks
+## 缺口和风险
 
-- Dynamic commands were not run by this harness version.
-
+- 本 harness 版本未执行动态命令。

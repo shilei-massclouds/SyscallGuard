@@ -1,32 +1,30 @@
-# Repository Boundaries
+# 仓库边界
 
-SyscallGuard is a harness repository. It records process artifacts and review
-conclusions. It does not own the test source or the kernel implementation.
+SyscallGuard 是 harness 仓库。它记录流程产物和审核结论，不拥有测试源码或
+内核实现。
 
-## SyscallGuard Owns
+## SyscallGuard 负责
 
-- Workflow documentation.
-- Constraint files.
-- YAML schema descriptions.
-- Copied input snapshots.
-- Batch manifests, step reports, review records, coverage matrices, and final
-  reports.
+- 流程文档。
+- 约束文件。
+- YAML schema 说明。
+- 复制的输入快照。
+- 批次 manifest、步骤报告、审核记录、coverage matrix 和最终报告。
 
-## LTP Or Test Source Repository Owns
+## LTP 或测试源码仓库负责
 
-- Original test source.
-- Upstream test semantics.
-- Test build-system integration.
+- 原始测试源码。
+- 上游测试语义。
+- 测试构建系统集成。
 
-## tgoskits And Starry Own
+## tgoskits 和 Starry 负责
 
-- Kernel implementation.
-- Starry test integration.
-- Build and QEMU execution results.
-- Fix commits and pull requests.
+- 内核实现。
+- Starry 测试接入。
+- 构建和 QEMU 运行结果。
+- 修复 commit 和 pull request。
 
-## Boundary Rule
+## 边界规则
 
-If a Starry or LTP change is required, SyscallGuard records the plan and links
-to the external change. The actual code change happens outside this repository.
-
+如果需要修改 Starry 或 LTP，SyscallGuard 只记录计划和外部变更链接。实际代码
+修改发生在本仓库之外。

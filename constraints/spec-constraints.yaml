@@ -17,15 +17,14 @@ behavior_spec:
     - unsupported
     - needs_review
 normalization_rules:
-  - Preserve source-level errno and ABI details.
-  - Split multi-behavior tests into separately reviewable behavior records.
-  - Record architecture qualifiers such as x86_64 when behavior is arch-specific.
-  - Prefer snapshot references over live external paths.
-  - If a source is unavailable, record an explicit snapshot gap.
+  - 保留来源中的 errno 和 ABI 细节。
+  - 将多行为测试拆分为可独立审核的行为记录。
+  - 行为有架构限定时，记录 x86_64 等架构条件。
+  - 优先引用快照路径，而不是实时外部路径。
+  - 来源不可用时，记录明确的 snapshot gap。
 source_ref_required_fields:
   - source_id
   - snapshot_path
   - external_path
   - repository_commit
   - captured_at_utc
-

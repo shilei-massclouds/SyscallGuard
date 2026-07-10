@@ -1,24 +1,23 @@
-# Fix Validation Report
+# 修复验证报告
 
-Batch: `NNN-short-name`
-Behavior ID:
+批次：`NNN-short-name`
+Behavior ID：
 
-## External Fix
+## 外部修复
 
-- Repository:
-- Branch:
-- Commit or PR:
-- Affected paths:
+- 仓库：
+- 分支：
+- Commit 或 PR：
+- 影响路径：
 
-## Validation
+## 验证
 
-- Command:
-- Target arch:
-- Result:
-- Log artifact:
+- 命令：
+- 目标架构：
+- 结果：
+- 日志产物：
 
-## Review
+## 审核
 
-- Reviewer:
+- 审核人：
 - Status: `pending_human_review`
-

@@ -17,7 +17,6 @@ allowed_fix_status_values:
   - not_required
   - unsupported
 rules:
-  - Record Starry fix plans in SyscallGuard, but apply fixes in tgoskits.
-  - Evidence may reference copied snapshots or immutable external commits.
-  - A fix is not accepted by SyscallGuard until validation is recorded.
-
+  - 在 SyscallGuard 中记录 Starry 修复计划，但实际修复在 tgoskits 中完成。
+  - 证据可以引用复制快照或不可变的外部 commit。
+  - 只有记录验证结果后，SyscallGuard 才接受该修复。

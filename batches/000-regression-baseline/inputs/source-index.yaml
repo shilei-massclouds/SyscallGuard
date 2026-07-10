@@ -12,8 +12,7 @@ inputs:
   test_sources_root: "snapshots/ltp/test-sources"
   starry_sources_root: "snapshots/ltp/starry-sources"
 snapshot_gaps:
-  - "No separate LTP repository was available in the workspace."
-  - "No new_specs four-layer syscall specs were available in the workspace."
-  - "No 100 syscall spec summary was available in the workspace."
-traceability_rule: "Coverage items must cite behavior_specs and either copied Starry evidence or a triaged gap."
-
+  - "工作区中没有单独的 LTP 仓库。"
+  - "工作区中没有 new_specs 四层 syscall 规格。"
+  - "工作区中没有 100 syscall 规格摘要。"
+traceability_rule: "Coverage 条目必须引用 behavior_specs，并引用复制的 Starry 证据或已 triage 的 gap。"

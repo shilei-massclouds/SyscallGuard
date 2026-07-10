@@ -15,8 +15,7 @@ result_values:
   - not_run
   - manual_audit_only
 rules:
-  - Dynamic tests run outside SyscallGuard unless a future tool step is defined.
-  - A not-run validation must include a reason and next action.
-  - Logs or summaries should be copied into batch outputs when available.
-  - Manual validation is allowed only with concrete source and evidence paths.
-
+  - 除非后续定义工具化步骤，否则动态测试在 SyscallGuard 之外运行。
+  - "`not_run` 验证必须包含原因和下一步。"
+  - 可用时，应将日志或摘要复制到批次输出中。
+  - 只有具备具体来源和证据路径时，才允许人工验证。

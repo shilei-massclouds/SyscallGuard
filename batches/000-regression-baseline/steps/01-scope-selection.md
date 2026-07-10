@@ -1,20 +1,20 @@
-# Step 01 - Scope Selection
+# 步骤 01 - Scope Selection
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Select a process-baseline scope using already repaired Starry syscall
-regressions. This batch is not intended to discover new gaps.
+选择一组已修复 Starry syscall 回归项，作为流程 baseline 范围。本批次不用于发现
+新的实现缺口。
 
-## Inputs
+## 输入
 
 - `manifest.yaml`
 - `inputs/source-index.yaml`
 - `snapshots/ltp/specs/regression-behavior-specs.yaml`
 
-## Selected Behaviors
+## 选定行为
 
 - `path-max-enametoolong`
 - `pipe2-copyout-fd-rollback`
@@ -27,19 +27,18 @@ regressions. This batch is not intended to discover new gaps.
 - `p2-mincore-guard`
 - `p2-madvise-guard`
 
-## Exclusions
+## 排除项
 
-- New syscall gap discovery.
-- Direct Starry or LTP code changes.
-- Automated CLI/checker implementation.
+- 新 syscall gap 发现。
+- 直接修改 Starry 或 LTP 代码。
+- 自动化 CLI/checker 实现。
 
-## Outputs
+## 输出
 
-- Scope recorded in `manifest.yaml`.
-- Review gate: `reviews/01-scope-selection-signoff.yaml`.
+- 范围记录在 `manifest.yaml`。
+- 审核门禁：`reviews/01-scope-selection-signoff.yaml`。
 
-## Gaps And Risks
+## 缺口和风险
 
-- Independent LTP and `new_specs/` inputs were not present locally. This is
-  recorded as a snapshot gap, not a batch blocker for this process baseline.
-
+- 本地没有独立 LTP 和 `new_specs/` 输入。该问题记录为 snapshot gap，不阻塞本
+  流程 baseline。

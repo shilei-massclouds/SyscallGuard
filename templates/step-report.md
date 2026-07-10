@@ -1,29 +1,28 @@
-# Step NN - Step Name
+# 步骤 NN - 步骤名称
 
-Batch: `NNN-short-name`
-Status: `draft`
+批次：`NNN-short-name`
+状态：`draft`
 
-## Purpose
+## 目的
 
-Describe what this step decides.
+说明该步骤要决定什么。
 
-## Inputs
+## 输入
 
 - `path/or/external-reference`
 
-## Work Performed
+## 执行内容
 
-- Record the action taken.
+- 记录已执行的动作。
 
-## Outputs
+## 输出
 
 - `path/or/artifact`
 
-## Gaps And Risks
+## 缺口和风险
 
-- None recorded.
+- 暂无记录。
 
-## Review
+## 审核
 
-- Sign-off: `reviews/NN-step-name-signoff.yaml`
-
+- Sign-off： `reviews/NN-step-name-signoff.yaml`

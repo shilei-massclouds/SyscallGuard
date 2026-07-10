@@ -1,16 +1,14 @@
-# LTP And Test Input Snapshot
+# LTP 和测试输入快照
 
-This directory stores the source inputs available to SyscallGuard batch work.
-The first snapshot was captured from the local `tgoskits` checkout because no
-separate LTP repository or `new_specs/` directory was present in the workspace.
+本目录保存 SyscallGuard 批次可用的来源输入。首个快照来自本地 `tgoskits`
+checkout，因为工作区中没有单独的 LTP 仓库，也没有 `new_specs/` 目录。
 
-The snapshot includes:
+该快照包含：
 
-- Starry system test sources relevant to the baseline regression batch.
-- Starry implementation files used as evidence for manual audit.
-- A hand-normalized behavior summary for the baseline items.
-- A source index that records unavailable expected materials.
+- 与 baseline 回归批次相关的 Starry 系统测试源码。
+- 用于人工审计证据的 Starry 实现文件。
+- 针对 baseline 项的手工归一化行为摘要。
+- 记录缺失预期材料的来源索引。
 
-If upstream LTP materials or four-layer syscall specs become available, add
-them here as copied snapshots and update `source-index.yaml`.
-
+如果后续拿到上游 LTP 材料或四层 syscall 规格，应作为复制快照加入本目录，并
+更新 `source-index.yaml`。

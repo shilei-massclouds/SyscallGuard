@@ -4,7 +4,6 @@ artifact: "steps/07-gap-triage.md"
 status: "pending_human_review"
 reviewer: ""
 reviewed_at_utc: ""
-decision_summary: "Awaiting human confirmation of source and validation gap triage."
+decision_summary: "等待人工确认来源和验证 gap triage。"
 required_changes: []
 follow_up: []
-

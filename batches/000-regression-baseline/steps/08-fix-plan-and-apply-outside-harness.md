@@ -1,30 +1,28 @@
-# Step 08 - Fix Plan And Apply Outside Harness
+# 步骤 08 - Fix Plan And Apply Outside Harness
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Record fix status while preserving the boundary that SyscallGuard does not
-modify Starry or LTP.
+记录修复状态，同时保持 SyscallGuard 不修改 Starry 或 LTP 的边界。
 
-## Fix Status
+## 修复状态
 
-All scoped behaviors are treated as already repaired or already implemented in
-the referenced local `tgoskits` checkout for purposes of this baseline.
+对本 baseline 而言，范围内所有行为都视为已经在引用的本地 `tgoskits` checkout
+中修复或实现。
 
-External source:
+外部来源：
 
 - Repository: `/home/cloud/gitLinux/tgoskits`
 - Branch: `dev-ltp-spec-2`
 - Commit: `4f30e12d17e4da175233bb3a51889efe747a45f9`
 
-## Outputs
+## 输出
 
-- Fix status reflected in `outputs/coverage-matrix.yaml`.
+- 修复状态反映在 `outputs/coverage-matrix.yaml`。
 
-## Gaps And Risks
+## 缺口和风险
 
-- No pull request URLs or release tags were captured for every behavior.
-- Future batches should include immutable external links for each fix.
-
+- 并非每个行为都捕获了 pull request URL 或 release tag。
+- 后续批次应为每个修复包含不可变外部链接。

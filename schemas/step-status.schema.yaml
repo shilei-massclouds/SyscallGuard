@@ -1,6 +1,6 @@
 schema_name: step-status
 version: 1
-description: Structure embedded in step reports or extracted into YAML.
+description: 嵌入步骤报告或抽取为 YAML 的步骤状态结构。
 required_fields:
   - batch_id
   - step_id
@@ -14,8 +14,7 @@ status_values:
   - accepted
   - blocked
 fields:
-  inputs: Paths or external references used by the step.
-  outputs: Paths produced by the step.
-  review: Path to the review sign-off file.
-  blockers: Missing inputs, unresolved gaps, or review changes.
-
+  inputs: 步骤使用的路径或外部引用。
+  outputs: 步骤产出的路径。
+  review: review sign-off 文件路径。
+  blockers: 缺失输入、未解决 gap 或审核修改项。

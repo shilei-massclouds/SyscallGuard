@@ -1,29 +1,26 @@
-# Step 10 - Batch Closeout
+# 步骤 10 - Batch Closeout
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Archive the process-baseline batch artifacts and identify remaining gates.
+归档流程 baseline 批次产物，并识别剩余门禁。
 
-## Closeout Summary
+## Closeout 摘要
 
-- All ten workflow step reports exist.
-- All ten review sign-off files exist.
-- Coverage matrix covers all scoped behaviors.
-- Every coverage item traces to snapshot specs and Starry evidence or a
-  recorded gap.
-- Human review remains pending for every step.
+- 十个流程步骤报告都已存在。
+- 十个 review sign-off 文件都已存在。
+- Coverage matrix 覆盖所有范围内行为。
+- 每个 coverage 条目都能追溯到快照规格和 Starry 证据，或已记录 gap。
+- 每个步骤仍等待人工审核。
 
-## Outputs
+## 输出
 
 - `outputs/coverage-matrix.yaml`
 - `outputs/batch-report.md`
 
-## Remaining Gate
+## 剩余门禁
 
-The batch is ready for human review. It is not closed until the review records
-are updated from `pending_human_review` to `confirmed` or justified
-`not_applicable`.
-
+批次已准备好进入人工审核。只有 review 记录从 `pending_human_review` 更新为
+`confirmed`，或有理由地更新为 `not_applicable` 后，批次才算关闭。

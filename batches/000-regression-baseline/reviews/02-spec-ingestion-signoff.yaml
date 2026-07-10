@@ -4,7 +4,6 @@ artifact: "steps/02-spec-ingestion.md"
 status: "pending_human_review"
 reviewer: ""
 reviewed_at_utc: ""
-decision_summary: "Awaiting human confirmation of snapshot inputs and source gaps."
+decision_summary: "等待人工确认快照输入和来源 gap。"
 required_changes: []
 follow_up: []
-

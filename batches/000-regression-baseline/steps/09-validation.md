@@ -1,15 +1,15 @@
-# Step 09 - Validation
+# 步骤 09 - Validation
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Record validation evidence available to the harness.
+记录 harness 可用的验证证据。
 
-## Available Validation Inputs
+## 可用验证输入
 
-- Copied test sources:
+- 已复制测试源码：
   - `bugfix-bug-open-pathmax-no-enametoolong`
   - `syscall-test-pipe-syscalls`
   - `syscall-test-eventfd2`
@@ -18,20 +18,17 @@ Record validation evidence available to the harness.
   - `syscall-test-mmap-family`
   - `syscall-test-madvise`
   - `c-regression-test-mremap`
-- Copied Starry implementation sources under `snapshots/ltp/starry-sources`.
+- `snapshots/ltp/starry-sources` 下的 Starry 实现源码快照。
 
-## Harness Validation Result
+## Harness 验证结果
 
-No Starry build or QEMU test run was executed by this version of SyscallGuard.
-Validation status is therefore recorded as `manual_audit_only` or `not_run` in
-the coverage matrix, depending on behavior.
+本版本 SyscallGuard 没有执行 Starry build 或 QEMU test run。因此 coverage matrix
+按行为记录为 `manual_audit_only` 或 `not_run`。
 
-## Outputs
+## 输出
 
 - `outputs/coverage-matrix.yaml`
 
-## Gaps And Risks
+## 缺口和风险
 
-- Fresh dynamic logs are required before marking dynamic behaviors fully
-  confirmed.
-
+- 将动态行为标记为完全 confirmed 前，需要新的动态运行日志。

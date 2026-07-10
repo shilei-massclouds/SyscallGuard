@@ -1,33 +1,29 @@
-# Step 03 - Normalization Review
+# 步骤 03 - Normalization Review
 
-Batch: `000-regression-baseline`
-Status: `ready_for_human_review`
+批次：`000-regression-baseline`
+状态：`ready_for_human_review`
 
-## Purpose
+## 目的
 
-Check that imported behavior statements are precise enough for classification
-and evidence mapping.
+检查导入的行为描述是否足够精确，可用于分类和证据映射。
 
-## Inputs
+## 输入
 
 - `snapshots/ltp/specs/regression-behavior-specs.yaml`
 
-## Normalization Decisions
+## 归一化决策
 
-- Architecture-specific aliases are scoped to `x86_64`.
-- Error-return behaviors retain expected errno names.
-- `pipe2-copyout-fd-rollback` keeps both externally visible `EFAULT` and the
-  internal fd rollback requirement.
-- `mmap04-visible-prot` is scoped to `/proc/self/maps` visible permissions,
-  not to hardware page-table permissions.
-- P2 guard entries are split by area: iov, offset, mremap, mincore, madvise.
+- 架构相关 alias 范围限定为 `x86_64`。
+- 错误返回行为保留预期 errno 名称。
+- `pipe2-copyout-fd-rollback` 同时保留外部可见的 `EFAULT` 和内部 fd rollback 要求。
+- `mmap04-visible-prot` 限定为 `/proc/self/maps` 可见权限，而不是硬件页表权限。
+- P2 guard 按 iov、offset、mremap、mincore、madvise 拆分。
 
-## Outputs
+## 输出
 
-- Normalized behavior records remain in
+- 归一化行为记录保留在
   `snapshots/ltp/specs/regression-behavior-specs.yaml`.
 
-## Gaps And Risks
+## 缺口和风险
 
-- No upstream spec reviewer has confirmed the hand-normalized records yet.
-
+- 手工归一化记录尚未由上游 spec reviewer 确认。

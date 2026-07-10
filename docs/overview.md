@@ -1,31 +1,29 @@
-# SyscallGuard Overview
+# SyscallGuard 概览
 
-SyscallGuard exists to make syscall compliance work auditable. It keeps the
-chain from behavior source to normalized spec, checkability classification,
-Starry evidence, validation result, human review, and archived coverage.
+SyscallGuard 的目标是让 syscall 合规性工作可审计。它保留从行为来源、规格
+归一化、可检查性分类、Starry 证据、验证结果、人工审核到覆盖归档的完整链路。
 
-## Goals
+## 目标
 
-- Preserve syscall behavior inputs as stable snapshots.
-- Normalize behavior into reviewable batch-scoped specs.
-- Classify every behavior as static, partial static, dynamic, unsupported, or
-  needs review.
-- Record Starry evidence without changing Starry from this harness.
-- Gate every step with a human review record.
-- Produce a coverage matrix that can be traced back to specs and evidence.
+- 将 syscall 行为输入保存为稳定快照。
+- 将行为归一化为批次内可审核的规格。
+- 将每个行为分类为 `static`、`partial_static`、`dynamic`、`unsupported`
+  或 `needs_review`。
+- 在不通过 harness 修改 Starry 的前提下记录 Starry 证据。
+- 每个步骤都通过人工审核记录做门禁。
+- 产出可追溯到规格和证据的 coverage matrix。
 
-## Non-Goals For Version 1
+## 第一版非目标
 
-- No CLI or automated scheduler.
-- No direct modification of LTP or Starry repositories.
-- No migration of extractor or checker scripts.
-- No automatic judgement without human sign-off.
+- 不实现 CLI 或自动调度器。
+- 不直接修改 LTP 或 Starry 仓库。
+- 不迁入 extractor 或 checker 脚本。
+- 不在缺少人工 sign-off 的情况下自动下结论。
 
-## Artifact Lifecycle
+## 产物流转
 
-1. Snapshot source materials under `snapshots/`.
-2. Create a batch manifest under `batches/<id>/manifest.yaml`.
-3. Produce one step report and one review sign-off per workflow step.
-4. Populate the coverage matrix from normalized specs and evidence records.
-5. Close the batch only when all review gates are resolved.
-
+1. 将来源材料复制到 `snapshots/`。
+2. 在 `batches/<id>/manifest.yaml` 创建批次 manifest。
+3. 每个流程步骤产出一个步骤报告和一个 review sign-off。
+4. 基于归一化规格和证据记录填充 coverage matrix。
+5. 只有所有审核门禁都解决后，才能关闭批次。

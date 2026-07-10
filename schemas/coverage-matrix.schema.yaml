@@ -1,6 +1,6 @@
 schema_name: coverage-matrix
 version: 1
-description: Structure for batches/<id>/outputs/coverage-matrix.yaml.
+description: batches/<id>/outputs/coverage-matrix.yaml 的结构说明。
 required_top_level_keys:
   - batch_id
   - generated_at_utc
@@ -27,4 +27,3 @@ triage_values:
   - risk
   - unsupported
   - needs_review
-

@@ -4,7 +4,6 @@ artifact: "steps/04-checkability-classification.md"
 status: "pending_human_review"
 reviewer: ""
 reviewed_at_utc: ""
-decision_summary: "Awaiting human confirmation of checkability labels."
+decision_summary: "等待人工确认 checkability 标签。"
 required_changes: []
 follow_up: []
-

@@ -26,4 +26,3 @@ batch_closeout_requires:
   all_coverage_items_trace_to_evidence_or_gap: true
   all_gaps_triaged: true
   all_reviews_resolved_by_human: true
-

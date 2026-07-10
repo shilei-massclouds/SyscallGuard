@@ -4,7 +4,6 @@ artifact: "steps/09-validation.md"
 status: "pending_human_review"
 reviewer: ""
 reviewed_at_utc: ""
-decision_summary: "Awaiting human confirmation of validation status and missing fresh run logs."
+decision_summary: "等待人工确认验证状态和缺失的新运行日志。"
 required_changes: []
 follow_up: []
-

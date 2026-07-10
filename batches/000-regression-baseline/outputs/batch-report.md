@@ -1,16 +1,15 @@
-# Batch Report - 000 Regression Baseline
+# 批次报告 - 000 Regression Baseline
 
-Status: `ready_for_human_review`
+状态：`ready_for_human_review`
 Generated: `2026-07-10T00:00:00Z`
 
-## Scope
+## 范围
 
-This batch establishes the first SyscallGuard process baseline using known
-repaired Starry syscall regression items: `PATH_MAX`, pipe/pipe2 fd rollback,
-x86_64 `creat` and `eventfd` aliases, mmap04-style visible prot, and P2 guard
-items for iov, offsets, mremap, mincore, and madvise.
+本批次用已知已修复的 Starry syscall 回归项建立第一个 SyscallGuard 流程 baseline：
+`PATH_MAX`、pipe/pipe2 fd rollback、x86_64 `creat` 和 `eventfd` alias、
+mmap04 风格 visible prot，以及 iov、offset、mremap、mincore、madvise 的 P2 guard。
 
-## Artifacts
+## 产物
 
 - Manifest: `manifest.yaml`
 - Source index: `inputs/source-index.yaml`
@@ -19,23 +18,20 @@ items for iov, offsets, mremap, mincore, and madvise.
   `reviews/10-*-signoff.yaml`
 - Coverage matrix: `outputs/coverage-matrix.yaml`
 
-## Evidence
+## 证据
 
-Evidence was copied from local `tgoskits` branch `dev-ltp-spec-2` at commit
-`4f30e12d17e4da175233bb3a51889efe747a45f9`. The copied snapshot includes
-relevant Starry system tests and implementation files.
+证据复制自本地 `tgoskits` 分支 `dev-ltp-spec-2`，commit
+`4f30e12d17e4da175233bb3a51889efe747a45f9`。复制快照包含相关 Starry
+系统测试和实现文件。
 
-## Results
+## 结果
 
-- All scoped behaviors appear in the coverage matrix.
-- Every coverage item traces to a behavior spec and Starry evidence.
-- No new Starry gap is claimed.
-- Missing upstream LTP/new_specs materials and missing fresh dynamic run logs
-  are recorded as risks.
+- 范围内所有行为都出现在 coverage matrix 中。
+- 每个 coverage 条目都能追溯到行为规格和 Starry 证据。
+- 本批次不声称发现新的 Starry gap。
+- 缺失上游 LTP/new_specs 材料和缺少新动态运行日志的问题已记录为 risk。
 
-## Review State
+## 审核状态
 
-The batch is ready for human review. All sign-off files currently have
-`pending_human_review`; the batch must not be considered closed until those
-records are resolved.
-
+批次已准备好进入人工审核。所有 sign-off 文件当前都是 `pending_human_review`；
+这些记录解决前，批次不能视为 closed。

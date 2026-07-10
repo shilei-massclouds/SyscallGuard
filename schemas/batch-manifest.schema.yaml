@@ -1,6 +1,6 @@
 schema_name: batch-manifest
 version: 1
-description: Structure for batches/<id>/manifest.yaml.
+description: batches/<id>/manifest.yaml 的结构说明。
 required_top_level_keys:
   - batch_id
   - title
@@ -10,11 +10,10 @@ required_top_level_keys:
   - workflow
   - artifacts
 fields:
-  batch_id: Stable directory-compatible identifier.
-  title: Human-readable batch title.
-  status: draft, ready_for_review, closed, or archived.
-  created_at_utc: ISO 8601 timestamp or date.
-  scope: List of behavior IDs and exclusions.
-  workflow: Ordered list of the ten required workflow steps.
-  artifacts: Expected input, step, review, and output files.
-
+  batch_id: 稳定、可作为目录名使用的标识。
+  title: 人类可读的批次标题。
+  status: draft、ready_for_review、closed 或 archived。
+  created_at_utc: ISO 8601 时间戳或日期。
+  scope: behavior ID 和排除项列表。
+  workflow: 十个必需流程步骤的有序列表。
+  artifacts: 预期的输入、步骤、审核和输出文件。

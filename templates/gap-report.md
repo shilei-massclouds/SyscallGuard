@@ -1,18 +1,17 @@
-# Gap Report
+# Gap 报告
 
-Batch: `NNN-short-name`
+批次：`NNN-short-name`
 
-## Gap Summary
+## Gap 摘要
 
 - Behavior ID:
-- Source:
-- Missing Evidence:
-- Impact:
-- Proposed Triage:
+- 来源：
+- 缺失证据：
+- 影响：
+- 建议 triage：
 
-## Decision
+## 决策
 
 - Status: `needs_review`
-- Owner:
-- Next Action:
-
+- 负责人：
+- 下一步：

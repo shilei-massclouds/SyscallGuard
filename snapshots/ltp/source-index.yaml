@@ -29,17 +29,16 @@ copied_snapshots:
   starry_sources_root: "snapshots/ltp/starry-sources"
   behavior_specs: "snapshots/ltp/specs/regression-behavior-specs.yaml"
 missing_expected_materials:
-  - material: "LTP method document"
+  - material: "LTP 方法文档"
     status: "not_found_in_workspace"
-    note: "No separate LTP repository was present under /home/cloud/gitLinux."
-  - material: "100 syscall spec summary"
+    note: "/home/cloud/gitLinux 下没有单独的 LTP 仓库。"
+  - material: "100 syscall 规格摘要"
     status: "not_found_in_workspace"
-    note: "No file matching syscall spec summary was found locally."
-  - material: "new_specs four-layer specs"
+    note: "本地没有找到匹配 syscall spec summary 的文件。"
+  - material: "new_specs 四层规格"
     status: "not_found_in_workspace"
-    note: "No new_specs directory was found under /home/cloud/gitLinux."
+    note: "/home/cloud/gitLinux 下没有找到 new_specs 目录。"
 snapshot_policy:
   copied_not_referenced: true
   external_paths_recorded: true
   future_refresh_requires_new_snapshot_id: true
-

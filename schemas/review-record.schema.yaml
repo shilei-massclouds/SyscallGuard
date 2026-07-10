@@ -1,6 +1,6 @@
 schema_name: review-record
 version: 1
-description: Structure for batches/<id>/reviews/*-signoff.yaml.
+description: batches/<id>/reviews/*-signoff.yaml 的结构说明。
 required_fields:
   - batch_id
   - step_id
@@ -16,4 +16,3 @@ status_values:
   - confirmed
   - changes_requested
   - not_applicable
-

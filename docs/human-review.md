@@ -1,11 +1,11 @@
-# Human Review
+# 人工审核
 
-Human review is the primary quality gate for version 1. Automation may prepare
-artifacts, but acceptance requires an explicit review record.
+人工审核是第一版的主要质量门禁。自动化可以准备产物，但接受产物必须有明确
+的 review 记录。
 
-## Required Fields
+## 必需字段
 
-Each sign-off file records:
+每个 sign-off 文件记录：
 
 - `batch_id`
 - `step_id`
@@ -17,18 +17,17 @@ Each sign-off file records:
 - `required_changes`
 - `follow_up`
 
-## Status Semantics
+## 状态语义
 
-- `pending_human_review`: default state for new artifacts.
-- `confirmed`: accepted for this batch.
-- `changes_requested`: blocked until the listed changes are addressed.
-- `not_applicable`: skipped by policy with a written justification.
+- `pending_human_review`：新产物默认状态。
+- `confirmed`：本批次接受该产物。
+- `changes_requested`：列出的修改解决前保持阻塞。
+- `not_applicable`：按规则跳过，并写明理由。
 
-## Reviewer Checklist
+## 审核清单
 
-- Inputs match the batch manifest and source index.
-- Behavior statements are precise enough to be tested or audited.
-- Evidence paths and commits are concrete.
-- Unsupported or uncertain behavior is triaged, not hidden.
-- The coverage matrix matches the final step reports.
-
+- 输入与 batch manifest 和 source index 一致。
+- 行为描述足够精确，能够测试或审计。
+- 证据路径和 commit 具体明确。
+- 不支持或不确定行为已 triage，没有被隐藏。
+- coverage matrix 与最终步骤报告一致。

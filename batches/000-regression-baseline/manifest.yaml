@@ -1,9 +1,9 @@
 batch_id: "000-regression-baseline"
-title: "Regression baseline for repaired Starry syscall items"
+title: "已修复 Starry syscall 回归项 baseline"
 status: "ready_for_human_review"
 created_at_utc: "2026-07-10T00:00:00Z"
 scope:
-  priority: "P0/P2 mixed baseline"
+  priority: "P0/P2 混合 baseline"
   included_behaviors:
     - "path-max-enametoolong"
     - "pipe2-copyout-fd-rollback"
@@ -17,7 +17,7 @@ scope:
     - "p2-madvise-guard"
   excluded_behaviors:
     - behavior: "new syscall discovery"
-      reason: "First batch is a process baseline using already repaired regressions."
+      reason: "首批用于流程 baseline，只覆盖已修复回归项。"
 workflow:
   - step_id: "01-scope-selection"
     report: "steps/01-scope-selection.md"
@@ -59,4 +59,3 @@ artifacts:
 review_gate:
   required: true
   current_state: "pending_human_review"
-
