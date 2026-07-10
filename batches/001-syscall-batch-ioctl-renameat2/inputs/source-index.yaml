@@ -1,0 +1,18 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+snapshot_refs:
+  - snapshot_id: "ltp-starry-local-2026-07-10"
+    path: "snapshots/ltp/source-index.yaml"
+    captured_at_utc: "2026-07-10T00:00:00Z"
+    repositories:
+      - source_id: "tgoskits-local"
+        branch: "dev-ltp-spec-2"
+        commit: "4f30e12d17e4da175233bb3a51889efe747a45f9"
+inputs:
+  syscall_dispatch: "snapshots/ltp/starry-sources/syscall/mod.rs"
+  syscall_check_history: "batches/syscall-check-history.yaml"
+  default_batch_size: 20
+selection:
+  history_found: false
+  total_dispatch_candidates: 280
+  already_checked: 0
+traceability_rule: "后续 coverage 条目必须通过 syscall 或 syscalls 字段映射回本批 included_syscalls，并引用 Starry 证据或已 triage 的 gap。"

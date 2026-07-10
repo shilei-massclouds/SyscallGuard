@@ -1,0 +1,9 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "02-spec-ingestion"
+artifact: "steps/02-spec-ingestion.md"
+status: "confirmed"
+reviewer: "user"
+reviewed_at_utc: "2026-07-10T00:00:00Z"
+decision_summary: "用户输入“批准进入下一步”，确认本批 syscall 来源导入和 source gap 记录。"
+required_changes: []
+follow_up: []

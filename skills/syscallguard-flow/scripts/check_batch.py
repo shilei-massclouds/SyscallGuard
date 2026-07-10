@@ -136,7 +136,7 @@ def require_mapping(data: Any, path: Path, reporter: Reporter) -> dict[str, Any]
 
 def check_manifest(
     batch_dir: Path, repo_root: Path, manifest: dict[str, Any], reporter: Reporter
-) -> tuple[str | None, list[str]]:
+) -> tuple[str | None, list[str], list[str]]:
     required = [
         "batch_id",
         "title",
@@ -185,19 +185,42 @@ def check_manifest(
 
     scope = manifest.get("scope")
     included: list[str] = []
+    included_syscalls: list[str] = []
     if not isinstance(scope, dict):
         reporter.error("manifest.yaml scope must be a mapping")
     else:
         raw_included = scope.get("included_behaviors")
-        if not isinstance(raw_included, list) or not all(
-            isinstance(item, str) for item in raw_included
-        ):
-            reporter.error("manifest.yaml scope.included_behaviors must be a list of strings")
-        else:
-            included = raw_included
-            duplicates = sorted({item for item in included if included.count(item) > 1})
-            for behavior_id in duplicates:
-                reporter.error(f"Duplicate scoped behavior in manifest: {behavior_id}")
+        raw_syscalls = scope.get("included_syscalls")
+        if raw_included is None and raw_syscalls is None:
+            reporter.error(
+                "manifest.yaml scope must include included_behaviors or included_syscalls"
+            )
+        elif raw_included is not None:
+            if not isinstance(raw_included, list) or not all(
+                isinstance(item, str) for item in raw_included
+            ):
+                reporter.error(
+                    "manifest.yaml scope.included_behaviors must be a list of strings"
+                )
+            else:
+                included = raw_included
+                duplicates = sorted({item for item in included if included.count(item) > 1})
+                for behavior_id in duplicates:
+                    reporter.error(f"Duplicate scoped behavior in manifest: {behavior_id}")
+        if raw_syscalls is not None:
+            if not isinstance(raw_syscalls, list) or not all(
+                isinstance(item, str) for item in raw_syscalls
+            ):
+                reporter.error(
+                    "manifest.yaml scope.included_syscalls must be a list of strings"
+                )
+            else:
+                included_syscalls = [item.lower() for item in raw_syscalls]
+                duplicates = sorted(
+                    {item for item in included_syscalls if included_syscalls.count(item) > 1}
+                )
+                for syscall in duplicates:
+                    reporter.error(f"Duplicate scoped syscall in manifest: {syscall}")
 
     artifacts = manifest.get("artifacts")
     if isinstance(artifacts, dict):
@@ -213,7 +236,7 @@ def check_manifest(
                             f"Referenced artifact does not exist yet: artifacts.{section_name}.{name} -> {raw_path}"
                         )
 
-    return batch_id, included
+    return batch_id, included, included_syscalls
 
 
 def check_steps_and_reviews(
@@ -270,6 +293,7 @@ def check_coverage(
     batch_dir: Path,
     batch_id: str | None,
     included_behaviors: list[str],
+    included_syscalls: list[str],
     reporter: Reporter,
 ) -> None:
     coverage_path = batch_dir / "outputs" / "coverage-matrix.yaml"
@@ -293,6 +317,7 @@ def check_coverage(
         return
 
     seen: list[str] = []
+    seen_syscalls: list[str] = []
     for index, item in enumerate(coverage):
         label = f"coverage[{index}]"
         if not isinstance(item, dict):
@@ -307,6 +332,19 @@ def check_coverage(
             seen.append(behavior_id)
         else:
             reporter.error(f"{label}.behavior_id must be a string")
+
+        syscall = item.get("syscall")
+        if syscall is not None:
+            if isinstance(syscall, str):
+                seen_syscalls.append(syscall.lower())
+            else:
+                reporter.error(f"{label}.syscall must be a string when present")
+        syscalls = item.get("syscalls")
+        if syscalls is not None:
+            if isinstance(syscalls, list) and all(isinstance(value, str) for value in syscalls):
+                seen_syscalls.extend(value.lower() for value in syscalls)
+            else:
+                reporter.error(f"{label}.syscalls must be a list of strings when present")
 
         checkability = item.get("checkability")
         if checkability not in COVERAGE_CHECKABILITY:
@@ -327,15 +365,27 @@ def check_coverage(
         if not has_evidence and triage not in TRIAGE_WITHOUT_STARRY_EVIDENCE:
             reporter.error(f"{label} lacks Starry evidence and is not triaged as a gap/risk")
 
-    scoped = set(included_behaviors)
-    covered = set(seen)
-    for behavior_id in sorted(scoped - covered):
-        reporter.gate(f"Scoped behavior missing from coverage matrix: {behavior_id}")
-    for behavior_id in sorted(covered - scoped):
-        reporter.gate(f"Coverage behavior is not in manifest scope: {behavior_id}")
-    duplicates = sorted({item for item in seen if seen.count(item) > 1})
-    for behavior_id in duplicates:
-        reporter.error(f"Duplicate coverage behavior: {behavior_id}")
+    if included_behaviors:
+        scoped = set(included_behaviors)
+        covered = set(seen)
+        for behavior_id in sorted(scoped - covered):
+            reporter.gate(f"Scoped behavior missing from coverage matrix: {behavior_id}")
+        for behavior_id in sorted(covered - scoped):
+            reporter.gate(f"Coverage behavior is not in manifest scope: {behavior_id}")
+        duplicates = sorted({item for item in seen if seen.count(item) > 1})
+        for behavior_id in duplicates:
+            reporter.error(f"Duplicate coverage behavior: {behavior_id}")
+
+    if included_syscalls:
+        scoped_syscalls = set(included_syscalls)
+        covered_syscalls = set(seen_syscalls)
+        for syscall in sorted(scoped_syscalls - covered_syscalls):
+            reporter.gate(f"Scoped syscall missing from coverage matrix: {syscall}")
+        for syscall in sorted(covered_syscalls - scoped_syscalls):
+            reporter.gate(f"Coverage syscall is not in manifest scope: {syscall}")
+        duplicates = sorted({item for item in seen_syscalls if seen_syscalls.count(item) > 1})
+        for syscall in duplicates:
+            reporter.error(f"Duplicate coverage syscall: {syscall}")
 
     gaps = matrix.get("gaps", [])
     if gaps is None:
@@ -401,11 +451,14 @@ def main(argv: list[str]) -> int:
 
     batch_id: str | None = None
     included_behaviors: list[str] = []
+    included_syscalls: list[str] = []
     if manifest is not None:
-        batch_id, included_behaviors = check_manifest(batch_dir, repo_root, manifest, reporter)
+        batch_id, included_behaviors, included_syscalls = check_manifest(
+            batch_dir, repo_root, manifest, reporter
+        )
 
     check_steps_and_reviews(batch_dir, batch_id, reporter)
-    check_coverage(batch_dir, batch_id, included_behaviors, reporter)
+    check_coverage(batch_dir, batch_id, included_behaviors, included_syscalls, reporter)
 
     if manifest is not None and manifest.get("status") == "closed" and (
         reporter.errors or reporter.gates

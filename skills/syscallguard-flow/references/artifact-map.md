@@ -18,6 +18,7 @@ batches/<batch-id>/
 └── outputs/
     ├── coverage-matrix.yaml
     └── batch-report.md
+batches/syscall-check-history.yaml
 ```
 
 Snapshot paths such as `snapshots/ltp/...` are repository-root relative. Batch-local paths such as `steps/...`, `reviews/...`, `inputs/...`, and `outputs/...` are relative to `batches/<batch-id>/`.
@@ -56,6 +57,8 @@ Start new manifests from `templates/manifest.yaml`. Required top-level keys are:
 - `review`
 
 `scope.included_behaviors` is the authoritative behavior set for closeout coverage.
+
+For syscall-oriented batches, `scope.included_syscalls` may be used as the authoritative syscall list for the batch. Default to 20 entries. Keep syscall names as Starry `Sysno` names, for example `openat`, `read`, or `mmap`.
 
 ## Step Reports
 
@@ -140,6 +143,60 @@ Allowed `triage` values:
 - `needs_review`
 
 Coverage closeout requires `coverage.behavior_id` to match `manifest.scope.included_behaviors` exactly. Covered rows need source references and Starry evidence. Rows without Starry evidence must be triaged as `gap`, `risk`, `unsupported`, or `needs_review`.
+
+For syscall-oriented batches, each coverage item should include one of these optional fields so results can be recorded without ambiguity:
+
+- `syscall: "openat"` for a single syscall result.
+- `syscalls: ["read", "write"]` for a behavior covering multiple syscalls.
+- `rule_id: "PATH_LONG_ENAMETOOLONG"` for reusable check-rule coverage.
+- `mapping_id: "M_PATHMAX"` when a target-specific mapping is evaluated.
+
+For syscall-oriented batches, prefer `syscall + rule_id` over syscall-only coverage. A syscall may be partially covered when some rule refs remain unchecked. If neither syscall nor rule fields exist, history recording may fall back to `behavior_id`, but future syscall batches cannot use that row to exclude a syscall-rule pair.
+
+## Syscall Check History
+
+Use `batches/syscall-check-history.yaml` to prevent repeated work across batches. Create it when the first syscall batch is confirmed.
+
+Suggested structure:
+
+```yaml
+schema_version: 1
+updated_at_utc: "YYYY-MM-DDT00:00:00Z"
+checked_syscalls:
+  - syscall: "openat"
+    status: "covered"
+    batch_id: "NNN-short-name"
+    result_ref: "batches/NNN-short-name/outputs/coverage-matrix.yaml#openat"
+    reviewed_at_utc: "YYYY-MM-DDT00:00:00Z"
+checked_syscall_rules:
+  - syscall: "openat"
+    rule_id: "PATH_LONG_ENAMETOOLONG"
+    mapping_id: "M_PATHMAX"
+    status: "covered"
+    batch_id: "NNN-short-name"
+    result_ref: "batches/NNN-short-name/outputs/coverage-matrix.yaml#openat-pathmax"
+    reviewed_at_utc: "YYYY-MM-DDT00:00:00Z"
+checked_behaviors: []
+```
+
+Allowed history statuses should reuse coverage triage values when possible:
+
+- `covered`
+- `covered_pending_human_review`
+- `gap`
+- `risk`
+- `unsupported`
+- `needs_review`
+
+Only exclude a whole syscall from future candidate lists after all rule refs in the active rule set are human-reviewed and recorded. Otherwise exclude or skip only the reviewed `syscall + rule_id` pairs recorded in `checked_syscall_rules`.
+
+Use the bundled script for routine updates after closeout review:
+
+```bash
+python3 skills/syscallguard-flow/scripts/next_syscalls.py record --batch batches/<batch-id>
+```
+
+The command refuses to record unless `reviews/10-batch-closeout-signoff.yaml` is `confirmed` or `not_applicable`. For pre-review experiments, use `--allow-unresolved` only when the user explicitly requests it.
 
 ## Closeout
 

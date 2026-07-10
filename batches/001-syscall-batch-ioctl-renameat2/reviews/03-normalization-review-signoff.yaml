@@ -1,0 +1,9 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "03-normalization-review"
+artifact: "steps/03-normalization-review.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "等待人工确认本批 syscall 归一化行为草案。"
+required_changes: []
+follow_up: []
