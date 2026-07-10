@@ -1,0 +1,152 @@
+# SyscallGuard Artifact Map
+
+Use this reference when creating or validating batch files.
+
+## Directory Shape
+
+```text
+batches/<batch-id>/
+├── manifest.yaml
+├── inputs/
+│   └── source-index.yaml
+├── steps/
+│   ├── 01-scope-selection.md
+│   └── ...
+├── reviews/
+│   ├── 01-scope-selection-signoff.yaml
+│   └── ...
+└── outputs/
+    ├── coverage-matrix.yaml
+    └── batch-report.md
+```
+
+Snapshot paths such as `snapshots/ltp/...` are repository-root relative. Batch-local paths such as `steps/...`, `reviews/...`, `inputs/...`, and `outputs/...` are relative to `batches/<batch-id>/`.
+
+## Fixed Step IDs
+
+1. `01-scope-selection`
+2. `02-spec-ingestion`
+3. `03-normalization-review`
+4. `04-checkability-classification`
+5. `05-starry-evidence-mapping`
+6. `06-static-check-or-audit`
+7. `07-gap-triage`
+8. `08-fix-plan-and-apply-outside-harness`
+9. `09-validation`
+10. `10-batch-closeout`
+
+For each step, the report path is `steps/<step-id>.md` and the review path is `reviews/<step-id>-signoff.yaml`.
+
+## Manifest
+
+Start new manifests from `templates/manifest.yaml`. Required top-level keys are:
+
+- `batch_id`
+- `title`
+- `status`
+- `created_at_utc`
+- `scope`
+- `workflow`
+- `artifacts`
+
+`workflow` must list all ten fixed steps in order. Each workflow item must include:
+
+- `step_id`
+- `report`
+- `review`
+
+`scope.included_behaviors` is the authoritative behavior set for closeout coverage.
+
+## Step Reports
+
+Start reports from `templates/step-report.md`. Keep these sections unless a step has a stronger local convention:
+
+- `目的`
+- `输入`
+- `执行内容`
+- `输出`
+- `缺口和风险`
+- `审核`
+
+The report status should reflect the batch state for that step, commonly `draft`, `ready_for_human_review`, or `closed`.
+
+## Review Sign-Off
+
+Start reviews from `templates/review-signoff.yaml`. Required fields are:
+
+- `batch_id`
+- `step_id`
+- `artifact`
+- `status`
+- `reviewer`
+- `reviewed_at_utc`
+- `decision_summary`
+- `required_changes`
+- `follow_up`
+
+Allowed review statuses:
+
+- `pending_human_review`
+- `confirmed`
+- `changes_requested`
+- `not_applicable`
+
+When Codex creates a sign-off after completing a step, default to:
+
+```yaml
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+required_changes: []
+follow_up: []
+```
+
+Use `confirmed`, `changes_requested`, or `not_applicable` only when the user gives an explicit reviewer decision.
+
+## Coverage Matrix
+
+`outputs/coverage-matrix.yaml` must include:
+
+- `batch_id`
+- `generated_at_utc`
+- `coverage`
+
+Each coverage item must include:
+
+- `behavior_id`
+- `title`
+- `source_refs`
+- `checkability`
+- `starry_evidence`
+- `validation`
+- `triage`
+- `review_status`
+
+Allowed `checkability` values:
+
+- `static`
+- `partial_static`
+- `dynamic`
+- `unsupported`
+- `needs_review`
+
+Allowed `triage` values:
+
+- `covered`
+- `covered_pending_human_review`
+- `gap`
+- `risk`
+- `unsupported`
+- `needs_review`
+
+Coverage closeout requires `coverage.behavior_id` to match `manifest.scope.included_behaviors` exactly. Covered rows need source references and Starry evidence. Rows without Starry evidence must be triaged as `gap`, `risk`, `unsupported`, or `needs_review`.
+
+## Closeout
+
+Do not change `manifest.status` to `closed` until:
+
+- all ten reports and sign-offs exist;
+- all sign-offs are `confirmed` or justified `not_applicable`;
+- every scoped behavior is represented exactly once in the coverage matrix;
+- every coverage row and top-level gap/risk has triage;
+- remaining risks are listed in `outputs/batch-report.md` or the step 10 report.
