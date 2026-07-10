@@ -1,0 +1,12 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "08-fix-plan-and-apply-outside-harness"
+artifact: "steps/08-fix-plan-and-apply-outside-harness.md"
+status: "pending_human_review"
+reviewer: ""
+reviewed_at_utc: ""
+decision_summary: "等待人工确认第 08 步动态测试用例清单和执行阻塞项。"
+required_changes: []
+follow_up:
+  - "确认后第 09 步应自动执行 outputs/validation-cases.yaml 中已批准且已绑定命令的动态测试用例。"
+  - "如果第 09 步无法执行，必须记录缺失命令、环境或日志路径作为执行阻塞原因。"
+  - "第 09 步应结合第 06 步静态检查/审计结果和动态测试结果生成 Starry patch 候选，并询问是否应用到 Starry。"

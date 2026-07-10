@@ -12,9 +12,9 @@
 | 05 | `starry-evidence-mapping` | Starry 代码、测试、日志或人工审计证据 |
 | 06 | `static-check-or-audit` | 静态 checker 结果或人工审计记录 |
 | 07 | `gap-triage` | gap、risk、unsupported、needs_review 决策 |
-| 08 | `fix-plan-and-apply-outside-harness` | 外部 Starry 修复计划和链接 |
-| 09 | `validation` | 构建、静态 checker、动态测试或人工验证结果 |
-| 10 | `batch-closeout` | coverage matrix、未解决风险和最终报告 |
+| 08 | `fix-plan-and-apply-outside-harness` | 动态测试用例清单和执行阻塞项 |
+| 09 | `validation` | 执行第 08 步已确认的动态测试用例，结合静态/动态结果生成 Starry patch 候选 |
+| 10 | `batch-closeout` | 应用已确认的 Starry patch，执行静态/动态回归，生成 coverage matrix、未解决风险和最终报告 |
 
 ## 步骤门禁
 

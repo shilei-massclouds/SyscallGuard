@@ -66,6 +66,7 @@ artifacts:
   outputs:
     coverage_matrix: "outputs/coverage-matrix.yaml"
     batch_report: "outputs/batch-report.md"
+    validation_cases: "outputs/validation-cases.yaml"
 review_gate:
   required: true
   current_state: "pending_human_review"

@@ -1,0 +1,10 @@
+batch_id: "001-syscall-batch-ioctl-renameat2"
+step_id: "07-gap-triage"
+artifact: "steps/07-gap-triage.md"
+status: "confirmed"
+reviewer: "user"
+reviewed_at_utc: "2026-07-10T00:00:00Z"
+decision_summary: "用户输入“批准进入下一步”，确认第 07 步 gap/risk/needs_review triage。"
+required_changes: []
+follow_up:
+  - "Closeout 仍被 risk 和 needs_review items 阻塞，后续需通过 Step 08/09 处理或明确接受 limitation。"
