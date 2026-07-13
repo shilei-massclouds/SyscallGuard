@@ -21,6 +21,38 @@ description: Orchestrate SyscallGuard's fixed ten-step batch workflow. Use when 
 - Do not default to copying or committing external Starry/LTP source trees. Prefer source-index entries with repository path/URL, branch or tag, commit, captured paths, and hashes. Copy only a minimal evidence subset when the source cannot be restored reliably or review must be self-contained.
 - Do not mark a batch `closed` unless all closeout gates pass.
 
+## High-Level Guide Commands
+
+Treat these Chinese phrases as first-class guide commands:
+
+- `开始检查系统调用`: start or continue the syscall-oriented batch flow at step `01-scope-selection`; first show progress and the default 20 unchecked syscall candidates.
+- `批准进入下一步`: inspect the previous step's sign-off gate and proceed only if the relevant review status is `confirmed` or `not_applicable`.
+- `检查当前进度`: read only `manifest.yaml`, `steps/`, `reviews/`, and `outputs/coverage-matrix.yaml`; do not create, update, or confirm any artifacts. Prefer:
+
+```bash
+python3 skills/syscallguard-flow/scripts/progress.py --batch batches/<batch-id>
+```
+
+Then summarize the ten fixed steps, each report/sign-off state, the current step, the next executable step, any blocking review gate, and the next suggested user input.
+- `执行第 X 步`: execute exactly the numbered step `X`, where `X` must be 1 through 10. If `X` is outside 1 through 10, stop and say the legal format is `执行第1步` through `执行第10步`.
+
+Step number mapping:
+
+| Command | Step ID |
+| --- | --- |
+| `执行第1步` | `01-scope-selection` |
+| `执行第2步` | `02-spec-ingestion` |
+| `执行第3步` | `03-normalization-review` |
+| `执行第4步` | `04-checkability-classification` |
+| `执行第5步` | `05-starry-evidence-mapping` |
+| `执行第6步` | `06-static-check-or-audit` |
+| `执行第7步` | `07-gap-triage` |
+| `执行第8步` | `08-fix-plan-and-apply-outside-harness` |
+| `执行第9步` | `09-validation` |
+| `执行第10步` | `10-batch-closeout` |
+
+For `执行第 X 步`, never bypass review gates. Before executing the requested step, ensure every earlier step's sign-off is `confirmed` or `not_applicable`. If an earlier gate is `pending_human_review`, `changes_requested`, missing, or malformed, stop and tell the user to input `批准进入下一步` after resolving the named review file, or to edit that review file first.
+
 ## Workflow
 
 1. Resolve the batch path from the user's request. If no batch is named and exactly one `batches/<id>/manifest.yaml` exists, use it; otherwise ask for the batch ID.
@@ -33,6 +65,8 @@ python3 skills/syscallguard-flow/scripts/next_syscalls.py list --limit 20
 Then show the 20 syscall names and the files that will hold the scope result. Do this before any long-running inspection.
 3. Load the batch state from `manifest.yaml`, `steps/`, `reviews/`, and `outputs/coverage-matrix.yaml` when it exists.
 4. Determine the requested step:
+   - `检查当前进度` means read-only progress reporting only, preferably via `scripts/progress.py`.
+   - `执行第 X 步` means map `X` to the fixed step ID table above and run only that step after prior gate checks.
    - "current", "next", or "continue" means the first workflow step whose sign-off is absent, unresolved, or whose report needs work, after checking the previous step gate.
    - An explicit step number or step ID means that step only.
    - "closeout" means step `10-batch-closeout` plus closeout gate checks.
