@@ -103,6 +103,9 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
 - For Step 05, briefly summarize the mapped Starry target files and locations, then ask only
   `对于这些检查规则的应用目标位置，是否同意？`. Show `命令：批准进入下一步` for approval
   and `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 05.
+- For Step 06, briefly summarize the static audit results, then ask only
+  `是否接受这些检查规则的静态审计结果？`. Show `命令：批准进入下一步` for approval and
+  `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 06.
 - Treat `命令：批准进入下一步` as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
 
