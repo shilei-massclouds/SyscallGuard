@@ -24,9 +24,13 @@ Use this order:
 4. Numbered confirmation checklist tied to that concrete list.
 5. Accepted responses, such as `命令：批准进入下一步` or `修改 <编号>: ...`.
 
+For Step 01, replace the general numbered checklist with exactly one confirmation question:
+`是否同意处理这一批系统调用？` Do not add confirmation questions about scope details,
+priority, exclusions, duplicates, or harness boundaries.
+
 Examples of concrete lists:
 
-- Step 01 lists the selected syscall names.
+- Step 01 lists the selected syscall names, then asks only `是否同意处理这一批系统调用？`.
 - Step 03 lists reusable rule IDs and any syscall groups with special handling.
 - Step 04 lists rule classification rows such as `static`, `partial_static`, and `dynamic`.
 - Step 05 lists evidence refs or source files located.
@@ -40,7 +44,7 @@ Examples of concrete lists:
 
 | Step | Inputs | Work | Outputs | Required Checks | Stop Condition |
 | --- | --- | --- | --- | --- | --- |
-| `01-scope-selection` | `manifest.yaml`, source index, candidate specs, `batches/syscall-check-history.yaml`, Starry syscall dispatch source or snapshot | Select included behavior IDs or syscall names, priority, exclusions, and batch purpose. For `命令：开始检查系统调用`, first display the next 20 unchecked syscall candidates. | `steps/01-scope-selection.md`, `reviews/01-scope-selection-signoff.yaml`, manifest `scope`, optional `scope.included_syscalls`. | Included behavior IDs or syscall names are stable; already checked syscalls are excluded; exclusions explain why they are outside this batch; no Starry/LTP edits are planned inside the harness. | Ask for human confirmation of scope and tell the user to review/edit the scope report before approval. |
+| `01-scope-selection` | `manifest.yaml`, source index, candidate specs, `batches/syscall-check-history.yaml`, Starry syscall dispatch source or snapshot | Select included behavior IDs or syscall names, priority, exclusions, and batch purpose. For `命令：开始检查系统调用`, first display the next 20 unchecked syscall candidates. | `steps/01-scope-selection.md`, `reviews/01-scope-selection-signoff.yaml`, manifest `scope`, optional `scope.included_syscalls`. | Included behavior IDs or syscall names are stable; already checked syscalls are excluded; exclusions explain why they are outside this batch; no Starry/LTP edits are planned inside the harness. | After listing the syscall names, ask only `是否同意处理这一批系统调用？`, then wait for approval or requested changes. |
 | `02-spec-ingestion` | Source index, behavior specs, external commit refs, minimal copied snapshots if needed | Record source IDs, repository path/URL, branch or tag, commit, captured paths, hashes when available, imported specs, missing source documents, and provenance. | `steps/02-spec-ingestion.md`, `reviews/02-spec-ingestion-signoff.yaml`, input artifact references. | Every imported behavior points to a source-index entry, a copied snapshot path, or an explicit source gap. External source trees are not copied by default. | Ask for human confirmation of source completeness and gaps. |
 | `03-normalization-review` | Imported behavior specs from step 02; for syscall batches, any available reference model for reusable rules | Normalize into stable IDs. For syscall batches, use `syscall -> rule_refs -> target mappings`: a syscall reference table, a reusable check rule table, and target-specific mapping drafts. | `steps/03-normalization-review.md`, `reviews/03-normalization-review-signoff.yaml`, normalized spec updates if needed. | Each scoped syscall references reusable rules; reusable rules are defined once; target mapping drafts do not inherit external pass/fix status unless imported as batch evidence. | Ask for human confirmation of normalized semantics and rule reuse. |
 | `04-checkability-classification` | Normalized behavior specs and syscall rule refs | Assign `static`, `partial_static`, `dynamic`, `unsupported`, or `needs_review` per behavior or per `syscall + rule_id`. | `steps/04-checkability-classification.md`, `reviews/04-checkability-classification-signoff.yaml`. | Classification is justified at rule granularity; `unsupported` and `needs_review` have reasons. | Ask for human confirmation of checkability labels. |
