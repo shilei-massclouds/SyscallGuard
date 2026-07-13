@@ -1,131 +1,65 @@
 # SyscallGuard
 
-SyscallGuard 是一个独立的 Starry syscall 合规性 harness。它负责保存 syscall
-检查范围、规格来源、归一化规则、Starry 证据、人工审核门禁、验证结果和最终覆盖结论。
+SyscallGuard 是面向 Starry 的增量 syscall 合规性工具。仓库只提供四个彼此独立的
+Codex skill；每次调用都立即生成 run 快照并更新共享实体库，不存在流水线编排、人工审核
+门禁或发布步骤。
 
-当前仓库默认不直接修改 LTP；也不在未获确认时修改 Starry。Starry 修复补丁只在流程后段
-生成候选并等待人工确认，应用补丁属于显式确认后的外部目标操作。
-
-## 快速开始
-
-在 Codex 中输入：
+## 四个技能
 
 ```text
-命令：开始检查系统调用
+$ingest-syscall-specs source=<source-descriptor> count=<N>
+$map-starry-checks from=<spec-run-id> target=<starry-descriptor>
+$check-starry-compliance from=<mapping-run-id>
+$fix-starry-compliance from=<check-run-id>
 ```
 
-四类高层向导命令都必须使用 `命令：` 前缀：
+- `ingest-syscall-specs`：选择来源中前 `N` 个新增或内容变化的 syscall，保存规格与目标无关规则。
+- `map-starry-checks`：固定 Starry commit，生成目标映射、静态检查和动态测试定义，不修改 Starry。
+- `check-starry-compliance`：在隔离 worktree 注入测试并执行检查，分离实现 finding 与环境 blocker。
+- `fix-starry-compliance`：只修复 confirmed implementation findings；回归成功后提交到
+  `syscallguard/<run-id>`，不合并用户分支。
 
-- `命令：开始检查系统调用`
-- `命令：批准进入下一步`
-- `命令：检查当前进度`
-- `命令：执行第1步` 至 `命令：执行第10步`
+每个技能完成后都会打印 `runs/<run-id>/` 和相关共享 index 路径。用户可以重新调用同一
+技能，也可以直接修改共享 YAML 后调用下游技能；下游会按上游实体 ID 读取当前文件并重新
+计算 hash。
 
-输入时也兼容半角前缀 `命令:`，但助手的提示和建议输入统一使用全角
-`命令：`。裸命令不会执行工作流，而会提示对应的带前缀格式。
-
-期望行为：
-
-1. 立即显示当前步骤和进度，避免用户误以为卡住。
-2. 第 01 步先给出待检查 syscall 列表；默认每批 20 个。
-3. 已在 `batches/syscall-check-history.yaml` 中记录为完成的 syscall 不再重复选择。
-4. 每一步只处理当前步骤，生成或检查对应中间结果文件。
-5. 步骤结束时在屏幕上显示本步产物列表和一个简短确认问题；详细信息由步骤报告承载。
-6. 用户检查文件后输入 `命令：批准进入下一步`，流程才进入下一步。
-
-如果需要修改中间结果，直接说明：
+## 数据布局
 
 ```text
-修改 2: ...
+library/specs/                 syscall 当前规格
+library/rules/                 目标无关规则
+targets/starry/mappings/       Starry 文件、符号和 helper 映射
+targets/starry/static-checks/  可执行静态规则
+targets/starry/dynamic-tests/  测试定义、源码/补丁、构建和执行绑定
+targets/starry/findings/       syscall + rule + target revision 实现缺口
+targets/starry/fixes/          补丁、commit 和回归结果
+runs/<run-id>/                 manifest、changeset、报告、日志和输入输出快照
 ```
 
-Codex 应根据修改意见更新当前步骤产物，并继续停在当前步骤的 review sign-off。
-所有步骤都没有编号确认项；不同意或需要调整时输入 `修改：<调整内容>`。
+每个共享目录都有 `index.yaml`，实体按文件分片。`batches/syscall-check-history.yaml` 只记录
+实体输入 hash、处理 run 和 finding/fix 状态，不按 syscall 名整体排除后续工作。
 
-## 十步流程
+## 描述符
 
-每个批次遵循 `docs/batch-process.md` 中固定的十步流程：
+- LTP 来源示例：[sources/ltp-local.yaml](sources/ltp-local.yaml)
+- Starry 目标示例：[targets/starry/target.yaml](targets/starry/target.yaml)
+- 字段契约：[docs/data-model.md](docs/data-model.md)
 
-| Step | Name | 用户主要确认内容 |
-| --- | --- | --- |
-| 01 | `scope-selection` | 是否同意处理这一批系统调用？ |
-| 02 | `spec-ingestion` | 对这批系统调用规格来源的调查结果是否接受？ |
-| 03 | `normalization-review` | 对这批系统调用检查规则的整理结果是否接受？ |
-| 04 | `checkability-classification` | 是否同意对这些检查规则的分类？ |
-| 05 | `starry-evidence-mapping` | 对于这些检查规则的应用目标位置，是否同意？ |
-| 06 | `static-check-or-audit` | 是否接受这些检查规则的静态审计结果？ |
-| 07 | `gap-triage` | 是否接受这些未闭合问题的分类与处理决定？ |
-| 08 | `fix-plan-and-apply-outside-harness` | 是否向Starry注入测试？ |
-| 09 | `validation` | 有修复补丁时是否批准；无修复补丁时是否接受未生成补丁的验证结果 |
-| 10 | `batch-closeout` | 门禁通过时是否关闭批次；未通过时是否接受暂不关闭的收尾结果 |
+## 迁移状态
 
-`命令：批准进入下一步` 只表示当前步骤审核通过。上一阶段 sign-off 未确认时，流程必须停止并提示需要先确认哪个 review 文件。
+旧 batch 001 已转换为四个关联 run：
 
-## 产物位置
+- `spec-migrated-batch-001`
+- `mapping-migrated-batch-001`
+- `check-migrated-batch-001`
+- `fix-migrated-batch-001`
 
-- `skills/syscallguard-flow/`：SyscallGuard 十步向导 skill 源码。
-- `skills/syscallguard-flow/references/ten-step-flow.md`：每一步的输入、输出、检查点和停顿条件。
-- `skills/syscallguard-flow/references/artifact-map.md`：批次目录结构、文件命名和 history 记录规则。
-- `skills/syscallguard-flow/scripts/next_syscalls.py`：列出下一批待检查 syscall，或在 closeout 后记录检查历史。
-- `skills/syscallguard-flow/scripts/check_batch.py`：非破坏性检查批次完整性和关闭门禁。
-- `skills/syscallguard-flow/scripts/run_ltp_spec_extract.py`：按批次运行外部 LTP 规格抽取工具，只写 batch outputs。
-- `skills/syscallguard-flow/scripts/run_starry_static_check.py`：按参数化规则运行 Starry 静态 pattern 检查，只写 batch outputs。
-- `skills/syscallguard-flow/references/starry-static-rules.yaml`：Starry 静态检查规则表。
-- `docs/`：项目目标、协作模型、批次流程、工具接入计划和人工审核规则。
-- `constraints/`：流程、规格、Starry 修复和动态测试约束。
-- `schemas/`：manifest、步骤状态、审核记录和 coverage matrix 的 YAML 结构说明。
-- `batches/001-syscall-batch-ioctl-renameat2/`：当前 syscall 检查批次。
-- `snapshots/`：必要时保存的最小证据快照；外部 Starry/LTP 来源优先记录在 batch 的 `inputs/source-index.yaml`。
-- `templates/`：后续批次复用的 manifest、步骤、审核、gap 和验证模板。
+共享库保留 20 个 syscall、289 条 normalized spec、12 条通用规则、9 条静态检查和 7 个
+动态测试。原审核文件只保存在各 run 的 `legacy-artifacts/` 中作为 provenance，不参与运行。
 
-## 当前批次状态
-
-当前批次是 `batches/001-syscall-batch-ioctl-renameat2/`，范围为 20 个 syscall：
-
-```text
-ioctl, chdir, fchdir, chroot, mkdir, mkdirat, mknod, mknodat, getdents64, link,
-linkat, rmdir, unlink, unlinkat, getcwd, symlink, symlinkat, rename, renameat,
-renameat2
-```
-
-截至当前产物：
-
-- 第 01 到第 09 步已经有确认记录。
-- 第 10 步停在 `pending_human_review`。
-- 第 09 步没有生成 Starry patch 候选。
-- 动态验证用例已登记，但缺少可执行命令和环境绑定，因此未运行。
-- 批次不能标记为 `closed`；需要接受当前 closeout 结果，或回到第 08 步补充可执行动态测试。
-
-## 常用检查命令
-
-列出下一批默认 20 个待检查 syscall：
+## 验证
 
 ```bash
-python3 skills/syscallguard-flow/scripts/next_syscalls.py list --limit 20
+python3 tools/validate_repository.py
+python3 -m unittest discover -s tests -v
 ```
-
-检查当前批次是否结构完整、是否满足关闭门禁：
-
-```bash
-python3 skills/syscallguard-flow/scripts/check_batch.py batches/001-syscall-batch-ioctl-renameat2
-```
-
-为当前批次生成 LTP-derived 规格候选：
-
-```bash
-python3 skills/syscallguard-flow/scripts/run_ltp_spec_extract.py batches/001-syscall-batch-ioctl-renameat2
-```
-
-为当前批次运行 Starry 静态 pattern 检查：
-
-```bash
-python3 skills/syscallguard-flow/scripts/run_starry_static_check.py batches/001-syscall-batch-ioctl-renameat2
-```
-
-在第 10 步人工确认后记录 syscall 检查历史：
-
-```bash
-python3 skills/syscallguard-flow/scripts/next_syscalls.py record --batch batches/001-syscall-batch-ioctl-renameat2
-```
-
-未解决 review gate 或未关闭批次不应写入完成历史，除非用户明确要求做 dry review 记录。

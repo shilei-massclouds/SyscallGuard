@@ -1,0 +1,323 @@
+schema_version: 1
+kind: syscallguard_syscall_spec
+syscall: mkdir
+source_records:
+- source_id: ltp-local-2026-07-10
+  adapter: ltp-extractor
+  location: /home/cloud/gitStudy/ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  legacy_run_ref: runs/spec-migrated-batch-001/legacy-artifacts/outputs/ltp-spec-extract-run.yaml
+normalized_behaviors:
+- syscall: mkdir
+  case: mkdir03_67_case0
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - null
+  - MODE
+  preconditions:
+  - BAD_USER_ADDRESS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EFAULT
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case1
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - long_dir
+  - MODE
+  preconditions:
+  - PATH_TOO_LONG
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ENAMETOOLONG
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case2
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_EEXIST
+  - MODE
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case3
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_FOLDER
+  - MODE
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case4
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_PIPE
+  - MODE
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case5
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_SYMLINK
+  - MODE
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case6
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_NULLDEV
+  - MODE
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case7
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_ENOENT
+  - MODE
+  preconditions:
+  - NONEXISTENT_PATH
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ENOENT
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case8
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_ENOTDIR_DIR
+  - MODE
+  preconditions:
+  - NON_DIRECTORY_PATH_COMPONENT
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ENOTDIR
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case9
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - loop_dir
+  - MODE
+  preconditions:
+  - SYMLINK_LOOP
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ELOOP
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir03_67_case10
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir03.c
+    line: 67
+  args:
+  - TST_EROFS
+  - MODE
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EROFS
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: mkdir
+  case: mkdir05_25_raw
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir05.c
+    line: 25
+  args:
+  - TESTDIR
+  - PERMS
+  preconditions: []
+  expected:
+    kind: probe
+    detail: legacy TEST() expectation needs reconstruction
+  confidence: D
+  checkability: needs_review
+  status: needs_review
+  derived_from: old_api_raw
+  needs:
+  - old_api_expectation_reconstruction
+- syscall: mkdir
+  case: mkdir09_40_raw
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir09.c
+    line: 40
+  args:
+  - tmpdir
+  - MODE_RWX
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EEXIST
+  confidence: A
+  checkability: static_direct
+  status: normalized
+  derived_from: raw_macro
+- syscall: mkdir
+  case: mkdir09_80_raw
+  source:
+    file: testcases/kernel/syscalls/mkdir/mkdir09.c
+    line: 80
+  args:
+  - tmpdir
+  - MODE_RWX
+  preconditions: []
+  expected:
+    kind: success
+    return: SUCCESS
+  confidence: A
+  checkability: static_interprocedural
+  status: normalized
+  derived_from: raw_macro
+rule_refs:
+- SYSCALL_ENTRY_ALIAS
+- PATH_LONG_ENAMETOOLONG
+- PATH_RESOLUTION_ERRNO
+- MODE_UID_GID_GUARD
+- VFS_PERMISSION
+- FS_SIDE_EFFECT
+source_fingerprint: sha256:69c34785ba084a1b6c081059c41217db19a6e808e45b5d1c6601e893d689b58d
+last_processed_run: spec-migrated-batch-001

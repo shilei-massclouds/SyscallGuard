@@ -1,0 +1,17 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_BAD_FD_EBADF
+title: fd table lookup reports BadFileDescriptor
+rule_refs:
+- BAD_FD_EBADF
+applies_to_syscalls:
+- ioctl
+- fchdir
+- getdents64
+path: os/StarryOS/kernel/src/file/mod.rs
+patterns:
+- label: get_file_like maps missing fd to BadFileDescriptor
+  regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?FD_TABLE[\s\S]*?ok_or\(AxError::BadFileDescriptor\)'
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

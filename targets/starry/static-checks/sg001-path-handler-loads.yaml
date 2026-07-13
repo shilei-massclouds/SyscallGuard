@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_PATH_HANDLER_LOADS
+title: Path handlers use vm_load_path_string for path inputs
+rule_refs:
+- PATH_LONG_ENAMETOOLONG
+- PATH_RESOLUTION_ERRNO
+- DIRFD_AND_AT_FLAGS
+applies_to_syscalls:
+- chdir
+- chroot
+- mkdirat
+- mknodat
+- linkat
+- unlinkat
+- symlinkat
+- renameat2
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: chdir path loader
+  regex: pub fn sys_chdir[\s\S]*?vm_load_path_string\(path\)\?
+- label: chroot path loader
+  regex: pub fn sys_chroot[\s\S]*?vm_load_path_string\(path\)\?
+- label: mkdirat path loader
+  regex: pub fn sys_mkdirat[\s\S]*?vm_load_path_string\(path\)\?
+- label: mknodat path loader
+  regex: pub fn sys_mknodat[\s\S]*?vm_load_path_string\(path\)\?
+- label: linkat old/new path loaders
+  regex: pub fn sys_linkat[\s\S]*?map\(vm_load_path_string\)[\s\S]*?vm_load_path_string\(new_path\)\?
+- label: unlinkat path loader
+  regex: pub fn sys_unlinkat[\s\S]*?vm_load_path_string\(path\)\?
+- label: symlinkat linkpath loader
+  regex: pub fn sys_symlinkat[\s\S]*?vm_load_path_string\(linkpath\)\?
+- label: renameat2 old/new path loaders
+  regex: pub fn sys_renameat2[\s\S]*?vm_load_path_string\(old_path\)\?[\s\S]*?vm_load_path_string\(new_path\)\?
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

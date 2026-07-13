@@ -1,0 +1,4 @@
+interface:
+  display_name: "Map Starry Checks"
+  short_description: "Map rules into Starry checks and tests"
+  default_prompt: "Use $map-starry-checks from=<spec-run-id> target=<starry-descriptor> to create Starry mappings and checks."

@@ -1,0 +1,27 @@
+schema_name: syscallguard-shared-entities
+version: 1
+entities:
+  syscall_spec:
+    kind: syscallguard_syscall_spec
+    required: [syscall, source_records, normalized_behaviors, rule_refs, source_fingerprint, last_processed_run]
+  rule:
+    kind: syscallguard_rule
+    required: [rule_id, semantics, provenance, last_processed_run]
+  starry_mapping:
+    kind: syscallguard_starry_mapping
+    required: [mapping_id, rule_refs, classification, target_locations, base_commit, target_hash, last_mapped_run]
+    classification_values: [static, partial_static, dynamic, unsupported, needs_review]
+  static_check:
+    kind: syscallguard_starry_static_check
+    required: [check_id, rule_refs, path, patterns, base_commit, target_hash]
+  dynamic_test:
+    kind: syscallguard_starry_dynamic_test
+    required: [test_id, rule_refs, test_source, build, command, base_commit, target_hash]
+    result_values: [pass, fail, skipped, not_run]
+  finding:
+    kind: syscallguard_starry_finding
+    required: [finding_id, syscall, rule_id, target_revision, status, resolution, occurrences]
+    status_values: [confirmed]
+  fix:
+    kind: syscallguard_starry_fix
+    required: [fix_id, finding_refs, patch, starry_branch, starry_commit, regression, status]

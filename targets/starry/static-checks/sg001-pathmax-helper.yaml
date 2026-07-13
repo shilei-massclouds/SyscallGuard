@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_PATHMAX_HELPER
+title: Path loader enforces PATH_MAX with NameTooLong
+rule_refs:
+- PATH_LONG_ENAMETOOLONG
+applies_to_syscalls:
+- chdir
+- chroot
+- mkdir
+- mkdirat
+- mknod
+- mknodat
+- link
+- linkat
+- rmdir
+- unlink
+- unlinkat
+- symlink
+- symlinkat
+- rename
+- renameat
+- renameat2
+path: os/StarryOS/kernel/src/mm/access.rs
+patterns:
+- label: PATH_MAX constant
+  regex: 'pub const PATH_MAX: usize = 4096;'
+- label: vm_load_path_string rejects long paths
+  regex: pub fn vm_load_path_string[\s\S]*?path\.len\(\) >= PATH_MAX[\s\S]*?AxError::NameTooLong
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

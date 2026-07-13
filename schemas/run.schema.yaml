@@ -1,0 +1,25 @@
+schema_name: syscallguard-run
+version: 1
+required:
+  - schema_version
+  - kind
+  - run_id
+  - stage
+  - status
+  - created_at_utc
+  - completed_at_utc
+  - from_run_id
+  - invocation
+  - entities
+  - entity_hashes
+  - outputs
+  - counts
+  - blockers
+  - error
+stage_values: [spec, mapping, check, fix]
+status_values: [running, completed, completed_with_blockers, failed, superseded]
+upstream_stage:
+  spec: null
+  mapping: spec
+  check: mapping
+  fix: check

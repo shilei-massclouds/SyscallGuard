@@ -1,29 +1,12 @@
 # SyscallGuard 概览
 
-SyscallGuard 的目标是让 syscall 合规性工作可审计。它保留从行为来源、规格
-归一化、可检查性分类、Starry 证据、验证结果、人工审核到覆盖归档的完整链路。
+SyscallGuard 将 syscall 合规性拆成四个可独立重跑的增量操作：规格导入、Starry 映射、
+隔离检查和隔离修复。操作之间只通过不可变 run 快照中的实体 ID 关联，不自动调度。
 
-## 目标
+共享实体文件是可直接编辑的当前视图，run 是执行时快照。消费者不信任历史内容副本：它
+使用上游 run 限定实体集合，再读取共享文件并重算 hash。因此来源变化、人工编辑和 Starry
+commit 变化都会自然触发重新处理。
 
-- 将 syscall 行为输入记录为稳定的来源索引；仅在必要时保存最小证据快照。
-- 将行为归一化为批次内可审核的规格。
-- 将每个行为分类为 `static`、`partial_static`、`dynamic`、`unsupported`
-  或 `needs_review`。
-- 在不通过 harness 修改 Starry 的前提下记录 Starry 证据。
-- 每个步骤都通过人工审核记录做门禁。
-- 产出可追溯到规格和证据的 coverage matrix。
-
-## 第一版非目标
-
-- 不实现 CLI 或自动调度器。
-- 不直接修改 LTP 或 Starry 仓库。
-- 不迁入 extractor 或 checker 脚本。
-- 不在缺少人工 sign-off 的情况下自动下结论。
-
-## 产物流转
-
-1. 在批次 `inputs/source-index.yaml` 中记录来源仓库、commit、路径和必要快照。
-2. 在 `batches/<id>/manifest.yaml` 创建批次 manifest。
-3. 每个流程步骤产出一个步骤报告和一个 review sign-off。
-4. 基于归一化规格和证据记录填充 coverage matrix。
-5. 只有所有审核门禁都解决后，才能关闭批次。
+成功运行使用原子文件替换发布共享实体。失败运行保留 manifest、changeset、日志、patch
+和 worktree 信息，但不覆盖已完成实体。环境问题可以产生 `completed_with_blockers`，但不能
+产生 Starry implementation finding。

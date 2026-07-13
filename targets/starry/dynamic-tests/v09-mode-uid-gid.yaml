@@ -1,0 +1,27 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: V09-MODE-UID-GID
+title: mode / uid / gid behavior
+rule_refs:
+- MODE_UID_GID_GUARD
+applies_to_syscalls:
+- mkdir
+- mkdirat
+- mknod
+- mknodat
+test_source: test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/src/main.c
+build:
+  subcase: syscallguard-b001-mode-uid-gid
+  installed_binary: /usr/bin/starry-test-suit/syscallguard-b001-mode-uid-gid
+patch_file: targets/starry/dynamic-tests/legacy-b001-tests.patch
+command: cargo xtask starry test qemu --arch riscv64 -c qemu-smp1/syscallguard-b001-mode-uid-gid
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- rootfs
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001
+legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/outputs/starry-dynamic-tests.yaml#V09-MODE-UID-GID

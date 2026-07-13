@@ -1,0 +1,69 @@
+schema_version: 1
+kind: syscallguard_starry_static_check_index
+updated_at_utc: '2026-07-13T16:28:13Z'
+entities:
+- id: SG001_BAD_FD_EBADF
+  path: targets/starry/static-checks/sg001-bad-fd-ebadf.yaml
+  rule_refs:
+  - BAD_FD_EBADF
+  content_hash: sha256:80e6bb81cb045a952b0f01a7602ea01c79b2924adfdc5aba2b509173d8bc7515
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_ENTRY_DISPATCH
+  path: targets/starry/static-checks/sg001-entry-dispatch.yaml
+  rule_refs:
+  - SYSCALL_ENTRY_ALIAS
+  content_hash: sha256:07cf7b490b62140b6aca305921416e893f9a10e761cb0cf749c9e3dce35de6b8
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_FD_TYPE_ERRNO
+  path: targets/starry/static-checks/sg001-fd-type-errno.yaml
+  rule_refs:
+  - FD_TYPE_ERRNO
+  content_hash: sha256:76acf3e6cbfacba9756c9516af6a5d04d421b0dc35db15d177d0d020dac109de
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_FLAG_MASKS
+  path: targets/starry/static-checks/sg001-flag-masks.yaml
+  rule_refs:
+  - FLAG_MASK_REJECTS_UNKNOWN
+  content_hash: sha256:4f769871d469d63001e2ff601db85f7cfb620ff9f35ea0d605a372c6aba2371a
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_LEGACY_WRAPPERS
+  path: targets/starry/static-checks/sg001-legacy-wrappers.yaml
+  rule_refs:
+  - SYSCALL_ENTRY_ALIAS
+  content_hash: sha256:de25a088035cfb8d793044b99cce30077d70c86b1759a1860db4d748a8d3e44e
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_MODE_NODE_GUARD
+  path: targets/starry/static-checks/sg001-mode-node-guard.yaml
+  rule_refs:
+  - MODE_UID_GID_GUARD
+  content_hash: sha256:52320ec9d4efeed31da6c2df953e87bd4d80649fe3d19417970f13818a09704e
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_PATHMAX_HELPER
+  path: targets/starry/static-checks/sg001-pathmax-helper.yaml
+  rule_refs:
+  - PATH_LONG_ENAMETOOLONG
+  content_hash: sha256:f7c590e2529a05cb0acfa25121adbc88de6595202277c6720095ceed1e221596
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_PATH_HANDLER_LOADS
+  path: targets/starry/static-checks/sg001-path-handler-loads.yaml
+  rule_refs:
+  - PATH_LONG_ENAMETOOLONG
+  - PATH_RESOLUTION_ERRNO
+  - DIRFD_AND_AT_FLAGS
+  content_hash: sha256:46e30f289803e1bded54248e57608ef2b6c729343bd32fbd92e80c535e9a8336
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+- id: SG001_USERPTR_EFAULT
+  path: targets/starry/static-checks/sg001-userptr-efault.yaml
+  rule_refs:
+  - USERPTR_EFAULT
+  content_hash: sha256:f54aeeb7642e68bb26e939300b39bec9758528ae03aee744e4b54a1b16734bc2
+  processed_run: mapping-migrated-batch-001
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d

@@ -1,0 +1,432 @@
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+from typing import Any
+
+from .checking import (
+    _apply_test_patches,
+    _create_worktree,
+    _current_input,
+    _run_dynamic_test,
+    _run_static_check,
+    _worktree_path,
+)
+from .common import (
+    SCHEMA_VERSION,
+    RunRecorder,
+    SyscallGuardError,
+    append_history,
+    atomic_write_text,
+    atomic_write_yaml,
+    content_hash,
+    entity_hash,
+    git,
+    git_output,
+    load_mapping,
+    new_run_id,
+    publish_yaml_entities,
+    read_run,
+    repo_root,
+    slug,
+    update_index,
+    utc_now,
+)
+
+
+def _open_findings(root: Path, check_run: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    ids = check_run.get("entities", {}).get("findings", [])
+    if not isinstance(ids, list):
+        raise SyscallGuardError("check run finding ids must be a list")
+    findings: dict[str, dict[str, Any]] = {}
+    for finding_id in ids:
+        if not isinstance(finding_id, str):
+            raise SyscallGuardError("check run finding id must be a string")
+        path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+        finding = load_mapping(path)
+        if finding.get("finding_id") != finding_id or finding.get("kind") != "syscallguard_starry_finding":
+            raise SyscallGuardError(f"invalid finding entity: {path}")
+        if finding.get("status") == "confirmed" and finding.get("resolution") == "open":
+            findings[finding_id] = finding
+    return findings
+
+
+def _copy_patch(source: Path, destination: Path) -> None:
+    try:
+        text = source.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise SyscallGuardError(f"cannot read implementation patch {source}: {exc}") from exc
+    atomic_write_text(destination, text)
+
+
+def _report(recorder: RunRecorder) -> None:
+    counts = recorder.manifest.get("counts", {})
+    lines = [
+        "# Starry Compliance Fix",
+        "",
+        f"Run: `{recorder.run_id}`",
+        f"Status: `{recorder.manifest['status']}`",
+        f"Worktree: `{recorder.manifest.get('worktree', '')}`",
+        f"Branch: `{recorder.manifest.get('branch', '')}`",
+        f"Commit: `{recorder.manifest.get('commit', '')}`",
+        "",
+        f"- Confirmed findings selected: {counts.get('selected_findings', 0)}",
+        f"- Static regression failures: {counts.get('static_failures', 0)}",
+        f"- Dynamic regression failures: {counts.get('dynamic_failures', 0)}",
+        f"- Regression blockers: {counts.get('blockers', 0)}",
+    ]
+    atomic_write_text(recorder.directory / "report.md", "\n".join(lines) + "\n")
+
+
+def _failed_regression(
+    recorder: RunRecorder,
+    message: str,
+    blockers: list[dict[str, Any]],
+) -> None:
+    recorder.manifest["status"] = "failed"
+    recorder.manifest["completed_at_utc"] = utc_now()
+    recorder.manifest["blockers"] = blockers
+    recorder.manifest["error"] = message
+    recorder.flush()
+    _report(recorder)
+    recorder.flush()
+
+
+def run_fix(
+    from_run_id: str,
+    patch: Path | None = None,
+    root: Path | None = None,
+    requested_run_id: str | None = None,
+) -> str:
+    root = (root or repo_root()).resolve()
+    check_run = read_run(root, from_run_id, "check")
+    mapping_run_id = check_run.get("from_run_id")
+    if not isinstance(mapping_run_id, str) or not mapping_run_id:
+        raise SyscallGuardError(f"check run {from_run_id} has no mapping parent")
+    mapping_run = read_run(root, mapping_run_id, "mapping")
+    mapping_run["_run_directory"] = str(root / "runs" / mapping_run_id)
+    run_id = requested_run_id or new_run_id("fix", {"from": from_run_id, "at": utc_now()})
+    recorder = RunRecorder(
+        root,
+        "fix",
+        run_id,
+        {"from": from_run_id, "patch": str(patch.resolve()) if patch else None},
+        from_run_id,
+    )
+    try:
+        findings = _open_findings(root, check_run)
+        target = check_run.get("target", mapping_run.get("target", {}))
+        if not isinstance(target, dict):
+            raise SyscallGuardError("check target metadata must be a mapping")
+        repository = Path(str(target.get("repository", ""))).expanduser().resolve()
+        base_commit = str(target.get("base_commit", ""))
+        if not repository.is_dir() or not base_commit:
+            raise SyscallGuardError(f"check run {from_run_id} has invalid target metadata")
+        current_commit = git_output(repository, ["rev-parse", "HEAD"])
+        recorder.manifest["target"] = dict(target)
+        recorder.manifest["entities"] = {"findings": sorted(findings), "fixes": []}
+        recorder.manifest["input_hash"] = content_hash(
+            {
+                "check_run": from_run_id,
+                "findings": {key: content_hash(value) for key, value in findings.items()},
+                "target": target,
+            }
+        )
+        if current_commit != base_commit:
+            recorder.manifest["counts"] = {"selected_findings": 0, "blockers": 1}
+            recorder.complete(
+                [
+                    {
+                        "kind": "stale_check",
+                        "reason": "Starry HEAD changed after compliance check; remap and recheck before fixing",
+                        "checked_commit": base_commit,
+                        "current_commit": current_commit,
+                    }
+                ]
+            )
+            _report(recorder)
+            recorder.flush()
+            return run_id
+        if not findings:
+            inherited = check_run.get("blockers", [])
+            blockers = inherited if isinstance(inherited, list) else []
+            recorder.manifest["counts"] = {
+                "selected_findings": 0,
+                "skipped_no_open_findings": 1,
+                "blockers": len(blockers),
+            }
+            recorder.manifest["outputs"] = {"report": "report.md"}
+            recorder.complete(blockers)
+            _report(recorder)
+            recorder.flush()
+            return run_id
+
+        if patch is None:
+            candidate = root / "runs" / from_run_id / "implementation-fix.patch"
+            if candidate.exists():
+                patch = candidate
+        if patch is None or not patch.resolve().is_file():
+            raise SyscallGuardError(
+                "confirmed findings require an implementation patch; generate "
+                f"runs/{from_run_id}/implementation-fix.patch or pass --patch"
+            )
+
+        entities, hashes, regression_input_hash = _current_input(root, mapping_run)
+        recorder.manifest["entity_hashes"] = hashes
+        recorder.manifest["regression_input_hash"] = regression_input_hash
+        worktree = _worktree_path(mapping_run, run_id)
+        _create_worktree(repository, base_commit, worktree)
+        recorder.manifest["worktree"] = str(worktree)
+        logs = recorder.directory / "logs"
+        logs.mkdir(parents=True, exist_ok=True)
+        saved_patch = recorder.directory / "implementation.patch"
+        _copy_patch(patch.resolve(), saved_patch)
+
+        blocked_tests, blockers = _apply_test_patches(
+            root, worktree, entities["dynamic_tests"], logs
+        )
+        apply_result = git(
+            worktree,
+            ["apply", "--whitespace=nowarn", str(saved_patch)],
+            check=False,
+        )
+        atomic_write_text(
+            logs / "implementation-patch-apply.log",
+            apply_result.stdout + apply_result.stderr,
+        )
+        if apply_result.returncode != 0:
+            recorder.manifest["counts"] = {
+                "selected_findings": len(findings),
+                "static_failures": 0,
+                "dynamic_failures": 0,
+                "blockers": len(blockers),
+            }
+            recorder.manifest["outputs"] = {
+                "patch": "implementation.patch",
+                "logs": "logs/",
+                "report": "report.md",
+            }
+            _failed_regression(recorder, "implementation patch failed to apply", blockers)
+            return run_id
+
+        static_results: list[dict[str, Any]] = []
+        for check_id, definition in entities["static_checks"].items():
+            result, blocker = _run_static_check(worktree, check_id, definition)
+            static_results.append(result)
+            if blocker:
+                blockers.append(blocker)
+        dynamic_results: list[dict[str, Any]] = []
+        for test_id, definition in entities["dynamic_tests"].items():
+            result, blocker = _run_dynamic_test(
+                worktree,
+                test_id,
+                definition,
+                logs / f"dynamic-{slug(test_id)}.log",
+                test_id in blocked_tests,
+            )
+            dynamic_results.append(result)
+            if blocker and content_hash(blocker) not in {content_hash(item) for item in blockers}:
+                blockers.append(blocker)
+        results = {
+            "schema_version": SCHEMA_VERSION,
+            "kind": "syscallguard_fix_regression",
+            "run_id": run_id,
+            "target_revision": base_commit,
+            "static": static_results,
+            "dynamic": dynamic_results,
+            "blockers": blockers,
+        }
+        atomic_write_yaml(recorder.directory / "regression-results.yaml", results)
+        static_failures = sum(row.get("result") != "pass" for row in static_results)
+        dynamic_failures = sum(
+            row.get("result") not in {"pass", "skipped"} for row in dynamic_results
+        )
+        recorder.manifest["counts"] = {
+            "selected_findings": len(findings),
+            "static_failures": static_failures,
+            "dynamic_failures": dynamic_failures,
+            "blockers": len(blockers),
+        }
+        recorder.manifest["outputs"] = {
+            "patch": "implementation.patch",
+            "regression_results": "regression-results.yaml",
+            "logs": "logs/",
+            "report": "report.md",
+        }
+        if blockers or static_failures or dynamic_failures:
+            _failed_regression(
+                recorder,
+                "regression did not pass; no completion commit was created",
+                blockers,
+            )
+            return run_id
+
+        git(worktree, ["add", "-A"])
+        if not git_output(worktree, ["status", "--short"]):
+            _failed_regression(recorder, "patch produced no committable changes", [])
+            return run_id
+        branch = f"syscallguard/{run_id}"
+        git(worktree, ["switch", "-c", branch])
+        commit_result = git(
+            worktree,
+            [
+                "-c",
+                "user.name=SyscallGuard",
+                "-c",
+                "user.email=syscallguard@localhost",
+                "commit",
+                "-m",
+                f"fix(starry): resolve SyscallGuard findings ({run_id})",
+            ],
+            check=False,
+        )
+        atomic_write_text(logs / "commit.log", commit_result.stdout + commit_result.stderr)
+        if commit_result.returncode != 0:
+            _failed_regression(recorder, "regression passed but commit creation failed", [])
+            return run_id
+        commit = git_output(worktree, ["rev-parse", "HEAD"])
+        recorder.manifest["branch"] = branch
+        recorder.manifest["commit"] = commit
+
+        fix_entities: dict[str, dict[str, Any]] = {}
+        updated_findings: dict[str, dict[str, Any]] = {}
+        for finding_id, finding in findings.items():
+            fix_id = f"fix-{slug(finding_id)}"
+            fix_entity = {
+                "schema_version": SCHEMA_VERSION,
+                "kind": "syscallguard_starry_fix",
+                "fix_id": fix_id,
+                "finding_refs": [finding_id],
+                "patch": f"runs/{run_id}/implementation.patch",
+                "starry_repository": str(repository),
+                "starry_branch": branch,
+                "starry_commit": commit,
+                "regression": f"runs/{run_id}/regression-results.yaml",
+                "status": "fixed",
+                "processed_run": run_id,
+            }
+            fix_entities[fix_id] = fix_entity
+            updated = dict(finding)
+            updated["resolution"] = "fixed"
+            updated["fix_ref"] = fix_id
+            updated["fixed_by_run"] = run_id
+            updated["fixed_commit"] = commit
+            updated_findings[finding_id] = updated
+        publish_yaml_entities(
+            [
+                (
+                    recorder.directory,
+                    root / "targets/starry/fixes" / f"{slug(fix_id)}.yaml",
+                    entity,
+                )
+                for fix_id, entity in fix_entities.items()
+            ]
+            + [
+                (
+                    recorder.directory,
+                    root / "targets/starry/findings" / f"{slug(finding_id)}.yaml",
+                    entity,
+                )
+                for finding_id, entity in updated_findings.items()
+            ]
+        )
+        update_index(
+            root / "targets/starry/fixes/index.yaml",
+            "syscallguard_starry_fix_index",
+            [
+                {
+                    "id": fix_id,
+                    "path": f"targets/starry/fixes/{slug(fix_id)}.yaml",
+                    "finding_refs": entity["finding_refs"],
+                    "status": "fixed",
+                    "starry_commit": commit,
+                    "processed_run": run_id,
+                    "content_hash": content_hash(entity),
+                }
+                for fix_id, entity in fix_entities.items()
+            ],
+        )
+        update_index(
+            root / "targets/starry/findings/index.yaml",
+            "syscallguard_starry_finding_index",
+            [
+                {
+                    "id": finding_id,
+                    "path": f"targets/starry/findings/{slug(finding_id)}.yaml",
+                    "syscall": entity["syscall"],
+                    "rule_id": entity["rule_id"],
+                    "target_revision": entity["target_revision"],
+                    "status": entity["status"],
+                    "resolution": "fixed",
+                    "processed_run": run_id,
+                    "content_hash": content_hash(entity),
+                }
+                for finding_id, entity in updated_findings.items()
+            ],
+        )
+        append_history(
+            root,
+            [
+                {
+                    "entity_type": "finding",
+                    "entity_id": finding_id,
+                    "input_hash": recorder.manifest["input_hash"],
+                    "processed_run": run_id,
+                    "finding_status": "confirmed",
+                    "fix_status": "fixed",
+                    "fix_commit": commit,
+                }
+                for finding_id in updated_findings
+            ],
+        )
+        recorder.manifest["entities"]["fixes"] = sorted(fix_entities)
+        recorder.manifest["outputs"]["fix_index"] = "targets/starry/fixes/index.yaml"
+        recorder.manifest["outputs"]["finding_index"] = "targets/starry/findings/index.yaml"
+        recorder.complete()
+        _report(recorder)
+        recorder.flush()
+        return run_id
+    except BaseException as exc:
+        recorder.fail(exc)
+        if isinstance(exc, SyscallGuardError):
+            raise
+        raise SyscallGuardError(str(exc)) from exc
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Fix confirmed Starry compliance findings")
+    parser.add_argument("--from", dest="from_run_id", required=True, help="check run id")
+    parser.add_argument("--patch", type=Path, help=argparse.SUPPRESS)
+    parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
+    parser.add_argument("--run-id", help=argparse.SUPPRESS)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    requested_run_id = args.run_id or new_run_id("fix", {"from": args.from_run_id})
+    try:
+        run_id = run_fix(args.from_run_id, args.patch, args.root, requested_run_id)
+    except SyscallGuardError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        failed_path = args.root.resolve() / "runs" / requested_run_id
+        if failed_path.exists():
+            print(f"result: {failed_path}", file=sys.stderr)
+        return 2
+    path = args.root.resolve() / "runs" / run_id
+    manifest = load_mapping(path / "manifest.yaml")
+    print(f"run_id: {run_id}")
+    print(f"status: {manifest['status']}")
+    print(f"result: {path}")
+    if manifest.get("worktree"):
+        print(f"worktree: {manifest['worktree']}")
+    if manifest.get("branch"):
+        print(f"branch: {manifest['branch']}")
+        print(f"commit: {manifest['commit']}")
+    print(f"fix_index: {args.root.resolve() / 'targets/starry/fixes/index.yaml'}")
+    return 1 if manifest["status"] == "failed" else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

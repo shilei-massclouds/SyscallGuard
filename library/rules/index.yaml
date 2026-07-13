@@ -1,0 +1,52 @@
+schema_version: 1
+kind: syscallguard_rule_index
+updated_at_utc: '2026-07-13T16:28:12Z'
+entities:
+- id: BAD_FD_EBADF
+  path: library/rules/bad-fd-ebadf.yaml
+  content_hash: sha256:1347aa930270dedc9fb73eaa6d660a69a750026fd66ec25506591d5bddf581a2
+  processed_run: spec-migrated-batch-001
+- id: DIRENT_ENUMERATION
+  path: library/rules/dirent-enumeration.yaml
+  content_hash: sha256:d786045d15bb425765c33b52f163d7feb6497afe230daafbcb59ce7949871b32
+  processed_run: spec-migrated-batch-001
+- id: DIRFD_AND_AT_FLAGS
+  path: library/rules/dirfd-and-at-flags.yaml
+  content_hash: sha256:d39e552d227c36eb774d9e5aaaafabf7d4d9b667f993ca2954788014a6bce02a
+  processed_run: spec-migrated-batch-001
+- id: FD_TYPE_ERRNO
+  path: library/rules/fd-type-errno.yaml
+  content_hash: sha256:854ee5a68a6170fb3bfe6ee94178f1e6307502470ded0652cfc240ce923825be
+  processed_run: spec-migrated-batch-001
+- id: FLAG_MASK_REJECTS_UNKNOWN
+  path: library/rules/flag-mask-rejects-unknown.yaml
+  content_hash: sha256:fee63661066511acce4d2a803fc3e70b1968ac50e739d50d1e0edbd531ddef30
+  processed_run: spec-migrated-batch-001
+- id: FS_SIDE_EFFECT
+  path: library/rules/fs-side-effect.yaml
+  content_hash: sha256:dcf2f5bcf0a14a2766217493501e68b30681e5f65605a6b5f90a492d9b44b773
+  processed_run: spec-migrated-batch-001
+- id: MODE_UID_GID_GUARD
+  path: library/rules/mode-uid-gid-guard.yaml
+  content_hash: sha256:c8c9c79d3f7293ee3aa5f8b837755d6d4c190a3ca94471db757460bd1972135a
+  processed_run: spec-migrated-batch-001
+- id: PATH_LONG_ENAMETOOLONG
+  path: library/rules/path-long-enametoolong.yaml
+  content_hash: sha256:c87fd9be4cf28d79f5ad8d26aa5953ddc4e53255e505d2f957fc562187c8c1a1
+  processed_run: spec-migrated-batch-001
+- id: PATH_RESOLUTION_ERRNO
+  path: library/rules/path-resolution-errno.yaml
+  content_hash: sha256:96c234d6c9c87d36466cc05e2c64237dfde518c1b2a93e9f0429c18134d14b19
+  processed_run: spec-migrated-batch-001
+- id: SYSCALL_ENTRY_ALIAS
+  path: library/rules/syscall-entry-alias.yaml
+  content_hash: sha256:b9ad60a26c1a8bcdc6b26d22d3221589c3820e8357c224334d92e255280a1fcd
+  processed_run: spec-migrated-batch-001
+- id: USERPTR_EFAULT
+  path: library/rules/userptr-efault.yaml
+  content_hash: sha256:150598e7f34355a2b8a1c36cd201374b8ff75be5dd1c7b6b65f60fd10c084d6f
+  processed_run: spec-migrated-batch-001
+- id: VFS_PERMISSION
+  path: library/rules/vfs-permission.yaml
+  content_hash: sha256:031b702db4c8058d826fde8777e9dfb5a45ba1a326f495d29355333cb5918278
+  processed_run: spec-migrated-batch-001

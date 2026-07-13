@@ -1,0 +1,21 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_FLAG_MASKS
+title: Known at-family flag masks reject unknown bits
+rule_refs:
+- FLAG_MASK_REJECTS_UNKNOWN
+applies_to_syscalls:
+- linkat
+- unlinkat
+- renameat2
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: linkat valid flags mask
+  regex: const LINKAT_VALID_FLAGS[\s\S]*?flags & !LINKAT_VALID_FLAGS[\s\S]*?AxError::InvalidInput
+- label: unlinkat rejects unknown flags
+  regex: flags & !\(AT_REMOVEDIR as usize\) != 0[\s\S]*?AxError::InvalidInput
+- label: renameat2 supported flags mask
+  regex: const RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?flags & !RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?AxError::InvalidInput
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

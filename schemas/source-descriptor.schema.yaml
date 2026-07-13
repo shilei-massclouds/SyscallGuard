@@ -1,0 +1,7 @@
+schema_name: syscallguard-source-descriptor
+version: 1
+required: [source_id, adapter, location, revision, parameters]
+adapter_values: [ltp-extractor]
+parameters:
+  tool: Extractor path relative to location or an absolute path.
+  syscalls: Optional stable ordered syscall list; directory order is used when omitted.

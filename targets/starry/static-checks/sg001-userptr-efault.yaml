@@ -1,0 +1,21 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_USERPTR_EFAULT
+title: User pointer paths use VM read/write helpers
+rule_refs:
+- USERPTR_EFAULT
+applies_to_syscalls:
+- ioctl
+- getdents64
+- getcwd
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: ioctl reads user integer pointer
+  regex: pub fn sys_ioctl[\s\S]*?\.vm_read\(\)\?
+- label: getdents64 writes user buffer
+  regex: pub fn sys_getdents64[\s\S]*?vm_write_slice\(buf,\s*&buffer\.buf\)\?
+- label: getcwd writes user buffer
+  regex: pub fn sys_getcwd[\s\S]*?vm_write_slice\(buf,\s*cwd\)\?
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

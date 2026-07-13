@@ -1,0 +1,213 @@
+schema_version: 1
+kind: syscallguard_syscall_spec
+syscall: renameat
+source_records:
+- source_id: ltp-local-2026-07-10
+  adapter: ltp-extractor
+  location: /home/cloud/gitStudy/ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  legacy_run_ref: runs/spec-migrated-batch-001/legacy-artifacts/outputs/ltp-spec-extract-run.yaml
+normalized_behaviors:
+- syscall: renameat
+  case: renameat01_196_case0
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&curfd)'
+  - TESTFILE
+  - '*(&curfd)'
+  - NEW_TESTFILE
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: 0
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case1
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&olddirfd)'
+  - TESTFILE
+  - '*(&newdirfd)'
+  - NEW_TESTFILE
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: 0
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case2
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&olddirfd)'
+  - absoldpath
+  - '*(&newdirfd)'
+  - absnewpath
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: 0
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case3
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&badfd)'
+  - TESTFILE
+  - '*(&badfd)'
+  - NEW_TESTFILE
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EBADF
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case4
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&filefd)'
+  - TESTFILE
+  - '*(&filefd)'
+  - NEW_TESTFILE
+  preconditions:
+  - NON_DIRECTORY_PATH_COMPONENT
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ENOTDIR
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case5
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&curfd)'
+  - looppathname
+  - '*(&curfd)'
+  - NEW_TESTDIR2
+  preconditions:
+  - SYMLINK_LOOP
+  expected:
+    kind: return_errno
+    return: -1
+    errno: ELOOP
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case6
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&curfd)'
+  - TESTFILE5
+  - '*(&curfd)'
+  - NEW_TESTFILE5
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EROFS
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+- syscall: renameat
+  case: renameat01_196_case7
+  source:
+    file: testcases/kernel/syscalls/renameat/renameat01.c
+    line: 196
+  args:
+  - '*(&curfd)'
+  - TESTDIR3
+  - '*(&curfd)'
+  - NEW_TESTDIR3
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: EMLINK
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  branch_filter: no branch filter
+  needs:
+  - old_api_expectation_reconstruction
+  - testcase_array_expansion
+  - setup_semantic_tags
+rule_refs:
+- SYSCALL_ENTRY_ALIAS
+- PATH_LONG_ENAMETOOLONG
+- PATH_RESOLUTION_ERRNO
+- DIRFD_AND_AT_FLAGS
+- FS_SIDE_EFFECT
+- VFS_PERMISSION
+source_fingerprint: sha256:06f0ddc56389cc0511d69edead8ebd2a729342ede5b40da12805d95b86bd59f8
+last_processed_run: spec-migrated-batch-001

@@ -1,0 +1,12 @@
+version: 2
+selection:
+  unit: syscall_source_fingerprint
+  order: source_adapter_stable_order
+  unchanged: skip
+consumer:
+  entity_scope: ids_from_upstream_run_only
+  content_source: current_shared_entity_files
+  hash_policy: recompute_before_processing
+publication:
+  successful_entity_updates: atomic_replace
+  failed_run_overwrites_shared_entities: false

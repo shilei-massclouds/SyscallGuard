@@ -61,13 +61,13 @@ copied_snapshots: {}
 missing_expected_materials:
   - material: "LTP 方法文档"
     status: "external_reference_only"
-    note: "如需作为权威输入，应在具体批次 inputs/source-index.yaml 中登记外部 LTP 路径和 commit。"
+    note: "后续权威输入由 source descriptor 和 spec run 记录外部 LTP 路径、commit 与内容 hash。"
   - material: "100 syscall 规格摘要"
     status: "external_reference_only"
-    note: "当前 001 批次仅参考 ~/gitStudy/ltp/new_specs 的模型，不继承其处理进度。"
+    note: "迁移 run 仅参考 ~/gitStudy/ltp/new_specs 的模型，不继承其处理进度。"
   - material: "new_specs 四层规格"
     status: "external_reference_only"
-    note: "当前 001 批次不把 new_specs 复制进本仓库。"
+    note: "迁移 run 未把 new_specs 复制进本仓库。"
 snapshot_policy:
   default_external_source_refs: true
   commit_external_source_trees_by_default: false
@@ -76,6 +76,6 @@ snapshot_policy:
   future_refresh_requires_new_snapshot_id: true
   copy_minimal_evidence_only_when:
     - "external source cannot be restored reliably"
-    - "review must be self-contained"
+    - "an execution snapshot must be self-contained"
     - "a small source excerpt must be frozen as evidence"
   existing_copied_snapshots_note: "Retired copied baseline snapshots were removed. Future batches should prefer source-index external refs and copy only minimal evidence subsets."

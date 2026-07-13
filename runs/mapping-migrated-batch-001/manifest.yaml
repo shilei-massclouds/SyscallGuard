@@ -1,0 +1,142 @@
+schema_version: 1
+kind: syscallguard_run
+run_id: mapping-migrated-batch-001
+stage: mapping
+status: completed
+created_at_utc: '2026-07-13T00:00:00Z'
+completed_at_utc: '2026-07-13T00:00:00Z'
+from_run_id: spec-migrated-batch-001
+invocation:
+  migration: 001-syscall-batch-ioctl-renameat2
+entities:
+  syscalls:
+  - ioctl
+  - chdir
+  - fchdir
+  - chroot
+  - mkdir
+  - mkdirat
+  - mknod
+  - mknodat
+  - getdents64
+  - link
+  - linkat
+  - rmdir
+  - unlink
+  - unlinkat
+  - getcwd
+  - symlink
+  - symlinkat
+  - rename
+  - renameat
+  - renameat2
+  rules:
+  - SYSCALL_ENTRY_ALIAS
+  - BAD_FD_EBADF
+  - FD_TYPE_ERRNO
+  - FLAG_MASK_REJECTS_UNKNOWN
+  - PATH_LONG_ENAMETOOLONG
+  - PATH_RESOLUTION_ERRNO
+  - DIRFD_AND_AT_FLAGS
+  - USERPTR_EFAULT
+  - MODE_UID_GID_GUARD
+  - VFS_PERMISSION
+  - FS_SIDE_EFFECT
+  - DIRENT_ENUMERATION
+  mappings:
+  - M_ENTRY_DISPATCH
+  - M_PATHMAX
+  - M_PATH_DIRFD_FLAGS
+  - M_FD_EBADF
+  - M_FD_TYPE
+  - M_FLAG_MASK
+  - M_USERPTR_EFAULT
+  - M_MODE_UID_GID
+  - DM_VFS_PERMISSION
+  - DM_FS_SIDE_EFFECT
+  - DM_DIRENT_ENUMERATION
+  static_checks:
+  - SG001_ENTRY_DISPATCH
+  - SG001_LEGACY_WRAPPERS
+  - SG001_BAD_FD_EBADF
+  - SG001_FD_TYPE_ERRNO
+  - SG001_FLAG_MASKS
+  - SG001_PATHMAX_HELPER
+  - SG001_PATH_HANDLER_LOADS
+  - SG001_USERPTR_EFAULT
+  - SG001_MODE_NODE_GUARD
+  dynamic_tests:
+  - V09-PERMISSION-MATRIX
+  - V09-FS-SIDE-EFFECT
+  - V09-DIRENT-ENUMERATION
+  - V09-FD-TYPE-MATRIX
+  - V09-PATH-ERRNO-PRIORITY
+  - V09-USERPTR-EFAULT
+  - V09-MODE-UID-GID
+entity_hashes:
+  rules:
+    SYSCALL_ENTRY_ALIAS: sha256:b9ad60a26c1a8bcdc6b26d22d3221589c3820e8357c224334d92e255280a1fcd
+    BAD_FD_EBADF: sha256:1347aa930270dedc9fb73eaa6d660a69a750026fd66ec25506591d5bddf581a2
+    FD_TYPE_ERRNO: sha256:854ee5a68a6170fb3bfe6ee94178f1e6307502470ded0652cfc240ce923825be
+    FLAG_MASK_REJECTS_UNKNOWN: sha256:fee63661066511acce4d2a803fc3e70b1968ac50e739d50d1e0edbd531ddef30
+    PATH_LONG_ENAMETOOLONG: sha256:c87fd9be4cf28d79f5ad8d26aa5953ddc4e53255e505d2f957fc562187c8c1a1
+    PATH_RESOLUTION_ERRNO: sha256:96c234d6c9c87d36466cc05e2c64237dfde518c1b2a93e9f0429c18134d14b19
+    DIRFD_AND_AT_FLAGS: sha256:d39e552d227c36eb774d9e5aaaafabf7d4d9b667f993ca2954788014a6bce02a
+    USERPTR_EFAULT: sha256:150598e7f34355a2b8a1c36cd201374b8ff75be5dd1c7b6b65f60fd10c084d6f
+    MODE_UID_GID_GUARD: sha256:c8c9c79d3f7293ee3aa5f8b837755d6d4c190a3ca94471db757460bd1972135a
+    VFS_PERMISSION: sha256:031b702db4c8058d826fde8777e9dfb5a45ba1a326f495d29355333cb5918278
+    FS_SIDE_EFFECT: sha256:dcf2f5bcf0a14a2766217493501e68b30681e5f65605a6b5f90a492d9b44b773
+    DIRENT_ENUMERATION: sha256:d786045d15bb425765c33b52f163d7feb6497afe230daafbcb59ce7949871b32
+  mappings:
+    M_ENTRY_DISPATCH: sha256:8befe449d49f3fe9be4bab4bb95b7cee711a0bf20b1933db8d965854cad804e2
+    M_PATHMAX: sha256:402271432f7aecdaf762e36a5b8f428b6986be4a0c0ee74b9c1664c3d6eceb56
+    M_PATH_DIRFD_FLAGS: sha256:5a9ed51453377ffe148d9f7cb73cd08de6261ceb738ab7408fb7df222ee4660f
+    M_FD_EBADF: sha256:3039dccf1e3fbdf3bcb4c1b6aebca360109d47c350cfe13795d68934c478c012
+    M_FD_TYPE: sha256:6f4e1d913df37d1e6cbfd6c8a6c1823d9081c703670b0dab5256d83b2bddb287
+    M_FLAG_MASK: sha256:841e1d34a6b9de702e730c11f67e5299f1cf9fe5e507fd8c42e43bcb7fed4aae
+    M_USERPTR_EFAULT: sha256:7e8b87b6c1ac332bbb433704da1e14327064338791d3a788ebc0ae6b793d5c52
+    M_MODE_UID_GID: sha256:02f6847b3a7144c2f5550c8ec9aed3ff1e91fbc80aa1dbb3bf8f593e5f2757f1
+    DM_VFS_PERMISSION: sha256:d89f6d9ff0215a946a760759c3fbc62e7e1d1eb2195ce0d6def49b2e19fcc761
+    DM_FS_SIDE_EFFECT: sha256:11bd7cd898dabfaa83b474a8bf52c38515ada9b46704c08adadd3ced1d3e32da
+    DM_DIRENT_ENUMERATION: sha256:1eddcd9ae739b9b0ccf853d58a0adbc5931133ec88a73d12e98e076fcbe5d47b
+  static_checks:
+    SG001_ENTRY_DISPATCH: sha256:07cf7b490b62140b6aca305921416e893f9a10e761cb0cf749c9e3dce35de6b8
+    SG001_LEGACY_WRAPPERS: sha256:de25a088035cfb8d793044b99cce30077d70c86b1759a1860db4d748a8d3e44e
+    SG001_BAD_FD_EBADF: sha256:80e6bb81cb045a952b0f01a7602ea01c79b2924adfdc5aba2b509173d8bc7515
+    SG001_FD_TYPE_ERRNO: sha256:76acf3e6cbfacba9756c9516af6a5d04d421b0dc35db15d177d0d020dac109de
+    SG001_FLAG_MASKS: sha256:4f769871d469d63001e2ff601db85f7cfb620ff9f35ea0d605a372c6aba2371a
+    SG001_PATHMAX_HELPER: sha256:f7c590e2529a05cb0acfa25121adbc88de6595202277c6720095ceed1e221596
+    SG001_PATH_HANDLER_LOADS: sha256:46e30f289803e1bded54248e57608ef2b6c729343bd32fbd92e80c535e9a8336
+    SG001_USERPTR_EFAULT: sha256:f54aeeb7642e68bb26e939300b39bec9758528ae03aee744e4b54a1b16734bc2
+    SG001_MODE_NODE_GUARD: sha256:52320ec9d4efeed31da6c2df953e87bd4d80649fe3d19417970f13818a09704e
+  dynamic_tests:
+    V09-PERMISSION-MATRIX: sha256:d4116ebf45f118114aca3173fdcb094a1656b91a69fef4e7d1e4393f3e77eb9e
+    V09-FS-SIDE-EFFECT: sha256:84549a69b4fefb0136b4a4436e334309281a53ccbca9bde6a00cc248615fc7ad
+    V09-DIRENT-ENUMERATION: sha256:5dbe8283511bd7457c58d805f025dc9c10d889f0ef325dc75fa66a058c9cb13e
+    V09-FD-TYPE-MATRIX: sha256:3ba8468c006f755d8cfcc4ae0becdd88c815ad2c4b843d93eaadde27770b3091
+    V09-PATH-ERRNO-PRIORITY: sha256:c099f71e787ac889c188a655cd1685ec165a6cf4882770b8c22123efb2a52aa8
+    V09-USERPTR-EFAULT: sha256:e839478feb1f4929e00dc0d76dcf7a8081f2a1b6ddd06f0f615555a141ff0f8a
+    V09-MODE-UID-GID: sha256:a0ae7b69864894489e33d95c4db83c49d2f6e5147339d372cc5b1d4102f55e5f
+outputs:
+  target_descriptor: target-descriptor.yaml
+  mapping_index: targets/starry/mappings/index.yaml
+  static_check_index: targets/starry/static-checks/index.yaml
+  dynamic_test_index: targets/starry/dynamic-tests/index.yaml
+counts:
+  rules: 12
+  mappings: 11
+  static_checks: 9
+  dynamic_tests: 7
+  skipped_unchanged: 0
+  needs_review: 0
+blockers: []
+error: null
+legacy_provenance:
+  batch_id: 001-syscall-batch-ioctl-renameat2
+  artifacts: legacy-artifacts/
+target:
+  target_id: starry
+  repository: /home/cloud/gitLinux/tgoskits
+  base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  descriptor_hash: legacy:migrated-batch-001

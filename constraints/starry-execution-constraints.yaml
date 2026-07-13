@@ -1,0 +1,15 @@
+version: 2
+target:
+  original_worktree_modified: false
+  original_branch_modified_or_merged: false
+check:
+  isolated_worktree_required: true
+  test_injection_authorized_by_skill_invocation: true
+  environment_blocker_is_finding: false
+fix:
+  confirmed_findings_only: true
+  patch_approval_required: false
+  regression_required_before_commit: true
+  branch_pattern: syscallguard/<run-id>
+  automatic_merge: false
+  retain_failed_worktree: true

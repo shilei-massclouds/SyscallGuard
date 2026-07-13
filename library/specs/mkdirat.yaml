@@ -1,0 +1,63 @@
+schema_version: 1
+kind: syscallguard_syscall_spec
+syscall: mkdirat
+source_records:
+- source_id: ltp-local-2026-07-10
+  adapter: ltp-extractor
+  location: /home/cloud/gitStudy/ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  legacy_run_ref: runs/spec-migrated-batch-001/legacy-artifacts/outputs/ltp-spec-extract-run.yaml
+normalized_behaviors:
+- syscall: mkdirat
+  case: mkdirat01_67_raw
+  source:
+    file: testcases/kernel/syscalls/mkdirat/mkdirat01.c
+    line: 67
+  args:
+  - '*test->dir_fd'
+  - test->name
+  - 384
+  preconditions:
+  - DIR_FD
+  expected:
+    kind: return_errno
+    return: test->exp_ret
+    errno: test->exp_errno
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  needs:
+  - old_api_expectation_reconstruction
+  - setup_semantic_tags
+- syscall: mkdirat
+  case: mkdirat02_56_raw
+  source:
+    file: testcases/kernel/syscalls/mkdirat/mkdirat02.c
+    line: 56
+  args:
+  - '*test->dirfd'
+  - test->pathname
+  - 511
+  preconditions: []
+  expected:
+    kind: return_errno
+    return: -1
+    errno: test->exp_errno
+  confidence: D
+  checkability: static_interprocedural
+  status: needs_review
+  derived_from: old_api_raw
+  needs:
+  - old_api_expectation_reconstruction
+  - setup_semantic_tags
+rule_refs:
+- SYSCALL_ENTRY_ALIAS
+- PATH_LONG_ENAMETOOLONG
+- PATH_RESOLUTION_ERRNO
+- DIRFD_AND_AT_FLAGS
+- MODE_UID_GID_GUARD
+- VFS_PERMISSION
+- FS_SIDE_EFFECT
+source_fingerprint: sha256:e75d66bf4d52d9afe06d849a1919b62afd35c05c0a25daf8037d14769103f081
+last_processed_run: spec-migrated-batch-001

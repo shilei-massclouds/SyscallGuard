@@ -1,0 +1,6 @@
+schema_name: syscallguard-starry-target-descriptor
+version: 1
+required: [target_id, repository, revision]
+target_id: starry
+optional:
+  worktree_root: Isolated worktree parent; defaults to /tmp/syscallguard-worktrees.

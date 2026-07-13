@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ingest Syscall Specs"
+  short_description: "Ingest changed syscall specs incrementally"
+  default_prompt: "Use $ingest-syscall-specs source=<source-descriptor> count=<N> to ingest changed syscall specifications."

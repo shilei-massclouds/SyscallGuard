@@ -1,0 +1,1199 @@
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-dirent-enumeration C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-dirent-enumeration src/main.c)
++target_include_directories(syscallguard-b001-dirent-enumeration PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-dirent-enumeration PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-dirent-enumeration RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-dirent-enumeration/src/main.c
+@@ -0,0 +1,137 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <dirent.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <unistd.h>
++
++struct linux_dirent64 {
++    uint64_t d_ino;
++    int64_t d_off;
++    unsigned short d_reclen;
++    unsigned char d_type;
++    char d_name[];
++};
++
++static char base[PATH_MAX];
++
++static long do_getdents64(int fd, void *buf, size_t size)
++{
++    return syscall(SYS_getdents64, fd, buf, size);
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup(void)
++{
++    char path[PATH_MAX];
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-dirent-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++
++    int ret = snprintf(path, sizeof(path), "%s/alpha", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build alpha path");
++    int fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create alpha");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close alpha");
++    }
++
++    ret = snprintf(path, sizeof(path), "%s/beta", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build beta path");
++    fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create beta");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close beta");
++    }
++
++    ret = snprintf(path, sizeof(path), "%s/subdir", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build subdir path");
++    CHECK_RET(mkdir(path, 0700), 0, "create subdir");
++}
++
++static void parse_dirents(char *buf, long nread, int *saw_alpha,
++                          int *saw_beta, int *saw_subdir)
++{
++    long pos = 0;
++    while (pos < nread) {
++        struct linux_dirent64 *d = (struct linux_dirent64 *)(buf + pos);
++        CHECK(d->d_reclen >= sizeof(*d) + 1, "dirent reclen has room for header and name");
++        CHECK(d->d_reclen > 0 && pos + d->d_reclen <= nread, "dirent reclen stays inside buffer");
++        CHECK(d->d_off >= 0, "dirent d_off is non-negative");
++        CHECK(memchr(d->d_name, 0, d->d_reclen - sizeof(*d)) != NULL,
++              "dirent name is nul-terminated inside record");
++
++        if (strcmp(d->d_name, "alpha") == 0) {
++            *saw_alpha = 1;
++            CHECK(d->d_type == DT_REG || d->d_type == DT_UNKNOWN,
++                  "alpha d_type is regular or unknown");
++        } else if (strcmp(d->d_name, "beta") == 0) {
++            *saw_beta = 1;
++            CHECK(d->d_type == DT_REG || d->d_type == DT_UNKNOWN,
++                  "beta d_type is regular or unknown");
++        } else if (strcmp(d->d_name, "subdir") == 0) {
++            *saw_subdir = 1;
++            CHECK(d->d_type == DT_DIR || d->d_type == DT_UNKNOWN,
++                  "subdir d_type is directory or unknown");
++        }
++        pos += d->d_reclen;
++    }
++    CHECK(pos == nread, "dirent parser consumed exactly nread bytes");
++}
++
++static void test_enumeration(void)
++{
++    char buf[1024];
++    int saw_alpha = 0;
++    int saw_beta = 0;
++    int saw_subdir = 0;
++    int fd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(fd >= 0, "open directory for getdents64");
++    if (fd < 0) {
++        return;
++    }
++
++    CHECK_ERR(do_getdents64(fd, buf, 1), EINVAL, "undersized getdents64 buffer -> EINVAL");
++    CHECK_RET(lseek(fd, 0, SEEK_SET), 0, "rewind directory after EINVAL probe");
++
++    for (;;) {
++        errno = 0;
++        long nread = do_getdents64(fd, buf, sizeof(buf));
++        CHECK(nread >= 0, "getdents64 returns non-negative byte count");
++        if (nread <= 0) {
++            CHECK(nread == 0, "getdents64 eventually reaches EOF");
++            break;
++        }
++        parse_dirents(buf, nread, &saw_alpha, &saw_beta, &saw_subdir);
++    }
++
++    CHECK(saw_alpha, "getdents64 returned alpha entry");
++    CHECK(saw_beta, "getdents64 returned beta entry");
++    CHECK(saw_subdir, "getdents64 returned subdir entry");
++    CHECK_RET(close(fd), 0, "close directory fd");
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 dirent enumeration");
++    setup();
++    test_enumeration();
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-fd-type-matrix C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-fd-type-matrix src/main.c)
++target_include_directories(syscallguard-b001-fd-type-matrix PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-fd-type-matrix PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-fd-type-matrix RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fd-type-matrix/src/main.c
+@@ -0,0 +1,159 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <unistd.h>
++
++static char base[PATH_MAX];
++
++static long do_getdents64(int fd, void *buf, size_t size)
++{
++    return syscall(SYS_getdents64, fd, buf, size);
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup(void)
++{
++    char path[PATH_MAX];
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-fd-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++    int ret = snprintf(path, sizeof(path), "%s/file", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build regular file path");
++    int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create regular file");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close regular file");
++    }
++}
++
++static void test_fchdir_matrix(void)
++{
++    char path[PATH_MAX];
++    char old_cwd[PATH_MAX];
++    CHECK(getcwd(old_cwd, sizeof(old_cwd)) != NULL, "capture cwd for fchdir matrix");
++
++    CHECK_ERR(fchdir(-1), EBADF, "fchdir invalid fd -> EBADF");
++
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open directory fd");
++    CHECK_RET(fchdir(dfd), 0, "fchdir accepts directory fd");
++    CHECK_RET(chdir(old_cwd), 0, "restore cwd after fchdir success");
++
++    int ret = snprintf(path, sizeof(path), "%s/file", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build file path for fchdir");
++    int ffd = open(path, O_RDONLY);
++    CHECK(ffd >= 0, "open regular file fd");
++    CHECK_ERR(fchdir(ffd), ENOTDIR, "fchdir regular file fd -> ENOTDIR");
++
++    int closed = dup(dfd);
++    CHECK(closed >= 0, "dup directory fd for closed-fd probe");
++    CHECK_RET(close(closed), 0, "close duplicated fd");
++    CHECK_ERR(fchdir(closed), EBADF, "fchdir closed fd -> EBADF");
++
++    if (ffd >= 0) {
++        CHECK_RET(close(ffd), 0, "close regular file fd");
++    }
++    if (dfd >= 0) {
++        CHECK_RET(close(dfd), 0, "close directory fd");
++    }
++}
++
++static void test_getdents64_matrix(void)
++{
++    char path[PATH_MAX];
++    char buf[512];
++
++    CHECK_ERR(do_getdents64(-1, buf, sizeof(buf)), EBADF,
++              "getdents64 invalid fd -> EBADF");
++
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open directory fd for getdents64");
++    errno = 0;
++    long nread = do_getdents64(dfd, buf, sizeof(buf));
++    CHECK(nread >= 0, "getdents64 accepts directory fd");
++
++    int ret = snprintf(path, sizeof(path), "%s/file", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(path), "build file path for getdents64");
++    int ffd = open(path, O_RDONLY);
++    CHECK(ffd >= 0, "open regular file fd for getdents64");
++    CHECK_ERR(do_getdents64(ffd, buf, sizeof(buf)), ENOTDIR,
++              "getdents64 regular file fd -> ENOTDIR");
++
++    int pipefd[2];
++    CHECK_RET(pipe(pipefd), 0, "create pipe for getdents64 fd type");
++    CHECK_ERR(do_getdents64(pipefd[0], buf, sizeof(buf)), ENOTDIR,
++              "getdents64 pipe fd -> ENOTDIR");
++
++    int closed = dup(dfd);
++    CHECK(closed >= 0, "dup fd for closed getdents64 probe");
++    CHECK_RET(close(closed), 0, "close duplicated getdents64 fd");
++    CHECK_ERR(do_getdents64(closed, buf, sizeof(buf)), EBADF,
++              "getdents64 closed fd -> EBADF");
++
++    if (pipefd[0] >= 0) {
++        close(pipefd[0]);
++    }
++    if (pipefd[1] >= 0) {
++        close(pipefd[1]);
++    }
++    if (ffd >= 0) {
++        close(ffd);
++    }
++    if (dfd >= 0) {
++        close(dfd);
++    }
++}
++
++static void test_ioctl_matrix(void)
++{
++    int value = 0;
++    CHECK_ERR(ioctl(-1, FIONREAD, &value), EBADF, "ioctl invalid fd -> EBADF");
++
++    int pipefd[2];
++    CHECK_RET(pipe(pipefd), 0, "create pipe for ioctl FIONREAD");
++    CHECK_RET(write(pipefd[1], "abc", 3), 3, "write bytes for FIONREAD");
++    value = 0;
++    CHECK_RET(ioctl(pipefd[0], FIONREAD, &value), 0, "ioctl FIONREAD accepts pipe fd");
++    CHECK(value == 3, "ioctl FIONREAD reports pipe byte count");
++
++    int closed = dup(pipefd[0]);
++    CHECK(closed >= 0, "dup pipe fd for ioctl closed-fd probe");
++    CHECK_RET(close(closed), 0, "close duplicated pipe fd");
++    CHECK_ERR(ioctl(closed, FIONREAD, &value), EBADF, "ioctl closed fd -> EBADF");
++
++    if (pipefd[0] >= 0) {
++        close(pipefd[0]);
++    }
++    if (pipefd[1] >= 0) {
++        close(pipefd[1]);
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 fd type matrix");
++    setup();
++    test_fchdir_matrix();
++    test_getdents64_matrix();
++    test_ioctl_matrix();
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-fs-side-effect C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-fs-side-effect src/main.c)
++target_include_directories(syscallguard-b001-fs-side-effect PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-fs-side-effect PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-fs-side-effect RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-fs-side-effect/src/main.c
+@@ -0,0 +1,218 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <sys/sysmacros.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++#ifndef RENAME_NOREPLACE
++#define RENAME_NOREPLACE (1U << 0)
++#endif
++
++static char base[PATH_MAX];
++static char old_cwd[PATH_MAX];
++
++static void join_path(char *out, size_t out_size, const char *name)
++{
++    int ret = snprintf(out, out_size, "%s/%s", base, name);
++    CHECK(ret > 0 && (size_t)ret < out_size, "build test path");
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static long do_renameat2(int olddirfd, const char *oldpath,
++                         int newdirfd, const char *newpath,
++                         unsigned int flags)
++{
++#ifdef SYS_renameat2
++    return syscall(SYS_renameat2, olddirfd, oldpath, newdirfd, newpath, flags);
++#else
++    errno = ENOSYS;
++    (void)olddirfd;
++    (void)oldpath;
++    (void)newdirfd;
++    (void)newpath;
++    (void)flags;
++    return -1;
++#endif
++}
++
++static void setup(void)
++{
++    CHECK(getcwd(old_cwd, sizeof(old_cwd)) != NULL, "capture old cwd");
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-fs-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++}
++
++static void test_cwd_and_fchdir(void)
++{
++    char d1[PATH_MAX];
++    char cwd[PATH_MAX];
++    join_path(d1, sizeof(d1), "cwd-target");
++    CHECK_RET(mkdir(d1, 0700), 0, "create cwd target");
++
++    int oldfd = open(old_cwd, O_RDONLY | O_DIRECTORY);
++    CHECK(oldfd >= 0, "open old cwd fd");
++    CHECK_RET(chdir(d1), 0, "chdir changes cwd");
++    CHECK(getcwd(cwd, sizeof(cwd)) != NULL && strcmp(cwd, d1) == 0,
++          "getcwd observes chdir side effect");
++    CHECK_RET(fchdir(oldfd), 0, "fchdir restores cwd");
++    CHECK(getcwd(cwd, sizeof(cwd)) != NULL && strcmp(cwd, old_cwd) == 0,
++          "getcwd observes fchdir side effect");
++    if (oldfd >= 0) {
++        CHECK_RET(close(oldfd), 0, "close old cwd fd");
++    }
++}
++
++static void test_creation_and_removal(void)
++{
++    char p[PATH_MAX];
++    struct stat st;
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd");
++
++    join_path(p, sizeof(p), "mkdir-plain");
++    CHECK_RET(mkdir(p, 0755), 0, "mkdir creates directory");
++    CHECK_RET(stat(p, &st), 0, "stat mkdir result");
++    CHECK(S_ISDIR(st.st_mode), "mkdir result is directory");
++
++    CHECK_RET(mkdirat(dfd, "mkdir-at", 0755), 0, "mkdirat creates directory");
++    CHECK_RET(fstatat(dfd, "mkdir-at", &st, 0), 0, "fstatat mkdirat result");
++    CHECK(S_ISDIR(st.st_mode), "mkdirat result is directory");
++
++    join_path(p, sizeof(p), "fifo-plain");
++    CHECK_RET(mknod(p, S_IFIFO | 0600, makedev(0, 0)), 0, "mknod creates fifo");
++    CHECK_RET(lstat(p, &st), 0, "lstat mknod fifo");
++    CHECK(S_ISFIFO(st.st_mode), "mknod result is fifo");
++
++    CHECK_RET(mknodat(dfd, "fifo-at", S_IFIFO | 0600, makedev(0, 0)), 0,
++              "mknodat creates fifo");
++    CHECK_RET(fstatat(dfd, "fifo-at", &st, AT_SYMLINK_NOFOLLOW), 0,
++              "fstatat mknodat fifo");
++    CHECK(S_ISFIFO(st.st_mode), "mknodat result is fifo");
++
++    CHECK_RET(unlinkat(dfd, "fifo-at", 0), 0, "unlinkat removes fifo-at");
++    CHECK_RET(unlink(p), 0, "unlink removes fifo-plain");
++    CHECK_RET(unlinkat(dfd, "mkdir-at", AT_REMOVEDIR), 0, "unlinkat removes directory");
++    join_path(p, sizeof(p), "mkdir-plain");
++    CHECK_RET(rmdir(p), 0, "rmdir removes directory");
++
++    CHECK_RET(close(dfd), 0, "close base dirfd");
++}
++
++static void test_links_symlinks_and_rename(void)
++{
++    char src[PATH_MAX];
++    char dst[PATH_MAX];
++    char at_dst[PATH_MAX];
++    char buf[64];
++    struct stat st;
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd for link tests");
++
++    join_path(src, sizeof(src), "link-src");
++    int fd = open(src, O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create hard-link source");
++    if (fd >= 0) {
++        CHECK_RET(write(fd, "x", 1), 1, "write hard-link source");
++        CHECK_RET(close(fd), 0, "close hard-link source");
++    }
++
++    join_path(dst, sizeof(dst), "link-dst");
++    CHECK_RET(link(src, dst), 0, "link creates hard link");
++    CHECK_RET(stat(src, &st), 0, "stat hard-link source");
++    CHECK(st.st_nlink >= 2, "hard link count reflects link side effect");
++    CHECK_RET(linkat(dfd, "link-src", dfd, "link-at-dst", 0), 0, "linkat creates hard link");
++
++    join_path(dst, sizeof(dst), "sym-dst");
++    CHECK_RET(symlink("target-value", dst), 0, "symlink creates link");
++    ssize_t n = readlink(dst, buf, sizeof(buf) - 1);
++    CHECK(n == 12, "readlink length for symlink");
++    if (n >= 0) {
++        buf[n] = 0;
++        CHECK(strcmp(buf, "target-value") == 0, "readlink observes symlink target");
++    }
++    CHECK_RET(symlinkat("target-at", dfd, "sym-at-dst"), 0, "symlinkat creates link");
++
++    join_path(dst, sizeof(dst), "renamed");
++    CHECK_RET(rename(src, dst), 0, "rename moves source");
++    CHECK_RET(stat(dst, &st), 0, "rename destination exists");
++    errno = 0;
++    CHECK(stat(src, &st) == -1 && errno == ENOENT, "rename source disappears");
++
++    CHECK_RET(renameat(dfd, "link-at-dst", dfd, "renameat-dst"), 0,
++              "renameat moves source");
++    CHECK_RET(fstatat(dfd, "renameat-dst", &st, 0), 0, "renameat destination exists");
++
++    int fd1 = openat(dfd, "rename2-src", O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    int fd2 = openat(dfd, "rename2-existing", O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd1 >= 0 && fd2 >= 0, "create renameat2 files");
++    if (fd1 >= 0) {
++        close(fd1);
++    }
++    if (fd2 >= 0) {
++        close(fd2);
++    }
++    CHECK_ERR(do_renameat2(dfd, "rename2-src", dfd, "rename2-existing", RENAME_NOREPLACE),
++              EEXIST, "renameat2 RENAME_NOREPLACE keeps existing destination");
++    CHECK_RET(do_renameat2(dfd, "rename2-src", dfd, "rename2-new", RENAME_NOREPLACE), 0,
++              "renameat2 RENAME_NOREPLACE creates new destination");
++    CHECK_RET(fstatat(dfd, "rename2-new", &st, 0), 0, "renameat2 destination exists");
++
++    join_path(at_dst, sizeof(at_dst), "renameat-dst");
++    unlink(at_dst);
++    CHECK_RET(close(dfd), 0, "close base dirfd for link tests");
++}
++
++static void test_chroot_child(void)
++{
++    char root_dir[PATH_MAX];
++    join_path(root_dir, sizeof(root_dir), "root-child");
++    CHECK_RET(mkdir(root_dir, 0755), 0, "create child chroot directory");
++
++    pid_t child = fork();
++    CHECK(child >= 0, "fork chroot child");
++    if (child == 0) {
++        char cwd[PATH_MAX];
++        CHECK_RET(chroot(root_dir), 0, "child chroot succeeds");
++        CHECK_RET(chdir("/"), 0, "child chdir after chroot");
++        CHECK(getcwd(cwd, sizeof(cwd)) != NULL && strcmp(cwd, "/") == 0,
++              "child getcwd observes new root");
++        exit(__fail > 0 ? 1 : 0);
++    }
++    if (child > 0) {
++        int status = 0;
++        CHECK_RET(waitpid(child, &status, 0), child, "wait chroot child");
++        CHECK(WIFEXITED(status) && WEXITSTATUS(status) == 0, "chroot child checks passed");
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 filesystem side effects");
++    setup();
++    test_cwd_and_fchdir();
++    test_creation_and_removal();
++    test_links_symlinks_and_rename();
++    test_chroot_child();
++    CHECK_RET(chdir(old_cwd), 0, "restore cwd before cleanup");
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-mode-uid-gid C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-mode-uid-gid src/main.c)
++target_include_directories(syscallguard-b001-mode-uid-gid PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-mode-uid-gid PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-mode-uid-gid RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-mode-uid-gid/src/main.c
+@@ -0,0 +1,119 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/sysmacros.h>
++#include <sys/types.h>
++#include <unistd.h>
++
++static char base[PATH_MAX];
++
++static void join_path(char *out, size_t out_size, const char *name)
++{
++    int ret = snprintf(out, out_size, "%s/%s", base, name);
++    CHECK(ret > 0 && (size_t)ret < out_size, "build test path");
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup(void)
++{
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-mode-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++}
++
++static void check_metadata(const char *path, mode_t expected_type,
++                           mode_t expected_mode, const char *msg)
++{
++    struct stat st;
++    CHECK_RET(lstat(path, &st), 0, msg);
++    CHECK((st.st_mode & S_IFMT) == expected_type, "created node has expected type");
++    CHECK((st.st_mode & 0777) == expected_mode, "created node honors requested mode and umask");
++    CHECK(st.st_uid == geteuid(), "created node uid matches process euid");
++    CHECK(st.st_gid == getegid(), "created node gid matches process egid");
++}
++
++static void test_mkdir_modes(void)
++{
++    char p[PATH_MAX];
++    mode_t saved = umask(0027);
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd for mkdir metadata");
++
++    join_path(p, sizeof(p), "mkdir-plain");
++    CHECK_RET(mkdir(p, 0777), 0, "mkdir with umask 0027");
++    check_metadata(p, S_IFDIR, 0750, "lstat mkdir metadata");
++
++    CHECK_RET(mkdirat(dfd, "mkdir-at", 0777), 0, "mkdirat with umask 0027");
++    join_path(p, sizeof(p), "mkdir-at");
++    check_metadata(p, S_IFDIR, 0750, "lstat mkdirat metadata");
++
++    if (dfd >= 0) {
++        CHECK_RET(close(dfd), 0, "close mkdir metadata dirfd");
++    }
++    umask(saved);
++}
++
++static void test_mknod_modes(void)
++{
++    char p[PATH_MAX];
++    mode_t saved = umask(0077);
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd for mknod metadata");
++
++    join_path(p, sizeof(p), "fifo-plain");
++    CHECK_RET(mknod(p, S_IFIFO | 0666, makedev(0, 0)), 0, "mknod FIFO with umask 0077");
++    check_metadata(p, S_IFIFO, 0600, "lstat mknod FIFO metadata");
++
++    CHECK_RET(mknodat(dfd, "fifo-at", S_IFIFO | 0666, makedev(0, 0)), 0,
++              "mknodat FIFO with umask 0077");
++    join_path(p, sizeof(p), "fifo-at");
++    check_metadata(p, S_IFIFO, 0600, "lstat mknodat FIFO metadata");
++
++    if (dfd >= 0) {
++        CHECK_RET(close(dfd), 0, "close mknod metadata dirfd");
++    }
++    umask(saved);
++}
++
++static void test_mknod_rejects_directory_type(void)
++{
++    char p[PATH_MAX];
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd for directory mknod rejection");
++
++    join_path(p, sizeof(p), "dir-node-plain");
++    CHECK_ERR(mknod(p, S_IFDIR | 0700, makedev(0, 0)), EPERM,
++              "mknod S_IFDIR request -> EPERM");
++    CHECK_ERR(mknodat(dfd, "dir-node-at", S_IFDIR | 0700, makedev(0, 0)), EPERM,
++              "mknodat S_IFDIR request -> EPERM");
++
++    if (dfd >= 0) {
++        CHECK_RET(close(dfd), 0, "close directory mknod rejection dirfd");
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 mode uid gid behavior");
++    setup();
++    test_mkdir_modes();
++    test_mknod_modes();
++    test_mknod_rejects_directory_type();
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-path-errno-priority C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-path-errno-priority src/main.c)
++target_include_directories(syscallguard-b001-path-errno-priority PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-path-errno-priority PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-path-errno-priority RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-path-errno-priority/src/main.c
+@@ -0,0 +1,167 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <sys/sysmacros.h>
++#include <unistd.h>
++
++#ifndef RENAME_NOREPLACE
++#define RENAME_NOREPLACE (1U << 0)
++#endif
++
++static char base[PATH_MAX];
++
++static long do_renameat2(int olddirfd, const char *oldpath,
++                         int newdirfd, const char *newpath,
++                         unsigned int flags)
++{
++#ifdef SYS_renameat2
++    return syscall(SYS_renameat2, olddirfd, oldpath, newdirfd, newpath, flags);
++#else
++    errno = ENOSYS;
++    (void)olddirfd;
++    (void)oldpath;
++    (void)newdirfd;
++    (void)newpath;
++    (void)flags;
++    return -1;
++#endif
++}
++
++static void join_path(char *out, size_t out_size, const char *name)
++{
++    int ret = snprintf(out, out_size, "%s/%s", base, name);
++    CHECK(ret > 0 && (size_t)ret < out_size, "build test path");
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup(void)
++{
++    char p[PATH_MAX];
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-path-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++
++    join_path(p, sizeof(p), "file");
++    int fd = open(p, O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create regular file");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close regular file");
++    }
++
++    join_path(p, sizeof(p), "existing-dir");
++    CHECK_RET(mkdir(p, 0700), 0, "create existing directory");
++}
++
++static void make_long_name(char *buf, size_t size)
++{
++    memset(buf, 'a', size - 1);
++    buf[size - 1] = 0;
++}
++
++static void test_path_lengths(void)
++{
++    char long_name[PATH_MAX + 64];
++    make_long_name(long_name, sizeof(long_name));
++    CHECK_ERR(mkdir(long_name, 0700), ENAMETOOLONG,
++              "mkdir overlong component -> ENAMETOOLONG");
++    CHECK_ERR(chdir(long_name), ENAMETOOLONG,
++              "chdir overlong component -> ENAMETOOLONG");
++}
++
++static void test_lookup_errno_priority(void)
++{
++    char p[PATH_MAX];
++    char q[PATH_MAX];
++
++    join_path(p, sizeof(p), "missing");
++    CHECK_ERR(unlink(p), ENOENT, "unlink missing final component -> ENOENT");
++    CHECK_ERR(rmdir(p), ENOENT, "rmdir missing final component -> ENOENT");
++    CHECK_ERR(chroot(p), ENOENT, "chroot missing final component -> ENOENT");
++
++    join_path(p, sizeof(p), "missing-parent/child");
++    CHECK_ERR(mkdir(p, 0700), ENOENT, "mkdir missing parent -> ENOENT");
++    CHECK_ERR(mknod(p, S_IFIFO | 0600, makedev(0, 0)), ENOENT,
++              "mknod missing parent -> ENOENT");
++    CHECK_ERR(symlink("target", p), ENOENT, "symlink missing parent -> ENOENT");
++
++    join_path(p, sizeof(p), "file/child");
++    CHECK_ERR(mkdir(p, 0700), ENOTDIR, "mkdir non-directory parent -> ENOTDIR");
++    CHECK_ERR(mknod(p, S_IFIFO | 0600, makedev(0, 0)), ENOTDIR,
++              "mknod non-directory parent -> ENOTDIR");
++
++    join_path(p, sizeof(p), "file/");
++    CHECK_ERR(chdir(p), ENOTDIR, "chdir trailing slash on file -> ENOTDIR");
++
++    join_path(p, sizeof(p), "file");
++    join_path(q, sizeof(q), "file/renamed");
++    CHECK_ERR(rename(p, q), ENOTDIR, "rename non-directory destination parent -> ENOTDIR");
++}
++
++static void test_at_dirfd_and_flags(void)
++{
++    char abs_path[PATH_MAX];
++    int dfd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(dfd >= 0, "open base dirfd");
++
++    CHECK_ERR(mkdirat(-1, "relative", 0700), EBADF,
++              "mkdirat relative path with invalid dirfd -> EBADF");
++    CHECK_ERR(mknodat(-1, "relative-fifo", S_IFIFO | 0600, makedev(0, 0)), EBADF,
++              "mknodat relative path with invalid dirfd -> EBADF");
++    CHECK_ERR(linkat(-1, "relative-src", dfd, "dst", 0), EBADF,
++              "linkat relative old path with invalid dirfd -> EBADF");
++    CHECK_ERR(unlinkat(-1, "relative", 0), EBADF,
++              "unlinkat relative path with invalid dirfd -> EBADF");
++
++    join_path(abs_path, sizeof(abs_path), "absolute-dirfd-ignored");
++    CHECK_RET(mkdirat(-1, abs_path, 0700), 0,
++              "mkdirat absolute path ignores invalid dirfd");
++    CHECK_RET(rmdir(abs_path), 0, "remove absolute mkdirat result");
++
++    CHECK_ERR(unlinkat(dfd, "missing", 0x80000000u), EINVAL,
++              "unlinkat invalid flags -> EINVAL");
++
++    int fd1 = openat(dfd, "rename2-src", O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    int fd2 = openat(dfd, "rename2-dst", O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd1 >= 0 && fd2 >= 0, "create renameat2 files");
++    if (fd1 >= 0) {
++        close(fd1);
++    }
++    if (fd2 >= 0) {
++        close(fd2);
++    }
++    CHECK_ERR(do_renameat2(dfd, "rename2-src", dfd, "rename2-dst", 0x80000000u),
++              EINVAL, "renameat2 invalid flags -> EINVAL");
++    CHECK_ERR(do_renameat2(dfd, "rename2-src", dfd, "rename2-dst", RENAME_NOREPLACE),
++              EEXIST, "renameat2 RENAME_NOREPLACE existing dst -> EEXIST");
++
++    if (dfd >= 0) {
++        CHECK_RET(close(dfd), 0, "close base dirfd");
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 path errno priority");
++    setup();
++    test_path_lengths();
++    test_lookup_errno_priority();
++    test_at_dirfd_and_flags();
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-permission-matrix C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-permission-matrix src/main.c)
++target_include_directories(syscallguard-b001-permission-matrix PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-permission-matrix PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-permission-matrix RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-permission-matrix/src/main.c
+@@ -0,0 +1,136 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/sysmacros.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static char base[PATH_MAX];
++
++static void join_path(char *out, size_t out_size, const char *name)
++{
++    int ret = snprintf(out, out_size, "%s/%s", base, name);
++    CHECK(ret > 0 && (size_t)ret < out_size, "build test path");
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup_tree(void)
++{
++    char p[PATH_MAX];
++
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-perm-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0777), 0, "create base directory");
++    CHECK_RET(chmod(base, 0777), 0, "make base writable for child");
++
++    join_path(p, sizeof(p), "no_search");
++    CHECK_RET(mkdir(p, 0666), 0, "create non-searchable directory");
++    CHECK_RET(chmod(p, 0666), 0, "remove search permission");
++
++    join_path(p, sizeof(p), "no_write");
++    CHECK_RET(mkdir(p, 0555), 0, "create non-writable directory");
++    CHECK_RET(chmod(p, 0555), 0, "remove write permission");
++
++    char file[PATH_MAX];
++    join_path(file, sizeof(file), "no_write/file");
++    int fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
++    CHECK(fd >= 0, "create file in non-writable directory before dropping uid");
++    if (fd >= 0) {
++        CHECK_RET(write(fd, "x", 1), 1, "write setup file");
++        CHECK_RET(close(fd), 0, "close setup file");
++    }
++
++    join_path(p, sizeof(p), "writable");
++    CHECK_RET(mkdir(p, 0777), 0, "create writable directory");
++    CHECK_RET(chmod(p, 0777), 0, "make writable directory world-writable");
++
++    join_path(file, sizeof(file), "writable/source");
++    fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
++    CHECK(fd >= 0, "create rename source before dropping uid");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close rename source");
++    }
++
++    join_path(p, sizeof(p), "chroot-target");
++    CHECK_RET(mkdir(p, 0755), 0, "create chroot target");
++}
++
++static void child_permission_checks(void)
++{
++    char p[PATH_MAX];
++    char src[PATH_MAX];
++    char dst[PATH_MAX];
++
++    errno = 0;
++    CHECK(setgid(65534) == 0 || errno == EPERM, "drop gid or report unavailable privilege");
++    errno = 0;
++    CHECK(setuid(65534) == 0 || errno == EPERM, "drop uid or report unavailable privilege");
++    CHECK(geteuid() != 0, "permission matrix child runs without root privileges");
++
++    join_path(p, sizeof(p), "no_search/mkdir-child");
++    CHECK_ERR(mkdir(p, 0700), EACCES, "mkdir under parent without search permission -> EACCES");
++
++    join_path(p, sizeof(p), "no_write/unlink-target");
++    CHECK_ERR(unlink(p), EACCES, "unlink in parent without write permission -> EACCES");
++
++    join_path(src, sizeof(src), "no_write/file");
++    join_path(dst, sizeof(dst), "no_write/hardlink");
++    CHECK_ERR(link(src, dst), EACCES, "link into parent without write permission -> EACCES");
++
++    join_path(dst, sizeof(dst), "no_write/symlink");
++    CHECK_ERR(symlink("target", dst), EACCES, "symlink into parent without write permission -> EACCES");
++
++    join_path(src, sizeof(src), "writable/source");
++    join_path(dst, sizeof(dst), "no_write/renamed");
++    CHECK_ERR(rename(src, dst), EACCES, "rename into parent without write permission -> EACCES");
++
++    join_path(dst, sizeof(dst), "no_write/fifo");
++    CHECK_ERR(mknod(dst, S_IFIFO | 0600, makedev(0, 0)), EACCES,
++              "mknod in parent without write permission -> EACCES");
++
++    join_path(dst, sizeof(dst), "chroot-target");
++    CHECK_ERR(chroot(dst), EPERM, "unprivileged chroot -> EPERM");
++
++    exit(__fail > 0 ? 1 : 0);
++}
++
++static void run_child(void)
++{
++    pid_t child = fork();
++    CHECK(child >= 0, "fork permission child");
++    if (child == 0) {
++        child_permission_checks();
++    }
++    if (child > 0) {
++        int status = 0;
++        CHECK_RET(waitpid(child, &status, 0), child, "wait for permission child");
++        CHECK(WIFEXITED(status) && WEXITSTATUS(status) == 0,
++              "permission child checks passed");
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 permission matrix");
++    setup_tree();
++    run_child();
++    rm_tree(base);
++    TEST_DONE();
++}
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/CMakeLists.txt b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/CMakeLists.txt
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/CMakeLists.txt
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 3.20)
++project(syscallguard-b001-userptr-efault C)
++set(CMAKE_C_STANDARD 11)
++set(CMAKE_C_STANDARD_REQUIRED ON)
++set(CMAKE_C_EXTENSIONS OFF)
++add_executable(syscallguard-b001-userptr-efault src/main.c)
++target_include_directories(syscallguard-b001-userptr-efault PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../common")
++target_compile_options(syscallguard-b001-userptr-efault PRIVATE -Wall -Wextra -Werror)
++install(TARGETS syscallguard-b001-userptr-efault RUNTIME DESTINATION usr/bin/starry-test-suit)
+diff --git a/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/src/main.c b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/src/main.c
+new file mode 100644
+--- /dev/null
++++ b/test-suit/starryos/qemu-smp1/system/syscallguard-b001-userptr-efault/src/main.c
+@@ -0,0 +1,130 @@
++#define _GNU_SOURCE
++#include "test_framework.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <unistd.h>
++
++static char base[PATH_MAX];
++
++static long do_getcwd_sys(void *buf, size_t size)
++{
++    return syscall(SYS_getcwd, buf, size);
++}
++
++static long do_getdents64(int fd, void *buf, size_t size)
++{
++    return syscall(SYS_getdents64, fd, buf, size);
++}
++
++static void *make_unmapped_page(void)
++{
++    void *page = mmap(NULL, 4096, PROT_READ | PROT_WRITE,
++                      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++    if (page == MAP_FAILED) {
++        return NULL;
++    }
++    CHECK_RET(munmap(page, 4096), 0, "unmap temporary page for EFAULT probe");
++    return page;
++}
++
++static void rm_tree(const char *path)
++{
++    char cmd[PATH_MAX + 32];
++    int ret = snprintf(cmd, sizeof(cmd), "rm -rf %s", path);
++    if (ret > 0 && (size_t)ret < sizeof(cmd)) {
++        (void)system(cmd);
++    }
++}
++
++static void setup(void)
++{
++    char p[PATH_MAX];
++    snprintf(base, sizeof(base), "/tmp/syscallguard-b001-userptr-%ld", (long)getpid());
++    rm_tree(base);
++    CHECK_RET(mkdir(base, 0700), 0, "create base directory");
++    int ret = snprintf(p, sizeof(p), "%s/entry", base);
++    CHECK(ret > 0 && (size_t)ret < sizeof(p), "build entry path");
++    int fd = open(p, O_CREAT | O_WRONLY | O_TRUNC, 0644);
++    CHECK(fd >= 0, "create directory entry");
++    if (fd >= 0) {
++        CHECK_RET(close(fd), 0, "close directory entry");
++    }
++}
++
++static void test_getcwd_bad_pointers(void)
++{
++    char small[1];
++    void *bad = make_unmapped_page();
++    void *readonly = mmap(NULL, 4096, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++    CHECK_ERR(do_getcwd_sys(NULL, PATH_MAX), EFAULT, "getcwd NULL output pointer -> EFAULT");
++    if (bad != NULL) {
++        CHECK_ERR(do_getcwd_sys(bad, PATH_MAX), EFAULT,
++                  "getcwd unmapped output pointer -> EFAULT");
++    }
++    CHECK(readonly != MAP_FAILED, "map read-only output page");
++    if (readonly != MAP_FAILED) {
++        CHECK_ERR(do_getcwd_sys(readonly, 4096), EFAULT,
++                  "getcwd read-only output page -> EFAULT");
++        CHECK_RET(munmap(readonly, 4096), 0, "unmap read-only output page");
++    }
++
++    CHECK_ERR(do_getcwd_sys(small, sizeof(small)), ERANGE,
++              "getcwd too-small valid buffer -> ERANGE");
++}
++
++static void test_getdents64_bad_pointers(void)
++{
++    void *bad = make_unmapped_page();
++    int fd = open(base, O_RDONLY | O_DIRECTORY);
++    CHECK(fd >= 0, "open directory for getdents64 EFAULT probes");
++    if (fd < 0) {
++        return;
++    }
++
++    CHECK_ERR(do_getdents64(fd, NULL, 4096), EFAULT,
++              "getdents64 NULL output pointer -> EFAULT");
++    if (bad != NULL) {
++        CHECK_ERR(do_getdents64(fd, bad, 4096), EFAULT,
++                  "getdents64 unmapped output pointer -> EFAULT");
++    }
++    CHECK_RET(close(fd), 0, "close directory after getdents64 EFAULT probes");
++}
++
++static void test_ioctl_bad_pointer(void)
++{
++    int pipefd[2];
++    void *bad = make_unmapped_page();
++    CHECK_RET(pipe(pipefd), 0, "create pipe for ioctl EFAULT probe");
++    if (bad != NULL) {
++        CHECK_ERR(ioctl(pipefd[0], FIONREAD, bad), EFAULT,
++                  "ioctl FIONREAD bad output pointer -> EFAULT");
++    }
++    if (pipefd[0] >= 0) {
++        close(pipefd[0]);
++    }
++    if (pipefd[1] >= 0) {
++        close(pipefd[1]);
++    }
++}
++
++int main(void)
++{
++    TEST_START("SyscallGuard b001 user pointer EFAULT");
++    setup();
++    test_getcwd_bad_pointers();
++    test_getdents64_bad_pointers();
++    test_ioctl_bad_pointer();
++    rm_tree(base);
++    TEST_DONE();
++}

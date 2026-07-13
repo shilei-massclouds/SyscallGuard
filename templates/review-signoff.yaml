@@ -1,9 +1,0 @@
-batch_id: "NNN-short-name"
-step_id: "NN-step-name"
-artifact: "steps/NN-step-name.md"
-status: "pending_human_review"
-reviewer: ""
-reviewed_at_utc: ""
-decision_summary: ""
-required_changes: []
-follow_up: []

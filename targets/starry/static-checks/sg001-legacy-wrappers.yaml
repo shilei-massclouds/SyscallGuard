@@ -1,0 +1,36 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_LEGACY_WRAPPERS
+title: Legacy path syscalls delegate to at-family handlers
+rule_refs:
+- SYSCALL_ENTRY_ALIAS
+applies_to_syscalls:
+- mkdir
+- mknod
+- link
+- rmdir
+- unlink
+- symlink
+- rename
+- renameat
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: mkdir delegates to mkdirat
+  regex: pub fn sys_mkdir[\s\S]*?sys_mkdirat\(AT_FDCWD,\s*path,\s*mode\)
+- label: mknod delegates to mknodat
+  regex: pub fn sys_mknod[\s\S]*?sys_mknodat\(AT_FDCWD,\s*path,\s*mode,\s*dev\)
+- label: link delegates to linkat
+  regex: pub fn sys_link[\s\S]*?sys_linkat\(AT_FDCWD,\s*old_path,\s*AT_FDCWD,\s*new_path,\s*0\)
+- label: rmdir delegates to unlinkat
+  regex: pub fn sys_rmdir[\s\S]*?sys_unlinkat\(AT_FDCWD,\s*path,\s*AT_REMOVEDIR as _\)
+- label: unlink delegates to unlinkat
+  regex: pub fn sys_unlink[\s\S]*?sys_unlinkat\(AT_FDCWD,\s*path,\s*0\)
+- label: symlink delegates to symlinkat
+  regex: pub fn sys_symlink[\s\S]*?sys_symlinkat\(target,\s*AT_FDCWD,\s*linkpath\)
+- label: rename delegates to renameat
+  regex: pub fn sys_rename[\s\S]*?sys_renameat\(AT_FDCWD,\s*old_path,\s*AT_FDCWD,\s*new_path\)
+- label: renameat delegates to renameat2
+  regex: pub fn sys_renameat[\s\S]*?sys_renameat2\(old_dirfd,\s*old_path,\s*new_dirfd,\s*new_path,\s*0\)
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

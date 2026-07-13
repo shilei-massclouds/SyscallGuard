@@ -1,0 +1,19 @@
+schema_version: 1
+kind: syscallguard_starry_mapping
+mapping_id: M_FD_TYPE
+rule_refs:
+- FD_TYPE_ERRNO
+classification: partial_static
+target_locations:
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols: []
+static_check_refs:
+- SG001_FD_TYPE_ERRNO
+dynamic_test_refs:
+- V09-FD-TYPE-MATRIX
+source_rule_hashes:
+  FD_TYPE_ERRNO: sha256:854ee5a68a6170fb3bfe6ee94178f1e6307502470ded0652cfc240ce923825be
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001
+legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md

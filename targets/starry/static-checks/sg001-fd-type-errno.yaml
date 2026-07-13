@@ -1,0 +1,20 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: SG001_FD_TYPE_ERRNO
+title: File and directory fd downcasts preserve type errors
+rule_refs:
+- FD_TYPE_ERRNO
+applies_to_syscalls:
+- fchdir
+- getdents64
+- linkat
+- chroot
+path: os/StarryOS/kernel/src/file/fs.rs
+patterns:
+- label: File::from_fd distinguishes directory and other types
+  regex: 'fn from_fd\(fd: c_int\) -> AxResult<Arc<Self>>[\s\S]*?AxError::IsADirectory[\s\S]*?AxError::InvalidInput'
+- label: Directory::from_fd maps non-directory to NotADirectory
+  regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?AxError::NotADirectory'
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001

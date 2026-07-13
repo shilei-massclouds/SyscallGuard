@@ -1,0 +1,18 @@
+schema_version: 1
+kind: syscallguard_starry_mapping
+mapping_id: M_FD_EBADF
+rule_refs:
+- BAD_FD_EBADF
+classification: static
+target_locations:
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols: []
+static_check_refs:
+- SG001_BAD_FD_EBADF
+dynamic_test_refs: []
+source_rule_hashes:
+  BAD_FD_EBADF: sha256:1347aa930270dedc9fb73eaa6d660a69a750026fd66ec25506591d5bddf581a2
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001
+legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md

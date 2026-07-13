@@ -1,0 +1,4 @@
+target_id: starry
+repository: /home/cloud/gitLinux/tgoskits
+revision: HEAD
+worktree_root: /tmp/syscallguard-worktrees

@@ -1,0 +1,16 @@
+schema_version: 1
+kind: syscallguard_rule
+rule_id: DIRENT_ENUMERATION
+category: directory_entries
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_applicable_syscall
+  expected_result: getdents64 records, content, types, and offsets match selected scenarios.
+  errno:
+  - EINVAL
+default_checkability: dynamic
+provenance:
+- source_id: legacy-batch-001-normalization
+  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
+last_processed_run: spec-migrated-batch-001

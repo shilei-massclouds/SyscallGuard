@@ -1,0 +1,22 @@
+schema_version: 1
+kind: syscallguard_starry_mapping
+mapping_id: M_PATHMAX
+rule_refs:
+- PATH_LONG_ENAMETOOLONG
+classification: partial_static
+target_locations:
+- path: os/StarryOS/kernel/src/mm/access.rs
+  symbols: []
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols: []
+static_check_refs:
+- SG001_PATHMAX_HELPER
+- SG001_PATH_HANDLER_LOADS
+dynamic_test_refs:
+- V09-PATH-ERRNO-PRIORITY
+source_rule_hashes:
+  PATH_LONG_ENAMETOOLONG: sha256:c87fd9be4cf28d79f5ad8d26aa5953ddc4e53255e505d2f957fc562187c8c1a1
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001
+legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md

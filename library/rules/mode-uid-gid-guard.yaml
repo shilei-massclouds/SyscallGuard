@@ -1,0 +1,17 @@
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MODE_UID_GID_GUARD
+category: ownership_mode
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_applicable_syscall
+  expected_result: Mode, ownership, and node-type guards preserve Linux behavior.
+  errno:
+  - EPERM
+  - EINVAL
+default_checkability: partial_static
+provenance:
+- source_id: legacy-batch-001-normalization
+  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
+last_processed_run: spec-migrated-batch-001

@@ -1,0 +1,16 @@
+schema_version: 1
+kind: syscallguard_starry_mapping
+mapping_id: DM_FS_SIDE_EFFECT
+rule_refs:
+- FS_SIDE_EFFECT
+classification: dynamic
+target_locations: []
+static_check_refs: []
+dynamic_test_refs:
+- V09-FS-SIDE-EFFECT
+source_rule_hashes:
+  FS_SIDE_EFFECT: sha256:dcf2f5bcf0a14a2766217493501e68b30681e5f65605a6b5f90a492d9b44b773
+base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
+target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+last_mapped_run: mapping-migrated-batch-001
+legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md

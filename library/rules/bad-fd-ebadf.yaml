@@ -1,0 +1,16 @@
+schema_version: 1
+kind: syscallguard_rule
+rule_id: BAD_FD_EBADF
+category: fd
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_applicable_syscall
+  expected_result: An invalid or closed file descriptor returns EBADF.
+  errno:
+  - EBADF
+default_checkability: static
+provenance:
+- source_id: legacy-batch-001-normalization
+  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
+last_processed_run: spec-migrated-batch-001

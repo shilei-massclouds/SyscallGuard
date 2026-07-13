@@ -1,0 +1,18 @@
+schema_version: 1
+kind: syscallguard_rule
+rule_id: PATH_RESOLUTION_ERRNO
+category: pathname
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_applicable_syscall
+  expected_result: Path lookup preserves missing-component, non-directory, and symlink-loop errno.
+  errno:
+  - ENOENT
+  - ENOTDIR
+  - ELOOP
+default_checkability: partial_static
+provenance:
+- source_id: legacy-batch-001-normalization
+  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
+last_processed_run: spec-migrated-batch-001
