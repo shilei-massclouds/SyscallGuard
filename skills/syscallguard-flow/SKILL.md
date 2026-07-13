@@ -117,6 +117,11 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
   candidates exist, ask only `是否批准这些修复补丁？`; approval authorizes Step 10 to apply them. If no
   candidates exist, ask only `是否接受本次验证未生成修复补丁的结果？`. Show `命令：批准进入下一步`
   for approval and `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 09.
+- For Step 10, briefly summarize patch application, regression, final coverage, and closeout gates. If all
+  closeout gates pass, ask only `关闭本批次修复？`. If any gate fails, ask only
+  `是否接受本批次暂不关闭的收尾结果？`; approval accepts the recorded result but must not close the batch.
+  Show `命令：批准进入下一步` for approval and `修改：<调整内容>` for rejection or changes. Do not use
+  numbered modification syntax for Step 10, and never let approval bypass a failed closeout gate.
 - Treat `命令：批准进入下一步` as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
 
