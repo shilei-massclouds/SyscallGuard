@@ -16,18 +16,56 @@ except ImportError:  # pragma: no cover - environment failure path
     yaml = None
 
 
-STEPS = [
-    "01-scope-selection",
-    "02-spec-ingestion",
-    "03-normalization-review",
-    "04-checkability-classification",
-    "05-starry-evidence-mapping",
-    "06-static-check-or-audit",
-    "07-gap-triage",
-    "08-fix-plan-and-apply-outside-harness",
-    "09-validation",
-    "10-batch-closeout",
+@dataclass(frozen=True)
+class StepMetadata:
+    step_id: str
+    summary: str
+
+
+STEP_METADATA = [
+    StepMetadata(
+        "01-scope-selection",
+        "范围选择：确定本批次 syscall、优先级和排除项。",
+    ),
+    StepMetadata(
+        "02-spec-ingestion",
+        "规范导入：记录规格来源、版本、路径和缺失资料。",
+    ),
+    StepMetadata(
+        "03-normalization-review",
+        "规范化审查：整理 syscall、复用规则和目标映射。",
+    ),
+    StepMetadata(
+        "04-checkability-classification",
+        "可检查性分类：标记 static、partial_static、dynamic 等类型。",
+    ),
+    StepMetadata(
+        "05-starry-evidence-mapping",
+        "Starry 证据映射：定位实现、测试、日志或证据缺口。",
+    ),
+    StepMetadata(
+        "06-static-check-or-audit",
+        "静态检查或审计：执行静态规则并记录人工审计结果。",
+    ),
+    StepMetadata(
+        "07-gap-triage",
+        "缺口分诊：判断 gap、risk、needs_review 及阻塞性。",
+    ),
+    StepMetadata(
+        "08-fix-plan-and-apply-outside-harness",
+        "动态验证计划：生成可执行验证用例并记录环境阻塞。",
+    ),
+    StepMetadata(
+        "09-validation",
+        "验证与补丁候选：执行用例并生成 Starry 补丁候选。",
+    ),
+    StepMetadata(
+        "10-batch-closeout",
+        "应用与收尾：应用已批准补丁、回归验证并完成批次关闭。",
+    ),
 ]
+
+STEPS = [metadata.step_id for metadata in STEP_METADATA]
 
 RESOLVED_REVIEW_STATUSES = {"confirmed", "not_applicable"}
 UNRESOLVED_REVIEW_STATUSES = {"pending_human_review", "changes_requested"}
@@ -123,7 +161,8 @@ def gate_state(report: str, signoff: str) -> str:
 
 def collect_steps(batch_dir: Path) -> list[StepState]:
     states: list[StepState] = []
-    for index, step_id in enumerate(STEPS, start=1):
+    for index, metadata in enumerate(STEP_METADATA, start=1):
+        step_id = metadata.step_id
         report_path = batch_dir / "steps" / f"{step_id}.md"
         review_path = batch_dir / "reviews" / f"{step_id}-signoff.yaml"
         report = report_state(report_path)
@@ -235,6 +274,12 @@ def print_table(states: list[StepState]) -> None:
         )
 
 
+def print_step_summaries() -> None:
+    print("十步简述")
+    for number, metadata in enumerate(STEP_METADATA, start=1):
+        print(f"{number}. {metadata.summary}")
+
+
 def print_report(batch_dir: Path, states: list[StepState]) -> None:
     manifest_text, manifest_notes = manifest_summary(batch_dir)
     coverage_text, coverage_notes = coverage_summary(batch_dir)
@@ -242,6 +287,8 @@ def print_report(batch_dir: Path, states: list[StepState]) -> None:
     blocking = first_blocking_gate(states)
     executable = next_executable_step(states)
 
+    print_step_summaries()
+    print()
     print(f"Batch: {batch_dir}")
     print(f"Manifest: {manifest_text}")
     for note in manifest_notes:
@@ -274,13 +321,13 @@ def print_report(batch_dir: Path, states: list[StepState]) -> None:
 
     if blocking is not None:
         print(
-            "下一条建议输入: 批准进入下一步，或先处理 "
+            "下一条建议输入: 命令：批准进入下一步，或先处理 "
             f"{blocking.review_path}"
         )
     elif executable is not None:
-        print(f"下一条建议输入: 执行第{executable.number}步")
+        print(f"下一条建议输入: 命令：执行第{executable.number}步")
     else:
-        print("下一条建议输入: 检查当前进度")
+        print("下一条建议输入: 无（批次十步均已完成）")
 
 
 def main(argv: list[str]) -> int:
