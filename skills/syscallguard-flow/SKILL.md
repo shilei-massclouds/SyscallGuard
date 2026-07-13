@@ -109,6 +109,10 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
 - For Step 07, briefly summarize the unresolved-item triage, then ask only
   `是否接受这些未闭合问题的分类与处理决定？`. Show `命令：批准进入下一步` for approval
   and `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 07.
+- For Step 08, briefly summarize the generated dynamic test cases and execution bindings, then ask only
+  `是否向Starry注入测试？`. Treat approval as authorization for Step 09 to apply the generated test patch
+  and run the bound tests, not as authorization to apply Starry repair patches. Show `命令：批准进入下一步`
+  for approval and `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 08.
 - Treat `命令：批准进入下一步` as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
 
