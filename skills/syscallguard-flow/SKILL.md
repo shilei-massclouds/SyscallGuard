@@ -87,7 +87,9 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
 - When a step finishes, show a screen review block in chat and wait for `命令：批准进入下一步`.
   The review block must first list the concrete items produced or checked by that step, then list what
   the user should confirm about those items. For step 01, list the selected syscall names, then ask only
-  `是否同意处理这一批系统调用？`; do not add other confirmation questions. Step 06 lists the audited rule/syscall groups before asking
+  `是否同意处理这一批系统调用？`; do not add other confirmation questions. Show both Step 01 response paths:
+  `命令：批准进入下一步` for approval and `修改：<调整内容>` for rejection or changes. Do not use numbered
+  modification syntax for Step 01. Step 06 lists the audited rule/syscall groups before asking
   whether the audit scope, evidence refs, and result labels are acceptable.
 - Treat `命令：批准进入下一步` as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
