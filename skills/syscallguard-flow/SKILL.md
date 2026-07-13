@@ -94,6 +94,9 @@ Then show the 20 syscall names and the files that will hold the scope result. Do
 - For Step 02, list the investigated specification sources and missing materials, then ask only
   `对这批系统调用规格来源的调查结果是否接受？`. Show `命令：批准进入下一步` for approval and
   `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 02.
+- For Step 03, briefly list the normalized syscall rule references, reusable rules, and target mappings,
+  then ask only `对这批系统调用检查规则的整理结果是否接受？`. Show `命令：批准进入下一步`
+  for approval and `修改：<调整内容>` for rejection or changes. Do not use numbered modification syntax for Step 03.
 - Treat `命令：批准进入下一步` as permission to check the previous sign-off gate and proceed only if it is resolved.
 - After step `10-batch-closeout` is confirmed for a syscall-oriented batch, record history with:
 
