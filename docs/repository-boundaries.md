@@ -1,6 +1,6 @@
 # 仓库边界
 
-SyscallGuard 拥有规则、ingest report、Starry 映射、检查定义、finding/fix 记录和下游 run
+SyscallGuard 拥有规则、ingest/mapping report、Starry 检查定义、finding/fix 记录和下游 run
 快照。规格来源仓库只读。Ingest 不持久化原始证据或 syscall 聚合规格。
 
 检查和修复允许在独立 Git worktree 中注入测试、构建、运行 QEMU 和修改 Starry。调用对应

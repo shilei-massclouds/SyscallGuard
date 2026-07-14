@@ -1,5 +1,5 @@
 schema_name: syscallguard-shared-entities
-version: 6
+version: 7
 entities:
   syscall_index:
     kind: syscallguard_syscall_index
@@ -9,28 +9,40 @@ entities:
     notes: Each rule reference is preceded by the exact Chinese summary comment from its rule file.
   ingest_report:
     kind: syscallguard_ingest_report
-    storage: runs/spec-*/report.md YAML frontmatter
+    storage: runs/spec-*/report.md trailing YAML metadata
     required: [report_id, generated_at_utc, source, count, pending_count, selected_syscalls, syscalls]
     optional: [requested_syscalls]
-    selection_modes:
-      count: "requested_syscalls is absent and count records the resolved command, descriptor, or global default."
-      explicit_syscalls: "requested_syscalls is a normalized non-empty sorted unique list and count is {value: null, source: explicit_syscalls}."
     syscall_result_values: [formed_rules, no_rules]
     rule_version_required: [id, generated_at_utc, content_hash]
   rule:
     kind: syscallguard_rule
     required: [rule_id, category, semantics, semantic_hash, generated_at_utc, sources]
     notes: sources do not participate in semantic_hash or downstream invalidation.
-  starry_mapping:
-    kind: syscallguard_starry_mapping
-    required: [mapping_id, rule_refs, classification, target_locations, target_snapshot_hash, generated_at_utc, upstream_dependencies]
-    classification_values: [static, partial_static, dynamic, unsupported, needs_review]
+  mapping_report:
+    kind: syscallguard_mapping_report
+    storage: runs/mapping-*/report.md trailing YAML metadata
+    required: [report_id, status, generated_at_utc, rule_index_hash, target, counts, execution_scope, rule_syscalls, rules, entity_versions, remaining]
+    rule_status_values: [covered, needs_review, unsupported, pending]
+    notes: rules contains the complete current rule library; execution_scope contains only this report's executable outputs.
+  static_check_index:
+    kind: syscallguard_starry_static_check_index
+    storage: targets/starry/static-checks.yaml
+    required: [syscalls]
+    row_required: [check_id, path, rule_refs]
   static_check:
     kind: syscallguard_starry_static_check
-    required: [check_id, rule_refs, path, patterns, target_snapshot_hash, generated_at_utc, upstream_dependencies]
+    storage: targets/starry/static-checks/*.yaml
+    required: [check_id, rule_refs, path, patterns, target_dependencies, target_content_fingerprint, generated_at_utc, upstream_dependencies]
+  dynamic_test_index:
+    kind: syscallguard_starry_dynamic_test_index
+    storage: targets/starry/dynamic-tests.yaml
+    required: [syscalls]
+    row_required: [test_id, path, rule_refs]
   dynamic_test:
     kind: syscallguard_starry_dynamic_test
-    required: [test_id, rule_refs, test_source, build, command, target_snapshot_hash, generated_at_utc, upstream_dependencies]
+    storage: targets/starry/dynamic-tests/*.yaml
+    required: [test_id, rule_refs, test_source, build, command, target_dependencies, target_content_fingerprint, generated_at_utc, upstream_dependencies]
+    optional_assets: targets/starry/dynamic-tests/assets/**
     result_values: [pass, fail, skipped, not_run]
   finding:
     kind: syscallguard_starry_finding
@@ -39,11 +51,6 @@ entities:
   fix:
     kind: syscallguard_starry_fix
     required: [fix_id, finding_refs, patch, starry_branch, regression, status, generated_at_utc, upstream_dependencies]
-  starry_rule_coverage:
-    kind: syscallguard_starry_rule_coverage
-    storage: targets/starry/rule-coverage.yaml
-    status_values: [pending, mapped, needs_review, unsupported]
-    classification_values: [static, partial_static, dynamic, unsupported, needs_review]
 dependency_version:
   required: [id, generated_at_utc, content_hash]
   validation: Compare generated_at_utc first, then content_hash; reject either mismatch as stale.

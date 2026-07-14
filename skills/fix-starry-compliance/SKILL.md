@@ -21,9 +21,9 @@ description: Repair confirmed implementation findings from one SyscallGuard chec
 
 ## Boundaries
 
-- Refuse a stale check when the check result, finding, mapped entity, or Starry content snapshot changed after checking.
-- Preserve the syscall ownership recorded by the mapping run; never reconstruct it from removed syscall specs or ingest reports.
-- Apply the mapped dynamic test patches before the implementation patch so tests are retained in a successful commit.
+- Refuse a stale check when the check result, finding, scoped entity, or Starry content snapshot changed after checking.
+- Preserve the syscall ownership recorded by the mapping report; never reconstruct it from removed syscall specs or ingest reports.
+- Apply the scoped dynamic test patches before the implementation patch so tests are retained in a successful commit.
 - Require every static and enabled dynamic regression to pass. A skipped disabled test is allowed; `not_run` is not.
 - On regression or commit failure, create no completion commit and retain the worktree, patch, and logs.
 - Version the patch, regression result, finding update, and fix; record only direct upstream dependencies.

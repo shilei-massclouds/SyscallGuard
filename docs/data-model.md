@@ -31,23 +31,22 @@
 任何未解析证据或零规则都会使该 syscall 记为 `no_rules`，候选规则全部丢弃。原始和归一化证据
 只存在于执行内存和终端诊断中。
 
-## Mapping coverage 与下游 run
+## Mapping report、检查库与下游 run
 
-`targets/starry/rule-coverage.yaml` 以 rule ID 为键，记录规则版本、syscall 归属、pending/mapped/
-needs_review/unsupported 状态、static/partial_static/dynamic 分类、实体引用、目标文件/符号内容指纹、
-最后验证快照、处理 run 和原因。目标只有无关内容变化时不重映射，只推进最后验证快照。
+`runs/mapping-*/report.md` 是 mapping 的唯一增量状态。中文正文列出本轮静态检查数、动态测试数、
+全局剩余数和完整 rule—syscall 关系；末尾元数据保存当前规则库全部规则。规则状态只有
+`covered`、`needs_review`、`unsupported` 和 `pending`。`covered` 通过静态/动态引用组合表达覆盖方式。
+每行同时保存规则版本、引用实体版本、目标文件/符号内容指纹、最后验证快照、最后处理报告和原因。
 
-普通 run schema 覆盖 `mapping`、`check` 和 `fix`：
-
-- mapping 直接读取 `library/syscalls.yaml` 和规则详情，manifest 保存规则索引 hash、selected rule
-  versions 和 `rule_syscalls`；
-- check/fix manifest 使用 `from_run_id`；
-- check 使用 `rule_syscalls` 生成 finding 的 syscall 归属。
+`targets/starry/static-checks.yaml` 与 `targets/starry/dynamic-tests.yaml` 是按 syscall 分组的一级索引；
+同名目录保存一个实体一个 YAML 的二级详情。动态测试的独立源码或 patch 位于其 `assets/` 子目录。
+Mapping 的 `execution_scope` 只记录本轮产出的检查和测试；check 只执行该范围，并使用报告的完整
+`rule_syscalls` 生成 finding 归属。Check/fix manifest 仍使用 `from_run_id` 串接父结果。
 
 所有依赖先比较 `generated_at_utc`，再比较 `content_hash`；任一不同即 stale。第二次 hash 比较
 保证人工编辑即使漏更新时间也会被拒绝。
 
-规则库、coverage、共享实体和所有 run/result 不保存或依赖 Git commit ID。来源和目标使用内容型
+规则库、报告、共享实体和所有 run/result 不保存或依赖 Git commit ID。来源和目标使用内容型
 `snapshot_hash` 保证各阶段观察一致；逐规则 pending 判断只比较其目标文件、符号和 helper 指纹。
 
 ## 描述符
@@ -77,5 +76,5 @@ worktree_root: /tmp/syscallguard-worktrees
 
 `$reset-syscallguard` 只删除 `library/syscalls.yaml`、`library/rules/*.yaml` 和
 `runs/spec-*/report.md`。它保留来源配置、
-recognizer、Starry 共享实体以及 mapping/check/fix 历史；下一次 ingest 因无 report 状态而从首个
+recognizer、Starry 共享实体、mapping report 以及 check/fix 历史；下一次 ingest 因无 report 状态而从首个
 字典序 syscall 重新开始。

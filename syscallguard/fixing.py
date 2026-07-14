@@ -40,6 +40,7 @@ from .common import (
     utc_now,
     version_content_hash,
 )
+from .mapping import load_mapping_report
 
 
 def _open_findings(root: Path, check_run: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -140,11 +141,10 @@ def run_fix(
 ) -> str:
     root = (root or repo_root()).resolve()
     check_run = read_run(root, from_run_id, "check")
-    mapping_run_id = check_run.get("from_run_id")
-    if not isinstance(mapping_run_id, str) or not mapping_run_id:
-        raise SyscallGuardError(f"check run {from_run_id} has no mapping parent")
-    mapping_run = read_run(root, mapping_run_id, "mapping")
-    mapping_run["_run_directory"] = str(root / "runs" / mapping_run_id)
+    mapping_report_id = check_run.get("from_run_id")
+    if not isinstance(mapping_report_id, str) or not mapping_report_id:
+        raise SyscallGuardError(f"check run {from_run_id} has no mapping report parent")
+    mapping_report = load_mapping_report(root, mapping_report_id)
     run_id = requested_run_id or new_run_id("fix", {"from": from_run_id, "at": utc_now()})
     recorder = RunRecorder(
         root,
@@ -155,11 +155,11 @@ def run_fix(
     )
     try:
         findings = _open_findings(root, check_run)
-        target = check_run.get("target", mapping_run.get("target", {}))
+        target = check_run.get("target", mapping_report.get("target", {}))
         if not isinstance(target, dict):
             raise SyscallGuardError("check target metadata must be a mapping")
         repository = Path(str(target.get("repository", ""))).expanduser().resolve()
-        revision_ref = str(_mapping_target_descriptor(mapping_run).get("revision", "HEAD"))
+        revision_ref = str(_mapping_target_descriptor(mapping_report).get("revision", "HEAD"))
         checked_snapshot = str(target.get("snapshot_hash", ""))
         if not repository.is_dir() or not checked_snapshot:
             raise SyscallGuardError(f"check run {from_run_id} has invalid target metadata")
@@ -178,8 +178,8 @@ def run_fix(
             }
         )
         stale_reasons = _check_staleness(root, check_run, findings)
-        mapping_entities, _mapping_hashes, _mapping_input = _current_input(root, mapping_run)
-        stale_reasons.extend(_mapping_staleness(mapping_run, mapping_entities))
+        mapping_entities, _mapping_hashes, _mapping_input = _current_input(root, mapping_report)
+        stale_reasons.extend(_mapping_staleness(mapping_report, mapping_entities))
         if current_snapshot != checked_snapshot or stale_reasons:
             recorder.manifest["counts"] = {"selected_findings": 0, "blockers": 1}
             recorder.complete(
@@ -224,7 +224,7 @@ def run_fix(
         recorder.manifest["entity_hashes"] = hashes
         recorder.manifest["entity_versions"].update(_current_versions(entities))
         recorder.manifest["regression_input_hash"] = regression_input_hash
-        worktree = _worktree_path(mapping_run, run_id)
+        worktree = _worktree_path(mapping_report, run_id)
         _create_worktree(repository, revision_ref, worktree)
         if repository_snapshot_hash(worktree) != checked_snapshot:
             raise SyscallGuardError("isolated Starry worktree does not match the checked content snapshot")
@@ -288,7 +288,7 @@ def run_fix(
         regression_generated_at = utc_now()
         regression_dependencies = [
             version
-            for kind in ("mappings", "static_checks", "dynamic_tests")
+            for kind in ("static_checks", "dynamic_tests")
             for _entity_id, version in sorted(recorder.manifest["entity_versions"][kind].items())
         ]
         results = {

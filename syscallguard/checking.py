@@ -22,7 +22,6 @@ from .common import (
     load_mapping,
     new_run_id,
     publish_yaml_entities,
-    read_run,
     repository_snapshot_hash,
     repo_root,
     safe_relative_path,
@@ -31,6 +30,7 @@ from .common import (
     utc_now,
     version_content_hash,
 )
+from .mapping import load_mapping_report
 
 
 DEFAULT_BLOCKER_PATTERNS = [
@@ -64,24 +64,17 @@ def _load_entities(
 
 
 def _current_input(
-    root: Path, mapping_run: dict[str, Any]
+    root: Path, mapping_report: dict[str, Any]
 ) -> tuple[dict[str, dict[str, dict[str, Any]]], dict[str, dict[str, str]], str]:
-    entity_ids = mapping_run.get("entities", {})
+    entity_ids = mapping_report.get("execution_scope", {})
     if not isinstance(entity_ids, dict):
-        raise SyscallGuardError("mapping run entities must be a mapping")
+        raise SyscallGuardError("mapping report execution_scope must be a mapping")
     rules, rule_hashes = _load_entities(
         root,
         list(entity_ids.get("rules", [])),
         "library/rules",
         "rule_id",
         "syscallguard_rule",
-    )
-    mappings, mapping_hashes = _load_entities(
-        root,
-        list(entity_ids.get("mappings", [])),
-        "targets/starry/mappings",
-        "mapping_id",
-        "syscallguard_starry_mapping",
     )
     checks, check_hashes = _load_entities(
         root,
@@ -99,20 +92,18 @@ def _current_input(
     )
     entities = {
         "rules": rules,
-        "mappings": mappings,
         "static_checks": checks,
         "dynamic_tests": tests,
     }
     hashes = {
         "rules": rule_hashes,
-        "mappings": mapping_hashes,
         "static_checks": check_hashes,
         "dynamic_tests": test_hashes,
     }
-    target_snapshot_hash = str(mapping_run.get("target", {}).get("snapshot_hash", ""))
-    rule_syscalls = mapping_run.get("rule_syscalls", {})
+    target_snapshot_hash = str(mapping_report.get("target", {}).get("snapshot_hash", ""))
+    rule_syscalls = mapping_report.get("rule_syscalls", {})
     if not isinstance(rule_syscalls, dict):
-        raise SyscallGuardError("mapping run rule_syscalls must be a mapping")
+        raise SyscallGuardError("mapping report rule_syscalls must be a mapping")
     return entities, hashes, content_hash(
         {
             "entities": hashes,
@@ -132,22 +123,22 @@ def _current_versions(
 
 
 def _mapping_staleness(
-    mapping_run: dict[str, Any], entities: dict[str, dict[str, dict[str, Any]]]
+    mapping_report: dict[str, Any], entities: dict[str, dict[str, dict[str, Any]]]
 ) -> list[str]:
-    recorded_all = mapping_run.get("entity_versions", {})
+    recorded_all = mapping_report.get("entity_versions", {})
     if not isinstance(recorded_all, dict):
-        return ["mapping run has no entity_versions"]
+        return ["mapping report has no entity_versions"]
     reasons: list[str] = []
-    for kind in ("rules", "mappings", "static_checks", "dynamic_tests"):
+    for kind in ("rules", "static_checks", "dynamic_tests"):
         recorded = recorded_all.get(kind, {})
         current = entities.get(kind, {})
         if not isinstance(recorded, dict):
-            reasons.append(f"mapping run has no {kind} versions")
+            reasons.append(f"mapping report has no {kind} versions")
             continue
         for entity_id, entity in current.items():
             row = recorded.get(entity_id)
             if not isinstance(row, dict):
-                reasons.append(f"mapping run has no version for {kind}/{entity_id}")
+                reasons.append(f"mapping report has no version for {kind}/{entity_id}")
                 continue
             mismatch = dependency_mismatch(row, entity_id, entity)
             if mismatch:
@@ -175,21 +166,15 @@ def _prior_identical_check(root: Path, input_hash: str, current_run_id: str) -> 
     return None
 
 
-def _mapping_target_descriptor(mapping_run: dict[str, Any]) -> dict[str, Any]:
-    descriptor_path = Path(str(mapping_run.get("outputs", {}).get("target_descriptor", "")))
-    descriptor = {}
-    source_dir = Path(str(mapping_run.get("_run_directory", "")))
-    if descriptor_path.name and source_dir:
-        candidate = source_dir / descriptor_path
-        if candidate.exists():
-            descriptor = load_mapping(candidate)
-    if not isinstance(descriptor, dict) or descriptor.get("target_id") != "starry":
-        raise SyscallGuardError("mapping run has no valid target descriptor snapshot")
-    return descriptor
+def _mapping_target_descriptor(mapping_report: dict[str, Any]) -> dict[str, Any]:
+    target = mapping_report.get("target")
+    if not isinstance(target, dict) or target.get("target_id") != "starry":
+        raise SyscallGuardError("mapping report has no valid target metadata")
+    return target
 
 
-def _worktree_path(mapping_run: dict[str, Any], run_id: str) -> Path:
-    descriptor = _mapping_target_descriptor(mapping_run)
+def _worktree_path(mapping_report: dict[str, Any], run_id: str) -> Path:
+    descriptor = _mapping_target_descriptor(mapping_report)
     raw_root = descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")
     if not isinstance(raw_root, str) or not raw_root:
         raise SyscallGuardError("target descriptor worktree_root must be a path")
@@ -555,21 +540,20 @@ def run_check(
     requested_run_id: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
-    mapping_run = read_run(root, from_run_id, "mapping")
-    mapping_run["_run_directory"] = str(root / "runs" / from_run_id)
+    mapping_report = load_mapping_report(root, from_run_id)
     run_id = requested_run_id or new_run_id(
         "check", {"from": from_run_id, "at": utc_now()}
     )
     recorder = RunRecorder(root, "check", run_id, {"from": from_run_id}, from_run_id)
     try:
-        target = mapping_run.get("target", {})
+        target = mapping_report.get("target", {})
         repository = Path(str(target.get("repository", ""))).expanduser().resolve()
-        revision_ref = str(_mapping_target_descriptor(mapping_run).get("revision", "HEAD"))
+        revision_ref = str(_mapping_target_descriptor(mapping_report).get("revision", "HEAD"))
         mapped_snapshot = str(target.get("snapshot_hash", ""))
         if not repository.is_dir() or not mapped_snapshot:
-            raise SyscallGuardError(f"mapping run {from_run_id} has invalid target metadata")
+            raise SyscallGuardError(f"mapping report {from_run_id} has invalid target metadata")
         current_snapshot = repository_snapshot_hash(repository)
-        entities, hashes, input_hash = _current_input(root, mapping_run)
+        entities, hashes, input_hash = _current_input(root, mapping_report)
         versions = _current_versions(entities)
         recorder.manifest["input_hash"] = input_hash
         recorder.manifest["entity_hashes"] = hashes
@@ -578,8 +562,8 @@ def run_check(
         recorder.manifest["entities"] = {
             key: sorted(values) for key, values in entities.items()
         }
-        recorder.manifest["rule_syscalls"] = mapping_run.get("rule_syscalls", {})
-        stale_reasons = _mapping_staleness(mapping_run, entities)
+        recorder.manifest["rule_syscalls"] = mapping_report.get("rule_syscalls", {})
+        stale_reasons = _mapping_staleness(mapping_report, entities)
         if current_snapshot != mapped_snapshot or stale_reasons:
             blocker = {
                 "kind": "stale_mapping",
@@ -603,7 +587,7 @@ def run_check(
             prior_results = load_mapping(prior_results_path) if prior_results_path.is_file() else {}
             dependencies = [
                 version
-                for kind in ("mappings", "static_checks", "dynamic_tests")
+                for kind in ("static_checks", "dynamic_tests")
                 for _entity_id, version in sorted(versions[kind].items())
             ]
             reused_results = {
@@ -638,7 +622,7 @@ def run_check(
             recorder.flush()
             return run_id
 
-        worktree = _worktree_path(mapping_run, run_id)
+        worktree = _worktree_path(mapping_report, run_id)
         _create_worktree(repository, revision_ref, worktree)
         if repository_snapshot_hash(worktree) != mapped_snapshot:
             raise SyscallGuardError("isolated Starry worktree does not match the mapped content snapshot")
@@ -672,7 +656,7 @@ def run_check(
         generated_at = utc_now()
         result_dependencies = [
             version
-            for kind in ("mappings", "static_checks", "dynamic_tests")
+            for kind in ("static_checks", "dynamic_tests")
             for _entity_id, version in sorted(versions[kind].items())
         ]
         results = {
@@ -693,7 +677,7 @@ def run_check(
             root,
             run_id,
             mapped_snapshot,
-            mapping_run.get("rule_syscalls", {}),
+            mapping_report.get("rule_syscalls", {}),
             static_results,
             dynamic_results,
             entities["static_checks"],
@@ -764,7 +748,7 @@ def run_check(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Check Starry compliance in an isolated worktree")
-    parser.add_argument("--from", dest="from_run_id", required=True, help="mapping run id")
+    parser.add_argument("--from", dest="from_run_id", required=True, help="mapping report id")
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
     return parser

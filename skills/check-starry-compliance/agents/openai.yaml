@@ -1,4 +1,4 @@
 interface:
   display_name: "Check Starry Compliance"
   short_description: "Run isolated Starry compliance checks"
-  default_prompt: "Use $check-starry-compliance from=<mapping-run-id> to run isolated static and dynamic checks."
+  default_prompt: "Use $check-starry-compliance from=<mapping-report-id> to run isolated static and dynamic checks."

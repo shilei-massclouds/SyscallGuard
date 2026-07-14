@@ -8,8 +8,8 @@ SyscallGuard 将合规性工作拆成独立的规则导入、Starry 映射、隔
 发布 report；失败时三者都不推进。`no_rules` 也是可跳过的
 成功状态，但从不发布未完整解析的候选语义。
 
-Mapping 将 report 中的规则版本与 syscall 归属保存到 run。Check 只从该归属生成 finding，
-不依赖聚合 syscall spec。所有下游消费者先比较依赖时间戳，再复核内容 hash，并同时固定
-Starry commit。
+Mapping 将完整规则状态写入中文报告尾部元数据，并只把本轮产出的检查与测试写入
+`execution_scope`。Check 从该范围执行、从完整归属生成 finding，不依赖聚合 syscall spec。
+所有下游消费者先比较依赖时间戳，再复核内容 hash，并固定 Starry 内容快照。
 
-Reset 只清空 syscall 索引、通用规则和 ingest report 状态。来源配置和 Starry 映射、检查、测试定义保持不变。
+Reset 只清空 syscall 索引、通用规则和 ingest report 状态。来源配置、mapping report、检查和测试定义保持不变。

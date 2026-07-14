@@ -20,18 +20,6 @@ SKILLS = {
 }
 RUN_STATUSES = {"running", "completed", "completed_with_blockers", "failed", "superseded"}
 TARGET_INDEXES = {
-    "targets/starry/mappings/index.yaml": (
-        "syscallguard_starry_mapping_index",
-        "syscallguard_starry_mapping",
-    ),
-    "targets/starry/static-checks/index.yaml": (
-        "syscallguard_starry_static_check_index",
-        "syscallguard_starry_static_check",
-    ),
-    "targets/starry/dynamic-tests/index.yaml": (
-        "syscallguard_starry_dynamic_test_index",
-        "syscallguard_starry_dynamic_test",
-    ),
     "targets/starry/findings/index.yaml": (
         "syscallguard_starry_finding_index",
         "syscallguard_starry_finding",
@@ -39,6 +27,20 @@ TARGET_INDEXES = {
     "targets/starry/fixes/index.yaml": (
         "syscallguard_starry_fix_index",
         "syscallguard_starry_fix",
+    ),
+}
+EXECUTABLE_INDEXES = {
+    "targets/starry/static-checks.yaml": (
+        "syscallguard_starry_static_check_index",
+        "syscallguard_starry_static_check",
+        "check_id",
+        "targets/starry/static-checks",
+    ),
+    "targets/starry/dynamic-tests.yaml": (
+        "syscallguard_starry_dynamic_test_index",
+        "syscallguard_starry_dynamic_test",
+        "test_id",
+        "targets/starry/dynamic-tests",
     ),
 }
 
@@ -298,7 +300,92 @@ def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
     return reports
 
 
-def validate_runs(errors: list[str], reports: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+def validate_mapping_reports(
+    errors: list[str], rules: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    for path in sorted((ROOT / "runs").glob("mapping-*/report.md")):
+        value = frontmatter(path, errors)
+        if not isinstance(value, dict):
+            continue
+        report_id = path.parent.name
+        if (
+            value.get("kind") != "syscallguard_mapping_report"
+            or value.get("report_id") != report_id
+            or value.get("status") != "completed"
+        ):
+            errors.append(f"invalid mapping report identity: {path.relative_to(ROOT)}")
+            continue
+        reports[report_id] = value
+        extras = [item.name for item in path.parent.iterdir() if item.name != "report.md"]
+        if extras:
+            errors.append(f"mapping report directory {report_id} has extra artifacts: {sorted(extras)}")
+        if not isinstance(value.get("generated_at_utc"), str):
+            errors.append(f"mapping report {report_id} has no generated_at_utc")
+        if not isinstance(value.get("rule_index_hash"), str):
+            errors.append(f"mapping report {report_id} has no rule_index_hash")
+        target = value.get("target")
+        if not isinstance(target, dict) or not all(
+            isinstance(target.get(key), str)
+            for key in (
+                "target_id",
+                "repository",
+                "repository_identity",
+                "revision",
+                "worktree_root",
+                "descriptor_hash",
+                "snapshot_hash",
+            )
+        ):
+            errors.append(f"mapping report {report_id} has invalid target metadata")
+        scope = value.get("execution_scope")
+        if not isinstance(scope, dict) or not all(
+            isinstance(scope.get(key), list)
+            for key in ("rules", "static_checks", "dynamic_tests")
+        ):
+            errors.append(f"mapping report {report_id} has invalid execution_scope")
+        relation = value.get("rule_syscalls")
+        rows = value.get("rules")
+        if not isinstance(relation, dict) or not isinstance(rows, dict):
+            errors.append(f"mapping report {report_id} has invalid complete rule state")
+            continue
+        for rule_id, row in rows.items():
+            if not isinstance(row, dict):
+                errors.append(f"mapping report {report_id} has invalid rule row {rule_id}")
+                continue
+            if row.get("status") not in {"covered", "needs_review", "unsupported", "pending"}:
+                errors.append(f"mapping report {report_id} has invalid status for {rule_id}")
+            if not valid_version(row.get("rule_version")):
+                errors.append(f"mapping report {report_id} has invalid rule version for {rule_id}")
+            if row.get("syscalls") != relation.get(rule_id):
+                errors.append(f"mapping report {report_id} syscall relation mismatch for {rule_id}")
+            for key in ("static_check_refs", "dynamic_test_refs", "target_dependencies"):
+                if not isinstance(row.get(key), list):
+                    errors.append(f"mapping report {report_id} has invalid {key} for {rule_id}")
+            if not isinstance(row.get("entity_versions"), dict):
+                errors.append(f"mapping report {report_id} has no entity versions for {rule_id}")
+            if not isinstance(row.get("last_processed_report"), (str, type(None))):
+                errors.append(f"mapping report {report_id} has invalid last report for {rule_id}")
+    if reports:
+        latest = max(
+            reports.values(),
+            key=lambda row: (str(row.get("generated_at_utc", "")), str(row.get("report_id", ""))),
+        )
+        latest_rows = latest.get("rules", {})
+        if set(latest_rows) != set(rules):
+            errors.append("latest mapping report does not exactly cover the general rule library")
+        for rule_id, entity in rules.items():
+            row = latest_rows.get(rule_id, {})
+            if isinstance(row, dict) and row.get("rule_version", {}).get("content_hash") != version_hash(
+                entity
+            ):
+                errors.append(f"latest mapping report has stale rule version for {rule_id}")
+    return reports
+
+
+def validate_runs(
+    errors: list[str], mapping_reports: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
     runs: dict[str, dict[str, Any]] = {}
     for path in sorted((ROOT / "runs").glob("*/manifest.yaml")):
         value = load(path, errors)
@@ -308,7 +395,7 @@ def validate_runs(errors: list[str], reports: dict[str, dict[str, Any]]) -> dict
         stage = value.get("stage")
         if value.get("kind") != "syscallguard_run" or value.get("run_id") != run_id:
             errors.append(f"invalid run identity: {path.relative_to(ROOT)}")
-        if stage not in {"mapping", "check", "fix"}:
+        if stage not in {"check", "fix"}:
             errors.append(f"run {run_id} has invalid stage {stage!r}")
         if value.get("status") not in RUN_STATUSES:
             errors.append(f"run {run_id} has invalid status {value.get('status')!r}")
@@ -316,26 +403,15 @@ def validate_runs(errors: list[str], reports: dict[str, dict[str, Any]]) -> dict
             errors.append(f"repository contains unfinished run: {run_id}")
         if not (path.parent / "changeset.yaml").is_file():
             errors.append(f"run has no changeset: {run_id}")
-        if stage == "mapping":
-            if not isinstance(value.get("rule_index_hash"), str):
-                errors.append(f"mapping run {run_id} has no rule_index_hash")
-            if not isinstance(value.get("selected_rule_versions"), dict):
-                errors.append(f"mapping run {run_id} has no selected_rule_versions")
-            if not isinstance(value.get("rule_syscalls"), dict):
-                errors.append(f"mapping run {run_id} has no rule_syscalls")
-            if "from_run_id" in value:
-                errors.append(f"mapping run {run_id} must not use from_run_id")
-            if "from_report_id" in value:
-                errors.append(f"mapping run {run_id} must not use from_report_id")
-        elif stage in {"check", "fix"} and not isinstance(value.get("from_run_id"), str):
+        if stage in {"check", "fix"} and not isinstance(value.get("from_run_id"), str):
             errors.append(f"run {run_id} has no from_run_id")
         runs[run_id] = value
     for run_id, value in runs.items():
         stage = value.get("stage")
         if stage == "check":
-            parent = runs.get(str(value.get("from_run_id")))
-            if parent is not None and parent.get("stage") != "mapping":
-                errors.append(f"check run {run_id} has non-mapping parent")
+            parent_id = str(value.get("from_run_id"))
+            if parent_id not in mapping_reports:
+                errors.append(f"check run {run_id} has no mapping report parent")
         if stage == "fix":
             parent = runs.get(str(value.get("from_run_id")))
             if parent is not None and parent.get("stage") != "check":
@@ -381,6 +457,121 @@ def validate_indexes(errors: list[str]) -> dict[str, dict[str, Any]]:
     return entities
 
 
+def validate_executable_indexes(
+    errors: list[str], rules: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    entities: dict[str, dict[str, Any]] = {}
+    referenced_assets: set[Path] = set()
+    for relative, (index_kind, entity_kind, id_field, directory) in EXECUTABLE_INDEXES.items():
+        index = load(ROOT / relative, errors)
+        if not isinstance(index, dict):
+            continue
+        groups = index.get("syscalls")
+        if index.get("kind") != index_kind or not isinstance(groups, dict):
+            errors.append(f"invalid grouped executable index: {relative}")
+            continue
+        seen_rows: dict[str, dict[str, Any]] = {}
+        for syscall, rows in groups.items():
+            if not isinstance(syscall, str) or not isinstance(rows, list):
+                errors.append(f"invalid syscall group in {relative}")
+                continue
+            for row in rows:
+                if not isinstance(row, dict) or set(row) != {id_field, "path", "rule_refs"}:
+                    errors.append(f"invalid grouped index row in {relative}")
+                    continue
+                entity_id = row.get(id_field)
+                raw_path = row.get("path")
+                refs = row.get("rule_refs")
+                if (
+                    not isinstance(entity_id, str)
+                    or not isinstance(raw_path, str)
+                    or not isinstance(refs, list)
+                ):
+                    errors.append(f"invalid grouped index row in {relative}")
+                    continue
+                expected = f"{directory}/{re.sub(r'[^a-z0-9]+', '-', entity_id.lower()).strip('-')}.yaml"
+                if raw_path != expected:
+                    errors.append(f"wrong detail path for {entity_id} in {relative}")
+                prior = seen_rows.get(entity_id)
+                if prior is not None and prior != row:
+                    errors.append(f"conflicting grouped index row for {entity_id}")
+                seen_rows[entity_id] = row
+                entity = load(ROOT / raw_path, errors)
+                if not isinstance(entity, dict):
+                    continue
+                entities[entity_id] = entity
+                if entity.get("kind") != entity_kind or entity.get(id_field) != entity_id:
+                    errors.append(f"invalid executable detail: {raw_path}")
+                if entity.get("rule_refs") != refs or not refs or not set(refs).issubset(rules):
+                    errors.append(f"invalid rule_refs for executable detail: {raw_path}")
+                expected_syscalls = {
+                    owner
+                    for rule_id in refs
+                    for owner, rule_refs in _rule_syscall_relation().items()
+                    if rule_id in rule_refs
+                }
+                if syscall not in expected_syscalls:
+                    errors.append(f"wrong syscall group for {entity_id}: {syscall}")
+                if not isinstance(entity.get("generated_at_utc"), str):
+                    errors.append(f"executable detail has no generated_at_utc: {raw_path}")
+                if not isinstance(entity.get("target_dependencies"), list) or not isinstance(
+                    entity.get("target_content_fingerprint"), str
+                ):
+                    errors.append(f"executable detail has no target fingerprint: {raw_path}")
+                if not isinstance(entity.get("upstream_dependencies"), list):
+                    errors.append(f"executable detail has no rule dependencies: {raw_path}")
+                if id_field == "test_id":
+                    for key in ("patch_file", "test_source"):
+                        value = entity.get(key)
+                        if isinstance(value, str) and value.startswith(
+                            "targets/starry/dynamic-tests/assets/"
+                        ):
+                            asset = Path(value)
+                            referenced_assets.add(asset)
+                            if not (ROOT / asset).is_file():
+                                errors.append(f"dynamic test asset is missing: {value}")
+                    patch_file = entity.get("patch_file")
+                    if isinstance(patch_file, str) and patch_file and not patch_file.startswith(
+                        "targets/starry/dynamic-tests/assets/"
+                    ):
+                        errors.append(f"dynamic test patch is outside assets: {raw_path}")
+        detail_directory = ROOT / directory
+        indexed = set(seen_rows)
+        actual = {
+            str(entity.get(id_field))
+            for path in detail_directory.glob("*.yaml")
+            if isinstance((entity := load(path, errors)), dict)
+        }
+        if actual != indexed:
+            errors.append(f"grouped index/detail mismatch for {relative}")
+    assets_root = ROOT / "targets/starry/dynamic-tests/assets"
+    actual_assets = (
+        {
+            Path("targets/starry/dynamic-tests/assets") / path.relative_to(assets_root)
+            for path in assets_root.rglob("*")
+            if path.is_file()
+        }
+        if assets_root.is_dir()
+        else set()
+    )
+    if actual_assets != referenced_assets:
+        errors.append("dynamic test assets and detail references do not match")
+    return entities
+
+
+def _rule_syscall_relation() -> dict[str, list[str]]:
+    path = ROOT / "library/syscalls.yaml"
+    if not path.is_file():
+        return {}
+    value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    syscalls = value.get("syscalls", {}) if isinstance(value, dict) else {}
+    return {
+        syscall: [str(row.get("rule_id")) for row in rows if isinstance(row, dict)]
+        for syscall, rows in syscalls.items()
+        if isinstance(syscall, str) and isinstance(rows, list)
+    }
+
+
 def validate_sources(errors: list[str]) -> None:
     index = load(ROOT / "sources/index.yaml", errors)
     if not isinstance(index, dict) or index.get("default_source") != "ltp-local":
@@ -390,38 +581,6 @@ def validate_sources(errors: list[str]) -> None:
     ids = [row.get("id") for row in recognizers if isinstance(row, dict)]
     if not ids or len(ids) != len(set(ids)):
         errors.append("LTP recognizers need unique stable ids")
-
-
-def validate_rule_coverage(
-    errors: list[str], rules: dict[str, dict[str, Any]]
-) -> None:
-    path = ROOT / "targets/starry/rule-coverage.yaml"
-    value = load(path, errors)
-    if not isinstance(value, dict):
-        return
-    if value.get("kind") != "syscallguard_starry_rule_coverage":
-        errors.append("invalid Starry rule coverage kind")
-    rows = value.get("rules")
-    if not isinstance(rows, dict):
-        errors.append("Starry rule coverage has no rules mapping")
-        return
-    if set(rows) != set(rules):
-        errors.append("Starry rule coverage does not exactly cover the general rule library")
-    for rule_id, row in rows.items():
-        if not isinstance(row, dict):
-            errors.append(f"invalid coverage row for {rule_id}")
-            continue
-        if row.get("status") not in {"pending", "mapped", "needs_review", "unsupported"}:
-            errors.append(f"invalid coverage status for {rule_id}")
-        if not valid_version(row.get("rule_version")):
-            errors.append(f"invalid coverage rule version for {rule_id}")
-        if rule_id in rules and row.get("rule_version", {}).get("content_hash") != version_hash(
-            rules[rule_id]
-        ):
-            errors.append(f"stale coverage rule version for {rule_id}")
-        for key in ("mapping_refs", "static_check_refs", "dynamic_test_refs"):
-            if not isinstance(row.get(key), list):
-                errors.append(f"coverage {rule_id} has invalid {key}")
 
 
 def validate_no_persisted_commit_ids(errors: list[str]) -> None:
@@ -455,6 +614,10 @@ def validate_no_persisted_commit_ids(errors: list[str]) -> None:
         for path in directory.rglob("*.yaml"):
             value = load(path, errors)
             visit(value, str(path.relative_to(ROOT)))
+    for path in (ROOT / "runs").glob("*/report.md"):
+        value = frontmatter(path, errors)
+        if isinstance(value, dict):
+            visit(value, str(path.relative_to(ROOT)))
 
 
 def validate_removed_legacy(errors: list[str]) -> None:
@@ -467,6 +630,10 @@ def validate_removed_legacy(errors: list[str]) -> None:
         "runs/mapping-migrated-batch-001",
         "runs/check-migrated-batch-001",
         "runs/fix-migrated-batch-001",
+        "targets/starry/mappings",
+        "targets/starry/rule-coverage.yaml",
+        "targets/starry/static-checks/index.yaml",
+        "targets/starry/dynamic-tests/index.yaml",
     ]
     for relative in forbidden:
         if (ROOT / relative).exists():
@@ -488,9 +655,10 @@ def main() -> int:
     rules = validate_rules(errors)
     validate_syscall_index(errors, rules)
     reports = validate_reports(errors)
-    runs = validate_runs(errors, reports)
+    mapping_reports = validate_mapping_reports(errors, rules)
+    runs = validate_runs(errors, mapping_reports)
     validate_indexes(errors)
-    validate_rule_coverage(errors, rules)
+    validate_executable_indexes(errors, rules)
     validate_sources(errors)
     validate_no_persisted_commit_ids(errors)
     validate_removed_legacy(errors)
@@ -502,7 +670,7 @@ def main() -> int:
     print("repository validation: OK")
     print(
         f"skills={len(SKILLS)} ingest_reports={len(reports)} "
-        f"rules={len(rules)} downstream_runs={len(runs)}"
+        f"mapping_reports={len(mapping_reports)} rules={len(rules)} downstream_runs={len(runs)}"
     )
     return 0
 

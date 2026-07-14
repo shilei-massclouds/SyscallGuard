@@ -1,18 +1,18 @@
 ---
 name: check-starry-compliance
-description: Execute static checks and injected dynamic tests from one SyscallGuard mapping run in an isolated Starry Git worktree, separating confirmed implementation findings from environment blockers. Use only when the user invokes `$check-starry-compliance` with a from argument or explicitly asks to execute one Starry mapping run. Do not generate implementation fixes.
+description: Execute static checks and injected dynamic tests from one SyscallGuard mapping report in an isolated Starry Git worktree, separating confirmed implementation findings from environment blockers. Use only when the user invokes `$check-starry-compliance` with a from argument or explicitly asks to execute one Starry mapping report. Do not generate implementation fixes.
 ---
 
 # Check Starry Compliance
 
 ## Execute
 
-1. Parse exactly `from=<mapping-run-id>`.
+1. Parse exactly `from=<mapping-report-id>`.
 2. Read [references/contract.md](references/contract.md).
 3. Run:
 
    ```bash
-   python3 skills/check-starry-compliance/scripts/run.py --from <mapping-run-id>
+   python3 skills/check-starry-compliance/scripts/run.py --from <mapping-report-id>
    ```
 
 4. Calling this skill authorizes creation of an isolated worktree, test-patch injection, static checks, builds, QEMU, and bound dynamic tests. Do not request a second authorization.
@@ -22,7 +22,7 @@ description: Execute static checks and injected dynamic tests from one SyscallGu
 ## Boundaries
 
 - Reject stale mappings when any recorded entity dependency or the current Starry content snapshot differs.
-- Generate finding syscall ownership from the mapping run's `rule_syscalls`; never read a syscall spec.
+- Execute only the mapping report's `execution_scope`; generate finding syscall ownership from its complete `rule_syscalls`.
 - Version check results and findings with generation times and direct upstream dependency records. Reuse an earlier completed check only when all versions and content snapshots are identical.
 - Modify only the isolated worktree. Never change the user's existing Starry worktree or branch.
 - Do not write or apply implementation fixes and do not create a completion commit.

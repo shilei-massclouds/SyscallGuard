@@ -1,10 +1,11 @@
-version: 4
+version: 5
 selection:
   unit: source_and_recognition_fingerprint
   order: normalized_syscall_lexical
   unchanged: skip
 consumer:
-  entity_scope: ids_and_syscall_ownership_from_upstream_report_or_run
+  entity_scope: mapping_report_execution_scope
+  syscall_ownership: complete_rule_syscalls_from_mapping_report
   content_source: current_shared_entity_files
   invalidation_policy: generated_at_first_then_content_hash
   stale_action: refuse_direct_execution
@@ -19,3 +20,13 @@ publication:
   ingest_outputs: [runs/spec-*/report.md, library/syscalls.yaml, library/rules/*.yaml]
   ingest_report_published_last: true
   failed_ingest_writes_report_index_or_rules: false
+  mapping_outputs:
+    - runs/mapping-*/report.md
+    - targets/starry/static-checks.yaml
+    - targets/starry/static-checks/*.yaml
+    - targets/starry/dynamic-tests.yaml
+    - targets/starry/dynamic-tests/**
+  mapping_temporary_root: /tmp/syscallguard-map/<run-id>
+  mapping_report_is_incremental_state: true
+  mapping_report_published_last: true
+  failed_mapping_changes_formal_outputs: false

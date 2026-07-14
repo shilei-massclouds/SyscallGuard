@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -12,18 +13,17 @@ import yaml
 
 from .common import (
     SCHEMA_VERSION,
-    RunRecorder,
     SyscallGuardError,
-    atomic_write_text,
     atomic_write_yaml,
     content_hash,
     dependency_mismatch,
     ensure_target_workspace,
     entity_hash,
     entity_version,
-    load_index,
     load_mapping,
     new_run_id,
+    normalize_run_id,
+    read_frontmatter,
     repo_root,
     safe_relative_path,
     slug,
@@ -32,30 +32,26 @@ from .common import (
 )
 
 
-CLASSIFICATIONS = {"static", "partial_static", "dynamic", "unsupported", "needs_review"}
-MAPPED_CLASSIFICATIONS = {"static", "partial_static", "dynamic"}
-COVERAGE_STATUSES = {"pending", "mapped", "needs_review", "unsupported"}
+REPORT_KIND = "syscallguard_mapping_report"
+REPORT_STATUSES = {"covered", "needs_review", "unsupported", "pending"}
+ANALYSIS_STATUSES = {"covered", "needs_review", "unsupported"}
 TARGET_DESCRIPTOR = Path("targets/starry/target.yaml")
-COVERAGE_PATH = Path("targets/starry/rule-coverage.yaml")
+TEMP_ROOT = Path("/tmp/syscallguard-map")
 INDEX_SPECS = {
-    "mappings": (
-        Path("targets/starry/mappings/index.yaml"),
-        "syscallguard_starry_mapping_index",
-        "mapping_id",
-        "syscallguard_starry_mapping",
-    ),
-    "static_checks": (
-        Path("targets/starry/static-checks/index.yaml"),
-        "syscallguard_starry_static_check_index",
-        "check_id",
-        "syscallguard_starry_static_check",
-    ),
-    "dynamic_tests": (
-        Path("targets/starry/dynamic-tests/index.yaml"),
-        "syscallguard_starry_dynamic_test_index",
-        "test_id",
-        "syscallguard_starry_dynamic_test",
-    ),
+    "static_checks": {
+        "index": Path("targets/starry/static-checks.yaml"),
+        "directory": Path("targets/starry/static-checks"),
+        "index_kind": "syscallguard_starry_static_check_index",
+        "entity_kind": "syscallguard_starry_static_check",
+        "id_field": "check_id",
+    },
+    "dynamic_tests": {
+        "index": Path("targets/starry/dynamic-tests.yaml"),
+        "directory": Path("targets/starry/dynamic-tests"),
+        "index_kind": "syscallguard_starry_dynamic_test_index",
+        "entity_kind": "syscallguard_starry_dynamic_test",
+        "id_field": "test_id",
+    },
 }
 
 
@@ -142,50 +138,49 @@ def _rule_library(
     )
 
 
-def _default_coverage() -> dict[str, Any]:
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "kind": "syscallguard_starry_rule_coverage",
-        "updated_at_utc": None,
-        "target": {
-            "target_id": "starry",
-            "repository_identity": None,
-            "descriptor_hash": None,
-            "last_snapshot_hash": None,
-        },
-        "rules": {},
-    }
-
-
-def _load_coverage(root: Path) -> tuple[dict[str, Any], str | None]:
-    path = root / COVERAGE_PATH
-    if not path.exists():
-        return _default_coverage(), None
-    value = load_mapping(path)
-    if value.get("kind") != "syscallguard_starry_rule_coverage":
-        raise SyscallGuardError(f"invalid Starry rule coverage table: {path}")
+def load_mapping_report(root: Path, report_id: str) -> dict[str, Any]:
+    report_id = normalize_run_id(report_id)
+    path = root / "runs" / report_id / "report.md"
+    value, _body = read_frontmatter(path)
+    if (
+        value.get("kind") != REPORT_KIND
+        or value.get("report_id") != report_id
+        or value.get("status") != "completed"
+    ):
+        raise SyscallGuardError(f"not a completed SyscallGuard mapping report: {path}")
     if not isinstance(value.get("rules"), dict):
-        raise SyscallGuardError(f"coverage rules must be a mapping: {path}")
-    return value, entity_hash(path)
+        raise SyscallGuardError(f"mapping report has no complete rules mapping: {path}")
+    if not isinstance(value.get("execution_scope"), dict):
+        raise SyscallGuardError(f"mapping report has no execution_scope: {path}")
+    return value
 
 
-def _indexed_entities(root: Path, section: str) -> dict[str, dict[str, Any]]:
-    relative, index_kind, id_field, entity_kind = INDEX_SPECS[section]
-    index = load_index(root / relative, index_kind)
-    result: dict[str, dict[str, Any]] = {}
-    for row in index["entities"]:
-        if not isinstance(row, dict):
+def scan_mapping_reports(root: Path) -> tuple[dict[str, Any] | None, dict[str, dict[str, Any]]]:
+    reports: dict[str, dict[str, Any]] = {}
+    runs = root / "runs"
+    if not runs.is_dir():
+        return None, reports
+    for path in sorted(runs.glob("mapping-*/report.md")):
+        try:
+            value, _body = read_frontmatter(path)
+        except SyscallGuardError:
             continue
-        entity_id = row.get("id")
-        raw_path = row.get("path")
-        if not isinstance(entity_id, str) or not isinstance(raw_path, str):
-            raise SyscallGuardError(f"invalid index row in {relative}")
-        path = root / safe_relative_path(raw_path)
-        entity = load_mapping(path)
-        if entity.get("kind") != entity_kind or entity.get(id_field) != entity_id:
-            raise SyscallGuardError(f"invalid indexed entity {entity_id}: {path}")
-        result[entity_id] = entity
-    return result
+        report_id = path.parent.name
+        if (
+            value.get("kind") != REPORT_KIND
+            or value.get("report_id") != report_id
+            or value.get("status") != "completed"
+            or not isinstance(value.get("generated_at_utc"), str)
+            or not isinstance(value.get("rules"), dict)
+        ):
+            continue
+        reports[report_id] = value
+    latest = max(
+        reports.values(),
+        key=lambda row: (str(row.get("generated_at_utc", "")), str(row.get("report_id", ""))),
+        default=None,
+    )
+    return latest, reports
 
 
 def _balanced_block(text: str, opening: int) -> str | None:
@@ -249,9 +244,7 @@ def _symbol_fingerprint(text: str, symbol: str) -> str | None:
                 snippets.append(text[line_start:opening] + block)
     if not snippets:
         snippets = [
-            line.strip()
-            for line in text.splitlines()
-            if re.search(rf"\b{escaped}\b", line)
+            line.strip() for line in text.splitlines() if re.search(rf"\b{escaped}\b", line)
         ]
     return content_hash(snippets) if snippets else None
 
@@ -262,25 +255,26 @@ def _fingerprint_location(repository: Path, location: dict[str, Any]) -> dict[st
         raise SyscallGuardError("target location must contain a non-empty path")
     relative = safe_relative_path(raw_path)
     path = repository / relative
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except FileNotFoundError:
-        return {
-            "path": raw_path,
-            "symbols": sorted(set(str(item) for item in location.get("symbols", []))),
-            "scope": "missing",
-            "file_hash": None,
-            "symbol_hashes": {},
-            "content_hash": content_hash({"missing": raw_path}),
-        }
-    except OSError as exc:
-        raise SyscallGuardError(f"cannot read Starry target path {path}: {exc}") from exc
     raw_symbols = location.get("symbols", [])
     if not isinstance(raw_symbols, list) or not all(
         isinstance(item, str) and item for item in raw_symbols
     ):
         raise SyscallGuardError(f"target location symbols must be strings: {raw_path}")
     symbols = sorted(set(raw_symbols))
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except FileNotFoundError:
+        return {
+            "path": raw_path,
+            "symbols": symbols,
+            "scope": "missing",
+            "file_hash": None,
+            "symbol_hashes": {},
+            "missing_symbols": symbols,
+            "content_hash": content_hash({"missing": raw_path}),
+        }
+    except OSError as exc:
+        raise SyscallGuardError(f"cannot read Starry target path {path}: {exc}") from exc
     file_fingerprint = content_hash(text)
     symbol_hashes = {symbol: _symbol_fingerprint(text, symbol) for symbol in symbols}
     missing = [symbol for symbol, value in symbol_hashes.items() if value is None]
@@ -316,23 +310,64 @@ def _fingerprint_locations(
     return [_fingerprint_location(repository, unique[key]) for key in sorted(unique)]
 
 
+def _load_indexed_entities(root: Path, section: str) -> dict[str, dict[str, Any]]:
+    spec = INDEX_SPECS[section]
+    path = root / spec["index"]
+    if not path.exists():
+        return {}
+    index = load_mapping(path)
+    if index.get("kind") != spec["index_kind"] or not isinstance(
+        index.get("syscalls"), dict
+    ):
+        raise SyscallGuardError(f"invalid grouped index: {path}")
+    result: dict[str, dict[str, Any]] = {}
+    for syscall, rows in index["syscalls"].items():
+        if not isinstance(syscall, str) or not isinstance(rows, list):
+            raise SyscallGuardError(f"invalid syscall group in {path}")
+        for row in rows:
+            if not isinstance(row, dict):
+                raise SyscallGuardError(f"invalid index row in {path}")
+            entity_id = row.get(spec["id_field"])
+            raw_path = row.get("path")
+            if not isinstance(entity_id, str) or not isinstance(raw_path, str):
+                raise SyscallGuardError(f"invalid index row in {path}")
+            entity_path = root / safe_relative_path(raw_path)
+            entity = load_mapping(entity_path)
+            if (
+                entity.get("kind") != spec["entity_kind"]
+                or entity.get(spec["id_field"]) != entity_id
+            ):
+                raise SyscallGuardError(f"invalid indexed entity {entity_id}: {entity_path}")
+            if entity_id in result and result[entity_id] != entity:
+                raise SyscallGuardError(f"conflicting indexed entity: {entity_id}")
+            result[entity_id] = entity
+    return result
+
+
 def _artifact_invalid(root: Path, row: dict[str, Any]) -> str | None:
-    versions = row.get("artifact_versions", {})
+    versions = row.get("entity_versions")
     if not isinstance(versions, dict):
-        return "missing_artifact_versions"
-    for section, (_relative, _kind, id_field, entity_kind) in INDEX_SPECS.items():
+        return "missing_entity_versions"
+    for section in INDEX_SPECS:
         recorded = versions.get(section, {})
-        if not isinstance(recorded, dict):
+        refs = row.get("static_check_refs" if section == "static_checks" else "dynamic_test_refs")
+        if not isinstance(recorded, dict) or not isinstance(refs, list):
             return f"invalid_{section}_versions"
-        directory = INDEX_SPECS[section][0].parent
-        for entity_id, version in recorded.items():
-            if not isinstance(entity_id, str) or not isinstance(version, dict):
-                return f"invalid_{section}_version"
-            path = root / directory / f"{slug(entity_id)}.yaml"
+        spec = INDEX_SPECS[section]
+        for entity_id in refs:
+            if not isinstance(entity_id, str):
+                return f"invalid_{section}_reference"
+            version = recorded.get(entity_id)
+            if not isinstance(version, dict):
+                return f"missing_{section}_version:{entity_id}"
+            path = root / spec["directory"] / f"{slug(entity_id)}.yaml"
             if not path.is_file():
                 return f"missing_{section}:{entity_id}"
             entity = load_mapping(path)
-            if entity.get("kind") != entity_kind or entity.get(id_field) != entity_id:
+            if (
+                entity.get("kind") != spec["entity_kind"]
+                or entity.get(spec["id_field"]) != entity_id
+            ):
                 return f"invalid_{section}:{entity_id}"
             if dependency_mismatch(version, entity_id, entity):
                 return f"changed_{section}:{entity_id}"
@@ -345,7 +380,6 @@ def _pending_reasons(
     snapshot_hash: str,
     descriptor_hash: str,
     repository_identity: str,
-    rule_id: str,
     rule_version: dict[str, str],
     row: Any,
 ) -> list[str]:
@@ -358,11 +392,10 @@ def _pending_reasons(
     if row.get("target_descriptor_hash") != descriptor_hash:
         return ["target_descriptor_changed"]
     status = row.get("status")
-    if status not in COVERAGE_STATUSES:
-        return ["invalid_coverage_status"]
+    if status not in REPORT_STATUSES:
+        return ["invalid_rule_status"]
     if status == "pending":
-        reason = row.get("reason")
-        return [str(reason) if reason else "still_pending"]
+        return [str(row.get("reason") or "still_pending")]
     if status in {"needs_review", "unsupported"}:
         if row.get("last_verified_snapshot_hash") != snapshot_hash:
             return ["target_snapshot_changed_retry"]
@@ -388,8 +421,11 @@ def _strip_generated(entity: dict[str, Any]) -> dict[str, Any]:
         "base_commit",
         "target_hash",
         "target_snapshot_hash",
+        "target_dependencies",
+        "target_content_fingerprint",
         "upstream_dependencies",
         "generated_at_utc",
+        "content_hash",
     ):
         result.pop(key, None)
     return result
@@ -405,79 +441,86 @@ def _matching_entities(
     }
 
 
-def _prepare_staged_entities(
-    root: Path,
-    run_directory: Path,
-    selected: list[str],
-) -> None:
-    indexed = {section: _indexed_entities(root, section) for section in INDEX_SPECS}
+def _result_locations(
+    checks: dict[str, dict[str, Any]], tests: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    locations: list[dict[str, Any]] = []
+    for entity in [*checks.values(), *tests.values()]:
+        dependencies = entity.get("target_dependencies", [])
+        if isinstance(dependencies, list):
+            for item in dependencies:
+                if isinstance(item, dict) and isinstance(item.get("path"), str):
+                    locations.append(
+                        {"path": item["path"], "symbols": list(item.get("symbols", []))}
+                    )
+    for entity in checks.values():
+        if isinstance(entity.get("path"), str):
+            locations.append({"path": entity["path"], "symbols": []})
+    unique: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
+    for item in locations:
+        key = (item["path"], tuple(sorted(set(item.get("symbols", [])))))
+        unique[key] = {"path": key[0], "symbols": list(key[1])}
+    return [unique[key] for key in sorted(unique)]
+
+
+def _prepare_staged_entities(root: Path, workspace: Path, selected: list[str]) -> None:
+    indexed = {section: _load_indexed_entities(root, section) for section in INDEX_SPECS}
     staged_checks: dict[str, dict[str, Any]] = {}
     staged_tests: dict[str, dict[str, Any]] = {}
     for rule_id in selected:
-        existing_mappings = {
-            key: value
-            for key, value in _matching_entities(indexed["mappings"], rule_id).items()
-            if value.get("rule_refs") == [rule_id]
-        }
         checks = _matching_entities(indexed["static_checks"], rule_id)
         tests = _matching_entities(indexed["dynamic_tests"], rule_id)
-        if existing_mappings:
-            mapping_id, mapping = sorted(existing_mappings.items())[0]
-            staged_mapping = _strip_generated(mapping)
-            staged_mapping["static_check_refs"] = sorted(checks)
-            staged_mapping["dynamic_test_refs"] = sorted(tests)
-        else:
-            mapping_id = f"STARRY_{rule_id}"
-            locations = [
-                {"path": entity["path"], "symbols": []}
-                for entity in checks.values()
-                if isinstance(entity.get("path"), str)
-            ]
-            if checks and tests:
-                classification = "partial_static"
-            elif checks:
-                classification = "static"
-            else:
-                classification = "needs_review"
-            staged_mapping = {
-                "schema_version": SCHEMA_VERSION,
-                "kind": "syscallguard_starry_mapping",
-                "mapping_id": mapping_id,
-                "rule_refs": [rule_id],
-                "classification": classification,
-                "target_locations": locations,
-                "static_check_refs": sorted(checks),
-                "dynamic_test_refs": sorted(tests) if locations else [],
-                "reason": (
-                    "复用现有检查定义，仍需核对目标实现位置。"
-                    if locations
-                    else "尚无足够的 Starry 实现证据；需要只读分析目标代码。"
-                ),
-            }
-        staged_checks.update(
-            (key, _strip_generated(checks[key]))
-            for key in staged_mapping.get("static_check_refs", [])
-            if key in checks
-        )
-        staged_tests.update(
-            (key, _strip_generated(tests[key]))
-            for key in staged_mapping.get("dynamic_test_refs", [])
-            if key in tests
-        )
+        locations = _result_locations(checks, tests)
+        covered = bool(checks or tests) and bool(locations)
+        result = {
+            "schema_version": SCHEMA_VERSION,
+            "kind": "syscallguard_starry_rule_mapping_result",
+            "rule_id": rule_id,
+            "status": "covered" if covered else "needs_review",
+            "target_locations": locations if covered else [],
+            "static_check_refs": sorted(checks) if covered else [],
+            "dynamic_test_refs": sorted(tests) if covered else [],
+            "reason": (
+                "复用现有可执行检查或测试，并重新校验目标内容依赖。"
+                if covered
+                else "尚无足够的 Starry 实现证据；需要只读分析目标代码。"
+            ),
+        }
         atomic_write_yaml(
-            run_directory / "staged/targets/starry/mappings" / f"{slug(mapping_id)}.yaml",
-            staged_mapping,
+            workspace / "staged/rule-results" / f"{slug(rule_id)}.yaml", result
         )
+        if covered:
+            staged_checks.update((key, _strip_generated(value)) for key, value in checks.items())
+            staged_tests.update((key, _strip_generated(value)) for key, value in tests.items())
     for entity_id, entity in staged_checks.items():
         atomic_write_yaml(
-            run_directory / "staged/targets/starry/static-checks" / f"{slug(entity_id)}.yaml",
+            workspace / "staged/targets/starry/static-checks" / f"{slug(entity_id)}.yaml",
             entity,
         )
     for entity_id, entity in staged_tests.items():
         atomic_write_yaml(
-            run_directory / "staged/targets/starry/dynamic-tests" / f"{slug(entity_id)}.yaml",
+            workspace / "staged/targets/starry/dynamic-tests" / f"{slug(entity_id)}.yaml",
             entity,
         )
+
+
+def _workspace(run_id: str) -> Path:
+    return TEMP_ROOT / normalize_run_id(run_id)
+
+
+def _mark_failed(workspace: Path, exc: BaseException) -> None:
+    try:
+        atomic_write_yaml(
+            workspace / "failure.yaml",
+            {
+                "schema_version": SCHEMA_VERSION,
+                "kind": "syscallguard_mapping_failure",
+                "failed_at_utc": utc_now(),
+                "error": f"{type(exc).__name__}: {exc}",
+            },
+        )
+    except BaseException:
+        pass
 
 
 def prepare_mapping(
@@ -495,12 +538,14 @@ def prepare_mapping(
                 "requested syscalls do not exist in the rule library: " + ", ".join(unknown)
             )
     descriptor_path = root / TARGET_DESCRIPTOR
-    descriptor, repository, _revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
+    descriptor, repository, revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
         descriptor_path
     )
     descriptor_hash = entity_hash(descriptor_path)
-    coverage, coverage_hash = _load_coverage(root)
-    old_rows = coverage["rules"]
+    prior, _reports = scan_mapping_reports(root)
+    prior_rows = prior.get("rules", {}) if isinstance(prior, dict) else {}
+    if not isinstance(prior_rows, dict):
+        prior_rows = {}
     pending_reasons = {
         rule_id: _pending_reasons(
             root,
@@ -508,39 +553,54 @@ def prepare_mapping(
             snapshot_hash,
             descriptor_hash,
             repo_identity,
-            rule_id,
             versions[rule_id],
-            old_rows.get(rule_id),
+            prior_rows.get(rule_id),
         )
         for rule_id in rules
     }
     pending = sorted(rule_id for rule_id, reasons in pending_reasons.items() if reasons)
-    if requested_syscalls is None:
-        scope = set(rules)
-    else:
-        scope = {
+    scope = (
+        set(rules)
+        if requested_syscalls is None
+        else {
             rule_id
             for syscall in requested_syscalls
             for rule_id in syscall_rules.get(syscall, [])
         }
+    )
     selected = sorted(scope.intersection(pending))
     skipped = sorted(scope - set(selected))
-    run_id = requested_run_id or new_run_id(
-        "mapping", {"syscalls": requested_syscalls, "snapshot": snapshot_hash, "at": utc_now()}
+    run_id = normalize_run_id(
+        requested_run_id
+        or new_run_id(
+            "mapping", {"syscalls": requested_syscalls, "snapshot": snapshot_hash, "at": utc_now()}
+        )
     )
-    recorder = RunRecorder(
-        root,
-        "mapping",
-        run_id,
-        {"syscalls": requested_syscalls},
-    )
+    report_directory = root / "runs" / run_id
+    workspace = _workspace(run_id)
+    if report_directory.exists():
+        raise SyscallGuardError(f"mapping report already exists: {report_directory}")
+    if workspace.exists():
+        raise SyscallGuardError(f"mapping workspace already exists: {workspace}")
+    workspace.mkdir(parents=True)
     try:
+        target = {
+            "target_id": "starry",
+            "repository": str(repository),
+            "repository_identity": repo_identity,
+            "revision": revision_ref,
+            "worktree_root": str(descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")),
+            "descriptor_hash": descriptor_hash,
+            "snapshot_hash": snapshot_hash,
+        }
         preparation = {
             "schema_version": SCHEMA_VERSION,
             "kind": "syscallguard_starry_mapping_preparation",
             "run_id": run_id,
+            "root": str(root),
             "rule_index_hash": rule_index_hash,
-            "coverage_hash": coverage_hash,
+            "prior_report_id": prior.get("report_id") if prior else None,
+            "prior_report_hash": content_hash(prior) if prior else None,
             "requested_syscalls": requested_syscalls,
             "pending_rule_ids": pending,
             "selected_rule_ids": selected,
@@ -548,56 +608,31 @@ def prepare_mapping(
             "pending_reasons": {key: value for key, value in pending_reasons.items() if value},
             "rule_versions": versions,
             "rule_syscalls": rule_syscalls,
-            "target": {
-                "target_id": "starry",
-                "repository": str(repository),
-                "repository_identity": repo_identity,
-                "descriptor_hash": descriptor_hash,
-                "snapshot_hash": snapshot_hash,
-            },
+            "target": target,
         }
-        atomic_write_yaml(recorder.directory / "preparation.yaml", preparation)
-        atomic_write_yaml(recorder.directory / "target-descriptor.yaml", descriptor)
-        _prepare_staged_entities(root, recorder.directory, selected)
-        recorder.manifest["phase"] = "analysis"
-        recorder.manifest["rule_index_hash"] = rule_index_hash
-        recorder.manifest["selected_rule_versions"] = {
-            rule_id: versions[rule_id] for rule_id in selected
-        }
-        recorder.manifest["target"] = preparation["target"]
-        recorder.manifest["counts"] = {
-            "rules_total": len(rules),
-            "pending_before": len(pending),
-            "selected_pending": len(selected),
-            "skipped": len(skipped),
-            "pending_remaining": len(set(pending) - set(selected)),
-        }
-        recorder.manifest["outputs"] = {
-            "preparation": "preparation.yaml",
-            "staged_entities": "staged/",
-            "target_descriptor": "target-descriptor.yaml",
-        }
-        recorder.flush()
+        atomic_write_yaml(workspace / "preparation.yaml", preparation)
+        atomic_write_yaml(workspace / "target-descriptor.yaml", descriptor)
+        _prepare_staged_entities(root, workspace, selected)
         return run_id
     except BaseException as exc:
-        recorder.fail(exc)
+        _mark_failed(workspace, exc)
         if isinstance(exc, SyscallGuardError):
             raise
         raise SyscallGuardError(str(exc)) from exc
 
 
 def _load_staged(
-    run_directory: Path, section: str
+    workspace: Path, section: str
 ) -> dict[str, tuple[Path, dict[str, Any]]]:
-    _relative, _kind, id_field, entity_kind = INDEX_SPECS[section]
-    directory = run_directory / "staged/targets/starry" / INDEX_SPECS[section][0].parent.name
+    spec = INDEX_SPECS[section]
+    directory = workspace / "staged/targets/starry" / spec["directory"].name
     result: dict[str, tuple[Path, dict[str, Any]]] = {}
     if not directory.is_dir():
         return result
     for path in sorted(directory.glob("*.yaml")):
         entity = load_mapping(path)
-        entity_id = entity.get(id_field)
-        if entity.get("kind") != entity_kind or not isinstance(entity_id, str):
+        entity_id = entity.get(spec["id_field"])
+        if entity.get("kind") != spec["entity_kind"] or not isinstance(entity_id, str):
             raise SyscallGuardError(f"invalid staged {section} entity: {path}")
         if entity_id in result:
             raise SyscallGuardError(f"duplicate staged {section} id: {entity_id}")
@@ -605,68 +640,71 @@ def _load_staged(
     return result
 
 
+def _load_rule_results(workspace: Path) -> dict[str, dict[str, Any]]:
+    directory = workspace / "staged/rule-results"
+    result: dict[str, dict[str, Any]] = {}
+    if not directory.is_dir():
+        return result
+    for path in sorted(directory.glob("*.yaml")):
+        row = load_mapping(path)
+        rule_id = row.get("rule_id")
+        if (
+            row.get("kind") != "syscallguard_starry_rule_mapping_result"
+            or not isinstance(rule_id, str)
+            or rule_id in result
+        ):
+            raise SyscallGuardError(f"invalid staged rule result: {path}")
+        result[rule_id] = row
+    return result
+
+
 def _validate_staged(
+    root: Path,
+    workspace: Path,
     selected: set[str],
+    results: dict[str, dict[str, Any]],
     staged: dict[str, dict[str, tuple[Path, dict[str, Any]]]],
-) -> dict[str, str]:
-    ownership: dict[str, str] = {}
+) -> None:
+    if set(results) != selected:
+        missing = sorted(selected - set(results))
+        extra = sorted(set(results) - selected)
+        raise SyscallGuardError(f"staged rule results mismatch; missing={missing}, extra={extra}")
     referenced_checks: set[str] = set()
     referenced_tests: set[str] = set()
-    for mapping_id, (_path, mapping) in staged["mappings"].items():
-        refs = mapping.get("rule_refs")
-        classification = mapping.get("classification")
-        locations = mapping.get("target_locations")
-        static_refs = mapping.get("static_check_refs", [])
-        dynamic_refs = mapping.get("dynamic_test_refs", [])
-        if not isinstance(refs, list) or not refs or not all(isinstance(item, str) for item in refs):
-            raise SyscallGuardError(f"mapping {mapping_id} has invalid rule_refs")
-        if not set(refs).issubset(selected):
-            raise SyscallGuardError(f"mapping {mapping_id} references an unselected rule")
-        if classification not in CLASSIFICATIONS:
-            raise SyscallGuardError(f"mapping {mapping_id} has invalid classification")
-        if not isinstance(locations, list):
-            raise SyscallGuardError(f"mapping {mapping_id} target_locations must be a list")
+    referenced_assets: set[Path] = set()
+    for rule_id, row in results.items():
+        status = row.get("status")
+        static_refs = row.get("static_check_refs", [])
+        dynamic_refs = row.get("dynamic_test_refs", [])
+        locations = row.get("target_locations", [])
+        if status not in ANALYSIS_STATUSES:
+            raise SyscallGuardError(f"rule {rule_id} has invalid mapping status")
         if not isinstance(static_refs, list) or not all(isinstance(item, str) for item in static_refs):
-            raise SyscallGuardError(f"mapping {mapping_id} has invalid static_check_refs")
+            raise SyscallGuardError(f"rule {rule_id} has invalid static_check_refs")
         if not isinstance(dynamic_refs, list) or not all(isinstance(item, str) for item in dynamic_refs):
-            raise SyscallGuardError(f"mapping {mapping_id} has invalid dynamic_test_refs")
-        for rule_id in refs:
-            if rule_id in ownership:
-                raise SyscallGuardError(f"rule {rule_id} has more than one staged mapping")
-            ownership[rule_id] = mapping_id
-        for location in locations:
-            if not isinstance(location, dict):
-                raise SyscallGuardError(f"mapping {mapping_id} has an invalid target location")
-            raw_path = location.get("path")
-            if not isinstance(raw_path, str) or not raw_path:
-                raise SyscallGuardError(f"mapping {mapping_id} has a target location without path")
-            safe_relative_path(raw_path)
-        if classification in MAPPED_CLASSIFICATIONS and not locations:
-            raise SyscallGuardError(f"mapping {mapping_id} has no implementation location")
-        if classification == "static" and (not static_refs or dynamic_refs):
-            raise SyscallGuardError(f"static mapping {mapping_id} must reference only static checks")
-        if classification == "dynamic" and (not dynamic_refs or static_refs):
-            raise SyscallGuardError(f"dynamic mapping {mapping_id} must reference only dynamic tests")
-        if classification == "partial_static" and (not static_refs or not dynamic_refs):
-            raise SyscallGuardError(
-                f"partial_static mapping {mapping_id} needs static and dynamic references"
-            )
-        if classification in {"needs_review", "unsupported"}:
+            raise SyscallGuardError(f"rule {rule_id} has invalid dynamic_test_refs")
+        if not isinstance(locations, list):
+            raise SyscallGuardError(f"rule {rule_id} target_locations must be a list")
+        if status == "covered":
+            if not static_refs and not dynamic_refs:
+                raise SyscallGuardError(f"covered rule {rule_id} has no executable reference")
+            if not locations:
+                raise SyscallGuardError(f"covered rule {rule_id} has no target location")
+        else:
             if static_refs or dynamic_refs:
-                raise SyscallGuardError(
-                    f"{classification} mapping {mapping_id} must not invent executable checks"
-                )
-            if not isinstance(mapping.get("reason"), str) or not mapping["reason"].strip():
-                raise SyscallGuardError(f"{classification} mapping {mapping_id} needs a reason")
+                raise SyscallGuardError(f"{status} rule {rule_id} must not reference executables")
+            if not isinstance(row.get("reason"), str) or not row["reason"].strip():
+                raise SyscallGuardError(f"{status} rule {rule_id} needs a reason")
+        for location in locations:
+            if not isinstance(location, dict) or not isinstance(location.get("path"), str):
+                raise SyscallGuardError(f"rule {rule_id} has an invalid target location")
+            safe_relative_path(location["path"])
         referenced_checks.update(static_refs)
         referenced_tests.update(dynamic_refs)
-    missing_rules = sorted(selected - set(ownership))
-    if missing_rules:
-        raise SyscallGuardError("staged mappings do not cover rules: " + ", ".join(missing_rules))
     if set(staged["static_checks"]) != referenced_checks:
-        raise SyscallGuardError("staged static checks and mapping references do not match")
+        raise SyscallGuardError("staged static checks and rule references do not match")
     if set(staged["dynamic_tests"]) != referenced_tests:
-        raise SyscallGuardError("staged dynamic tests and mapping references do not match")
+        raise SyscallGuardError("staged dynamic tests and rule references do not match")
     for check_id, (_path, entity) in staged["static_checks"].items():
         refs = entity.get("rule_refs")
         if not isinstance(refs, list) or not refs or not set(refs).issubset(selected):
@@ -681,13 +719,41 @@ def _validate_staged(
         for key in ("test_source", "build", "command"):
             if key not in entity:
                 raise SyscallGuardError(f"dynamic test {test_id} is missing {key}")
-    return ownership
+        for key in ("patch_file", "test_source"):
+            value = entity.get(key)
+            if not isinstance(value, str) or not value.startswith(
+                "targets/starry/dynamic-tests/assets/"
+            ):
+                continue
+            relative = safe_relative_path(value)
+            referenced_assets.add(relative)
+            staged_asset = workspace / "staged" / relative
+            if not staged_asset.is_file() and not (root / relative).is_file():
+                raise SyscallGuardError(f"dynamic test {test_id} {key} is missing: {value}")
+        patch_file = entity.get("patch_file")
+        if isinstance(patch_file, str) and patch_file and not patch_file.startswith(
+            "targets/starry/dynamic-tests/assets/"
+        ):
+            raise SyscallGuardError(
+                f"dynamic test {test_id} patch_file must be stored under dynamic-tests/assets"
+            )
+    assets_root = workspace / "staged/targets/starry/dynamic-tests/assets"
+    staged_assets = (
+        {
+            Path("targets/starry/dynamic-tests/assets") / path.relative_to(assets_root)
+            for path in assets_root.rglob("*")
+            if path.is_file()
+        }
+        if assets_root.is_dir()
+        else set()
+    )
+    unreferenced = sorted(str(path) for path in staged_assets - referenced_assets)
+    if unreferenced:
+        raise SyscallGuardError("staged dynamic assets are unreferenced: " + ", ".join(unreferenced))
 
 
 def _versioned_output(
-    destination: Path,
-    entity: dict[str, Any],
-    generated_at: str,
+    destination: Path, entity: dict[str, Any], generated_at: str
 ) -> tuple[dict[str, Any], str]:
     candidate = dict(entity)
     candidate["generated_at_utc"] = generated_at
@@ -700,40 +766,124 @@ def _versioned_output(
     return candidate, "updated"
 
 
-def _merge_index_value(
+def _grouped_index(
     root: Path,
     section: str,
-    entries: list[dict[str, Any]],
-    updated_at: str,
+    entities: dict[str, dict[str, Any]],
+    rule_syscalls: dict[str, list[str]],
+    generated_at: str,
 ) -> dict[str, Any]:
-    relative, kind, _id_field, _entity_kind = INDEX_SPECS[section]
-    index = load_index(root / relative, kind)
-    by_id = {
-        row["id"]: row
-        for row in index["entities"]
-        if isinstance(row, dict) and isinstance(row.get("id"), str)
+    spec = INDEX_SPECS[section]
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for entity_id, entity in sorted(entities.items()):
+        refs = entity.get("rule_refs", [])
+        if not isinstance(refs, list):
+            raise SyscallGuardError(f"{section} {entity_id} has invalid rule_refs")
+        syscalls = sorted(
+            {
+                syscall
+                for rule_id in refs
+                for syscall in rule_syscalls.get(str(rule_id), [])
+            }
+        )
+        if not syscalls:
+            raise SyscallGuardError(f"{section} {entity_id} has no syscall ownership")
+        row = {
+            spec["id_field"]: entity_id,
+            "path": str(spec["directory"] / f"{slug(entity_id)}.yaml"),
+            "rule_refs": sorted(set(str(item) for item in refs)),
+        }
+        for syscall in syscalls:
+            groups.setdefault(syscall, []).append(dict(row))
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "kind": spec["index_kind"],
+        "updated_at_utc": generated_at,
+        "syscalls": {
+            syscall: sorted(rows, key=lambda row: str(row[spec["id_field"]]))
+            for syscall, rows in sorted(groups.items())
+        },
     }
-    for row in entries:
-        by_id[row["id"]] = row
-    index["entities"] = [by_id[key] for key in sorted(by_id)]
-    index["updated_at_utc"] = updated_at
-    return index
 
 
-def _transactional_write(files: list[tuple[Path, str]]) -> None:
+def _report_text(metadata: dict[str, Any]) -> str:
+    counts = metadata["counts"]
+    rules = metadata["rules"]
+    rule_syscalls = metadata["rule_syscalls"]
+    lines = [
+        "# Starry 规则映射报告",
+        "",
+        "## 本轮结论",
+        "",
+        f"- 本轮产生静态检查：{counts['static_checks']}",
+        f"- 本轮产生动态测试：{counts['dynamic_tests']}",
+        f"- 全局剩余规则：{counts['remaining']}（pending {counts['pending']}、"
+        f"needs_review {counts['needs_review']}、unsupported {counts['unsupported']}）",
+        "",
+        "## 完整规则关系",
+        "",
+    ]
+    by_syscall: dict[str, list[str]] = {}
+    for rule_id, syscalls in rule_syscalls.items():
+        for syscall in syscalls:
+            by_syscall.setdefault(syscall, []).append(rule_id)
+    for syscall, ids in sorted(by_syscall.items()):
+        lines.extend(
+            [
+                f"### `{syscall}`",
+                "",
+                "| rule_id | 静态检查 | 动态测试 | 状态 | 原因 |",
+                "| --- | --- | --- | --- | --- |",
+            ]
+        )
+        for rule_id in sorted(ids):
+            row = rules[rule_id]
+            checks = "、".join(f"`{item}`" for item in row["static_check_refs"]) or "—"
+            tests = "、".join(f"`{item}`" for item in row["dynamic_test_refs"]) or "—"
+            reason = str(row.get("reason", "")).replace("|", "\\|").replace("\n", " ")
+            lines.append(
+                f"| `{rule_id}` | {checks} | {tests} | `{row['status']}` | {reason} |"
+            )
+        lines.append("")
+    lines.extend(
+        [
+            "<details>",
+            "<summary>机器可读元数据</summary>",
+            "",
+            "<!-- syscallguard-metadata -->",
+            "```yaml",
+            _yaml_text(metadata).rstrip(),
+            "```",
+            "</details>",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def _transactional_write(files: list[tuple[Path, bytes]]) -> None:
+    destinations = [path for path, _content in files]
+    if len(destinations) != len(set(destinations)):
+        raise SyscallGuardError("transaction contains duplicate output paths")
     originals: dict[Path, bytes | None] = {}
     staged: list[tuple[Path, Path]] = []
     replaced: list[Path] = []
+    created_directories: list[Path] = []
     try:
-        for destination, text in files:
+        for destination, content in files:
+            missing: list[Path] = []
+            parent = destination.parent
+            while not parent.exists():
+                missing.append(parent)
+                parent = parent.parent
             destination.parent.mkdir(parents=True, exist_ok=True)
+            created_directories.extend(reversed(missing))
             originals[destination] = destination.read_bytes() if destination.exists() else None
             descriptor, name = tempfile.mkstemp(
                 prefix=f".{destination.name}.", dir=destination.parent
             )
             temp = Path(name)
-            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-                handle.write(text)
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(content)
                 handle.flush()
                 os.fsync(handle.fileno())
             staged.append((destination, temp))
@@ -757,96 +907,50 @@ def _transactional_write(files: list[tuple[Path, str]]) -> None:
                     handle.flush()
                     os.fsync(handle.fileno())
                 os.replace(temp, destination)
+        for directory in reversed(created_directories):
+            try:
+                directory.rmdir()
+            except OSError:
+                pass
         raise
-
-
-def _report_text(manifest: dict[str, Any], preparation: dict[str, Any]) -> str:
-    counts = manifest["counts"]
-    categories = manifest.get("processed", {})
-    lines = [
-        "# Starry 规则映射报告",
-        "",
-        f"- 运行：`{manifest['run_id']}`",
-        f"- 目标内容快照：`{manifest['target']['snapshot_hash']}`",
-        f"- 新增规则：{counts['added']}",
-        f"- 更新规则：{counts['updated']}",
-        f"- 跳过规则：{counts['skipped']}",
-        f"- 待复核：{counts['needs_review']}",
-        f"- 不支持：{counts['unsupported']}",
-        f"- 静态检查：{counts['static_checks']}",
-        f"- 动态测试：{counts['dynamic_tests']}",
-        f"- 仍待处理：{counts['pending_remaining']}",
-        "",
-    ]
-    for label, key in (
-        ("已映射", "mapped"),
-        ("待复核", "needs_review"),
-        ("不支持", "unsupported"),
-        ("跳过", "skipped"),
-        ("仍待处理", "pending"),
-    ):
-        values = categories.get(key, [])
-        lines.append(f"## {label}")
-        lines.append("")
-        lines.append("、".join(f"`{item}`" for item in values) if values else "无。")
-        lines.append("")
-    if preparation.get("requested_syscalls"):
-        lines.extend(
-            [
-                "## 本次 syscall 范围",
-                "",
-                "、".join(f"`{item}`" for item in preparation["requested_syscalls"]),
-                "",
-            ]
-        )
-    return "\n".join(lines)
-
-
-def _mark_failed(run_directory: Path, exc: BaseException) -> None:
-    try:
-        manifest = load_mapping(run_directory / "manifest.yaml")
-        manifest["status"] = "failed"
-        manifest["completed_at_utc"] = utc_now()
-        manifest["error"] = f"{type(exc).__name__}: {exc}"
-        atomic_write_yaml(run_directory / "manifest.yaml", manifest)
-    except BaseException:
-        pass
 
 
 def finalize_mapping(run_id: str, root: Path | None = None) -> str:
     root = (root or repo_root()).resolve()
-    run_directory = root / "runs" / run_id
+    run_id = normalize_run_id(run_id)
+    workspace = _workspace(run_id)
     try:
-        manifest = load_mapping(run_directory / "manifest.yaml")
-        if (
-            manifest.get("kind") != "syscallguard_run"
-            or manifest.get("stage") != "mapping"
-            or manifest.get("status") != "running"
-        ):
-            raise SyscallGuardError(f"mapping run is not awaiting finalization: {run_id}")
-        preparation = load_mapping(run_directory / "preparation.yaml")
-        if preparation.get("run_id") != run_id:
+        preparation = load_mapping(workspace / "preparation.yaml")
+        if preparation.get("run_id") != run_id or preparation.get("root") != str(root):
             raise SyscallGuardError(f"mapping preparation identity mismatch: {run_id}")
+        report_directory = root / "runs" / run_id
+        if report_directory.exists():
+            raise SyscallGuardError(f"mapping report already exists: {report_directory}")
+
         rules, versions, rule_syscalls, _syscall_rules, rule_index_hash = _rule_library(root)
         if rule_index_hash != preparation.get("rule_index_hash"):
             raise SyscallGuardError("rule library index changed after mapping preparation")
         if versions != preparation.get("rule_versions"):
             raise SyscallGuardError("rule versions changed after mapping preparation")
-        coverage, coverage_hash = _load_coverage(root)
-        if coverage_hash != preparation.get("coverage_hash"):
-            raise SyscallGuardError("rule coverage changed after mapping preparation")
+        prior, _reports = scan_mapping_reports(root)
+        if (prior.get("report_id") if prior else None) != preparation.get("prior_report_id") or (
+            content_hash(prior) if prior else None
+        ) != preparation.get("prior_report_hash"):
+            raise SyscallGuardError("latest mapping report changed after mapping preparation")
+
         descriptor_path = root / TARGET_DESCRIPTOR
-        _descriptor, repository, _revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
+        descriptor, repository, revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
             descriptor_path
         )
-        target = preparation.get("target", {})
-        if not isinstance(target, dict):
-            raise SyscallGuardError("mapping preparation target is invalid")
-        if (
+        target = preparation.get("target")
+        if not isinstance(target, dict) or (
             target.get("repository") != str(repository)
             or target.get("repository_identity") != repo_identity
+            or target.get("revision") != revision_ref
             or target.get("descriptor_hash") != entity_hash(descriptor_path)
             or target.get("snapshot_hash") != snapshot_hash
+            or target.get("worktree_root")
+            != str(descriptor.get("worktree_root", "/tmp/syscallguard-worktrees"))
         ):
             raise SyscallGuardError("Starry target content changed after mapping preparation")
 
@@ -856,17 +960,15 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
         ):
             raise SyscallGuardError("mapping preparation selected rules are invalid")
         selected = set(selected_list)
-        staged = {section: _load_staged(run_directory, section) for section in INDEX_SPECS}
-        ownership = _validate_staged(selected, staged)
+        results = _load_rule_results(workspace)
+        staged = {section: _load_staged(workspace, section) for section in INDEX_SPECS}
+        _validate_staged(root, workspace, selected, results, staged)
         generated_at = utc_now()
 
-        outputs: dict[str, dict[str, tuple[Path, dict[str, Any], str]]] = {
-            section: {} for section in INDEX_SPECS
-        }
-        mapping_dependencies: dict[str, list[dict[str, Any]]] = {}
-        for mapping_id, (_stage_path, raw) in staged["mappings"].items():
-            dependencies = _fingerprint_locations(repository, raw.get("target_locations", []))
-            if raw.get("classification") in MAPPED_CLASSIFICATIONS:
+        rule_dependencies: dict[str, list[dict[str, Any]]] = {}
+        for rule_id, row in results.items():
+            dependencies = _fingerprint_locations(repository, row.get("target_locations", []))
+            if row["status"] == "covered":
                 bad = [
                     item
                     for item in dependencies
@@ -874,287 +976,212 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
                 ]
                 if bad:
                     raise SyscallGuardError(
-                        f"mapping {mapping_id} references a missing target path or symbol"
+                        f"rule {rule_id} references a missing target path or symbol"
                     )
-            mapping_dependencies[mapping_id] = dependencies
-            entity = _strip_generated(raw)
-            refs = sorted(set(entity["rule_refs"]))
-            entity["rule_refs"] = refs
-            entity["upstream_dependencies"] = [versions[rule_id] for rule_id in refs]
-            entity["target_snapshot_hash"] = content_hash(dependencies)
-            destination = root / "targets/starry/mappings" / f"{slug(mapping_id)}.yaml"
-            final, action = _versioned_output(destination, entity, generated_at)
-            outputs["mappings"][mapping_id] = (destination, final, action)
+            rule_dependencies[rule_id] = dependencies
 
-        for section in ("static_checks", "dynamic_tests"):
-            _relative, _kind, id_field, _entity_kind = INDEX_SPECS[section]
-            for entity_id, (_stage_path, raw) in staged[section].items():
+        outputs: dict[str, dict[str, tuple[Path, dict[str, Any], str]]] = {
+            section: {} for section in INDEX_SPECS
+        }
+        for section, values in staged.items():
+            spec = INDEX_SPECS[section]
+            for entity_id, (_stage_path, raw) in values.items():
                 entity = _strip_generated(raw)
-                refs = sorted(set(entity["rule_refs"]))
+                refs = sorted(set(entity.get("rule_refs", [])))
                 entity["rule_refs"] = refs
                 entity["upstream_dependencies"] = [versions[rule_id] for rule_id in refs]
-                related = sorted({ownership[rule_id] for rule_id in refs})
-                dependencies = [
-                    item
-                    for mapping_id in related
-                    for item in mapping_dependencies[mapping_id]
-                ]
-                entity["target_snapshot_hash"] = content_hash(dependencies)
-                destination = root / INDEX_SPECS[section][0].parent / f"{slug(entity_id)}.yaml"
+                dependencies_by_hash = {
+                    item["content_hash"]: item
+                    for rule_id in refs
+                    for item in rule_dependencies[rule_id]
+                }
+                dependencies = [dependencies_by_hash[key] for key in sorted(dependencies_by_hash)]
+                entity["target_dependencies"] = dependencies
+                entity["target_content_fingerprint"] = content_hash(dependencies)
+                destination = root / spec["directory"] / f"{slug(entity_id)}.yaml"
                 final, action = _versioned_output(destination, entity, generated_at)
                 outputs[section][entity_id] = (destination, final, action)
 
-        artifact_versions = {
-            section: {
-                entity_id: entity_version(entity_id, entity)
-                for entity_id, (_path, entity, _action) in values.items()
-            }
-            for section, values in outputs.items()
-        }
-        old_rows = coverage["rules"]
+        current_entities = {section: _load_indexed_entities(root, section) for section in INDEX_SPECS}
+        all_entities: dict[str, dict[str, dict[str, Any]]] = {}
+        for section in INDEX_SPECS:
+            merged = dict(current_entities[section])
+            merged.update(
+                {entity_id: entity for entity_id, (_path, entity, _action) in outputs[section].items()}
+            )
+            all_entities[section] = merged
+
+        prior_rows = prior.get("rules", {}) if prior else {}
+        if not isinstance(prior_rows, dict):
+            prior_rows = {}
         pending_ids = set(preparation.get("pending_rule_ids", []))
         pending_reasons = preparation.get("pending_reasons", {})
         new_rows: dict[str, dict[str, Any]] = {}
-        mapped: list[str] = []
-        needs_review: list[str] = []
-        unsupported: list[str] = []
         for rule_id in sorted(rules):
-            old = old_rows.get(rule_id)
+            old = prior_rows.get(rule_id)
             if rule_id in selected:
-                mapping_id = ownership[rule_id]
-                mapping = outputs["mappings"][mapping_id][1]
-                classification = mapping["classification"]
-                status = "mapped" if classification in MAPPED_CLASSIFICATIONS else classification
-                refs = {
-                    "mappings": [mapping_id],
-                    "static_checks": sorted(
-                        entity_id
-                        for entity_id, (_path, entity, _action) in outputs["static_checks"].items()
-                        if rule_id in entity["rule_refs"]
-                    ),
-                    "dynamic_tests": sorted(
-                        entity_id
-                        for entity_id, (_path, entity, _action) in outputs["dynamic_tests"].items()
-                        if rule_id in entity["rule_refs"]
-                    ),
-                }
+                result = results[rule_id]
+                status = result["status"]
+                static_refs = sorted(set(result.get("static_check_refs", [])))
+                dynamic_refs = sorted(set(result.get("dynamic_test_refs", [])))
                 row_versions = {
-                    section: {
-                        entity_id: artifact_versions[section][entity_id]
-                        for entity_id in ids
-                    }
-                    for section, ids in refs.items()
+                    "static_checks": {
+                        entity_id: entity_version(entity_id, outputs["static_checks"][entity_id][1])
+                        for entity_id in static_refs
+                    },
+                    "dynamic_tests": {
+                        entity_id: entity_version(entity_id, outputs["dynamic_tests"][entity_id][1])
+                        for entity_id in dynamic_refs
+                    },
                 }
-                reason = mapping.get("reason")
                 new_rows[rule_id] = {
                     "syscalls": rule_syscalls[rule_id],
                     "rule_version": versions[rule_id],
                     "status": status,
-                    "classification": classification,
-                    "mapping_refs": refs["mappings"],
-                    "static_check_refs": refs["static_checks"],
-                    "dynamic_test_refs": refs["dynamic_tests"],
-                    "artifact_versions": row_versions,
-                    "target_dependencies": mapping_dependencies[mapping_id],
+                    "static_check_refs": static_refs,
+                    "dynamic_test_refs": dynamic_refs,
+                    "entity_versions": row_versions,
+                    "target_dependencies": rule_dependencies[rule_id],
                     "repository_identity": repo_identity,
                     "target_descriptor_hash": target["descriptor_hash"],
                     "last_verified_snapshot_hash": snapshot_hash,
-                    "last_processed_run": run_id,
-                    "reason": reason or "映射定义已通过 finalizer 校验。",
+                    "last_processed_report": run_id,
+                    "reason": result.get("reason") or "映射结果已通过 finalizer 校验。",
                 }
-                if status == "mapped":
-                    mapped.append(rule_id)
-                elif status == "needs_review":
-                    needs_review.append(rule_id)
-                else:
-                    unsupported.append(rule_id)
-            elif rule_id in pending_ids:
-                prior = dict(old) if isinstance(old, dict) else {}
-                prior.update(
-                    {
-                        "syscalls": rule_syscalls[rule_id],
-                        "rule_version": versions[rule_id],
-                        "status": "pending",
-                        "repository_identity": repo_identity,
-                        "target_descriptor_hash": target["descriptor_hash"],
-                        "reason": ",".join(pending_reasons.get(rule_id, ["pending"])),
-                    }
-                )
-                prior.setdefault("classification", None)
-                prior.setdefault("mapping_refs", [])
-                prior.setdefault("static_check_refs", [])
-                prior.setdefault("dynamic_test_refs", [])
-                prior.setdefault("artifact_versions", {})
-                prior.setdefault("target_dependencies", [])
-                prior.setdefault("last_verified_snapshot_hash", None)
-                prior.setdefault("last_processed_run", None)
-                new_rows[rule_id] = prior
-            else:
-                if not isinstance(old, dict):
-                    raise SyscallGuardError(f"coverage unexpectedly missing unchanged rule {rule_id}")
+            elif rule_id in pending_ids and (
+                not isinstance(old, dict) or old.get("status") in {"covered", "pending"}
+            ):
+                reasons = pending_reasons.get(rule_id, ["pending"])
+                new_rows[rule_id] = {
+                    "syscalls": rule_syscalls[rule_id],
+                    "rule_version": versions[rule_id],
+                    "status": "pending",
+                    "static_check_refs": [],
+                    "dynamic_test_refs": [],
+                    "entity_versions": {"static_checks": {}, "dynamic_tests": {}},
+                    "target_dependencies": [],
+                    "repository_identity": repo_identity,
+                    "target_descriptor_hash": target["descriptor_hash"],
+                    "last_verified_snapshot_hash": None,
+                    "last_processed_report": old.get("last_processed_report")
+                    if isinstance(old, dict)
+                    else None,
+                    "reason": ",".join(str(item) for item in reasons),
+                }
+            elif isinstance(old, dict):
                 current = dict(old)
                 current["syscalls"] = rule_syscalls[rule_id]
-                if current.get("status") == "mapped":
+                current["rule_version"] = versions[rule_id]
+                current["repository_identity"] = repo_identity
+                current["target_descriptor_hash"] = target["descriptor_hash"]
+                if current.get("status") == "covered":
                     current["last_verified_snapshot_hash"] = snapshot_hash
                     current["reason"] = "相关 Starry 内容指纹未变化，已跳过。"
                 new_rows[rule_id] = current
+            else:
+                raise SyscallGuardError(f"mapping state unexpectedly missing rule {rule_id}")
 
-        new_coverage = {
+        indexes = {
+            section: _grouped_index(root, section, all_entities[section], rule_syscalls, generated_at)
+            for section in INDEX_SPECS
+        }
+        execution_static = sorted(outputs["static_checks"])
+        execution_dynamic = sorted(outputs["dynamic_tests"])
+        execution_rules = sorted(
+            {
+                rule_id
+                for section in INDEX_SPECS
+                for _entity_id, (_path, entity, _action) in outputs[section].items()
+                for rule_id in entity.get("rule_refs", [])
+            }
+        )
+        statuses = {status: [] for status in REPORT_STATUSES}
+        for rule_id, row in new_rows.items():
+            statuses[row["status"]].append(rule_id)
+        remaining = sorted(
+            statuses["pending"] + statuses["needs_review"] + statuses["unsupported"]
+        )
+        new_selected = [
+            rule_id
+            for rule_id in selected_list
+            if "new_rule" in preparation.get("pending_reasons", {}).get(rule_id, [])
+        ]
+        metadata = {
             "schema_version": SCHEMA_VERSION,
-            "kind": "syscallguard_starry_rule_coverage",
-            "updated_at_utc": generated_at,
-            "target": {
-                "target_id": "starry",
-                "repository_identity": repo_identity,
-                "descriptor_hash": target["descriptor_hash"],
-                "last_snapshot_hash": snapshot_hash,
+            "kind": REPORT_KIND,
+            "report_id": run_id,
+            "status": "completed",
+            "generated_at_utc": generated_at,
+            "rule_index_hash": rule_index_hash,
+            "requested_syscalls": preparation.get("requested_syscalls"),
+            "selected_rule_ids": selected_list,
+            "skipped_rule_ids": preparation.get("skipped_rule_ids", []),
+            "target": target,
+            "counts": {
+                "rules_total": len(rules),
+                "processed": len(selected),
+                "added": len(new_selected),
+                "updated": len(selected) - len(new_selected),
+                "skipped": len(preparation.get("skipped_rule_ids", [])),
+                "covered": len(statuses["covered"]),
+                "pending": len(statuses["pending"]),
+                "needs_review": len(statuses["needs_review"]),
+                "unsupported": len(statuses["unsupported"]),
+                "static_checks": len(execution_static),
+                "dynamic_tests": len(execution_dynamic),
+                "remaining": len(remaining),
             },
+            "execution_scope": {
+                "rules": execution_rules,
+                "static_checks": execution_static,
+                "dynamic_tests": execution_dynamic,
+            },
+            "rule_syscalls": rule_syscalls,
             "rules": new_rows,
-        }
-
-        index_values: dict[str, dict[str, Any]] = {}
-        for section, values in outputs.items():
-            if not values:
-                continue
-            rows = []
-            for entity_id, (path, entity, _action) in values.items():
-                row = {
-                    "id": entity_id,
-                    "path": str(path.relative_to(root)),
-                    "rule_refs": entity.get("rule_refs", []),
-                    "generated_at_utc": entity["generated_at_utc"],
-                    "content_hash": version_content_hash(entity),
-                    "target_snapshot_hash": entity["target_snapshot_hash"],
-                }
-                if section == "mappings":
-                    row["classification"] = entity["classification"]
-                rows.append(row)
-            index_values[section] = _merge_index_value(root, section, rows, generated_at)
-
-        actions = [
-            action
-            for values in outputs.values()
-            for _path, _entity, action in values.values()
-        ]
-        added = sum(
-            1
-            for rule_id in selected
-            if not isinstance(old_rows.get(rule_id), dict)
-            or not old_rows[rule_id].get("last_processed_run")
-        )
-        updated = len(selected) - added
-        remaining = sorted(pending_ids - selected)
-        skipped_rules = sorted(preparation.get("skipped_rule_ids", []))
-        manifest["phase"] = "published"
-        manifest["status"] = "completed"
-        manifest["completed_at_utc"] = generated_at
-        manifest["target"] = target
-        manifest["rule_index_hash"] = rule_index_hash
-        manifest["selected_rule_versions"] = {
-            rule_id: versions[rule_id] for rule_id in sorted(selected)
-        }
-        manifest["rule_syscalls"] = {
-            rule_id: rule_syscalls[rule_id] for rule_id in sorted(selected)
-        }
-        manifest["entities"] = {
-            "syscalls": sorted(
-                {syscall for rule_id in selected for syscall in rule_syscalls[rule_id]}
-            ),
-            "rules": sorted(selected),
-            "mappings": sorted(outputs["mappings"]),
-            "static_checks": sorted(outputs["static_checks"]),
-            "dynamic_tests": sorted(outputs["dynamic_tests"]),
-        }
-        manifest["entity_hashes"] = {
-            "rules": {rule_id: version_content_hash(rules[rule_id]) for rule_id in sorted(selected)},
-            **{
-                section: {
-                    entity_id: content_hash(entity)
-                    for entity_id, (_path, entity, _action) in values.items()
-                }
-                for section, values in outputs.items()
+            "entity_versions": {
+                "rules": {rule_id: versions[rule_id] for rule_id in execution_rules},
+                "static_checks": {
+                    entity_id: entity_version(entity_id, outputs["static_checks"][entity_id][1])
+                    for entity_id in execution_static
+                },
+                "dynamic_tests": {
+                    entity_id: entity_version(entity_id, outputs["dynamic_tests"][entity_id][1])
+                    for entity_id in execution_dynamic
+                },
+            },
+            "remaining": {
+                "all": remaining,
+                "pending": sorted(statuses["pending"]),
+                "needs_review": sorted(statuses["needs_review"]),
+                "unsupported": sorted(statuses["unsupported"]),
             },
         }
-        manifest["entity_versions"] = {
-            "rules": {rule_id: versions[rule_id] for rule_id in sorted(selected)},
-            **artifact_versions,
-        }
-        manifest["counts"] = {
-            "rules_total": len(rules),
-            "pending_before": len(pending_ids),
-            "processed": len(selected),
-            "added": added,
-            "updated": updated,
-            "skipped": len(skipped_rules),
-            "mapped": len(mapped),
-            "needs_review": len(needs_review),
-            "unsupported": len(unsupported),
-            "static_checks": len(outputs["static_checks"]),
-            "dynamic_tests": len(outputs["dynamic_tests"]),
-            "created_entities": actions.count("created"),
-            "updated_entities": actions.count("updated"),
-            "skipped_entities": actions.count("skipped"),
-            "pending_remaining": len(remaining),
-        }
-        manifest["processed"] = {
-            "mapped": mapped,
-            "needs_review": needs_review,
-            "unsupported": unsupported,
-            "skipped": skipped_rules,
-            "pending": remaining,
-        }
-        manifest["outputs"] = {
-            "report": "report.md",
-            "preparation": "preparation.yaml",
-            "target_descriptor": "target-descriptor.yaml",
-            "coverage": str(COVERAGE_PATH),
-            "mapping_index": str(INDEX_SPECS["mappings"][0]),
-            "static_check_index": str(INDEX_SPECS["static_checks"][0]),
-            "dynamic_test_index": str(INDEX_SPECS["dynamic_tests"][0]),
-        }
-        manifest["error"] = None
-        manifest["blockers"] = []
-        changeset = load_mapping(run_directory / "changeset.yaml")
-        changeset["changes"] = [
-            {
-                "entity_type": section.rstrip("s"),
-                "entity_id": entity_id,
-                "action": action,
-                "output_hash": version_content_hash(entity),
-                "generated_at_utc": entity["generated_at_utc"],
-                "path": str(path.relative_to(root)),
-            }
-            for section, values in outputs.items()
-            for entity_id, (path, entity, action) in values.items()
-        ]
-        changeset["changes"].append(
-            {
-                "entity_type": "rule_coverage",
-                "entity_id": "starry",
-                "action": "created" if coverage_hash is None else "updated",
-                "output_hash": content_hash(new_coverage),
-                "generated_at_utc": generated_at,
-                "path": str(COVERAGE_PATH),
-            }
-        )
 
-        files: list[tuple[Path, str]] = []
+        files: list[tuple[Path, bytes]] = []
         for values in outputs.values():
-            files.extend((path, _yaml_text(entity)) for path, entity, _action in values.values())
-        for section, index in index_values.items():
-            files.append((root / INDEX_SPECS[section][0], _yaml_text(index)))
-        files.extend(
-            [
-                (root / COVERAGE_PATH, _yaml_text(new_coverage)),
-                (run_directory / "report.md", _report_text(manifest, preparation)),
-                (run_directory / "changeset.yaml", _yaml_text(changeset)),
-                (run_directory / "manifest.yaml", _yaml_text(manifest)),
-            ]
-        )
+            files.extend(
+                (path, _yaml_text(entity).encode("utf-8"))
+                for path, entity, _action in values.values()
+            )
+        for section, index in indexes.items():
+            files.append((root / INDEX_SPECS[section]["index"], _yaml_text(index).encode("utf-8")))
+        assets_root = workspace / "staged/targets/starry/dynamic-tests/assets"
+        if assets_root.is_dir():
+            for source in sorted(path for path in assets_root.rglob("*") if path.is_file()):
+                destination = root / "targets/starry/dynamic-tests/assets" / source.relative_to(
+                    assets_root
+                )
+                files.append((destination, source.read_bytes()))
+        files.append((report_directory / "report.md", _report_text(metadata).encode("utf-8")))
         _transactional_write(files)
+        shutil.rmtree(workspace)
+        try:
+            TEMP_ROOT.rmdir()
+        except OSError:
+            pass
         return run_id
     except BaseException as exc:
-        _mark_failed(run_directory, exc)
+        _mark_failed(workspace, exc)
         if isinstance(exc, SyscallGuardError):
             raise
         raise SyscallGuardError(str(exc)) from exc
@@ -1191,30 +1218,35 @@ def main(argv: list[str] | None = None) -> int:
             if not args.run_id:
                 raise SyscallGuardError("finalize requires --run-id")
             run_id = finalize_mapping(args.run_id, args.root)
+            report = load_mapping_report(args.root.resolve(), run_id)
+            counts = report["counts"]
+            print(f"报告 ID：{run_id}")
+            print(
+                "本轮静态检查：{static_checks}，动态测试：{dynamic_tests}，"
+                "全局剩余：{remaining}".format(**counts)
+            )
+            print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         elif args.phase == "auto":
             run_id = run_mapping(args.syscalls, args.root, requested)
+            report = load_mapping_report(args.root.resolve(), run_id)
+            counts = report["counts"]
+            print(f"报告 ID：{run_id}")
+            print(
+                "本轮静态检查：{static_checks}，动态测试：{dynamic_tests}，"
+                "全局剩余：{remaining}".format(**counts)
+            )
+            print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         else:
             run_id = prepare_mapping(args.syscalls, args.root, requested)
+            workspace = _workspace(run_id)
+            preparation = load_mapping(workspace / "preparation.yaml")
+            print(f"运行 ID：{run_id}")
+            print(f"待分析实体：{workspace / 'staged'}")
+            print(f"准备文件：{workspace / 'preparation.yaml'}")
+            print(f"固定内容快照：{preparation['target']['snapshot_hash']}")
     except SyscallGuardError as exc:
         print(f"错误：{exc}", file=sys.stderr)
         return 2
-    path = args.root.resolve() / "runs" / run_id
-    manifest = load_mapping(path / "manifest.yaml")
-    print(f"运行 ID：{run_id}")
-    print(f"状态：{manifest['status']}")
-    if manifest["status"] == "running":
-        print(f"待分析实体：{path / 'staged'}")
-        print(f"固定内容快照：{manifest['target']['snapshot_hash']}")
-    else:
-        counts = manifest["counts"]
-        print(
-            "新增：{added}，更新：{updated}，跳过：{skipped}，待复核：{needs_review}，"
-            "不支持：{unsupported}，静态检查：{static_checks}，动态测试：{dynamic_tests}".format(
-                **counts
-            )
-        )
-        print(f"覆盖表：{args.root.resolve() / COVERAGE_PATH}")
-    print(f"结果：{path}")
     return 0
 
 

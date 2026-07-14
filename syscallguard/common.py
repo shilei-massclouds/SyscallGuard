@@ -418,7 +418,7 @@ def repository_snapshot_hash(repo: Path) -> str:
 
     This is deliberately content based.  It is suitable for proving that two
     phases observed the same checkout, but it is not used to decide whether an
-    individual rule is stale; rule coverage uses its narrower file/symbol
+    individual rule is stale; mapping-report state uses its narrower file/symbol
     fingerprints for that decision.
     """
     names = [item for item in git(repo, ["ls-files", "-z"]).stdout.split("\0") if item]

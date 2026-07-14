@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -33,8 +34,10 @@ from syscallguard.ingest import (
     run_ingest,
 )
 from syscallguard.mapping import (
+    TEMP_ROOT,
     build_parser as build_mapping_parser,
     finalize_mapping,
+    load_mapping_report,
     prepare_mapping,
     resolve_syscalls as resolve_mapping_syscalls,
     run_mapping,
@@ -126,7 +129,51 @@ class FlowTestCase(unittest.TestCase):
         rules_target.write_text(rules_source.read_text(encoding="utf-8"), encoding="utf-8")
 
     def tearDown(self) -> None:
+        if TEMP_ROOT.is_dir():
+            for workspace in TEMP_ROOT.iterdir():
+                preparation = workspace / "preparation.yaml"
+                try:
+                    value = load_mapping(preparation)
+                except SyscallGuardError:
+                    continue
+                if value.get("root") == str(self.root.resolve()):
+                    shutil.rmtree(workspace)
         self.temp.cleanup()
+
+    def update_executable_index(
+        self,
+        section: str,
+        index_kind: str,
+        id_field: str,
+        entity_id: str,
+        path: Path,
+        rule_refs: list[str],
+        syscalls: list[str] | None = None,
+    ) -> None:
+        index_path = self.root / "targets/starry" / f"{section}.yaml"
+        if index_path.is_file():
+            index = load_mapping(index_path)
+        else:
+            index = {
+                "schema_version": 1,
+                "kind": index_kind,
+                "updated_at_utc": None,
+                "syscalls": {},
+            }
+        row = {
+            id_field: entity_id,
+            "path": str(path.relative_to(self.root)),
+            "rule_refs": rule_refs,
+        }
+        for syscall in syscalls or ["alpha"]:
+            rows = [
+                item
+                for item in index["syscalls"].get(syscall, [])
+                if item.get(id_field) != entity_id
+            ]
+            rows.append(row)
+            index["syscalls"][syscall] = sorted(rows, key=lambda item: item[id_field])
+        atomic_write_yaml(index_path, index)
 
     def make_ltp(self) -> tuple[Path, Path]:
         source = Path(self.temp.name) / "ltp"
@@ -243,16 +290,14 @@ class FlowTestCase(unittest.TestCase):
             "patterns": [{"label": "expected", "regex": regex}],
         }
         atomic_write_yaml(self.root / "targets/starry/static-checks/check-one.yaml", entity)
-        update_index(
-            self.root / "targets/starry/static-checks/index.yaml",
+        self.update_executable_index(
+            "static-checks",
             "syscallguard_starry_static_check_index",
-            [
-                {
-                    "id": "CHECK_ONE",
-                    "path": "targets/starry/static-checks/check-one.yaml",
-                    "rule_refs": ["RULE_ONE"],
-                }
-            ],
+            "check_id",
+            "CHECK_ONE",
+            self.root / "targets/starry/static-checks/check-one.yaml",
+            ["RULE_ONE"],
+            ["alpha"],
         )
 
     def add_dynamic_test(
@@ -276,16 +321,14 @@ class FlowTestCase(unittest.TestCase):
             entity["patch_file"] = patch_file
         path = self.root / "targets/starry/dynamic-tests" / f"{slug(test_id)}.yaml"
         atomic_write_yaml(path, entity)
-        update_index(
-            self.root / "targets/starry/dynamic-tests/index.yaml",
+        self.update_executable_index(
+            "dynamic-tests",
             "syscallguard_starry_dynamic_test_index",
-            [
-                {
-                    "id": test_id,
-                    "path": str(path.relative_to(self.root)),
-                    "rule_refs": ["RULE_ONE"],
-                }
-            ],
+            "test_id",
+            test_id,
+            path,
+            ["RULE_ONE"],
+            ["alpha"],
         )
 
     def map_fixture(self, descriptor: Path, run_id: str = "mapping-fixture") -> str:
@@ -610,71 +653,42 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
-    def test_preseeded_pending_rule_is_counted_as_added(self) -> None:
+    def test_only_report_and_two_level_libraries_are_persisted(self) -> None:
         self.prepare_spec_run()
-        rule = load_mapping(self.root / "library/rules/rule-one.yaml")
-        atomic_write_yaml(
-            self.root / "targets/starry/rule-coverage.yaml",
-            {
-                "schema_version": 1,
-                "kind": "syscallguard_starry_rule_coverage",
-                "updated_at_utc": None,
-                "target": {
-                    "target_id": "starry",
-                    "repository_identity": None,
-                    "descriptor_hash": None,
-                    "last_snapshot_hash": None,
-                },
-                "rules": {
-                    "RULE_ONE": {
-                        "syscalls": ["alpha"],
-                        "rule_version": entity_version("RULE_ONE", rule),
-                        "status": "pending",
-                        "classification": None,
-                        "mapping_refs": [],
-                        "static_check_refs": [],
-                        "dynamic_test_refs": [],
-                        "artifact_versions": {},
-                        "target_dependencies": [],
-                        "repository_identity": None,
-                        "target_descriptor_hash": None,
-                        "last_verified_snapshot_hash": None,
-                        "last_processed_run": None,
-                        "reason": "initial_coverage",
-                    }
-                },
-            },
-        )
         _repo, _descriptor, _snapshot = self.make_target("good\n")
         run_mapping(None, self.root, "mapping-first-attempt")
-        manifest = load_mapping(self.root / "runs/mapping-first-attempt/manifest.yaml")
-        self.assertEqual(manifest["counts"]["added"], 1)
-        self.assertEqual(manifest["counts"]["updated"], 0)
+        report = load_mapping_report(self.root, "mapping-first-attempt")
+        self.assertEqual(report["counts"]["added"], 1)
+        self.assertEqual(report["rules"]["RULE_ONE"]["status"], "needs_review")
+        self.assertEqual(
+            {item.name for item in (self.root / "runs/mapping-first-attempt").iterdir()},
+            {"report.md"},
+        )
+        self.assertTrue((self.root / "targets/starry/static-checks.yaml").is_file())
+        self.assertTrue((self.root / "targets/starry/dynamic-tests.yaml").is_file())
+        self.assertFalse((self.root / "targets/starry/rule-coverage.yaml").exists())
+        self.assertFalse((self.root / "targets/starry/mappings").exists())
+        self.assertFalse((TEMP_ROOT / "mapping-first-attempt").exists())
 
-    def test_rule_library_manifest_and_content_staleness(self) -> None:
+    def test_report_state_uses_relevant_target_content(self) -> None:
         self.prepare_spec_run()
         self.add_static_check("good")
         repo, descriptor, _old_commit = self.make_target("good\n")
         self.map_fixture(descriptor, "mapping-old")
-        manifest = load_mapping(self.root / "runs/mapping-old/manifest.yaml")
-        self.assertNotIn("from_report_id", manifest)
-        self.assertNotIn("base_commit", manifest["target"])
-        self.assertIn("rule_index_hash", manifest)
-        self.assertEqual(manifest["selected_rule_versions"]["RULE_ONE"]["id"], "RULE_ONE")
-        self.assertEqual(manifest["rule_syscalls"], {"RULE_ONE": ["alpha"]})
-        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")
-        self.assertEqual(coverage["rules"]["RULE_ONE"]["status"], "mapped")
+        first = load_mapping_report(self.root, "mapping-old")
+        self.assertEqual(first["rules"]["RULE_ONE"]["status"], "covered")
+        self.assertEqual(first["execution_scope"]["static_checks"], ["CHECK_ONE"])
+        self.assertEqual(first["rule_syscalls"], {"RULE_ONE": ["alpha"]})
 
-        unrelated_snapshot = commit_file(repo, "unrelated.txt", "unrelated\n")
-        self.assertTrue(unrelated_snapshot)
+        commit_file(repo, "unrelated.txt", "unrelated\n")
         run_mapping(None, self.root, "mapping-unrelated")
-        unrelated = load_mapping(self.root / "runs/mapping-unrelated/manifest.yaml")
+        unrelated = load_mapping_report(self.root, "mapping-unrelated")
         self.assertEqual(unrelated["counts"]["processed"], 0)
-        self.assertEqual(unrelated["counts"]["skipped"], 1)
+        self.assertEqual(unrelated["execution_scope"]["static_checks"], [])
 
         commit_file(repo, "code.txt", "changed target\n")
         prepared = prepare_mapping(None, self.root, "mapping-related")
-        preparation = load_mapping(self.root / f"runs/{prepared}/preparation.yaml")
+        preparation = load_mapping(TEMP_ROOT / prepared / "preparation.yaml")
         self.assertEqual(preparation["selected_rule_ids"], ["RULE_ONE"])
 
         run_check("mapping-old", self.root, "check-stale")
@@ -694,17 +708,19 @@ class MappingTests(FlowTestCase):
         atomic_write_yaml(self.root / "library/syscalls.yaml", index)
         repo, _descriptor, _commit = self.make_target()
         run_mapping("alpha", self.root, "mapping-alpha")
-        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")
-        self.assertEqual(coverage["rules"]["RULE_ONE"]["status"], "needs_review")
-        self.assertEqual(coverage["rules"]["RULE_TWO"]["status"], "pending")
+        first = load_mapping_report(self.root, "mapping-alpha")
+        self.assertEqual(first["rules"]["RULE_ONE"]["status"], "needs_review")
+        self.assertEqual(first["rules"]["RULE_TWO"]["status"], "pending")
+        self.assertEqual(first["remaining"]["needs_review"], ["RULE_ONE"])
+        self.assertEqual(first["remaining"]["pending"], ["RULE_TWO"])
 
         run_id = prepare_mapping(" alpha,ALPHA ", self.root, "mapping-same")
-        same = load_mapping(self.root / f"runs/{run_id}/preparation.yaml")
+        same = load_mapping(TEMP_ROOT / run_id / "preparation.yaml")
         self.assertEqual(same["selected_rule_ids"], [])
         finalize_mapping(run_id, self.root)
         commit_file(repo, "code.txt", "new content\n")
         retry_id = prepare_mapping("alpha", self.root, "mapping-retry")
-        retry = load_mapping(self.root / f"runs/{retry_id}/preparation.yaml")
+        retry = load_mapping(TEMP_ROOT / retry_id / "preparation.yaml")
         self.assertEqual(retry["selected_rule_ids"], ["RULE_ONE"])
 
         self.assertEqual(resolve_mapping_syscalls(" beta,Alpha,alpha "), ["alpha", "beta"])
@@ -717,14 +733,14 @@ class MappingTests(FlowTestCase):
         with self.assertRaisesRegex(SyscallGuardError, "do not exist"):
             prepare_mapping("missing", self.root, "mapping-missing")
 
-    def test_all_mapping_classifications_publish_resolvable_references(self) -> None:
+    def test_all_result_kinds_publish_resolvable_two_level_references(self) -> None:
         self.prepare_spec_run()
         index = load_mapping(self.root / "library/syscalls.yaml")
         base = load_mapping(self.root / "library/rules/rule-one.yaml")
         rule_ids = {
             "RULE_ONE": "static",
             "RULE_DYNAMIC": "dynamic",
-            "RULE_PARTIAL": "partial_static",
+            "RULE_BOTH": "both",
             "RULE_UNSUPPORTED": "unsupported",
             "RULE_REVIEW": "needs_review",
         }
@@ -739,28 +755,29 @@ class MappingTests(FlowTestCase):
         atomic_write_yaml(self.root / "library/syscalls.yaml", index)
         _repo, _descriptor, _snapshot = self.make_target("fn implementation() {}\n")
         run_id = prepare_mapping(None, self.root, "mapping-five-kinds")
-        staged_root = self.root / f"runs/{run_id}/staged/targets/starry"
+        workspace = TEMP_ROOT / run_id
+        staged_root = workspace / "staged/targets/starry"
 
-        for rule_id, classification in rule_ids.items():
-            static_refs = [f"CHECK_{rule_id}"] if classification in {"static", "partial_static"} else []
-            dynamic_refs = [f"TEST_{rule_id}"] if classification in {"dynamic", "partial_static"} else []
-            mapping = {
+        for rule_id, result_kind in rule_ids.items():
+            static_refs = [f"CHECK_{rule_id}"] if result_kind in {"static", "both"} else []
+            dynamic_refs = [f"TEST_{rule_id}"] if result_kind in {"dynamic", "both"} else []
+            status = result_kind if result_kind in {"needs_review", "unsupported"} else "covered"
+            result = {
                 "schema_version": 1,
-                "kind": "syscallguard_starry_mapping",
-                "mapping_id": f"STARRY_{rule_id}",
-                "rule_refs": [rule_id],
-                "classification": classification,
+                "kind": "syscallguard_starry_rule_mapping_result",
+                "rule_id": rule_id,
+                "status": status,
                 "target_locations": (
                     [{"path": "code.txt", "symbols": []}]
-                    if classification in {"static", "partial_static", "dynamic"}
+                    if status == "covered"
                     else []
                 ),
                 "static_check_refs": static_refs,
                 "dynamic_test_refs": dynamic_refs,
-                "reason": f"fixture {classification}",
+                "reason": f"fixture {result_kind}",
             }
             atomic_write_yaml(
-                staged_root / "mappings" / f"{slug(mapping['mapping_id'])}.yaml", mapping
+                workspace / "staged/rule-results" / f"{slug(rule_id)}.yaml", result
             )
             for check_id in static_refs:
                 atomic_write_yaml(
@@ -775,29 +792,48 @@ class MappingTests(FlowTestCase):
                     },
                 )
             for test_id in dynamic_refs:
+                dynamic = {
+                    "schema_version": 1,
+                    "kind": "syscallguard_starry_dynamic_test",
+                    "test_id": test_id,
+                    "rule_refs": [rule_id],
+                    "test_source": "fixture.c",
+                    "build": {"kind": "fixture"},
+                    "command": ["/bin/true"],
+                }
+                if rule_id == "RULE_DYNAMIC":
+                    dynamic["patch_file"] = "targets/starry/dynamic-tests/assets/fixture.patch"
+                    atomic_write_text(
+                        staged_root / "dynamic-tests/assets/fixture.patch",
+                        "fixture patch\n",
+                    )
                 atomic_write_yaml(
                     staged_root / "dynamic-tests" / f"{slug(test_id)}.yaml",
-                    {
-                        "schema_version": 1,
-                        "kind": "syscallguard_starry_dynamic_test",
-                        "test_id": test_id,
-                        "rule_refs": [rule_id],
-                        "test_source": "fixture.c",
-                        "build": {"kind": "fixture"},
-                        "command": ["/bin/true"],
-                    },
+                    dynamic,
                 )
 
         finalize_mapping(run_id, self.root)
-        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")["rules"]
-        self.assertEqual(coverage["RULE_ONE"]["status"], "mapped")
-        self.assertEqual(coverage["RULE_DYNAMIC"]["classification"], "dynamic")
-        self.assertEqual(coverage["RULE_PARTIAL"]["classification"], "partial_static")
-        self.assertEqual(coverage["RULE_UNSUPPORTED"]["status"], "unsupported")
-        self.assertEqual(coverage["RULE_REVIEW"]["status"], "needs_review")
-        manifest = load_mapping(self.root / f"runs/{run_id}/manifest.yaml")
-        self.assertEqual(manifest["counts"]["static_checks"], 2)
-        self.assertEqual(manifest["counts"]["dynamic_tests"], 2)
+        report = load_mapping_report(self.root, run_id)
+        self.assertEqual(report["rules"]["RULE_ONE"]["status"], "covered")
+        self.assertEqual(report["rules"]["RULE_DYNAMIC"]["dynamic_test_refs"], ["TEST_RULE_DYNAMIC"])
+        self.assertEqual(report["rules"]["RULE_BOTH"]["status"], "covered")
+        self.assertEqual(report["rules"]["RULE_UNSUPPORTED"]["status"], "unsupported")
+        self.assertEqual(report["rules"]["RULE_REVIEW"]["status"], "needs_review")
+        self.assertEqual(report["counts"]["static_checks"], 2)
+        self.assertEqual(report["counts"]["dynamic_tests"], 2)
+        static_index = load_mapping(self.root / "targets/starry/static-checks.yaml")
+        dynamic_index = load_mapping(self.root / "targets/starry/dynamic-tests.yaml")
+        self.assertIn("alpha", static_index["syscalls"])
+        self.assertIn("alpha", dynamic_index["syscalls"])
+        detail = load_mapping(self.root / "targets/starry/static-checks/check-rule-one.yaml")
+        self.assertTrue(detail["target_dependencies"])
+        self.assertIn("target_content_fingerprint", detail)
+        self.assertEqual(
+            (self.root / "targets/starry/dynamic-tests/assets/fixture.patch").read_text(
+                encoding="utf-8"
+            ),
+            "fixture patch\n",
+        )
 
     def test_finalizer_failure_does_not_advance_shared_state(self) -> None:
         self.prepare_spec_run()
@@ -808,12 +844,10 @@ class MappingTests(FlowTestCase):
         ):
             with self.assertRaisesRegex(SyscallGuardError, "publish failed"):
                 finalize_mapping(run_id, self.root)
-        self.assertFalse((self.root / "targets/starry/rule-coverage.yaml").exists())
-        self.assertFalse(
-            (self.root / "targets/starry/mappings/starry-rule-one.yaml").exists()
-        )
-        manifest = load_mapping(self.root / f"runs/{run_id}/manifest.yaml")
-        self.assertEqual(manifest["status"], "failed")
+        self.assertFalse((self.root / f"runs/{run_id}").exists())
+        self.assertFalse((self.root / "targets/starry/static-checks.yaml").exists())
+        self.assertFalse((self.root / "targets/starry/dynamic-tests.yaml").exists())
+        self.assertTrue((TEMP_ROOT / run_id / "failure.yaml").is_file())
 
 
 class CheckTests(FlowTestCase):
@@ -923,9 +957,14 @@ new file mode 100644
     def prepare_failed_check(self) -> tuple[Path, str]:
         self.prepare_spec_run()
         self.add_static_check("good")
-        test_patch = self.root / "test.patch"
+        test_patch = self.root / "targets/starry/dynamic-tests/assets/test.patch"
+        test_patch.parent.mkdir(parents=True, exist_ok=True)
         test_patch.write_text(self.TEST_PATCH, encoding="utf-8")
-        self.add_dynamic_test("DYNAMIC_PASS", ["/bin/true"], "test.patch")
+        self.add_dynamic_test(
+            "DYNAMIC_PASS",
+            ["/bin/true"],
+            "targets/starry/dynamic-tests/assets/test.patch",
+        )
         repo, descriptor, base_commit = self.make_target()
         self.map_fixture(descriptor)
         run_check("mapping-fixture", self.root, "check-finding")
@@ -984,7 +1023,7 @@ class ResetTests(unittest.TestCase):
             atomic_write_text(root / "runs/spec-kept/note.txt", "keep\n")
             atomic_write_text(root / "runs/spec-kept/report.md", "history\n")
             atomic_write_text(root / "runs/mapping-one/report.md", "keep\n")
-            atomic_write_yaml(root / "targets/starry/mappings/index.yaml", {"keep": True})
+            atomic_write_yaml(root / "targets/starry/static-checks.yaml", {"keep": True})
             result = reset_project(root)
             self.assertEqual(result["removed_rule_count"], 1)
             self.assertEqual(result["removed_report_count"], 2)
@@ -992,7 +1031,19 @@ class ResetTests(unittest.TestCase):
             self.assertFalse((root / "library/syscalls.yaml").exists())
             self.assertTrue((root / "runs/spec-kept/note.txt").exists())
             self.assertTrue((root / "runs/mapping-one/report.md").exists())
-            self.assertTrue((root / "targets/starry/mappings/index.yaml").exists())
+            self.assertTrue((root / "targets/starry/static-checks.yaml").exists())
+
+
+class RepositoryMappingScopeTests(unittest.TestCase):
+    def test_current_rule_library_has_expected_full_and_filtered_scopes(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        index = load_mapping(root / "library/syscalls.yaml")["syscalls"]
+        all_rules = {
+            row["rule_id"] for refs in index.values() for row in refs
+        }
+        self.assertEqual(len(all_rules), 12)
+        self.assertEqual(len({row["rule_id"] for row in index["mmap"]}), 9)
+        self.assertEqual(len({row["rule_id"] for row in index["close"]}), 3)
 
 
 if __name__ == "__main__":
