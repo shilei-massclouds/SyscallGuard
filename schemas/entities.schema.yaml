@@ -1,6 +1,11 @@
 schema_name: syscallguard-shared-entities
-version: 4
+version: 5
 entities:
+  syscall_index:
+    kind: syscallguard_syscall_index
+    storage: library/syscalls.yaml
+    required: [syscalls]
+    rule_reference_required: [rule_id, path]
   ingest_report:
     kind: syscallguard_ingest_report
     storage: runs/spec-*/report.md YAML frontmatter

@@ -2,7 +2,8 @@
 
 ## Ingest report
 
-`runs/spec-<id>/report.md` 的 YAML frontmatter 是 ingest 的唯一历史、增量状态和下游输入。
+`runs/spec-<id>/report.md` 正文先用中文说明规则的适用条件、检查内容和预期结果，末尾的机器
+可读元数据是 ingest 的唯一历史、增量状态和下游输入。
 固定记录 report ID/时间、来源 ID/type/revision、descriptor 与 recognizer hash、count 及其来源、
 待处理数、本轮 syscall 列表，以及每个 syscall 的：
 
@@ -19,9 +20,10 @@
 `{value: null, source: explicit_syscalls}`。`selected_syscalls` 只包含名单内 fingerprint 首次
 出现或发生变化的 syscall，`pending_count` 仍表示来源的全局待处理数。
 
-## Rule
+## Syscall index 与 Rule
 
-`library/rules/*.yaml` 是唯一通用规则库，不存在 index。Rule 包含 category、semantics、
+`library/syscalls.yaml` 是一级表，以 syscall 为索引引用若干规则 ID 和详情文件。
+`library/rules/*.yaml` 目录是二级表，每个 YAML 是一条规则详情。Rule 包含 category、semantics、
 `semantic_hash`、`generated_at_utc` 和 sources。`semantic_hash` 只覆盖 category 与 semantics。
 新增或更新 sources 时不推进规则时间戳；语义变化同时推进时间戳与 hash。
 
@@ -66,6 +68,7 @@ worktree_root: /tmp/syscallguard-worktrees
 
 ## Reset
 
-`$reset-syscallguard` 只删除 `library/rules/*.yaml` 和 `runs/spec-*/report.md`。它保留来源配置、
+`$reset-syscallguard` 只删除 `library/syscalls.yaml`、`library/rules/*.yaml` 和
+`runs/spec-*/report.md`。它保留来源配置、
 recognizer、Starry 共享实体以及 mapping/check/fix 历史；下一次 ingest 因无 report 状态而从首个
 字典序 syscall 重新开始。

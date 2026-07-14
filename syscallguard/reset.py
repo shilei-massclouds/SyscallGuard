@@ -16,6 +16,7 @@ def reset_project(root: Path | None = None) -> dict[str, Any]:
 
     rule_paths = sorted((root / "library" / "rules").glob("*.yaml"))
     report_paths = sorted((root / "runs").glob("spec-*/report.md"))
+    syscall_index = root / "library" / "syscalls.yaml"
     removed_rules: list[str] = []
     removed_reports: list[str] = []
 
@@ -31,11 +32,14 @@ def reset_project(root: Path | None = None) -> dict[str, Any]:
             path.parent.rmdir()
         except OSError:
             pass
+    removed_syscall_index = syscall_index.exists()
+    syscall_index.unlink(missing_ok=True)
     return {
         "removed_rule_count": len(removed_rules),
         "removed_report_count": len(removed_reports),
         "removed_rules": removed_rules,
         "removed_reports": removed_reports,
+        "removed_syscall_index": removed_syscall_index,
     }
 
 

@@ -463,44 +463,125 @@ def _yaml_text(value: Any) -> str:
     )
 
 
+def _condition_text(semantics: dict[str, Any]) -> str:
+    preconditions = semantics.get("preconditions", [])
+    names = {
+        "INVALID_FD": "文件描述符无效",
+    }
+    if preconditions:
+        return "、".join(names.get(str(item), str(item)) for item in preconditions)
+    arguments = semantics.get("action", {}).get("arguments", [])
+    if "fd_closed" in arguments:
+        return "文件描述符已经关闭"
+    if any("get_fd()" in str(item) for item in arguments):
+        return "文件描述符有效且处于打开状态"
+    return "无额外前置条件"
+
+
+def _action_text(semantics: dict[str, Any]) -> str:
+    action = semantics.get("action", {})
+    syscall = action.get("syscall", "未知 syscall")
+    arguments = ", ".join(str(item) for item in action.get("arguments", []))
+    return f"调用 {syscall}({arguments})"
+
+
+def _expected_text(semantics: dict[str, Any]) -> str:
+    expected = semantics.get("expected_result", {})
+    if expected.get("kind") == "return_errno":
+        return f"返回 {expected.get('return')}，errno 为 {expected.get('errno')}"
+    if expected.get("kind") == "success":
+        return f"调用成功，返回 {expected.get('return')}"
+    return str(expected)
+
+
+def _rule_explanation(entity: dict[str, Any]) -> str:
+    semantics = entity.get("semantics", {})
+    return (
+        f"条件：{_condition_text(semantics)}；"
+        f"检查：{_action_text(semantics)}；"
+        f"预期：{_expected_text(semantics)}。"
+    )
+
+
+def _entity_text(entity: dict[str, Any]) -> str:
+    text = _yaml_text(entity)
+    if entity.get("kind") == "syscallguard_rule":
+        return f"# 合规检查：{_rule_explanation(entity)}\n{text}"
+    return text
+
+
 def _report_text(frontmatter: dict[str, Any]) -> str:
-    lines = ["---", _yaml_text(frontmatter).rstrip(), "---", "", "# Syscall rule ingestion", ""]
+    selected = frontmatter["syscalls"]
+    formed = [row for row in selected if row["result"] == "formed_rules"]
+    total_rules = sum(len(row["rules"]) for row in formed)
+    names = "、".join(row["syscall"] for row in selected) or "无"
+    lines = [
+        "# Syscall 合规性规则提取报告",
+        "",
+        "## 结论",
+        "",
+        f"本次分析了 {names}，发现 {total_rules} 条可执行的合规性规则。",
+        "",
+    ]
+    for row in selected:
+        lines.extend([f"## `{row['syscall']}`", ""])
+        if row["result"] != "formed_rules":
+            lines.append("没有形成可发布的合规性规则。")
+            lines.append("")
+            continue
+        lines.extend(
+            [
+                f"共形成 {len(row['rules'])} 条规则：",
+                "",
+                "| 规则 | 条件 | 检查内容 | 预期结果 |",
+                "| --- | --- | --- | --- |",
+            ]
+        )
+        for version in row["rules"]:
+            rule = frontmatter["rule_details"][version["id"]]
+            semantics = rule["semantics"]
+            path = f"../../library/rules/{slug(version['id'])}.yaml"
+            lines.append(
+                f"| [`{version['id']}`]({path}) | {_condition_text(semantics)} | "
+                f"{_action_text(semantics)} | {_expected_text(semantics)} |"
+            )
     source = frontmatter["source"]
     count = frontmatter["count"]
     lines.extend(
         [
-            f"Report: `{frontmatter['report_id']}`",
-            f"Source: `{source['id']}` (`{source['revision']}`)",
+            "",
+            "## 技术参考",
+            "",
+            f"- 报告 ID：`{frontmatter['report_id']}`",
+            f"- 来源：`{source['id']}`，revision `{source['revision']}`",
+            f"- 全局待处理 syscall：{frontmatter['pending_count']}",
         ]
     )
     if "requested_syscalls" in frontmatter:
-        requested = ", ".join(f"`{name}`" for name in frontmatter["requested_syscalls"])
-        lines.append(f"Requested syscalls: {requested}")
+        requested = "、".join(f"`{name}`" for name in frontmatter["requested_syscalls"])
+        lines.append(f"- 指定 syscall：{requested}")
     else:
-        lines.append(f"Count: `{count['value']}` from `{count['source']}`")
+        lines.append(f"- 提取数量：`{count['value']}`（来源：`{count['source']}`）")
+    for row in selected:
+        lines.append(
+            f"- `{row['syscall']}`：证据 {row['evidence_count']} 条，"
+            f"未解析 {row['unresolved_evidence_count']} 条"
+        )
+    metadata = dict(frontmatter)
+    metadata.pop("rule_details", None)
     lines.extend(
         [
-            f"Pending before selection: {frontmatter['pending_count']}",
             "",
-            "| Syscall | Result | Evidence | Unresolved | Rules | Reason |",
-            "| --- | --- | ---: | ---: | --- | --- |",
+            "<details>",
+            "<summary>机器可读元数据</summary>",
+            "",
+            "<!-- syscallguard-metadata -->",
+            "```yaml",
+            _yaml_text(metadata).rstrip(),
+            "```",
+            "</details>",
         ]
     )
-    for row in frontmatter["syscalls"]:
-        rule_ids = ", ".join(f"`{rule['id']}`" for rule in row["rules"]) or "-"
-        lines.append(
-            f"| `{row['syscall']}` | `{row['result']}` | {row['evidence_count']} | "
-            f"{row['unresolved_evidence_count']} | {rule_ids} | `{row['reason']}` |"
-        )
-    if not frontmatter["syscalls"]:
-        lines.append("| - | - | 0 | 0 | - | `nothing_pending` |")
-    if frontmatter.get("conflicts"):
-        lines.extend(["", "## Stable ID conflicts", ""])
-        for conflict in frontmatter["conflicts"]:
-            lines.append(
-                f"- `{conflict['preferred_rule_id']}` was published as "
-                f"`{conflict['variant_rule_id']}`."
-            )
     return "\n".join(lines) + "\n"
 
 
@@ -524,7 +605,7 @@ def _publish_transaction(
     report_path: Path,
     report_text: str,
 ) -> None:
-    """Stage every output, publish the report last, and roll rules back on failure."""
+    """Stage every output, publish the report last, and roll entities back on failure."""
     updates = list(rule_updates)
     staged: list[tuple[Path, Path]] = []
     originals: dict[Path, bytes | None] = {}
@@ -533,7 +614,7 @@ def _publish_transaction(
     try:
         for destination, entity in updates:
             originals[destination] = destination.read_bytes() if destination.exists() else None
-            staged.append((destination, _stage_text(destination, _yaml_text(entity))))
+            staged.append((destination, _stage_text(destination, _entity_text(entity))))
         report_temp = _stage_text(report_path, report_text)
         staged.append((report_path, report_temp))
         for destination, temp in staged:
@@ -710,6 +791,11 @@ def run_ingest(
         "pending_count": len(pending),
         "selected_syscalls": [str(item["syscall"]) for item in selected],
         "syscalls": result_rows,
+        "rule_details": {
+            version["id"]: staged_rules.get(version["id"], current_rules.get(version["id"]))[1]
+            for row in result_rows
+            for version in row["rules"]
+        },
     }
     if requested_syscalls is not None:
         frontmatter["requested_syscalls"] = requested_syscalls
@@ -721,6 +807,33 @@ def run_ingest(
         existing = current_rules.get(rule_id)
         if existing is None or existing[1] != entity:
             updates.append((path, entity))
+    indexed_rows = dict(latest)
+    source_id = str(descriptor["source_id"])
+    for row in result_rows:
+        indexed_rows[(source_id, row["syscall"])] = row
+    syscall_rules: dict[str, dict[str, dict[str, str]]] = {}
+    for (_row_source, syscall), row in indexed_rows.items():
+        syscall_rules.setdefault(syscall, {})
+        if row.get("result") != "formed_rules":
+            continue
+        for version in row.get("rules", []):
+            rule_id = version["id"]
+            syscall_rules[syscall][rule_id] = {
+                "rule_id": rule_id,
+                "path": f"library/rules/{slug(rule_id)}.yaml",
+            }
+    syscall_index = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "syscallguard_syscall_index",
+        "syscalls": {
+            syscall: list(rule_map.values())
+            for syscall, rule_map in sorted(syscall_rules.items())
+        },
+    }
+    index_path = root / "library" / "syscalls.yaml"
+    existing_index = yaml.safe_load(index_path.read_text(encoding="utf-8")) if index_path.exists() else None
+    if existing_index != syscall_index:
+        updates.append((index_path, syscall_index))
     try:
         _publish_transaction(updates, report_path, _report_text(frontmatter))
     except SyscallGuardError:

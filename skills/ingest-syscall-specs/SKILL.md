@@ -16,7 +16,7 @@ description: Import new or changed target-independent syscall rules from a confi
    python3 skills/ingest-syscall-specs/scripts/run.py [--source <source>] [--count <count> | --syscalls <names>]
    ```
 
-4. Inspect the YAML frontmatter and body of `runs/<report-id>/report.md`.
+4. Inspect the Chinese summary and trailing machine-readable metadata in `runs/<report-id>/report.md`.
 5. Report the resolved source/revision, recognition-rules hash, count source, pending and selected syscalls, formed/no-rule results, rule IDs, and the report path.
 
 ## Boundaries
@@ -28,6 +28,7 @@ description: Import new or changed target-independent syscall rules from a confi
   reporting the global pending count.
 - Treat both `formed_rules` and `no_rules` report rows as successful incremental state until source or recognition fingerprints change.
 - Publish a syscall's candidate rules only when every recognized evidence row resolves and at least one rule forms. Record unresolved counts in the report, but do not persist raw evidence.
-- Publish rule files atomically and publish the report last. On failure, write neither a report nor rule updates so the next call retries automatically.
+- Atomically update `library/syscalls.yaml` as the syscall-to-rule first-level index, keep rule details in `library/rules/*.yaml`, and publish the report last.
+- Prefix each generated rule file with a Chinese comment explaining its conditions, invocation, and expected result.
 - Preserve `generated_at_utc` when only rule sources change.
 - Never inspect, map, modify, build, or test Starry. Never invoke another SyscallGuard skill.

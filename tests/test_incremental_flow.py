@@ -275,17 +275,19 @@ class IngestTests(FlowTestCase):
         run_id = new_run_id("spec", {"fixture": True})
         self.assertEqual(normalize_run_id(run_id), run_id)
 
-    def test_only_report_and_rules_are_persisted(self) -> None:
+    def test_only_report_index_and_rules_are_persisted(self) -> None:
         _source, descriptor = self.make_ltp()
         before = {path.relative_to(self.root) for path in self.root.rglob("*") if path.is_file()}
         run_ingest(descriptor, 1, self.root, "spec-only-two-kinds")
         after = {path.relative_to(self.root) for path in self.root.rglob("*") if path.is_file()}
         created = after - before
         self.assertIn(Path("runs/spec-only-two-kinds/report.md"), created)
+        self.assertIn(Path("library/syscalls.yaml"), created)
         self.assertTrue(any(path.parent == Path("library/rules") for path in created))
         self.assertTrue(
             all(
                 path == Path("runs/spec-only-two-kinds/report.md")
+                or path == Path("library/syscalls.yaml")
                 or path.parent == Path("library/rules")
                 for path in created
             )
@@ -356,8 +358,13 @@ class IngestTests(FlowTestCase):
         self.assertEqual(first["pending_count"], 2)
         self.assertEqual(first["selected_syscalls"], ["beta"])
         body = (self.root / "runs/spec-list-beta/report.md").read_text(encoding="utf-8")
-        self.assertIn("Requested syscalls: `beta`", body)
-        self.assertNotIn("Count: `", body)
+        self.assertIn("指定 syscall：`beta`", body)
+        self.assertNotIn("提取数量：", body)
+        self.assertLess(body.index("# Syscall 合规性规则提取报告"), body.index("机器可读元数据"))
+        index = load_mapping(self.root / "library/syscalls.yaml")
+        self.assertEqual(list(index["syscalls"]), ["beta"])
+        rule_path = self.root / index["syscalls"]["beta"][0]["path"]
+        self.assertTrue(rule_path.read_text(encoding="utf-8").startswith("# 合规检查：条件："))
 
         run_ingest(
             descriptor,
@@ -788,6 +795,7 @@ class ResetTests(unittest.TestCase):
             (root / "sources").mkdir()
             (root / "syscallguard").mkdir()
             atomic_write_yaml(root / "library/rules/one.yaml", {"rule": "one"})
+            atomic_write_yaml(root / "library/syscalls.yaml", {"one": ["rule-one"]})
             atomic_write_text(root / "runs/spec-one/report.md", "history\n")
             atomic_write_text(root / "runs/spec-kept/note.txt", "keep\n")
             atomic_write_text(root / "runs/spec-kept/report.md", "history\n")
@@ -797,6 +805,7 @@ class ResetTests(unittest.TestCase):
             self.assertEqual(result["removed_rule_count"], 1)
             self.assertEqual(result["removed_report_count"], 2)
             self.assertFalse((root / "library/rules/one.yaml").exists())
+            self.assertFalse((root / "library/syscalls.yaml").exists())
             self.assertTrue((root / "runs/spec-kept/note.txt").exists())
             self.assertTrue((root / "runs/mapping-one/report.md").exists())
             self.assertTrue((root / "targets/starry/mappings/index.yaml").exists())

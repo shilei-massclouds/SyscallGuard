@@ -17,9 +17,13 @@ reads source instances containing only `source_id`, `adapter`, `location`, `revi
 `default_count`. Keep all macro, helper, old-API, array, normalization, precondition, and rule-template
 choices in `sources/adapters/ltp/recognition-rules.yaml`; never import tools from the LTP checkout.
 
-Write only `runs/<report-id>/report.md` and created or updated `library/rules/*.yaml`. The report's
-YAML frontmatter is the human report, incremental state, and downstream input. Scan all prior
-`runs/spec-*/report.md` files and use the newest row per source ID and syscall. Skip unchanged
+Write only `runs/<report-id>/report.md`, `library/syscalls.yaml`, and created or updated
+`library/rules/*.yaml`. `library/syscalls.yaml` is the first-level syscall-to-rule index; the rule
+files are the second-level details. Prefix each rule YAML with a Chinese summary comment. The report
+starts with a concise Chinese explanation of rule conditions and expected results, and keeps its
+machine-readable incremental state in a trailing metadata block. Scan all prior
+`runs/spec-*/report.md` files and use the newest row per source ID and syscall. Publish the index and
+rules atomically and publish the report last. Skip unchanged
 `formed_rules` and `no_rules` rows. A failed call writes no report and advances no state.
 
 Each syscall row records source and recognition fingerprints, result, versioned rules, raw evidence

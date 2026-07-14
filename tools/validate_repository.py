@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -83,9 +84,22 @@ def frontmatter(path: Path, errors: list[str]) -> dict[str, Any] | None:
     except OSError as exc:
         errors.append(f"cannot read {path.relative_to(ROOT)}: {exc}")
         return None
+    marker = "<!-- syscallguard-metadata -->\n```yaml\n"
+    if not text.startswith("---") and marker in text:
+        encoded = text.split(marker, 1)[1]
+        payload, separator, _tail = encoded.partition("\n```\n")
+        if not separator:
+            errors.append(f"unclosed Markdown metadata: {path.relative_to(ROOT)}")
+            return None
+        try:
+            value = yaml.safe_load(payload)
+        except yaml.YAMLError as exc:
+            errors.append(f"invalid Markdown metadata in {path.relative_to(ROOT)}: {exc}")
+            return None
+        return value if isinstance(value, dict) else None
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
-        errors.append(f"missing Markdown frontmatter: {path.relative_to(ROOT)}")
+        errors.append(f"missing Markdown metadata: {path.relative_to(ROOT)}")
         return None
     try:
         closing = lines[1:].index("---") + 1
@@ -147,6 +161,38 @@ def validate_rules(errors: list[str]) -> dict[str, dict[str, Any]]:
         if forbidden.intersection(entity):
             errors.append(f"downstream state leaked into rule: {path.relative_to(ROOT)}")
     return rules
+
+
+def validate_syscall_index(errors: list[str], rules: dict[str, dict[str, Any]]) -> None:
+    path = ROOT / "library/syscalls.yaml"
+    if not path.exists():
+        if rules:
+            errors.append("missing: library/syscalls.yaml")
+        return
+    index = load(path, errors)
+    if not isinstance(index, dict):
+        return
+    if index.get("kind") != "syscallguard_syscall_index":
+        errors.append("invalid syscall index kind: library/syscalls.yaml")
+    syscalls = index.get("syscalls")
+    if not isinstance(syscalls, dict):
+        errors.append("syscall index has no syscalls mapping")
+        return
+    for syscall, refs in syscalls.items():
+        if not isinstance(syscall, str) or not isinstance(refs, list):
+            errors.append(f"invalid syscall index row: {syscall!r}")
+            continue
+        for ref in refs:
+            if not isinstance(ref, dict) or set(ref) != {"rule_id", "path"}:
+                errors.append(f"invalid rule reference for syscall {syscall}")
+                continue
+            rule_id = ref["rule_id"]
+            if rule_id not in rules:
+                errors.append(f"unknown rule {rule_id!r} for syscall {syscall}")
+            filename = re.sub(r"[^a-z0-9]+", "-", str(rule_id).lower()).strip("-")
+            expected = f"library/rules/{filename}.yaml"
+            if ref["path"] != expected:
+                errors.append(f"wrong rule path for {rule_id!r} in syscall index")
 
 
 def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
@@ -363,6 +409,7 @@ def main() -> int:
     errors: list[str] = []
     validate_skills(errors)
     rules = validate_rules(errors)
+    validate_syscall_index(errors, rules)
     reports = validate_reports(errors)
     runs = validate_runs(errors, reports)
     validate_indexes(errors)

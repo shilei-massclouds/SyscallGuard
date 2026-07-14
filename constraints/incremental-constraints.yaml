@@ -1,4 +1,4 @@
-version: 3
+version: 4
 selection:
   unit: source_and_recognition_fingerprint
   order: normalized_syscall_lexical
@@ -16,6 +16,6 @@ rule_semantic_version:
   excludes: [sources]
 publication:
   successful_entity_updates: atomic_replace
-  ingest_outputs: [runs/spec-*/report.md, library/rules/*.yaml]
+  ingest_outputs: [runs/spec-*/report.md, library/syscalls.yaml, library/rules/*.yaml]
   ingest_report_published_last: true
-  failed_ingest_writes_report_or_rules: false
+  failed_ingest_writes_report_index_or_rules: false

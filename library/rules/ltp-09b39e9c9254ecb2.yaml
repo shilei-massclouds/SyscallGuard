@@ -1,0 +1,29 @@
+# 合规检查：条件：文件描述符已经关闭；检查：调用 close(fd_closed)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_09B39E9C9254ECB2
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd_closed
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
+generated_at_utc: '2026-07-14T13:29:27.698322Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  file: testcases/kernel/syscalls/close/close02.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3d84de2300c5662db2d210426bfc7f550d5632edfef012738e5fd1263a86b25a
+  case: close02_35_1

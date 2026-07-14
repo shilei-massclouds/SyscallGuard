@@ -93,16 +93,30 @@ def atomic_write_yaml(path: Path, value: Any) -> None:
 
 
 def read_frontmatter(path: Path) -> tuple[dict[str, Any], str]:
-    """Read a Markdown document with a required YAML frontmatter mapping."""
+    """Read YAML metadata from frontmatter or a report's trailing metadata block."""
     try:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError as exc:
         raise SyscallGuardError(f"missing Markdown file: {path}") from exc
     except OSError as exc:
         raise SyscallGuardError(f"cannot read {path}: {exc}") from exc
+    marker = "<!-- syscallguard-metadata -->\n```yaml\n"
+    if not text.startswith("---") and marker in text:
+        body, encoded = text.split(marker, 1)
+        yaml_text, separator, _tail = encoded.partition("\n```\n")
+        if not separator:
+            raise SyscallGuardError(f"Markdown metadata block is not closed: {path}")
+        try:
+            value = yaml.safe_load(yaml_text)
+        except yaml.YAMLError as exc:
+            raise SyscallGuardError(f"malformed YAML metadata in {path}: {exc}") from exc
+        if not isinstance(value, dict):
+            raise SyscallGuardError(f"expected YAML metadata mapping in {path}")
+        return value, body
+
     lines = text.splitlines(keepends=True)
     if not lines or lines[0].strip() != "---":
-        raise SyscallGuardError(f"Markdown file has no YAML frontmatter: {path}")
+        raise SyscallGuardError(f"Markdown file has no YAML metadata: {path}")
     closing = next(
         (index for index, line in enumerate(lines[1:], start=1) if line.strip() == "---"),
         None,

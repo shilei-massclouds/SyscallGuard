@@ -10,5 +10,6 @@ skill 即授权这些隔离操作。用户现有 Starry worktree 和分支永不
 检查不生成实现修复。修复不处理环境 blocker。回归失败不创建完成 commit，并保留隔离
 worktree、patch 和日志供检查或重跑。
 
-重置命令的删除边界只包括 `library/rules/*.yaml` 和 `runs/spec-*/report.md`，不会扩大到来源
+重置命令的删除边界只包括 `library/syscalls.yaml`、`library/rules/*.yaml` 和
+`runs/spec-*/report.md`，不会扩大到来源
 配置、Starry 共享实体或下游 run。
