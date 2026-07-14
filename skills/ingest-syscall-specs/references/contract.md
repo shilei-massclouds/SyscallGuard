@@ -19,7 +19,8 @@ choices in `sources/adapters/ltp/recognition-rules.yaml`; never import tools fro
 
 Write only `runs/<report-id>/report.md`, `library/syscalls.yaml`, and created or updated
 `library/rules/*.yaml`. `library/syscalls.yaml` is the first-level syscall-to-rule index; the rule
-files are the second-level details. Prefix each rule YAML with a Chinese summary comment. The report
+files are the second-level details. Prefix each rule YAML with a Chinese summary comment and repeat
+the exact comment above its reference in `library/syscalls.yaml`. The report
 starts with a concise Chinese explanation of rule conditions and expected results, and keeps its
 machine-readable incremental state in a trailing metadata block. Scan all prior
 `runs/spec-*/report.md` files and use the newest row per source ID and syscall. Publish the index and

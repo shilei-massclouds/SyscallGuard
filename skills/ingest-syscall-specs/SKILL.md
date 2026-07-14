@@ -30,5 +30,6 @@ description: Import new or changed target-independent syscall rules from a confi
 - Publish a syscall's candidate rules only when every recognized evidence row resolves and at least one rule forms. Record unresolved counts in the report, but do not persist raw evidence.
 - Atomically update `library/syscalls.yaml` as the syscall-to-rule first-level index, keep rule details in `library/rules/*.yaml`, and publish the report last.
 - Prefix each generated rule file with a Chinese comment explaining its conditions, invocation, and expected result.
+- Repeat that exact comment above every matching rule reference in `library/syscalls.yaml`.
 - Preserve `generated_at_utc` when only rule sources change.
 - Never inspect, map, modify, build, or test Starry. Never invoke another SyscallGuard skill.

@@ -1,0 +1,35 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FD1B65B0BCC88E0D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - 'NULL'
+    - MMAPSIZE
+    - PROT_READ | PROT_WRITE
+    - MAP_FILE | MAP_SHARED
+    - fd
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:fd1b65b0bcc88e0d283d47737c8b9d244de44d7461e8efd5bc6eb699ebaa0d54
+generated_at_utc: '2026-07-14T13:38:13.033184Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  file: testcases/kernel/syscalls/mmap/mmap06.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:8855402e47a1191a798ae75bfe90f715c7c9b6f60d61885c22b9cbfa40fb31d3
+  case: mmap06_57_5

@@ -1,0 +1,34 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mmap(NULL, page_sz, PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_791DEA825D66980B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - 'NULL'
+    - page_sz
+    - PROT_WRITE
+    - MAP_FILE | MAP_SHARED
+    - fd
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:791dea825d66980bfded73936e4745cf7b914f20652b9489e65a7a59509b897b
+generated_at_utc: '2026-07-14T13:38:13.033184Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  file: testcases/kernel/syscalls/mmap/mmap08.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:de3e3f6cc10a2aab4f763a7f3fe6b7ccec8b79e398218b681df70c251d7b5e7e
+  case: mmap08_28_raw

@@ -178,6 +178,7 @@ def validate_syscall_index(errors: list[str], rules: dict[str, dict[str, Any]]) 
     if not isinstance(syscalls, dict):
         errors.append("syscall index has no syscalls mapping")
         return
+    index_text = path.read_text(encoding="utf-8")
     for syscall, refs in syscalls.items():
         if not isinstance(syscall, str) or not isinstance(refs, list):
             errors.append(f"invalid syscall index row: {syscall!r}")
@@ -193,6 +194,13 @@ def validate_syscall_index(errors: list[str], rules: dict[str, dict[str, Any]]) 
             expected = f"library/rules/{filename}.yaml"
             if ref["path"] != expected:
                 errors.append(f"wrong rule path for {rule_id!r} in syscall index")
+                continue
+            rule_path = ROOT / expected
+            if rule_path.is_file():
+                comment = rule_path.read_text(encoding="utf-8").splitlines()[0]
+                needle = f"  {comment}\n  - rule_id: {rule_id}\n"
+                if not comment.startswith("# 合规检查：") or needle not in index_text:
+                    errors.append(f"missing matching Chinese comment for {rule_id!r} in syscall index")
 
 
 def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:

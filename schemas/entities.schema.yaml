@@ -6,6 +6,7 @@ entities:
     storage: library/syscalls.yaml
     required: [syscalls]
     rule_reference_required: [rule_id, path]
+    notes: Each rule reference is preceded by the exact Chinese summary comment from its rule file.
   ingest_report:
     kind: syscallguard_ingest_report
     storage: runs/spec-*/report.md YAML frontmatter

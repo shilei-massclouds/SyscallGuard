@@ -503,10 +503,32 @@ def _rule_explanation(entity: dict[str, Any]) -> str:
     )
 
 
-def _entity_text(entity: dict[str, Any]) -> str:
+def _rule_comment(entity: dict[str, Any]) -> str:
+    return f"# 合规检查：{_rule_explanation(entity)}"
+
+
+def _syscall_index_text(
+    entity: dict[str, Any], rule_comments: dict[str, str]
+) -> str:
+    lines: list[str] = []
+    for line in _yaml_text(entity).splitlines():
+        if line.startswith("  - rule_id: "):
+            rule_id = line.split(": ", 1)[1]
+            comment = rule_comments.get(rule_id)
+            if comment:
+                lines.append(f"  {comment}")
+        lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
+def _entity_text(
+    entity: dict[str, Any], rule_comments: dict[str, str] | None = None
+) -> str:
     text = _yaml_text(entity)
     if entity.get("kind") == "syscallguard_rule":
-        return f"# 合规检查：{_rule_explanation(entity)}\n{text}"
+        return f"{_rule_comment(entity)}\n{text}"
+    if entity.get("kind") == "syscallguard_syscall_index":
+        return _syscall_index_text(entity, rule_comments or {})
     return text
 
 
@@ -607,6 +629,24 @@ def _publish_transaction(
 ) -> None:
     """Stage every output, publish the report last, and roll entities back on failure."""
     updates = list(rule_updates)
+    rule_comments = {
+        str(entity["rule_id"]): _rule_comment(entity)
+        for _path, entity in updates
+        if entity.get("kind") == "syscallguard_rule"
+    }
+    root = report_path.parents[2]
+    for _path, entity in updates:
+        if entity.get("kind") != "syscallguard_syscall_index":
+            continue
+        for refs in entity.get("syscalls", {}).values():
+            for ref in refs:
+                rule_id = str(ref["rule_id"])
+                if rule_id in rule_comments:
+                    continue
+                rule_path = root / str(ref["path"])
+                first_line = rule_path.read_text(encoding="utf-8").splitlines()[0]
+                if first_line.startswith("# 合规检查："):
+                    rule_comments[rule_id] = first_line
     staged: list[tuple[Path, Path]] = []
     originals: dict[Path, bytes | None] = {}
     report_directory_existed = report_path.parent.exists()
@@ -614,7 +654,9 @@ def _publish_transaction(
     try:
         for destination, entity in updates:
             originals[destination] = destination.read_bytes() if destination.exists() else None
-            staged.append((destination, _stage_text(destination, _entity_text(entity))))
+            staged.append(
+                (destination, _stage_text(destination, _entity_text(entity, rule_comments)))
+            )
         report_temp = _stage_text(report_path, report_text)
         staged.append((report_path, report_temp))
         for destination, temp in staged:
@@ -831,9 +873,7 @@ def run_ingest(
         },
     }
     index_path = root / "library" / "syscalls.yaml"
-    existing_index = yaml.safe_load(index_path.read_text(encoding="utf-8")) if index_path.exists() else None
-    if existing_index != syscall_index:
-        updates.append((index_path, syscall_index))
+    updates.append((index_path, syscall_index))
     try:
         _publish_transaction(updates, report_path, _report_text(frontmatter))
     except SyscallGuardError:

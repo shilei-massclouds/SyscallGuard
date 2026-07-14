@@ -2,9 +2,40 @@ schema_version: 1
 kind: syscallguard_syscall_index
 syscalls:
   close:
+  # 合规检查：条件：文件描述符已经关闭；检查：调用 close(fd_closed)；预期：返回 -1，errno 为 EBADF。
   - rule_id: LTP_09B39E9C9254ECB2
     path: library/rules/ltp-09b39e9c9254ecb2.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 close(fd_invalid)；预期：返回 -1，errno 为 EBADF。
   - rule_id: LTP_0CD17E662AFD2956
     path: library/rules/ltp-0cd17e662afd2956.yaml
+  # 合规检查：条件：文件描述符有效且处于打开状态；检查：调用 close(tc[i].get_fd())；预期：调用成功，返回 SUCCESS。
   - rule_id: LTP_5CB803B873F78BA0
     path: library/rules/ltp-5cb803b873f78ba0.yaml
+  mmap:
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE | MAP_PRIVATE, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_36C99C10CD38F8DB
+    path: library/rules/ltp-36c99c10cd38f8db.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_45439D8F2BAB0832
+    path: library/rules/ltp-45439d8f2bab0832.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mmap(NULL, 0, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_51E295101A9F4411
+    path: library/rules/ltp-51e295101a9f4411.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_52BAFC01DEA6E172
+    path: library/rules/ltp-52bafc01dea6e172.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mmap(NULL, page_sz, PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_791DEA825D66980B
+    path: library/rules/ltp-791dea825d66980b.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_WRITE, MAP_FILE | MAP_PRIVATE, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_C346EFF1233F7061
+    path: library/rules/ltp-c346eff1233f7061.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_F36F8C0CC1A6D840
+    path: library/rules/ltp-f36f8c0cc1a6d840.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_FD1B65B0BCC88E0D
+    path: library/rules/ltp-fd1b65b0bcc88e0d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE, fd, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_FEACDC300C3E1DD7
+    path: library/rules/ltp-feacdc300c3e1dd7.yaml

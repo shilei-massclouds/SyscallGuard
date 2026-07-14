@@ -364,7 +364,11 @@ class IngestTests(FlowTestCase):
         index = load_mapping(self.root / "library/syscalls.yaml")
         self.assertEqual(list(index["syscalls"]), ["beta"])
         rule_path = self.root / index["syscalls"]["beta"][0]["path"]
-        self.assertTrue(rule_path.read_text(encoding="utf-8").startswith("# 合规检查：条件："))
+        comment = rule_path.read_text(encoding="utf-8").splitlines()[0]
+        self.assertTrue(comment.startswith("# 合规检查：条件："))
+        index_text = (self.root / "library/syscalls.yaml").read_text(encoding="utf-8")
+        rule_id = index["syscalls"]["beta"][0]["rule_id"]
+        self.assertIn(f"  {comment}\n  - rule_id: {rule_id}\n", index_text)
 
         run_ingest(
             descriptor,
