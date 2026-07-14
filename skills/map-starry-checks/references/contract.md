@@ -1,25 +1,25 @@
-# Starry Mapping Contract
+# Starry 增量映射契约
 
-Use a target descriptor with these fields:
+公开接口只有：
 
-```yaml
-target_id: starry
-repository: /path/to/tgoskits
-revision: HEAD
-worktree_root: /tmp/syscallguard-worktrees
+```text
+$映射规则
+$映射规则 syscalls=mmap,close
 ```
 
-Mapping entities live in `targets/starry/mappings/`. Static checks live in
-`targets/starry/static-checks/` and contain `check_id`, `rule_refs`, `path`, and regex `patterns`.
-Dynamic tests live in `targets/starry/dynamic-tests/` and contain `test_id`, `rule_refs`, test source
-metadata, `patch_file`, a list or shell-style `command`, target architecture, timeout, and optional
-environment-blocker patterns. Each directory has an `index.yaml`.
+规则库索引提供 rule ID、详情路径和 syscall 归属。`targets/starry/rule-coverage.yaml` 按 rule ID
+保存规则版本、状态、分类、mapping/check/test 引用、目标文件/符号内容指纹、最后验证内容快照、
+处理 run 和原因。
 
-Pin `base_commit`, `target_hash`, `generated_at_utc`, and direct rule `upstream_dependencies` on every
-selected entity. Read rule versions and syscall ownership from ingest report frontmatter. Reject a
-report when a newer report exists for any included source/syscall. Compare dependency time before
-hash and reject stale reports. Record `from_report_id` and `rule_syscalls`; do not read a syscall
-spec or rule index. Do not carry pass/fail status from a different target revision. Complete a
-missing mapping as `needs_review` only
-with a concrete reason and no invented executable check. Never write mapping references back to a
-general rule.
+以下情况进入 pending：没有 coverage；规则语义版本变化；相关 Starry 文件、符号或 helper
+变化/消失；目标仓库身份或描述符变化；coverage 引用实体变化/消失；`needs_review` 或
+`unsupported` 遇到新的目标内容快照。仅无关内容变化时保持跳过并更新最后验证快照。
+
+mapping manifest 保存规则库索引 hash、selected rule versions、`rule_syscalls` 和目标
+`snapshot_hash`，不保存 ingest report ID。所有依赖都由稳定业务 ID 与内容 hash 构成；禁止把
+Git commit ID 写入规则、coverage、mapping、check、test 或 run。
+
+暂存 mapping 必须覆盖每条 selected rule。`static` 必须只引用静态检查，`dynamic` 必须只引用
+动态测试，`partial_static` 必须同时引用两类定义。`needs_review`/`unsupported` 不得引用编造的
+可执行检查，并必须给出具体原因。finalizer 必须拒绝缺失引用、目标路径/符号和并发状态变化，
+失败时不得推进共享实体或 coverage。

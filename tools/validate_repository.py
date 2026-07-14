@@ -229,7 +229,7 @@ def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
         source = value.get("source")
         if not isinstance(source, dict) or not all(
             isinstance(source.get(key), str)
-            for key in ("id", "type", "revision", "descriptor_hash", "recognition_rules_hash")
+            for key in ("id", "type", "snapshot_hash", "descriptor_hash", "recognition_rules_hash")
         ):
             errors.append(f"ingest report {report_id} has invalid source metadata")
         rows = value.get("syscalls")
@@ -317,12 +317,16 @@ def validate_runs(errors: list[str], reports: dict[str, dict[str, Any]]) -> dict
         if not (path.parent / "changeset.yaml").is_file():
             errors.append(f"run has no changeset: {run_id}")
         if stage == "mapping":
-            if not isinstance(value.get("from_report_id"), str):
-                errors.append(f"mapping run {run_id} has no from_report_id")
+            if not isinstance(value.get("rule_index_hash"), str):
+                errors.append(f"mapping run {run_id} has no rule_index_hash")
+            if not isinstance(value.get("selected_rule_versions"), dict):
+                errors.append(f"mapping run {run_id} has no selected_rule_versions")
             if not isinstance(value.get("rule_syscalls"), dict):
                 errors.append(f"mapping run {run_id} has no rule_syscalls")
             if "from_run_id" in value:
                 errors.append(f"mapping run {run_id} must not use from_run_id")
+            if "from_report_id" in value:
+                errors.append(f"mapping run {run_id} must not use from_report_id")
         elif stage in {"check", "fix"} and not isinstance(value.get("from_run_id"), str):
             errors.append(f"run {run_id} has no from_run_id")
         runs[run_id] = value
@@ -388,6 +392,71 @@ def validate_sources(errors: list[str]) -> None:
         errors.append("LTP recognizers need unique stable ids")
 
 
+def validate_rule_coverage(
+    errors: list[str], rules: dict[str, dict[str, Any]]
+) -> None:
+    path = ROOT / "targets/starry/rule-coverage.yaml"
+    value = load(path, errors)
+    if not isinstance(value, dict):
+        return
+    if value.get("kind") != "syscallguard_starry_rule_coverage":
+        errors.append("invalid Starry rule coverage kind")
+    rows = value.get("rules")
+    if not isinstance(rows, dict):
+        errors.append("Starry rule coverage has no rules mapping")
+        return
+    if set(rows) != set(rules):
+        errors.append("Starry rule coverage does not exactly cover the general rule library")
+    for rule_id, row in rows.items():
+        if not isinstance(row, dict):
+            errors.append(f"invalid coverage row for {rule_id}")
+            continue
+        if row.get("status") not in {"pending", "mapped", "needs_review", "unsupported"}:
+            errors.append(f"invalid coverage status for {rule_id}")
+        if not valid_version(row.get("rule_version")):
+            errors.append(f"invalid coverage rule version for {rule_id}")
+        if rule_id in rules and row.get("rule_version", {}).get("content_hash") != version_hash(
+            rules[rule_id]
+        ):
+            errors.append(f"stale coverage rule version for {rule_id}")
+        for key in ("mapping_refs", "static_check_refs", "dynamic_test_refs"):
+            if not isinstance(row.get(key), list):
+                errors.append(f"coverage {rule_id} has invalid {key}")
+
+
+def validate_no_persisted_commit_ids(errors: list[str]) -> None:
+    forbidden_keys = {
+        "base_commit",
+        "mapped_commit",
+        "current_commit",
+        "checked_commit",
+        "starry_commit",
+        "fixed_commit",
+        "target_revision",
+    }
+
+    def visit(value: Any, relative: str) -> None:
+        if isinstance(value, dict):
+            leaked = sorted(forbidden_keys.intersection(value))
+            if leaked:
+                errors.append(f"persisted Git commit fields {leaked} in {relative}")
+            for child in value.values():
+                visit(child, relative)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child, relative)
+        elif isinstance(value, str) and re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}", value):
+            errors.append(f"persisted Git commit ID in {relative}")
+
+    roots = [ROOT / "library", ROOT / "runs", ROOT / "targets/starry"]
+    for directory in roots:
+        if not directory.exists():
+            continue
+        for path in directory.rglob("*.yaml"):
+            value = load(path, errors)
+            visit(value, str(path.relative_to(ROOT)))
+
+
 def validate_removed_legacy(errors: list[str]) -> None:
     forbidden = [
         "library/specs",
@@ -421,7 +490,9 @@ def main() -> int:
     reports = validate_reports(errors)
     runs = validate_runs(errors, reports)
     validate_indexes(errors)
+    validate_rule_coverage(errors, rules)
     validate_sources(errors)
+    validate_no_persisted_commit_ids(errors)
     validate_removed_legacy(errors)
     validate_all_yaml(errors)
     if errors:

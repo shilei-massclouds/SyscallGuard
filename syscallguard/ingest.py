@@ -14,7 +14,7 @@ from .common import (
     SCHEMA_VERSION,
     SyscallGuardError,
     content_hash,
-    git_output,
+    repository_snapshot_hash,
     load_mapping,
     new_run_id,
     normalize_run_id,
@@ -123,19 +123,11 @@ def require_descriptor(
     location = Path(location_value).expanduser().resolve()
     if not location.is_dir():
         raise SyscallGuardError(f"source location does not exist: {location}")
-    revision = descriptor.get("revision")
-    if not isinstance(revision, str) or not revision:
-        raise SyscallGuardError(f"source descriptor must define revision: {path}")
-    try:
-        resolved_revision = git_output(location, ["rev-parse", f"{revision}^{{commit}}"])
-    except SyscallGuardError as exc:
-        raise SyscallGuardError(
-            f"cannot resolve source revision {revision!r}: {exc}"
-        ) from exc
+    snapshot_hash = repository_snapshot_hash(location)
     rules_path = root / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
     if not rules_path.is_file():
         rules_path = repo_root() / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
-    return descriptor, location, resolved_revision, LtpAdapter(location, rules_path)
+    return descriptor, location, snapshot_hash, LtpAdapter(location, rules_path)
 
 
 def _report_source_id(report: dict[str, Any]) -> str | None:
@@ -286,7 +278,7 @@ def _source_identity(source: dict[str, Any]) -> tuple[str, str, int, str, str]:
 
 
 def _provenance(
-    normalized: dict[str, Any], descriptor: dict[str, Any], revision: str
+    normalized: dict[str, Any], descriptor: dict[str, Any], source_snapshot_hash: str
 ) -> dict[str, Any]:
     source = normalized.get("source", {})
     if not isinstance(source, dict):
@@ -294,7 +286,7 @@ def _provenance(
     return {
         "source_id": descriptor["source_id"],
         "source_type": descriptor["adapter"],
-        "revision": revision,
+        "source_snapshot_hash": source_snapshot_hash,
         "file": source.get("file"),
         "line": source.get("line"),
         "recognizer_id": normalized.get("recognizer_id"),
@@ -307,7 +299,7 @@ def _merge_rules(
     root: Path,
     normalized_rows: list[dict[str, Any]],
     descriptor: dict[str, Any],
-    revision: str,
+    source_snapshot_hash: str,
     now: str,
 ) -> tuple[
     dict[str, tuple[Path, dict[str, Any], str]],
@@ -329,7 +321,7 @@ def _merge_rules(
         semantics = normalized["semantics"]
         category = str(normalized.get("category", "syscall_behavior"))
         semantic_hash = content_hash({"category": category, "semantics": semantics})
-        provenance = _provenance(normalized, descriptor, revision)
+        provenance = _provenance(normalized, descriptor, source_snapshot_hash)
         current = available()
         same = next(
             (
@@ -575,7 +567,7 @@ def _report_text(frontmatter: dict[str, Any]) -> str:
             "## 技术参考",
             "",
             f"- 报告 ID：`{frontmatter['report_id']}`",
-            f"- 来源：`{source['id']}`，revision `{source['revision']}`",
+            f"- 来源：`{source['id']}`，内容快照 `{source['snapshot_hash']}`",
             f"- 全局待处理 syscall：{frontmatter['pending_count']}",
         ]
     )
@@ -695,7 +687,7 @@ def run_ingest(
         raise SyscallGuardError("count and syscalls are mutually exclusive")
     requested_syscalls = resolve_syscalls(syscalls)
     descriptor_path, source_reason = resolve_source(source, root)
-    descriptor, _location, revision, adapter = require_descriptor(descriptor_path, root)
+    descriptor, _location, source_snapshot_hash, adapter = require_descriptor(descriptor_path, root)
     if requested_syscalls is None:
         limit, count_label, count_reason = resolve_count(count, descriptor)
     else:
@@ -785,7 +777,7 @@ def run_ingest(
 
     generated_at = utc_now()
     staged_rules, refs, conflicts = _merge_rules(
-        root, publishable_rows, descriptor, revision, generated_at
+        root, publishable_rows, descriptor, source_snapshot_hash, generated_at
     )
     current_rules = _rule_files(root)
     for item in selected:
@@ -824,7 +816,7 @@ def run_ingest(
         "source": {
             "id": descriptor["source_id"],
             "type": descriptor["adapter"],
-            "revision": revision,
+            "snapshot_hash": source_snapshot_hash,
             "descriptor_hash": content_hash(descriptor),
             "recognition_rules_hash": adapter.rules_hash,
             "resolution": source_reason,
@@ -911,7 +903,7 @@ def main(argv: list[str] | None = None) -> int:
     path = args.root.resolve() / "runs" / report_id / "report.md"
     report, _body = read_frontmatter(path)
     source = report["source"]
-    print(f"source: {source['id']} ({source['revision']})")
+    print(f"source: {source['id']} ({source['snapshot_hash']})")
     print(f"recognition_rules_hash: {source['recognition_rules_hash']}")
     if "requested_syscalls" in report:
         print("requested_syscalls: " + ", ".join(report["requested_syscalls"]))

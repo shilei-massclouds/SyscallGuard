@@ -21,9 +21,9 @@ description: Execute static checks and injected dynamic tests from one SyscallGu
 
 ## Boundaries
 
-- Reject stale mappings when any recorded entity dependency timestamp/hash or current Starry HEAD differs.
+- Reject stale mappings when any recorded entity dependency or the current Starry content snapshot differs.
 - Generate finding syscall ownership from the mapping run's `rule_syscalls`; never read a syscall spec.
-- Version check results and findings with generation times and direct upstream dependency records. Reuse an earlier completed check only when all versions and target hashes are identical.
+- Version check results and findings with generation times and direct upstream dependency records. Reuse an earlier completed check only when all versions and content snapshots are identical.
 - Modify only the isolated worktree. Never change the user's existing Starry worktree or branch.
 - Do not write or apply implementation fixes and do not create a completion commit.
 - Never ask for approval and never invoke another SyscallGuard skill.

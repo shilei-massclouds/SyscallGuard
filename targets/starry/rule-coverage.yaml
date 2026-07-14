@@ -1,0 +1,189 @@
+schema_version: 1
+kind: syscallguard_starry_rule_coverage
+updated_at_utc: null
+target:
+  target_id: starry
+  repository_identity: null
+  descriptor_hash: null
+  last_snapshot_hash: null
+rules:
+  LTP_09B39E9C9254ECB2:
+    syscalls: [close]
+    rule_version: {id: LTP_09B39E9C9254ECB2, generated_at_utc: '2026-07-14T13:35:02.567816Z', content_hash: 'sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_0CD17E662AFD2956:
+    syscalls: [close]
+    rule_version: {id: LTP_0CD17E662AFD2956, generated_at_utc: '2026-07-14T13:35:02.567816Z', content_hash: 'sha256:0cd17e662afd2956c8c1a42d49b46dca16c37c1972fc6d3632c05c317939a996'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_36C99C10CD38F8DB:
+    syscalls: [mmap]
+    rule_version: {id: LTP_36C99C10CD38F8DB, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:36c99c10cd38f8db26e721ea351430f0ebc4767b9a31257223ad8fd5519c7d0d'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_45439D8F2BAB0832:
+    syscalls: [mmap]
+    rule_version: {id: LTP_45439D8F2BAB0832, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:45439d8f2bab0832027a39e78d024f72cc6449adff9fb823af60ff7c004d7bc5'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_51E295101A9F4411:
+    syscalls: [mmap]
+    rule_version: {id: LTP_51E295101A9F4411, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:51e295101a9f4411b8c43521d430e85bd27ac1d7a96127b66675d7dc024ba9d2'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_52BAFC01DEA6E172:
+    syscalls: [mmap]
+    rule_version: {id: LTP_52BAFC01DEA6E172, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:52bafc01dea6e1725e71d23e11424031141e37ea07b99e151db6bcfc16116bde'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_5CB803B873F78BA0:
+    syscalls: [close]
+    rule_version: {id: LTP_5CB803B873F78BA0, generated_at_utc: '2026-07-14T13:35:02.567816Z', content_hash: 'sha256:5cb803b873f78ba0c0cafe0d4ab7a0e69be0d150de939bbf030e0c66f583d1c6'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_791DEA825D66980B:
+    syscalls: [mmap]
+    rule_version: {id: LTP_791DEA825D66980B, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:791dea825d66980bfded73936e4745cf7b914f20652b9489e65a7a59509b897b'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_C346EFF1233F7061:
+    syscalls: [mmap]
+    rule_version: {id: LTP_C346EFF1233F7061, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:c346eff1233f706172a595326e9215b63dd1f455b13880c762f92532db036e2e'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_F36F8C0CC1A6D840:
+    syscalls: [mmap]
+    rule_version: {id: LTP_F36F8C0CC1A6D840, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:f36f8c0cc1a6d84025a2394e30fa1d7c273ce9c13d8f58d759383c75dbf8c10a'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_FD1B65B0BCC88E0D:
+    syscalls: [mmap]
+    rule_version: {id: LTP_FD1B65B0BCC88E0D, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:fd1b65b0bcc88e0d283d47737c8b9d244de44d7461e8efd5bc6eb699ebaa0d54'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage
+  LTP_FEACDC300C3E1DD7:
+    syscalls: [mmap]
+    rule_version: {id: LTP_FEACDC300C3E1DD7, generated_at_utc: '2026-07-14T13:38:13.033184Z', content_hash: 'sha256:feacdc300c3e1dd754c7925df645b95995a6f17fd0ebcb6a50578071e2f9636f'}
+    status: pending
+    classification: null
+    mapping_refs: []
+    static_check_refs: []
+    dynamic_test_refs: []
+    artifact_versions: {}
+    target_dependencies: []
+    repository_identity: null
+    target_descriptor_hash: null
+    last_verified_snapshot_hash: null
+    last_processed_run: null
+    reason: initial_coverage

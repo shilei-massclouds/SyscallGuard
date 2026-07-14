@@ -1,31 +1,38 @@
 ---
 name: map-starry-checks
-description: Map the rules selected by one SyscallGuard ingest report to a pinned Starry revision, producing target mappings, executable static checks, and dynamic test definitions. Use only when the user invokes `$map-starry-checks` with from and target arguments or explicitly requests Starry mapping for one ingest report. Do not modify or execute Starry.
+description: Incrementally map new or invalidated general syscall rules to the fixed Starry target. Use when the user invokes `$映射规则`/`$map-starry-checks`, optionally with `syscalls=<comma-separated-names>`. Do not modify, build, or execute Starry.
 ---
 
-# Map Starry Checks
+# 映射规则
 
-## Execute
+## 执行
 
-1. Parse exactly `from=<report-id>` and `target=<starry-descriptor>`.
-2. Read [references/contract.md](references/contract.md).
-3. Verify that `from` is a valid ingest report and is the newest report for every syscall it contains. Compare each rule timestamp first and semantic hash second.
-4. Run:
+1. 只解析可选的 `syscalls=<comma-separated-names>`；不接受 `from` 或 `target`。
+2. 阅读 [references/contract.md](references/contract.md)。
+3. 运行准备阶段：
 
    ```bash
-   python3 skills/map-starry-checks/scripts/run.py --from <report-id> --target <descriptor>
+   python3 skills/map-starry-checks/scripts/run.py [--syscalls <names>] --phase prepare
    ```
 
-5. Inspect the pinned Starry commit without changing it. Refine created mappings when repository evidence supports a concrete classification, file/symbol location, static rule, or dynamic test. Leave uncertain items explicitly `needs_review`; never invent evidence.
-6. Keep indexes synchronized for any refined shared entity, and update the mapping run hashes or rerun the command so the snapshot matches the current view.
-7. Report the base commit, classifications, created/updated/skipped counts, and printed result paths.
+4. 读取输出的 `preparation.yaml` 和暂存实体。只读检查固定目标
+   `targets/starry/target.yaml` 指向的内容快照，为每条 selected rule 完善实现位置和证据：
+   能静态判断时生成静态检查，必须观察行为时生成动态测试，部分可静态覆盖时两者都生成。
+   无可靠证据时保留 `needs_review` 及具体原因；明确无法支持时使用 `unsupported`。
+5. 只编辑 `runs/<run-id>/staged/`，然后运行 finalizer：
 
-## Boundaries
+   ```bash
+   python3 skills/map-starry-checks/scripts/run.py --phase finalize --run-id <run-id>
+   ```
 
-- Classify each selected rule as `static`, `partial_static`, `dynamic`, `unsupported`, or `needs_review`.
-- Record `{id, generated_at_utc, content_hash}` for every direct rule dependency. A timestamp, semantic hash, or Starry commit mismatch is stale and must be rejected.
-- Save `from_report_id` and the report's rule-to-syscall ownership as `rule_syscalls` in the mapping manifest.
-- Preserve an entity's generation time when its dependencies and mapped target are unchanged.
-- Generate test source, build metadata, patch reference, and execution binding for dynamic checks.
-- Never create a worktree, apply a patch, run a check, build Starry, or execute a test.
-- Never ask for approval and never invoke another SyscallGuard skill.
+6. 报告新增、更新、跳过、待复核、不支持、静态检查、动态测试和剩余 pending 数量。
+
+## 边界
+
+- 规则输入固定读取 `library/syscalls.yaml` 和 `library/rules/*.yaml`。
+- Starry 目标固定读取 `targets/starry/target.yaml`。
+- 依赖使用规则 ID、实体 ID、语义/内容 hash 和 Starry 文件/符号内容指纹；任何共享结果都不得保存或依赖 Git commit ID。
+- `syscalls=` 只限制本轮处理范围，其他 pending rule 必须保留。
+- `needs_review`/`unsupported` 在相同内容快照下不重复处理，目标内容变化后自动重试。
+- 准备和分析阶段不得写共享实体；finalizer 校验全部引用后原子发布实体、索引、coverage 和中文报告。
+- 不创建 worktree，不应用补丁，不构建或运行 Starry，不调用其他 SyscallGuard skill。

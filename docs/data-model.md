@@ -3,8 +3,8 @@
 ## Ingest report
 
 `runs/spec-<id>/report.md` 正文先用中文说明规则的适用条件、检查内容和预期结果，末尾的机器
-可读元数据是 ingest 的唯一历史、增量状态和下游输入。
-固定记录 report ID/时间、来源 ID/type/revision、descriptor 与 recognizer hash、count 及其来源、
+可读元数据是 ingest 的唯一历史与增量状态；mapping 直接读取通用规则库，不再消费该报告。
+固定记录 report ID/时间、来源 ID/type/content snapshot、descriptor 与 recognizer hash、count 及其来源、
 待处理数、本轮 syscall 列表，以及每个 syscall 的：
 
 - source/recognition fingerprint；
@@ -31,17 +31,24 @@
 任何未解析证据或零规则都会使该 syscall 记为 `no_rules`，候选规则全部丢弃。原始和归一化证据
 只存在于执行内存和终端诊断中。
 
-## 下游 run
+## Mapping coverage 与下游 run
 
-普通 run schema 只覆盖 `mapping`、`check` 和 `fix`：
+`targets/starry/rule-coverage.yaml` 以 rule ID 为键，记录规则版本、syscall 归属、pending/mapped/
+needs_review/unsupported 状态、static/partial_static/dynamic 分类、实体引用、目标文件/符号内容指纹、
+最后验证快照、处理 run 和原因。目标只有无关内容变化时不重映射，只推进最后验证快照。
 
-- mapping manifest 使用 `from_report_id`，并保存 `rule_syscalls`；
+普通 run schema 覆盖 `mapping`、`check` 和 `fix`：
+
+- mapping 直接读取 `library/syscalls.yaml` 和规则详情，manifest 保存规则索引 hash、selected rule
+  versions 和 `rule_syscalls`；
 - check/fix manifest 使用 `from_run_id`；
-- mapping 读取 report 中的规则版本，不读取 syscall spec；
 - check 使用 `rule_syscalls` 生成 finding 的 syscall 归属。
 
 所有依赖先比较 `generated_at_utc`，再比较 `content_hash`；任一不同即 stale。第二次 hash 比较
 保证人工编辑即使漏更新时间也会被拒绝。
+
+规则库、coverage、共享实体和所有 run/result 不保存或依赖 Git commit ID。来源和目标使用内容型
+`snapshot_hash` 保证各阶段观察一致；逐规则 pending 判断只比较其目标文件、符号和 helper 指纹。
 
 ## 描述符
 

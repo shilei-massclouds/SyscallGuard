@@ -6,64 +6,64 @@ entities:
   path: targets/starry/static-checks/sg001-bad-fd-ebadf.yaml
   rule_refs:
   - BAD_FD_EBADF
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:35dfd42b7dbeb2852fbefc666647c35908de5ae887c00f35ab30921648e720ae
+  content_hash: sha256:b70e2cd1bcff76282fd629a3c9ab7fc81d5bbfbbd6df1fc1d90731cf66567d3e
 - id: SG001_ENTRY_DISPATCH
   path: targets/starry/static-checks/sg001-entry-dispatch.yaml
   rule_refs:
   - SYSCALL_ENTRY_ALIAS
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:f46f0847babdef81625c652eda9cb9167d87273f8240eeaca4dd5e501b6f4a13
+  content_hash: sha256:a4f4fdda5f20b4d90f0b28078479f2a9be28745a9894fe3d67917fd9899133db
 - id: SG001_FD_TYPE_ERRNO
   path: targets/starry/static-checks/sg001-fd-type-errno.yaml
   rule_refs:
   - FD_TYPE_ERRNO
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:0d2da7eb1d207ec5ada52e35ad0f73c4ef6d5f5f4b8fa79a496638e33d1f7e9b
+  content_hash: sha256:c958b8c8f5d4f10997c2748ec6073ccba8841e6709047f12126af53bd307abb7
 - id: SG001_FLAG_MASKS
   path: targets/starry/static-checks/sg001-flag-masks.yaml
   rule_refs:
   - FLAG_MASK_REJECTS_UNKNOWN
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:ec5e57e298b7ddb0a2991ea271c95883e7652a38501c093c5c9d16de828c754d
+  content_hash: sha256:61c3d2738e8c7657ba946ae4dfb36286d441b402f6cec42ec9e1df96cf6eab9e
 - id: SG001_LEGACY_WRAPPERS
   path: targets/starry/static-checks/sg001-legacy-wrappers.yaml
   rule_refs:
   - SYSCALL_ENTRY_ALIAS
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:5bcdde60cfd126816407f288db7e841ad6da4968e3c4981ba4f86754c4b21731
+  content_hash: sha256:00d02d98919c69f93dba1b9f38db8cb48d5b371b09e1de59b25ff143a941c913
 - id: SG001_MODE_NODE_GUARD
   path: targets/starry/static-checks/sg001-mode-node-guard.yaml
   rule_refs:
   - MODE_UID_GID_GUARD
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:d11bf13331658cc0154a4cd97f521e1a16320d7e5a69d1a51c9168faf27b8884
+  content_hash: sha256:0aa94d2dc2668c1ef76725dca62b1269e2c4555cd0fe72d45a59a1a9ff6ca76c
 - id: SG001_PATHMAX_HELPER
   path: targets/starry/static-checks/sg001-pathmax-helper.yaml
   rule_refs:
   - PATH_LONG_ENAMETOOLONG
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:c5fc815fe4e1fec79077d9780b68b8665db4b253022a05040d3a0006f020360f
+  content_hash: sha256:29711ec3c9ab3427a1f36f7a5513b774df5fe8638575cae46c795e71b0dc9296
 - id: SG001_PATH_HANDLER_LOADS
   path: targets/starry/static-checks/sg001-path-handler-loads.yaml
   rule_refs:
   - PATH_LONG_ENAMETOOLONG
   - PATH_RESOLUTION_ERRNO
   - DIRFD_AND_AT_FLAGS
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:08626b91dcf42716e851027dba3a4b36fb5c818d20da1ca6fea11d2ce11ddf05
+  content_hash: sha256:c251865c8ee904655d4f164f6745ed7d66441cec470fc24c9389a8af8761649d
 - id: SG001_USERPTR_EFAULT
   path: targets/starry/static-checks/sg001-userptr-efault.yaml
   rule_refs:
   - USERPTR_EFAULT
-  target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
   generated_at_utc: '2026-07-13T00:00:00.000000Z'
-  content_hash: sha256:5e2d43f09e75451aa63b0c1e26527d06e5e0a22d6a8f841f3b33cbbe34990ff4
+  content_hash: sha256:32e3ac9808bd11abf45c7ea85632d0b0411197c4a0f50072a55e79d075b71648

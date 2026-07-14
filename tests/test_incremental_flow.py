@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import subprocess
 import tempfile
 import unittest
@@ -31,7 +32,13 @@ from syscallguard.ingest import (
     resolve_syscalls,
     run_ingest,
 )
-from syscallguard.mapping import run_mapping
+from syscallguard.mapping import (
+    build_parser as build_mapping_parser,
+    finalize_mapping,
+    prepare_mapping,
+    resolve_syscalls as resolve_mapping_syscalls,
+    run_mapping,
+)
 from syscallguard.reset import reset_project
 from tools import validate_repository
 
@@ -87,7 +94,7 @@ def write_ingest_report(
         "source": {
             "id": source_id,
             "type": "ltp",
-            "revision": "fixture-revision",
+            "snapshot_hash": "sha256:fixture-source-snapshot",
             "descriptor_hash": "sha256:fixture-descriptor",
             "recognition_rules_hash": "sha256:fixture-recognizers",
             "resolution": "explicit_descriptor",
@@ -158,7 +165,7 @@ class FlowTestCase(unittest.TestCase):
     def make_target(self, code: str = "bad\n") -> tuple[Path, Path, str]:
         repo = Path(self.temp.name) / "starry"
         commit = init_repo(repo, {"code.txt": code})
-        descriptor = self.root / "target.yaml"
+        descriptor = self.root / "targets/starry/target.yaml"
         atomic_write_yaml(
             descriptor,
             {
@@ -190,6 +197,21 @@ class FlowTestCase(unittest.TestCase):
             {"category": rule["category"], "semantics": rule["semantics"]}
         )
         atomic_write_yaml(self.root / "library/rules/rule-one.yaml", rule)
+        atomic_write_yaml(
+            self.root / "library/syscalls.yaml",
+            {
+                "schema_version": 1,
+                "kind": "syscallguard_syscall_index",
+                "syscalls": {
+                    "alpha": [
+                        {
+                            "rule_id": "RULE_ONE",
+                            "path": "library/rules/rule-one.yaml",
+                        }
+                    ]
+                },
+            },
+        )
         write_ingest_report(
             self.root,
             "spec-fixture",
@@ -267,7 +289,8 @@ class FlowTestCase(unittest.TestCase):
         )
 
     def map_fixture(self, descriptor: Path, run_id: str = "mapping-fixture") -> str:
-        return run_mapping("spec-fixture", descriptor, self.root, run_id)
+        self.assertEqual(descriptor, self.root / "targets/starry/target.yaml")
+        return run_mapping(None, self.root, run_id)
 
 
 class IngestTests(FlowTestCase):
@@ -566,7 +589,7 @@ class IngestTests(FlowTestCase):
         self.assertEqual(merged["generated_at_utc"], version["generated_at_utc"])
         self.assertEqual(len(merged["sources"]), 2)
         _repo, target, _commit = self.make_target()
-        run_mapping("spec-first-source", target, self.root, "mapping-after-provenance")
+        run_mapping(None, self.root, "mapping-after-provenance")
 
     def test_explicit_stable_rule_id_conflict_creates_variant(self) -> None:
         _source, descriptor = self.make_ltp()
@@ -587,56 +610,169 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
-    def test_report_input_versions_latest_and_target_staleness(self) -> None:
+    def test_rule_library_manifest_and_content_staleness(self) -> None:
         self.prepare_spec_run()
-        repo, descriptor, old_commit = self.make_target()
+        self.add_static_check("good")
+        repo, descriptor, _old_commit = self.make_target("good\n")
         self.map_fixture(descriptor, "mapping-old")
         manifest = load_mapping(self.root / "runs/mapping-old/manifest.yaml")
-        self.assertEqual(manifest["from_report_id"], "spec-fixture")
+        self.assertNotIn("from_report_id", manifest)
+        self.assertNotIn("base_commit", manifest["target"])
+        self.assertIn("rule_index_hash", manifest)
+        self.assertEqual(manifest["selected_rule_versions"]["RULE_ONE"]["id"], "RULE_ONE")
         self.assertEqual(manifest["rule_syscalls"], {"RULE_ONE": ["alpha"]})
-        self.assertNotIn("syscall_specs", manifest["entity_versions"])
+        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")
+        self.assertEqual(coverage["rules"]["RULE_ONE"]["status"], "mapped")
 
-        rule_path = self.root / "library/rules/rule-one.yaml"
-        rule = load_mapping(rule_path)
-        original_semantics = rule["semantics"]
-        rule["semantics"] = {**original_semantics, "expected_result": "manually edited"}
-        atomic_write_yaml(rule_path, rule)
-        with self.assertRaisesRegex(SyscallGuardError, "content changed"):
-            run_mapping("spec-fixture", descriptor, self.root, "mapping-edited")
-        rule["semantics"] = original_semantics
-        atomic_write_yaml(rule_path, rule)
+        unrelated_snapshot = commit_file(repo, "unrelated.txt", "unrelated\n")
+        self.assertTrue(unrelated_snapshot)
+        run_mapping(None, self.root, "mapping-unrelated")
+        unrelated = load_mapping(self.root / "runs/mapping-unrelated/manifest.yaml")
+        self.assertEqual(unrelated["counts"]["processed"], 0)
+        self.assertEqual(unrelated["counts"]["skipped"], 1)
 
-        new_commit = commit_file(repo, "code.txt", "new target\n")
-        self.assertNotEqual(old_commit, new_commit)
+        commit_file(repo, "code.txt", "changed target\n")
+        prepared = prepare_mapping(None, self.root, "mapping-related")
+        preparation = load_mapping(self.root / f"runs/{prepared}/preparation.yaml")
+        self.assertEqual(preparation["selected_rule_ids"], ["RULE_ONE"])
+
         run_check("mapping-old", self.root, "check-stale")
         stale = load_mapping(self.root / "runs/check-stale/manifest.yaml")
         self.assertEqual(stale["blockers"][0]["kind"], "stale_mapping")
 
-    def test_superseded_and_missing_report_are_rejected(self) -> None:
+    def test_syscall_filter_and_needs_review_retry(self) -> None:
         self.prepare_spec_run()
-        _repo, descriptor, _commit = self.make_target()
-        write_ingest_report(
-            self.root,
-            "spec-newer",
-            [
-                {
-                    "syscall": "alpha",
-                    "source_fingerprint": "sha256:new",
-                    "recognition_fingerprint": "sha256:new",
-                    "selection_reason": "source_changed",
-                    "result": "no_rules",
-                    "rules": [],
-                    "evidence_count": 0,
-                    "unresolved_evidence_count": 0,
-                    "reason": "no_evidence",
-                }
-            ],
-            generated_at="2026-01-02T00:00:00.000000Z",
+        rule_two = load_mapping(self.root / "library/rules/rule-one.yaml")
+        rule_two["rule_id"] = "RULE_TWO"
+        rule_two["generated_at_utc"] = "2026-01-02T00:00:00.000000Z"
+        atomic_write_yaml(self.root / "library/rules/rule-two.yaml", rule_two)
+        index = load_mapping(self.root / "library/syscalls.yaml")
+        index["syscalls"]["beta"] = [
+            {"rule_id": "RULE_TWO", "path": "library/rules/rule-two.yaml"}
+        ]
+        atomic_write_yaml(self.root / "library/syscalls.yaml", index)
+        repo, _descriptor, _commit = self.make_target()
+        run_mapping("alpha", self.root, "mapping-alpha")
+        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")
+        self.assertEqual(coverage["rules"]["RULE_ONE"]["status"], "needs_review")
+        self.assertEqual(coverage["rules"]["RULE_TWO"]["status"], "pending")
+
+        run_id = prepare_mapping(" alpha,ALPHA ", self.root, "mapping-same")
+        same = load_mapping(self.root / f"runs/{run_id}/preparation.yaml")
+        self.assertEqual(same["selected_rule_ids"], [])
+        finalize_mapping(run_id, self.root)
+        commit_file(repo, "code.txt", "new content\n")
+        retry_id = prepare_mapping("alpha", self.root, "mapping-retry")
+        retry = load_mapping(self.root / f"runs/{retry_id}/preparation.yaml")
+        self.assertEqual(retry["selected_rule_ids"], ["RULE_ONE"])
+
+        self.assertEqual(resolve_mapping_syscalls(" beta,Alpha,alpha "), ["alpha", "beta"])
+        self.assertIsNone(resolve_mapping_syscalls(None))
+        args = build_mapping_parser().parse_args(["--syscalls", "alpha,beta"])
+        self.assertEqual(args.syscalls, "alpha,beta")
+        with mock.patch("sys.stderr", new=io.StringIO()):
+            with self.assertRaisesRegex(SystemExit, "2"):
+                build_mapping_parser().parse_args(["--from", "spec-old"])
+        with self.assertRaisesRegex(SyscallGuardError, "do not exist"):
+            prepare_mapping("missing", self.root, "mapping-missing")
+
+    def test_all_mapping_classifications_publish_resolvable_references(self) -> None:
+        self.prepare_spec_run()
+        index = load_mapping(self.root / "library/syscalls.yaml")
+        base = load_mapping(self.root / "library/rules/rule-one.yaml")
+        rule_ids = {
+            "RULE_ONE": "static",
+            "RULE_DYNAMIC": "dynamic",
+            "RULE_PARTIAL": "partial_static",
+            "RULE_UNSUPPORTED": "unsupported",
+            "RULE_REVIEW": "needs_review",
+        }
+        refs = index["syscalls"]["alpha"]
+        for offset, rule_id in enumerate(sorted(set(rule_ids) - {"RULE_ONE"}), start=2):
+            entity = dict(base)
+            entity["rule_id"] = rule_id
+            entity["generated_at_utc"] = f"2026-01-0{offset}T00:00:00.000000Z"
+            path = self.root / "library/rules" / f"{slug(rule_id)}.yaml"
+            atomic_write_yaml(path, entity)
+            refs.append({"rule_id": rule_id, "path": str(path.relative_to(self.root))})
+        atomic_write_yaml(self.root / "library/syscalls.yaml", index)
+        _repo, _descriptor, _snapshot = self.make_target("fn implementation() {}\n")
+        run_id = prepare_mapping(None, self.root, "mapping-five-kinds")
+        staged_root = self.root / f"runs/{run_id}/staged/targets/starry"
+
+        for rule_id, classification in rule_ids.items():
+            static_refs = [f"CHECK_{rule_id}"] if classification in {"static", "partial_static"} else []
+            dynamic_refs = [f"TEST_{rule_id}"] if classification in {"dynamic", "partial_static"} else []
+            mapping = {
+                "schema_version": 1,
+                "kind": "syscallguard_starry_mapping",
+                "mapping_id": f"STARRY_{rule_id}",
+                "rule_refs": [rule_id],
+                "classification": classification,
+                "target_locations": (
+                    [{"path": "code.txt", "symbols": []}]
+                    if classification in {"static", "partial_static", "dynamic"}
+                    else []
+                ),
+                "static_check_refs": static_refs,
+                "dynamic_test_refs": dynamic_refs,
+                "reason": f"fixture {classification}",
+            }
+            atomic_write_yaml(
+                staged_root / "mappings" / f"{slug(mapping['mapping_id'])}.yaml", mapping
+            )
+            for check_id in static_refs:
+                atomic_write_yaml(
+                    staged_root / "static-checks" / f"{slug(check_id)}.yaml",
+                    {
+                        "schema_version": 1,
+                        "kind": "syscallguard_starry_static_check",
+                        "check_id": check_id,
+                        "rule_refs": [rule_id],
+                        "path": "code.txt",
+                        "patterns": [{"label": "implementation", "regex": "implementation"}],
+                    },
+                )
+            for test_id in dynamic_refs:
+                atomic_write_yaml(
+                    staged_root / "dynamic-tests" / f"{slug(test_id)}.yaml",
+                    {
+                        "schema_version": 1,
+                        "kind": "syscallguard_starry_dynamic_test",
+                        "test_id": test_id,
+                        "rule_refs": [rule_id],
+                        "test_source": "fixture.c",
+                        "build": {"kind": "fixture"},
+                        "command": ["/bin/true"],
+                    },
+                )
+
+        finalize_mapping(run_id, self.root)
+        coverage = load_mapping(self.root / "targets/starry/rule-coverage.yaml")["rules"]
+        self.assertEqual(coverage["RULE_ONE"]["status"], "mapped")
+        self.assertEqual(coverage["RULE_DYNAMIC"]["classification"], "dynamic")
+        self.assertEqual(coverage["RULE_PARTIAL"]["classification"], "partial_static")
+        self.assertEqual(coverage["RULE_UNSUPPORTED"]["status"], "unsupported")
+        self.assertEqual(coverage["RULE_REVIEW"]["status"], "needs_review")
+        manifest = load_mapping(self.root / f"runs/{run_id}/manifest.yaml")
+        self.assertEqual(manifest["counts"]["static_checks"], 2)
+        self.assertEqual(manifest["counts"]["dynamic_tests"], 2)
+
+    def test_finalizer_failure_does_not_advance_shared_state(self) -> None:
+        self.prepare_spec_run()
+        _repo, _descriptor, _snapshot = self.make_target("good\n")
+        run_id = prepare_mapping(None, self.root, "mapping-publish-failure")
+        with mock.patch(
+            "syscallguard.mapping._transactional_write", side_effect=OSError("publish failed")
+        ):
+            with self.assertRaisesRegex(SyscallGuardError, "publish failed"):
+                finalize_mapping(run_id, self.root)
+        self.assertFalse((self.root / "targets/starry/rule-coverage.yaml").exists())
+        self.assertFalse(
+            (self.root / "targets/starry/mappings/starry-rule-one.yaml").exists()
         )
-        with self.assertRaisesRegex(SyscallGuardError, "superseded"):
-            run_mapping("spec-fixture", descriptor, self.root, "mapping-old-report")
-        with self.assertRaisesRegex(SyscallGuardError, "missing Markdown"):
-            run_mapping("does-not-exist", descriptor, self.root, "mapping-missing")
+        manifest = load_mapping(self.root / f"runs/{run_id}/manifest.yaml")
+        self.assertEqual(manifest["status"], "failed")
 
 
 class CheckTests(FlowTestCase):
@@ -766,7 +902,10 @@ new file mode 100644
         self.assertEqual(manifest["status"], "completed")
         self.assertEqual(manifest["branch"], "syscallguard/fix-success")
         self.assertEqual(command(["git", "rev-parse", "HEAD"], repo), base_commit)
-        self.assertEqual(command(["git", "show", f"{manifest['commit']}:code.txt"], repo), "good")
+        self.assertNotIn("commit", manifest)
+        self.assertEqual(
+            command(["git", "show", f"{manifest['branch']}:code.txt"], repo), "good"
+        )
 
     def test_failed_regression_keeps_worktree_and_creates_no_branch(self) -> None:
         repo, _base_commit = self.prepare_failed_check()

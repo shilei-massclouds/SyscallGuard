@@ -8,8 +8,7 @@ target_locations: []
 static_check_refs: []
 dynamic_test_refs:
 - V09-PERMISSION-MATRIX
-base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
-target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md
 upstream_dependencies:
 - id: VFS_PERMISSION

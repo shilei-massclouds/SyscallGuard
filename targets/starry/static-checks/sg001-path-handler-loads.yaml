@@ -33,8 +33,7 @@ patterns:
   regex: pub fn sys_symlinkat[\s\S]*?vm_load_path_string\(linkpath\)\?
 - label: renameat2 old/new path loaders
   regex: pub fn sys_renameat2[\s\S]*?vm_load_path_string\(old_path\)\?[\s\S]*?vm_load_path_string\(new_path\)\?
-base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
-target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
 upstream_dependencies:
 - id: DIRFD_AND_AT_FLAGS
   generated_at_utc: '2026-07-13T00:00:00.000000Z'

@@ -1,8 +1,8 @@
 # Compliance Check Contract
 
 Read entity IDs from the mapping run, but load current shared mappings and check definitions and
-recompute their hashes. Apply each unique dynamic `patch_file` once in a detached worktree at the
-recorded `base_commit`.
+recompute their hashes. Apply each unique dynamic `patch_file` once in a detached worktree matching
+the recorded target content `snapshot_hash`.
 
 Use `rule_syscalls` from the mapping manifest to assign every failed rule to syscalls. An explicit
 check `applies_to_syscalls` may narrow that ownership but may not introduce a syscall absent from
@@ -18,5 +18,5 @@ Static results are `pass`, `fail`, or `error`. Dynamic results are `pass`, `fail
 test evidence. Match known environment errors and each test's `blocker_patterns` as blockers.
 
 Store confirmed gaps at `targets/starry/findings/<id>.yaml`, keyed by syscall, rule ID, and target
-revision. Store blockers only in `runs/<run-id>/manifest.yaml` and `results.yaml`; never convert a
+content snapshot. Store blockers only in `runs/<run-id>/manifest.yaml` and `results.yaml`; never convert a
 blocker into a finding.

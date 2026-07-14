@@ -8,4 +8,4 @@
 解析门槛和失败无落盘契约。不要增加 raw evidence、spec、index 或独立 state 持久化。
 
 Starry 静态检查与动态测试继续使用 `targets/starry/` 下的共享分片和 index。新增 checker 必须
-使用 mapping manifest 的 `rule_syscalls`，不能重新引入 syscall spec 依赖。
+使用 mapping manifest 的 `rule_syscalls`，不能重新引入 ingest report 或 syscall spec 依赖。

@@ -17,7 +17,7 @@
 ## 技术参考
 
 - 报告 ID：`spec-20260714t133502z-772aa222`
-- 来源：`ltp-local`，revision `534222c4f3908e9642f913399e37a66fdd266bbe`
+- 来源：`ltp-local`，内容快照 `sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4`
 - 全局待处理 syscall：373
 - 指定 syscall：`close`
 - `close`：证据 2 条，未解析 0 条
@@ -34,7 +34,7 @@ generated_at_utc: '2026-07-14T13:35:02.567816Z'
 source:
   id: ltp-local
   type: ltp
-  revision: 534222c4f3908e9642f913399e37a66fdd266bbe
+  snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   descriptor_hash: sha256:4315924cd8b9aab9608c225950c81f18ab74f25d63d74ee6ac3c444132131b4d
   recognition_rules_hash: sha256:0484079b460c624205ac589891dd570b4f52980944c1379860903092c2a974f6
   resolution: default_source

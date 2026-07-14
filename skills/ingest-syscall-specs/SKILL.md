@@ -17,7 +17,7 @@ description: Import new or changed target-independent syscall rules from a confi
    ```
 
 4. Inspect the Chinese summary and trailing machine-readable metadata in `runs/<report-id>/report.md`.
-5. Report the resolved source/revision, recognition-rules hash, count source, pending and selected syscalls, formed/no-rule results, rule IDs, and the report path.
+5. Report the source content snapshot hash, recognition-rules hash, count source, pending and selected syscalls, formed/no-rule results, rule IDs, and the report path.
 
 ## Boundaries
 

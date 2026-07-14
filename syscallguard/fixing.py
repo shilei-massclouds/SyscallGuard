@@ -11,6 +11,7 @@ from .checking import (
     _current_input,
     _current_versions,
     _mapping_staleness,
+    _mapping_target_descriptor,
     _run_dynamic_test,
     _run_static_check,
     _worktree_path,
@@ -32,6 +33,7 @@ from .common import (
     new_run_id,
     publish_yaml_entities,
     read_run,
+    repository_snapshot_hash,
     repo_root,
     slug,
     update_index,
@@ -107,7 +109,6 @@ def _report(recorder: RunRecorder) -> None:
         f"Status: `{recorder.manifest['status']}`",
         f"Worktree: `{recorder.manifest.get('worktree', '')}`",
         f"Branch: `{recorder.manifest.get('branch', '')}`",
-        f"Commit: `{recorder.manifest.get('commit', '')}`",
         "",
         f"- Confirmed findings selected: {counts.get('selected_findings', 0)}",
         f"- Static regression failures: {counts.get('static_failures', 0)}",
@@ -158,10 +159,11 @@ def run_fix(
         if not isinstance(target, dict):
             raise SyscallGuardError("check target metadata must be a mapping")
         repository = Path(str(target.get("repository", ""))).expanduser().resolve()
-        base_commit = str(target.get("base_commit", ""))
-        if not repository.is_dir() or not base_commit:
+        revision_ref = str(_mapping_target_descriptor(mapping_run).get("revision", "HEAD"))
+        checked_snapshot = str(target.get("snapshot_hash", ""))
+        if not repository.is_dir() or not checked_snapshot:
             raise SyscallGuardError(f"check run {from_run_id} has invalid target metadata")
-        current_commit = git_output(repository, ["rev-parse", "HEAD"])
+        current_snapshot = repository_snapshot_hash(repository)
         recorder.manifest["target"] = dict(target)
         recorder.manifest["entities"] = {"findings": sorted(findings), "fixes": []}
         finding_versions = {
@@ -178,15 +180,15 @@ def run_fix(
         stale_reasons = _check_staleness(root, check_run, findings)
         mapping_entities, _mapping_hashes, _mapping_input = _current_input(root, mapping_run)
         stale_reasons.extend(_mapping_staleness(mapping_run, mapping_entities))
-        if current_commit != base_commit or stale_reasons:
+        if current_snapshot != checked_snapshot or stale_reasons:
             recorder.manifest["counts"] = {"selected_findings": 0, "blockers": 1}
             recorder.complete(
                 [
                     {
                         "kind": "stale_check",
-                        "reason": "Starry HEAD changed after compliance check; remap and recheck before fixing",
-                        "checked_commit": base_commit,
-                        "current_commit": current_commit,
+                        "reason": "Starry content changed after compliance check; remap and recheck before fixing",
+                        "checked_snapshot_hash": checked_snapshot,
+                        "current_snapshot_hash": current_snapshot,
                         "dependency_mismatches": stale_reasons,
                     }
                 ]
@@ -223,7 +225,9 @@ def run_fix(
         recorder.manifest["entity_versions"].update(_current_versions(entities))
         recorder.manifest["regression_input_hash"] = regression_input_hash
         worktree = _worktree_path(mapping_run, run_id)
-        _create_worktree(repository, base_commit, worktree)
+        _create_worktree(repository, revision_ref, worktree)
+        if repository_snapshot_hash(worktree) != checked_snapshot:
+            raise SyscallGuardError("isolated Starry worktree does not match the checked content snapshot")
         recorder.manifest["worktree"] = str(worktree)
         logs = recorder.directory / "logs"
         logs.mkdir(parents=True, exist_ok=True)
@@ -293,7 +297,7 @@ def run_fix(
             "run_id": run_id,
             "generated_at_utc": regression_generated_at,
             "upstream_dependencies": regression_dependencies,
-            "target_revision": base_commit,
+            "target_snapshot_hash": checked_snapshot,
             "static": static_results,
             "dynamic": dynamic_results,
             "blockers": blockers,
@@ -344,13 +348,14 @@ def run_fix(
             ],
             check=False,
         )
-        atomic_write_text(logs / "commit.log", commit_result.stdout + commit_result.stderr)
+        atomic_write_text(
+            logs / "commit.log",
+            "completion commit created\n" if commit_result.returncode == 0 else "commit creation failed\n",
+        )
         if commit_result.returncode != 0:
             _failed_regression(recorder, "regression passed but commit creation failed", [])
             return run_id
-        commit = git_output(worktree, ["rev-parse", "HEAD"])
         recorder.manifest["branch"] = branch
-        recorder.manifest["commit"] = commit
 
         fix_entities: dict[str, dict[str, Any]] = {}
         updated_findings: dict[str, dict[str, Any]] = {}
@@ -365,7 +370,6 @@ def run_fix(
                 "patch": f"runs/{run_id}/implementation.patch",
                 "starry_repository": str(repository),
                 "starry_branch": branch,
-                "starry_commit": commit,
                 "regression": f"runs/{run_id}/regression-results.yaml",
                 "status": "fixed",
                 "generated_at_utc": fix_generated_at,
@@ -381,7 +385,6 @@ def run_fix(
             updated["resolution"] = "fixed"
             updated["fix_ref"] = fix_id
             updated["fixed_by_run"] = run_id
-            updated["fixed_commit"] = commit
             updated["generated_at_utc"] = fix_generated_at
             updated["upstream_dependencies"] = [entity_version(fix_id, fix_entity)]
             updated_findings[finding_id] = updated
@@ -412,7 +415,6 @@ def run_fix(
                     "path": f"targets/starry/fixes/{slug(fix_id)}.yaml",
                     "finding_refs": entity["finding_refs"],
                     "status": "fixed",
-                    "starry_commit": commit,
                     "generated_at_utc": entity["generated_at_utc"],
                     "content_hash": version_content_hash(entity),
                 }
@@ -428,7 +430,7 @@ def run_fix(
                     "path": f"targets/starry/findings/{slug(finding_id)}.yaml",
                     "syscall": entity["syscall"],
                     "rule_id": entity["rule_id"],
-                    "target_revision": entity["target_revision"],
+                    "target_snapshot_hash": entity["target_snapshot_hash"],
                     "status": entity["status"],
                     "resolution": "fixed",
                     "generated_at_utc": entity["generated_at_utc"],
@@ -483,7 +485,6 @@ def main(argv: list[str] | None = None) -> int:
         print(f"worktree: {manifest['worktree']}")
     if manifest.get("branch"):
         print(f"branch: {manifest['branch']}")
-        print(f"commit: {manifest['commit']}")
     print(f"fix_index: {args.root.resolve() / 'targets/starry/fixes/index.yaml'}")
     return 1 if manifest["status"] == "failed" else 0
 

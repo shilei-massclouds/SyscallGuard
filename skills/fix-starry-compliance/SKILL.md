@@ -17,12 +17,12 @@ description: Repair confirmed implementation findings from one SyscallGuard chec
    ```
 
 5. Calling this skill authorizes patch generation/application and regression. Do not ask for patch approval.
-6. Report selected findings, regression results, blockers, retained worktree, and printed fix paths. On success also report `syscallguard/<run-id>` and its commit. Do not merge it.
+6. Report selected findings, regression results, blockers, retained worktree, and printed fix paths. On success also report the `syscallguard/<run-id>` branch. Do not merge it or persist its commit ID in SyscallGuard data.
 
 ## Boundaries
 
-- Refuse a stale check when the check result, finding, mapped entity, or Starry HEAD version changed after checking.
-- Preserve the syscall ownership recorded through the ingest-report and mapping chain; never reconstruct it from removed syscall specs.
+- Refuse a stale check when the check result, finding, mapped entity, or Starry content snapshot changed after checking.
+- Preserve the syscall ownership recorded by the mapping run; never reconstruct it from removed syscall specs or ingest reports.
 - Apply the mapped dynamic test patches before the implementation patch so tests are retained in a successful commit.
 - Require every static and enabled dynamic regression to pass. A skipped disabled test is allowed; `not_run` is not.
 - On regression or commit failure, create no completion commit and retain the worktree, patch, and logs.

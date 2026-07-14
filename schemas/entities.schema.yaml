@@ -1,5 +1,5 @@
 schema_name: syscallguard-shared-entities
-version: 5
+version: 6
 entities:
   syscall_index:
     kind: syscallguard_syscall_index
@@ -23,22 +23,30 @@ entities:
     notes: sources do not participate in semantic_hash or downstream invalidation.
   starry_mapping:
     kind: syscallguard_starry_mapping
-    required: [mapping_id, rule_refs, classification, target_locations, base_commit, target_hash, generated_at_utc, upstream_dependencies]
+    required: [mapping_id, rule_refs, classification, target_locations, target_snapshot_hash, generated_at_utc, upstream_dependencies]
     classification_values: [static, partial_static, dynamic, unsupported, needs_review]
   static_check:
     kind: syscallguard_starry_static_check
-    required: [check_id, rule_refs, path, patterns, base_commit, target_hash, generated_at_utc, upstream_dependencies]
+    required: [check_id, rule_refs, path, patterns, target_snapshot_hash, generated_at_utc, upstream_dependencies]
   dynamic_test:
     kind: syscallguard_starry_dynamic_test
-    required: [test_id, rule_refs, test_source, build, command, base_commit, target_hash, generated_at_utc, upstream_dependencies]
+    required: [test_id, rule_refs, test_source, build, command, target_snapshot_hash, generated_at_utc, upstream_dependencies]
     result_values: [pass, fail, skipped, not_run]
   finding:
     kind: syscallguard_starry_finding
-    required: [finding_id, syscall, rule_id, target_revision, status, resolution, occurrences, generated_at_utc, upstream_dependencies]
+    required: [finding_id, syscall, rule_id, target_snapshot_hash, status, resolution, occurrences, generated_at_utc, upstream_dependencies]
     status_values: [confirmed]
   fix:
     kind: syscallguard_starry_fix
-    required: [fix_id, finding_refs, patch, starry_branch, starry_commit, regression, status, generated_at_utc, upstream_dependencies]
+    required: [fix_id, finding_refs, patch, starry_branch, regression, status, generated_at_utc, upstream_dependencies]
+  starry_rule_coverage:
+    kind: syscallguard_starry_rule_coverage
+    storage: targets/starry/rule-coverage.yaml
+    status_values: [pending, mapped, needs_review, unsupported]
+    classification_values: [static, partial_static, dynamic, unsupported, needs_review]
 dependency_version:
   required: [id, generated_at_utc, content_hash]
   validation: Compare generated_at_utc first, then content_hash; reject either mismatch as stale.
+git_commit_ids:
+  persistence: forbidden
+  replacement: Stable entity IDs plus semantic/content hashes and target content fingerprints.

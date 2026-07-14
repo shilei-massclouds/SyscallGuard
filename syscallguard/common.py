@@ -312,9 +312,7 @@ class RunRecorder:
             "blockers": [],
             "error": None,
         }
-        if stage == "mapping":
-            self.manifest["from_report_id"] = from_run_id
-        else:
+        if stage in {"check", "fix"}:
             self.manifest["from_run_id"] = from_run_id
         self.changeset: dict[str, Any] = {
             "schema_version": SCHEMA_VERSION,
@@ -409,13 +407,45 @@ def git_output(repo: Path, args: list[str]) -> str:
     return git(repo, args).stdout.strip()
 
 
-def resolve_revision(repo: Path, revision: str) -> str:
-    if not repo.is_dir():
-        raise SyscallGuardError(f"repository does not exist: {repo}")
-    return git_output(repo, ["rev-parse", f"{revision}^{{commit}}"])
+def repository_identity(repo: Path) -> str:
+    """Return a stable repository identity without using a commit identifier."""
+    origin = git(repo, ["config", "--get", "remote.origin.url"], check=False).stdout.strip()
+    return content_hash({"path": str(repo.resolve()), "origin": origin or None})
 
 
-def ensure_target_descriptor(path: Path) -> tuple[dict[str, Any], Path, str]:
+def repository_snapshot_hash(repo: Path) -> str:
+    """Hash the checked-out contents of every tracked file.
+
+    This is deliberately content based.  It is suitable for proving that two
+    phases observed the same checkout, but it is not used to decide whether an
+    individual rule is stale; rule coverage uses its narrower file/symbol
+    fingerprints for that decision.
+    """
+    names = [item for item in git(repo, ["ls-files", "-z"]).stdout.split("\0") if item]
+    digest = hashlib.sha256()
+    for name in sorted(names):
+        path = repo / name
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        try:
+            if path.is_symlink():
+                digest.update(b"symlink\0")
+                digest.update(os.readlink(path).encode("utf-8"))
+            elif path.is_file():
+                digest.update(b"file\0")
+                with path.open("rb") as handle:
+                    for block in iter(lambda: handle.read(1024 * 1024), b""):
+                        digest.update(block)
+            else:
+                digest.update(b"missing\0")
+        except OSError as exc:
+            raise SyscallGuardError(f"cannot fingerprint tracked target path {path}: {exc}") from exc
+        digest.update(b"\0")
+    return "sha256:" + digest.hexdigest()
+
+
+def ensure_target_workspace(path: Path) -> tuple[dict[str, Any], Path, str, str, str]:
+    """Resolve the fixed Starry checkout without exposing a Git commit ID."""
     descriptor = load_mapping(path)
     if descriptor.get("target_id") != "starry":
         raise SyscallGuardError(f"target descriptor must set target_id: starry: {path}")
@@ -423,11 +453,27 @@ def ensure_target_descriptor(path: Path) -> tuple[dict[str, Any], Path, str]:
     if not isinstance(raw_repo, str) or not raw_repo:
         raise SyscallGuardError(f"target descriptor repository must be a path: {path}")
     repository = Path(raw_repo).expanduser().resolve()
+    if not repository.is_dir():
+        raise SyscallGuardError(f"repository does not exist: {repository}")
     revision = descriptor.get("revision", "HEAD")
     if not isinstance(revision, str) or not revision:
         raise SyscallGuardError(f"target descriptor revision must be a string: {path}")
-    commit = resolve_revision(repository, revision)
-    return descriptor, repository, commit
+    if re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}", revision):
+        raise SyscallGuardError(
+            "target descriptor must use a symbolic ref; Git commit IDs are not allowed"
+        )
+    dirty = git(repository, ["status", "--porcelain", "--untracked-files=no"]).stdout.strip()
+    if dirty:
+        raise SyscallGuardError(
+            "Starry tracked files have uncommitted changes; mapping requires a stable read-only checkout"
+        )
+    return (
+        descriptor,
+        repository,
+        revision,
+        repository_identity(repository),
+        repository_snapshot_hash(repository),
+    )
 
 
 def safe_relative_path(value: str) -> Path:

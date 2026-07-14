@@ -33,5 +33,5 @@ count, unresolved evidence count, and reason. If any evidence is unresolved or n
 
 Hash rule category and semantics into `semantic_hash`. Reuse identical semantics and merge `sources`.
 Do not advance `generated_at_utc` for a sources-only change. Record every rule source with source ID
-and type, revision, file, line, recognizer ID, and evidence hash. Never store downstream references
+and type, source content snapshot hash, file, line, recognizer ID, and evidence hash. Never store downstream references
 or run progress in a rule.

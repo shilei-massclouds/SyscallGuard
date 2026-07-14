@@ -19,11 +19,11 @@ from .common import (
     dependency_mismatch,
     entity_version,
     git,
-    git_output,
     load_mapping,
     new_run_id,
     publish_yaml_entities,
     read_run,
+    repository_snapshot_hash,
     repo_root,
     safe_relative_path,
     slug,
@@ -109,12 +109,16 @@ def _current_input(
         "static_checks": check_hashes,
         "dynamic_tests": test_hashes,
     }
-    target_hash = str(mapping_run.get("target", {}).get("target_hash", ""))
+    target_snapshot_hash = str(mapping_run.get("target", {}).get("snapshot_hash", ""))
     rule_syscalls = mapping_run.get("rule_syscalls", {})
     if not isinstance(rule_syscalls, dict):
         raise SyscallGuardError("mapping run rule_syscalls must be a mapping")
     return entities, hashes, content_hash(
-        {"entities": hashes, "target_hash": target_hash, "rule_syscalls": rule_syscalls}
+        {
+            "entities": hashes,
+            "target_snapshot_hash": target_snapshot_hash,
+            "rule_syscalls": rule_syscalls,
+        }
     )
 
 
@@ -171,7 +175,7 @@ def _prior_identical_check(root: Path, input_hash: str, current_run_id: str) -> 
     return None
 
 
-def _worktree_path(mapping_run: dict[str, Any], run_id: str) -> Path:
+def _mapping_target_descriptor(mapping_run: dict[str, Any]) -> dict[str, Any]:
     descriptor_path = Path(str(mapping_run.get("outputs", {}).get("target_descriptor", "")))
     descriptor = {}
     source_dir = Path(str(mapping_run.get("_run_directory", "")))
@@ -179,17 +183,24 @@ def _worktree_path(mapping_run: dict[str, Any], run_id: str) -> Path:
         candidate = source_dir / descriptor_path
         if candidate.exists():
             descriptor = load_mapping(candidate)
+    if not isinstance(descriptor, dict) or descriptor.get("target_id") != "starry":
+        raise SyscallGuardError("mapping run has no valid target descriptor snapshot")
+    return descriptor
+
+
+def _worktree_path(mapping_run: dict[str, Any], run_id: str) -> Path:
+    descriptor = _mapping_target_descriptor(mapping_run)
     raw_root = descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")
     if not isinstance(raw_root, str) or not raw_root:
         raise SyscallGuardError("target descriptor worktree_root must be a path")
     return Path(raw_root).expanduser().resolve() / run_id
 
 
-def _create_worktree(repository: Path, commit: str, worktree: Path) -> None:
+def _create_worktree(repository: Path, revision_ref: str, worktree: Path) -> None:
     if worktree.exists():
         raise SyscallGuardError(f"worktree path already exists: {worktree}")
     worktree.parent.mkdir(parents=True, exist_ok=True)
-    git(repository, ["worktree", "add", "--detach", str(worktree), commit])
+    git(repository, ["worktree", "add", "--detach", str(worktree), revision_ref])
 
 
 def _artifact_path(root: Path, value: str) -> Path:
@@ -453,7 +464,7 @@ def _syscalls_for_rules(
 def _finding_entities(
     root: Path,
     run_id: str,
-    commit: str,
+    target_snapshot_hash: str,
     rule_syscalls: dict[str, list[str]],
     static_results: list[dict[str, Any]],
     dynamic_results: list[dict[str, Any]],
@@ -483,7 +494,8 @@ def _finding_entities(
             if refs and not syscalls:
                 continue
             for syscall in syscalls or ["unmapped-syscall"]:
-                finding_id = f"finding-{slug(syscall)}-{slug(str(rule_id))}-{commit[:12]}"
+                snapshot_suffix = target_snapshot_hash.removeprefix("sha256:")[:12]
+                finding_id = f"finding-{slug(syscall)}-{slug(str(rule_id))}-{snapshot_suffix}"
                 existing_path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
                 if finding_id in findings:
                     existing = findings[finding_id]
@@ -506,7 +518,7 @@ def _finding_entities(
                     "finding_id": finding_id,
                     "syscall": syscall,
                     "rule_id": rule_id,
-                    "target_revision": commit,
+                    "target_snapshot_hash": target_snapshot_hash,
                     "status": "confirmed",
                     "resolution": existing.get("resolution", "open"),
                     "occurrences": occurrences,
@@ -552,10 +564,11 @@ def run_check(
     try:
         target = mapping_run.get("target", {})
         repository = Path(str(target.get("repository", ""))).expanduser().resolve()
-        base_commit = str(target.get("base_commit", ""))
-        if not repository.is_dir() or not base_commit:
+        revision_ref = str(_mapping_target_descriptor(mapping_run).get("revision", "HEAD"))
+        mapped_snapshot = str(target.get("snapshot_hash", ""))
+        if not repository.is_dir() or not mapped_snapshot:
             raise SyscallGuardError(f"mapping run {from_run_id} has invalid target metadata")
-        current_commit = git_output(repository, ["rev-parse", "HEAD"])
+        current_snapshot = repository_snapshot_hash(repository)
         entities, hashes, input_hash = _current_input(root, mapping_run)
         versions = _current_versions(entities)
         recorder.manifest["input_hash"] = input_hash
@@ -567,12 +580,12 @@ def run_check(
         }
         recorder.manifest["rule_syscalls"] = mapping_run.get("rule_syscalls", {})
         stale_reasons = _mapping_staleness(mapping_run, entities)
-        if current_commit != base_commit or stale_reasons:
+        if current_snapshot != mapped_snapshot or stale_reasons:
             blocker = {
                 "kind": "stale_mapping",
-                "reason": "mapping dependencies or Starry HEAD changed; run map-starry-checks again",
-                "mapped_commit": base_commit,
-                "current_commit": current_commit,
+                "reason": "mapping dependencies or Starry content changed; run map-starry-checks again",
+                "mapped_snapshot_hash": mapped_snapshot,
+                "current_snapshot_hash": current_snapshot,
                 "dependency_mismatches": stale_reasons,
             }
             recorder.manifest["counts"] = {"skipped_stale_mapping": 1, "findings": 0}
@@ -599,7 +612,7 @@ def run_check(
                 "run_id": run_id,
                 "generated_at_utc": generated_at,
                 "upstream_dependencies": dependencies,
-                "target_revision": base_commit,
+                "target_snapshot_hash": mapped_snapshot,
                 "reused_from": prior["run_id"],
                 "static": prior_results.get("static", []),
                 "dynamic": prior_results.get("dynamic", []),
@@ -626,7 +639,9 @@ def run_check(
             return run_id
 
         worktree = _worktree_path(mapping_run, run_id)
-        _create_worktree(repository, base_commit, worktree)
+        _create_worktree(repository, revision_ref, worktree)
+        if repository_snapshot_hash(worktree) != mapped_snapshot:
+            raise SyscallGuardError("isolated Starry worktree does not match the mapped content snapshot")
         recorder.manifest["worktree"] = str(worktree)
         logs = recorder.directory / "logs"
         logs.mkdir(parents=True, exist_ok=True)
@@ -666,7 +681,7 @@ def run_check(
             "run_id": run_id,
             "generated_at_utc": generated_at,
             "upstream_dependencies": result_dependencies,
-            "target_revision": base_commit,
+            "target_snapshot_hash": mapped_snapshot,
             "worktree": str(worktree),
             "static": static_results,
             "dynamic": dynamic_results,
@@ -677,7 +692,7 @@ def run_check(
         findings = _finding_entities(
             root,
             run_id,
-            base_commit,
+            mapped_snapshot,
             mapping_run.get("rule_syscalls", {}),
             static_results,
             dynamic_results,
@@ -705,7 +720,7 @@ def run_check(
                     "path": f"targets/starry/findings/{slug(finding_id)}.yaml",
                     "syscall": finding["syscall"],
                     "rule_id": finding["rule_id"],
-                    "target_revision": base_commit,
+                    "target_snapshot_hash": mapped_snapshot,
                     "status": finding["status"],
                     "resolution": finding["resolution"],
                     "generated_at_utc": finding["generated_at_utc"],
