@@ -41,7 +41,7 @@ def repo_root() -> Path:
 
 
 def utc_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 def load_yaml(path: Path) -> Any:
@@ -92,6 +92,32 @@ def atomic_write_yaml(path: Path, value: Any) -> None:
     atomic_write_text(path, _yaml_text(value))
 
 
+def read_frontmatter(path: Path) -> tuple[dict[str, Any], str]:
+    """Read a Markdown document with a required YAML frontmatter mapping."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError as exc:
+        raise SyscallGuardError(f"missing Markdown file: {path}") from exc
+    except OSError as exc:
+        raise SyscallGuardError(f"cannot read {path}: {exc}") from exc
+    lines = text.splitlines(keepends=True)
+    if not lines or lines[0].strip() != "---":
+        raise SyscallGuardError(f"Markdown file has no YAML frontmatter: {path}")
+    closing = next(
+        (index for index, line in enumerate(lines[1:], start=1) if line.strip() == "---"),
+        None,
+    )
+    if closing is None:
+        raise SyscallGuardError(f"Markdown frontmatter is not closed: {path}")
+    try:
+        value = yaml.safe_load("".join(lines[1:closing]))
+    except yaml.YAMLError as exc:
+        raise SyscallGuardError(f"malformed YAML frontmatter in {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise SyscallGuardError(f"expected YAML frontmatter mapping in {path}")
+    return value, "".join(lines[closing + 1 :])
+
+
 def canonical_json(value: Any) -> bytes:
     return json.dumps(
         value,
@@ -103,6 +129,66 @@ def canonical_json(value: Any) -> bytes:
 
 def content_hash(value: Any) -> str:
     return "sha256:" + hashlib.sha256(canonical_json(value)).hexdigest()
+
+
+def version_content_hash(entity: dict[str, Any]) -> str:
+    """Hash versioned content without its clock value.
+
+    Rule provenance is deliberately outside the semantic version.  For every
+    other entity, a manual edit is detected even when its author forgot to
+    advance ``generated_at_utc``.
+    """
+    if entity.get("kind") == "syscallguard_rule":
+        return content_hash(
+            {
+                "category": entity.get("category"),
+                "semantics": entity.get("semantics"),
+            }
+        )
+    payload = dict(entity)
+    payload.pop("generated_at_utc", None)
+    payload.pop("content_hash", None)
+    return content_hash(payload)
+
+
+def entity_version(entity_id: str, entity: dict[str, Any]) -> dict[str, str]:
+    generated = entity.get("generated_at_utc")
+    if not isinstance(generated, str) or not generated:
+        raise SyscallGuardError(f"versioned entity {entity_id} has no generated_at_utc")
+    return {
+        "id": entity_id,
+        "generated_at_utc": generated,
+        "content_hash": version_content_hash(entity),
+    }
+
+
+def dependency_mismatch(
+    recorded: dict[str, Any], current_id: str, current: dict[str, Any]
+) -> str | None:
+    """Compare timestamps first, then hashes as a safety check."""
+    if recorded.get("id") != current_id:
+        return f"dependency id changed: {recorded.get('id')!r} != {current_id!r}"
+    generated = current.get("generated_at_utc")
+    if recorded.get("generated_at_utc") != generated:
+        return (
+            f"dependency {current_id} generation changed: "
+            f"{recorded.get('generated_at_utc')!r} != {generated!r}"
+        )
+    actual_hash = version_content_hash(current)
+    if recorded.get("content_hash") != actual_hash:
+        return f"dependency {current_id} content changed without a generation update"
+    return None
+
+
+def dependencies_by_id(value: Any, owner: str) -> dict[str, dict[str, Any]]:
+    if not isinstance(value, list):
+        raise SyscallGuardError(f"{owner} upstream_dependencies must be a list")
+    result: dict[str, dict[str, Any]] = {}
+    for row in value:
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+            raise SyscallGuardError(f"{owner} has an invalid upstream dependency")
+        result[row["id"]] = row
+    return result
 
 
 def file_hash(path: Path) -> str:
@@ -151,7 +237,7 @@ def normalize_run_id(value: str) -> str:
 def new_run_id(stage: str, seed: Any | None = None) -> str:
     if stage not in STAGES:
         raise SyscallGuardError(f"unknown stage: {stage}")
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dt%H%M%S%z").replace("+0000", "z")
     suffix = hashlib.sha256(
         canonical_json({"seed": seed if seed is not None else utc_now(), "nonce": time.time_ns()})
     ).hexdigest()[:8]
@@ -204,7 +290,6 @@ class RunRecorder:
             "status": "running",
             "created_at_utc": utc_now(),
             "completed_at_utc": None,
-            "from_run_id": from_run_id,
             "invocation": invocation,
             "entities": {},
             "entity_hashes": {},
@@ -213,6 +298,10 @@ class RunRecorder:
             "blockers": [],
             "error": None,
         }
+        if stage == "mapping":
+            self.manifest["from_report_id"] = from_run_id
+        else:
+            self.manifest["from_run_id"] = from_run_id
         self.changeset: dict[str, Any] = {
             "schema_version": SCHEMA_VERSION,
             "kind": "syscallguard_changeset",
@@ -352,39 +441,3 @@ def publish_yaml_entities(
         rendered.append((destination, _yaml_text(value)))
     for destination, text in rendered:
         atomic_write_text(destination, text)
-
-
-def append_history(root: Path, entries: Iterable[dict[str, Any]]) -> None:
-    history_path = root / "batches" / "syscall-check-history.yaml"
-    if history_path.exists():
-        history = load_mapping(history_path)
-        if history.get("kind") != "syscallguard_entity_history":
-            history = {
-                "schema_version": 2,
-                "kind": "syscallguard_entity_history",
-                "updated_at_utc": None,
-                "entities": [],
-                "legacy_history_replaced": True,
-            }
-    else:
-        history = {
-            "schema_version": 2,
-            "kind": "syscallguard_entity_history",
-            "updated_at_utc": None,
-            "entities": [],
-        }
-    current: dict[tuple[str, str], dict[str, Any]] = {}
-    for item in history.get("entities", []):
-        if isinstance(item, dict):
-            key = (str(item.get("entity_type", "")), str(item.get("entity_id", "")))
-            current[key] = item
-    for item in entries:
-        key = (str(item.get("entity_type", "")), str(item.get("entity_id", "")))
-        if not all(key):
-            raise SyscallGuardError(f"invalid history entry: {item!r}")
-        merged = dict(current.get(key, {}))
-        merged.update(item)
-        current[key] = merged
-    history["entities"] = [current[key] for key in sorted(current)]
-    history["updated_at_utc"] = utc_now()
-    atomic_write_yaml(history_path, history)

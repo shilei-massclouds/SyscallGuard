@@ -12,18 +12,21 @@ from .common import (
     atomic_write_text,
     atomic_write_yaml,
     content_hash,
+    dependency_mismatch,
+    entity_version,
     ensure_target_descriptor,
     entity_hash,
     load_index,
     load_mapping,
     new_run_id,
     publish_yaml_entities,
-    read_run,
     repo_root,
     slug,
     update_index,
     utc_now,
+    version_content_hash,
 )
+from .ingest import assert_latest_ingest_report, load_ingest_report
 
 
 CLASSIFICATIONS = {"static", "partial_static", "dynamic", "unsupported", "needs_review"}
@@ -58,33 +61,100 @@ def _load_index_entity(root: Path, entry: dict[str, Any]) -> tuple[Path, dict[st
     return path, load_mapping(path)
 
 
-def _rule_hashes(root: Path, rule_ids: list[str]) -> tuple[dict[str, str], dict[str, Any]]:
+def _rule_hashes(
+    root: Path, rule_ids: list[str]
+) -> tuple[dict[str, str], dict[str, Any], dict[str, dict[str, str]]]:
     hashes: dict[str, str] = {}
     rules: dict[str, Any] = {}
+    versions: dict[str, dict[str, str]] = {}
     for rule_id in rule_ids:
         path = _entity_path(root, "library/rules", rule_id)
         rule = load_mapping(path)
         if rule.get("kind") != "syscallguard_rule" or rule.get("rule_id") != rule_id:
             raise SyscallGuardError(f"invalid rule entity for {rule_id}: {path}")
-        hashes[rule_id] = content_hash(rule)
+        hashes[rule_id] = version_content_hash(rule)
         rules[rule_id] = rule
-    return hashes, rules
+        versions[rule_id] = entity_version(rule_id, rule)
+    return hashes, rules, versions
+
+
+def _report_rules(
+    report: dict[str, Any],
+) -> tuple[list[str], list[str], dict[str, list[str]], dict[str, dict[str, str]]]:
+    syscall_ids: list[str] = []
+    rule_syscalls: dict[str, list[str]] = {}
+    versions: dict[str, dict[str, str]] = {}
+    rows = report.get("syscalls", [])
+    if not isinstance(rows, list):
+        raise SyscallGuardError(f"ingest report {report.get('report_id')} has invalid syscalls")
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("syscall"), str):
+            raise SyscallGuardError(f"ingest report {report.get('report_id')} has invalid syscalls")
+        syscall = row["syscall"]
+        syscall_ids.append(syscall)
+        rule_rows = row.get("rules", [])
+        if not isinstance(rule_rows, list):
+            raise SyscallGuardError(f"ingest report {report.get('report_id')} has invalid rules")
+        if row.get("result") == "no_rules" and rule_rows:
+            raise SyscallGuardError(
+                f"ingest report {report.get('report_id')} publishes rules for no_rules syscall {syscall}"
+            )
+        for version in rule_rows:
+            if not isinstance(version, dict) or not all(
+                isinstance(version.get(key), str)
+                for key in ("id", "generated_at_utc", "content_hash")
+            ):
+                raise SyscallGuardError(
+                    f"ingest report {report.get('report_id')} has an invalid rule version"
+                )
+            rule_id = version["id"]
+            normalized = {
+                "id": rule_id,
+                "generated_at_utc": version["generated_at_utc"],
+                "content_hash": version["content_hash"],
+            }
+            if rule_id in versions and versions[rule_id] != normalized:
+                raise SyscallGuardError(
+                    f"ingest report {report.get('report_id')} records conflicting versions for {rule_id}"
+                )
+            versions[rule_id] = normalized
+            rule_syscalls.setdefault(rule_id, [])
+            if syscall not in rule_syscalls[rule_id]:
+                rule_syscalls[rule_id].append(syscall)
+    return (
+        sorted(versions),
+        sorted(set(syscall_ids)),
+        {rule_id: sorted(syscalls) for rule_id, syscalls in sorted(rule_syscalls.items())},
+        versions,
+    )
+
+
+def _assert_report_versions(
+    report: dict[str, Any],
+    versions: dict[str, dict[str, str]],
+    rules: dict[str, dict[str, Any]],
+) -> None:
+    for rule_id, recorded in versions.items():
+        mismatch = dependency_mismatch(recorded, rule_id, rules[rule_id])
+        if mismatch:
+            raise SyscallGuardError(
+                f"stale ingest report {report.get('report_id')}: {mismatch}"
+            )
 
 
 def _mapping_for_rule(
     root: Path,
     rule_id: str,
-    rule_hash: str,
-    run_id: str,
+    rule_version: dict[str, str],
     base_commit: str,
     target_hash: str,
+    generated_at: str,
 ) -> tuple[str, dict[str, Any], str]:
     mapping_id = f"starry-{slug(rule_id)}"
     path = _entity_path(root, "targets/starry/mappings", mapping_id)
     if path.exists():
         mapping = load_mapping(path)
-        prior_hashes = mapping.get("source_rule_hashes", {})
-        same_input = isinstance(prior_hashes, dict) and prior_hashes.get(rule_id) == rule_hash
+        same_input = mapping.get("upstream_dependencies") == [rule_version]
         same_target = mapping.get("target_hash") == target_hash
         action = "skipped" if same_input and same_target else "updated"
         mapping = dict(mapping)
@@ -112,10 +182,12 @@ def _mapping_for_rule(
             "kind": "syscallguard_starry_mapping",
             "mapping_id": mapping_id,
             "rule_refs": [rule_id],
-            "source_rule_hashes": {rule_id: rule_hash},
+            "upstream_dependencies": [rule_version],
             "base_commit": base_commit,
             "target_hash": target_hash,
-            "last_mapped_run": run_id,
+            "generated_at_utc": mapping.get("generated_at_utc")
+            if action == "skipped"
+            else generated_at,
         }
     )
     return mapping_id, mapping, action
@@ -123,20 +195,27 @@ def _mapping_for_rule(
 
 def _refresh_existing_entity(
     entity: dict[str, Any],
-    run_id: str,
+    dependencies: list[dict[str, str]],
     base_commit: str,
     target_hash: str,
+    generated_at: str,
+    recorded_hash: str | None,
 ) -> tuple[dict[str, Any], str]:
     same_target = entity.get("target_hash") == target_hash
+    same_input = entity.get("upstream_dependencies") == dependencies
+    same_content = recorded_hash == version_content_hash(entity)
     result = dict(entity)
     result.update(
         {
+            "upstream_dependencies": dependencies,
             "base_commit": base_commit,
             "target_hash": target_hash,
-            "last_mapped_run": run_id,
+            "generated_at_utc": entity.get("generated_at_utc")
+            if same_target and same_input and same_content
+            else generated_at,
         }
     )
-    return result, "skipped" if same_target else "updated"
+    return result, "skipped" if same_target and same_input and same_content else "updated"
 
 
 def _report(recorder: RunRecorder) -> None:
@@ -160,28 +239,24 @@ def _report(recorder: RunRecorder) -> None:
 
 
 def run_mapping(
-    from_run_id: str,
+    from_report_id: str,
     target: Path,
     root: Path | None = None,
     requested_run_id: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
-    upstream = read_run(root, from_run_id, "spec")
-    rule_ids = upstream.get("entities", {}).get("rules", [])
-    syscall_ids = upstream.get("entities", {}).get("syscalls", [])
-    if not isinstance(rule_ids, list) or not all(isinstance(item, str) for item in rule_ids):
-        raise SyscallGuardError(f"spec run {from_run_id} has invalid rule entity ids")
-    if not isinstance(syscall_ids, list) or not all(isinstance(item, str) for item in syscall_ids):
-        raise SyscallGuardError(f"spec run {from_run_id} has invalid syscall entity ids")
+    report = load_ingest_report(root, from_report_id)
+    assert_latest_ingest_report(root, report)
+    rule_ids, syscall_ids, rule_syscalls, recorded_rule_versions = _report_rules(report)
     run_id = requested_run_id or new_run_id(
-        "mapping", {"from": from_run_id, "target": str(target.resolve()), "at": utc_now()}
+        "mapping", {"from": from_report_id, "target": str(target.resolve()), "at": utc_now()}
     )
     recorder = RunRecorder(
         root,
         "mapping",
         run_id,
-        {"from": from_run_id, "target": str(target.resolve())},
-        from_run_id,
+        {"from": from_report_id, "target": str(target.resolve())},
+        from_report_id,
     )
     try:
         descriptor, repository, base_commit = ensure_target_descriptor(target.resolve())
@@ -193,7 +268,9 @@ def run_mapping(
                 "descriptor": descriptor,
             }
         )
-        rule_hashes, _rules = _rule_hashes(root, rule_ids)
+        rule_hashes, rules, rule_versions = _rule_hashes(root, rule_ids)
+        _assert_report_versions(report, recorded_rule_versions, rules)
+        generated_at = utc_now()
         atomic_write_yaml(recorder.directory / "target-descriptor.yaml", descriptor)
 
         existing_mapping_entries = _matching_index_entries(
@@ -218,29 +295,37 @@ def run_mapping(
                 raise SyscallGuardError(
                     f"mapping {mapping_id} has invalid classification {classification!r}"
                 )
-            source_hashes = {ref: rule_hashes[ref] for ref in selected_refs}
-            same_input = mapping.get("source_rule_hashes") == source_hashes
+            dependencies = [rule_versions[ref] for ref in sorted(selected_refs)]
+            same_input = mapping.get("upstream_dependencies") == dependencies
             same_target = mapping.get("target_hash") == target_hash
+            same_content = entry.get("content_hash") == version_content_hash(mapping)
             updated = dict(mapping)
             updated.update(
                 {
-                    "source_rule_hashes": source_hashes,
+                    "upstream_dependencies": dependencies,
                     "base_commit": base_commit,
                     "target_hash": target_hash,
-                    "last_mapped_run": run_id,
+                    "generated_at_utc": mapping.get("generated_at_utc")
+                    if same_input and same_target and same_content
+                    else generated_at,
                 }
             )
             mappings[mapping_id] = (
                 path,
                 updated,
-                "skipped" if same_input and same_target else "updated",
+                "skipped" if same_input and same_target and same_content else "updated",
             )
             covered_rules.update(selected_refs)
         for rule_id in rule_ids:
             if rule_id in covered_rules:
                 continue
             mapping_id, mapping, action = _mapping_for_rule(
-                root, rule_id, rule_hashes[rule_id], run_id, base_commit, target_hash
+                root,
+                rule_id,
+                rule_versions[rule_id],
+                base_commit,
+                target_hash,
+                generated_at,
             )
             path = _entity_path(root, "targets/starry/mappings", mapping_id)
             mappings[mapping_id] = (path, mapping, action)
@@ -258,7 +343,12 @@ def run_mapping(
             if not isinstance(check_id, str):
                 raise SyscallGuardError(f"static check has no check_id: {path}")
             refreshed, action = _refresh_existing_entity(
-                entity, run_id, base_commit, target_hash
+                entity,
+                [rule_versions[ref] for ref in sorted(entity.get("rule_refs", [])) if ref in rule_versions],
+                base_commit,
+                target_hash,
+                generated_at,
+                str(entry.get("content_hash")) if entry.get("content_hash") else None,
             )
             static_checks[check_id] = (path, refreshed, action)
 
@@ -275,7 +365,12 @@ def run_mapping(
             if not isinstance(test_id, str):
                 raise SyscallGuardError(f"dynamic test has no test_id: {path}")
             refreshed, action = _refresh_existing_entity(
-                entity, run_id, base_commit, target_hash
+                entity,
+                [rule_versions[ref] for ref in sorted(entity.get("rule_refs", [])) if ref in rule_versions],
+                base_commit,
+                target_hash,
+                generated_at,
+                str(entry.get("content_hash")) if entry.get("content_hash") else None,
             )
             dynamic_tests[test_id] = (path, refreshed, action)
 
@@ -298,8 +393,8 @@ def run_mapping(
                     "path": str(path.relative_to(root)),
                     "rule_refs": entity.get("rule_refs", []),
                     "classification": entity.get("classification"),
-                    "content_hash": content_hash(entity),
-                    "processed_run": run_id,
+                    "generated_at_utc": entity["generated_at_utc"],
+                    "content_hash": version_content_hash(entity),
                     "target_hash": target_hash,
                 }
                 for mapping_id, (path, entity, _action) in mappings.items()
@@ -313,8 +408,8 @@ def run_mapping(
                     "id": check_id,
                     "path": str(path.relative_to(root)),
                     "rule_refs": entity.get("rule_refs", []),
-                    "content_hash": content_hash(entity),
-                    "processed_run": run_id,
+                    "generated_at_utc": entity["generated_at_utc"],
+                    "content_hash": version_content_hash(entity),
                     "target_hash": target_hash,
                 }
                 for check_id, (path, entity, _action) in static_checks.items()
@@ -328,8 +423,8 @@ def run_mapping(
                     "id": test_id,
                     "path": str(path.relative_to(root)),
                     "rule_refs": entity.get("rule_refs", []),
-                    "content_hash": content_hash(entity),
-                    "processed_run": run_id,
+                    "generated_at_utc": entity["generated_at_utc"],
+                    "content_hash": version_content_hash(entity),
                     "target_hash": target_hash,
                 }
                 for test_id, (path, entity, _action) in dynamic_tests.items()
@@ -353,6 +448,7 @@ def run_mapping(
             "static_checks": static_ids,
             "dynamic_tests": dynamic_ids,
         }
+        recorder.manifest["rule_syscalls"] = rule_syscalls
         recorder.manifest["entity_hashes"] = {
             "rules": rule_hashes,
             "mappings": {
@@ -366,6 +462,21 @@ def run_mapping(
             "dynamic_tests": {
                 entity_id: entity_hash(path)
                 for entity_id, (path, _entity, _action) in dynamic_tests.items()
+            },
+        }
+        recorder.manifest["entity_versions"] = {
+            "rules": rule_versions,
+            "mappings": {
+                entity_id: entity_version(entity_id, entity)
+                for entity_id, (_path, entity, _action) in mappings.items()
+            },
+            "static_checks": {
+                entity_id: entity_version(entity_id, entity)
+                for entity_id, (_path, entity, _action) in static_checks.items()
+            },
+            "dynamic_tests": {
+                entity_id: entity_version(entity_id, entity)
+                for entity_id, (_path, entity, _action) in dynamic_tests.items()
             },
         }
         all_actions = [
@@ -398,7 +509,8 @@ def run_mapping(
                         "entity_type": entity_type,
                         "entity_id": entity_id,
                         "action": action,
-                        "output_hash": content_hash(entity),
+                        "output_hash": version_content_hash(entity),
+                        "generated_at_utc": entity["generated_at_utc"],
                         "path": str(path.relative_to(root)),
                     }
                 )
@@ -421,7 +533,7 @@ def run_mapping(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Map incremental rules to Starry checks")
-    parser.add_argument("--from", dest="from_run_id", required=True, help="spec run id")
+    parser.add_argument("--from", dest="from_report_id", required=True, help="ingest report id")
     parser.add_argument("--target", required=True, type=Path, help="Starry target descriptor")
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
@@ -431,10 +543,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     requested_run_id = args.run_id or new_run_id(
-        "mapping", {"from": args.from_run_id, "target": str(args.target)}
+        "mapping", {"from": args.from_report_id, "target": str(args.target)}
     )
     try:
-        run_id = run_mapping(args.from_run_id, args.target, args.root, requested_run_id)
+        run_id = run_mapping(args.from_report_id, args.target, args.root, requested_run_id)
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         failed_path = args.root.resolve() / "runs" / requested_run_id

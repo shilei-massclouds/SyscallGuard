@@ -1,0 +1,6 @@
+schema_name: syscallguard-source-index
+version: 1
+required: [default_source, sources]
+fields:
+  default_source: Alias selected when the command omits source.
+  sources: Mapping of source aliases to descriptor paths relative to the repository root.

@@ -1,93 +1,93 @@
 schema_version: 1
 kind: syscallguard_starry_mapping_index
-updated_at_utc: '2026-07-13T16:28:13Z'
+updated_at_utc: '2026-07-13T00:00:00.000000Z'
 entities:
 - id: DM_DIRENT_ENUMERATION
   path: targets/starry/mappings/dm-dirent-enumeration.yaml
   rule_refs:
   - DIRENT_ENUMERATION
   classification: dynamic
-  content_hash: sha256:1eddcd9ae739b9b0ccf853d58a0adbc5931133ec88a73d12e98e076fcbe5d47b
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:87b1bae666aadc5635d7e716a22a620c68ff1e6697731d026d236631cb0a1197
 - id: DM_FS_SIDE_EFFECT
   path: targets/starry/mappings/dm-fs-side-effect.yaml
   rule_refs:
   - FS_SIDE_EFFECT
   classification: dynamic
-  content_hash: sha256:11bd7cd898dabfaa83b474a8bf52c38515ada9b46704c08adadd3ced1d3e32da
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:a0f270e10c9208b36534e75de3c2379911a31d1a5957c267d70b6fcc4e09352d
 - id: DM_VFS_PERMISSION
   path: targets/starry/mappings/dm-vfs-permission.yaml
   rule_refs:
   - VFS_PERMISSION
   classification: dynamic
-  content_hash: sha256:d89f6d9ff0215a946a760759c3fbc62e7e1d1eb2195ce0d6def49b2e19fcc761
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:d9ff863a1bd54a2ad310639d69c0d9c2ff745abb3b28a7669b080a68f51ed45b
 - id: M_ENTRY_DISPATCH
   path: targets/starry/mappings/m-entry-dispatch.yaml
   rule_refs:
   - SYSCALL_ENTRY_ALIAS
   classification: static
-  content_hash: sha256:8befe449d49f3fe9be4bab4bb95b7cee711a0bf20b1933db8d965854cad804e2
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:6ac42fc1f555f68273f7822d8e5166f41ecc3b3a108962165fe2ab6407025430
 - id: M_FD_EBADF
   path: targets/starry/mappings/m-fd-ebadf.yaml
   rule_refs:
   - BAD_FD_EBADF
   classification: static
-  content_hash: sha256:3039dccf1e3fbdf3bcb4c1b6aebca360109d47c350cfe13795d68934c478c012
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:a13437d444ba91bac92705562242a176976118853f3d605c97d26d9ec156cf81
 - id: M_FD_TYPE
   path: targets/starry/mappings/m-fd-type.yaml
   rule_refs:
   - FD_TYPE_ERRNO
   classification: partial_static
-  content_hash: sha256:6f4e1d913df37d1e6cbfd6c8a6c1823d9081c703670b0dab5256d83b2bddb287
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:55c28a118b3afa55a789cb48aa73e772cf800bfe12e1229c924a583a1b442a3b
 - id: M_FLAG_MASK
   path: targets/starry/mappings/m-flag-mask.yaml
   rule_refs:
   - FLAG_MASK_REJECTS_UNKNOWN
   classification: static
-  content_hash: sha256:841e1d34a6b9de702e730c11f67e5299f1cf9fe5e507fd8c42e43bcb7fed4aae
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:446e1ee69a98ccdc12f777bbcc355a031917cab7c06506f445d765fc5f244a14
 - id: M_MODE_UID_GID
   path: targets/starry/mappings/m-mode-uid-gid.yaml
   rule_refs:
   - MODE_UID_GID_GUARD
   classification: partial_static
-  content_hash: sha256:02f6847b3a7144c2f5550c8ec9aed3ff1e91fbc80aa1dbb3bf8f593e5f2757f1
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:b717bd739651f8a09333d2ba3c0d195f802aa06646c8cd340bfcaff1caec757d
 - id: M_PATHMAX
   path: targets/starry/mappings/m-pathmax.yaml
   rule_refs:
   - PATH_LONG_ENAMETOOLONG
   classification: partial_static
-  content_hash: sha256:402271432f7aecdaf762e36a5b8f428b6986be4a0c0ee74b9c1664c3d6eceb56
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:8ff70111d1495b1ff6ae089829a5667df9996d3350f7ea359361ab15612d7181
 - id: M_PATH_DIRFD_FLAGS
   path: targets/starry/mappings/m-path-dirfd-flags.yaml
   rule_refs:
   - DIRFD_AND_AT_FLAGS
   - PATH_RESOLUTION_ERRNO
   classification: partial_static
-  content_hash: sha256:5a9ed51453377ffe148d9f7cb73cd08de6261ceb738ab7408fb7df222ee4660f
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:95cd49aa6e9e044a3c64aeb861958064f0acdf275f4f45099a240b1678253267
 - id: M_USERPTR_EFAULT
   path: targets/starry/mappings/m-userptr-efault.yaml
   rule_refs:
   - USERPTR_EFAULT
   classification: partial_static
-  content_hash: sha256:7e8b87b6c1ac332bbb433704da1e14327064338791d3a788ebc0ae6b793d5c52
-  processed_run: mapping-migrated-batch-001
   target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:442bd67aad48f3e7b31b83475b0f964638f30e65dd5cd257ffcc77b90c8929f3

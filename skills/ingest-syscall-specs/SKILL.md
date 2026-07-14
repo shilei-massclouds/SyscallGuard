@@ -1,28 +1,28 @@
 ---
 name: ingest-syscall-specs
-description: Incrementally ingest syscall specifications from a declared source, normalize target-independent behavior, and update SyscallGuard's shared spec and rule library. Use only when the user invokes `$ingest-syscall-specs` with source and count arguments or explicitly asks to import a bounded number of new or changed syscall specs. Do not map or inspect Starry.
+description: Import new or changed target-independent syscall rules from a configured source, defaulting to a batch of 20 from the repository's default source. Use when the user invokes `$ingest-syscall-specs`, optionally supplies a source alias or descriptor and a positive count or all, or asks to refresh the general syscall rule library. Do not map or inspect Starry.
 ---
 
 # Ingest Syscall Specs
 
 ## Execute
 
-1. Parse exactly `source=<source-descriptor>` and `count=<N>`. Require a positive integer count and an existing YAML source descriptor.
-2. Read [references/contract.md](references/contract.md) before changing source adapters or shared entities.
-3. Run:
+1. Parse optional `source=<alias-or-descriptor>` and `count=<positive-integer-or-all>`.
+2. Read [references/contract.md](references/contract.md).
+3. Run the command, omitting flags the user omitted:
 
    ```bash
-   python3 skills/ingest-syscall-specs/scripts/run.py --source <descriptor> --count <N>
+   python3 skills/ingest-syscall-specs/scripts/run.py [--source <source>] [--count <count>]
    ```
 
-4. Inspect the produced manifest, changeset, raw candidates, normalized specs, and semantic-conflict rows. Correct malformed normalization in the shared entity files before reporting completion.
-5. Report the run status, selected syscall IDs, counts, conflicts, and the printed run/spec/rule paths.
+4. Inspect the YAML frontmatter and body of `runs/<report-id>/report.md`.
+5. Report the resolved source/revision, recognition-rules hash, count source, pending and selected syscalls, formed/no-rule results, rule IDs, and the report path.
 
 ## Boundaries
 
-- Select only new or source-fingerprint-changed syscalls, in adapter order, capped by `count`.
-- Treat a smaller available set as a successful run and report the shortage.
-- Merge identical rule semantics across provenance sources. Preserve conflicting semantics as explicit variants.
-- Publish specs and target-independent rules only after extraction succeeds.
-- Never inspect, map, modify, build, or test Starry.
-- Never ask for approval and never invoke another SyscallGuard skill.
+- Select pending syscalls by normalized name in lexical order.
+- Treat both `formed_rules` and `no_rules` report rows as successful incremental state until source or recognition fingerprints change.
+- Publish a syscall's candidate rules only when every recognized evidence row resolves and at least one rule forms. Record unresolved counts in the report, but do not persist raw evidence.
+- Publish rule files atomically and publish the report last. On failure, write neither a report nor rule updates so the next call retries automatically.
+- Preserve `generated_at_utc` when only rule sources change.
+- Never inspect, map, modify, build, or test Starry. Never invoke another SyscallGuard skill.

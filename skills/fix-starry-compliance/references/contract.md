@@ -10,3 +10,8 @@ set. It creates `syscallguard/<run-id>` and a commit only after regression succe
 Write fix entities to `targets/starry/fixes/<id>.yaml`, update the corresponding findings to
 `resolution: fixed`, and record the branch, commit, patch, and regression result. Failed runs keep
 their artifacts and worktree but do not update completed fix entities.
+
+Compare dependency timestamps before hashes and reject manual edits that did not advance a
+timestamp. Record generation times and direct dependency versions on the patch metadata, regression
+result, fix, and updated finding. Treat finding syscall ownership as immutable evidence from the
+mapping run. Never write fix state back into a general rule.

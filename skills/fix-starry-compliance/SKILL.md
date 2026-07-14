@@ -21,8 +21,10 @@ description: Repair confirmed implementation findings from one SyscallGuard chec
 
 ## Boundaries
 
-- Refuse a stale check when Starry HEAD changed after checking.
+- Refuse a stale check when the check result, finding, mapped entity, or Starry HEAD version changed after checking.
+- Preserve the syscall ownership recorded through the ingest-report and mapping chain; never reconstruct it from removed syscall specs.
 - Apply the mapped dynamic test patches before the implementation patch so tests are retained in a successful commit.
 - Require every static and enabled dynamic regression to pass. A skipped disabled test is allowed; `not_run` is not.
 - On regression or commit failure, create no completion commit and retain the worktree, patch, and logs.
+- Version the patch, regression result, finding update, and fix; record only direct upstream dependencies.
 - Never modify or merge the user's existing Starry branch and never invoke another SyscallGuard skill.

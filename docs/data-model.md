@@ -1,27 +1,41 @@
 # 数据模型
 
-## Run
+## Ingest report
 
-`runs/<run-id>/manifest.yaml` 记录 `stage`、`status`、`from_run_id`、实体 ID、实体 hash、目标
-hash、输出和 blocker。状态只允许：
+`runs/spec-<id>/report.md` 的 YAML frontmatter 是 ingest 的唯一历史、增量状态和下游输入。
+固定记录 report ID/时间、来源 ID/type/revision、descriptor 与 recognizer hash、count 及其来源、
+待处理数、本轮 syscall 列表，以及每个 syscall 的：
 
-- `running`
-- `completed`
-- `completed_with_blockers`
-- `failed`
-- `superseded`
+- source/recognition fingerprint；
+- `formed_rules` 或 `no_rules`；
+- 规则 `{id, generated_at_utc, content_hash}` 版本；
+- 原始证据数、未解析证据数和原因。
 
-阶段链固定为单个直接来源：`spec <- mapping <- check <- fix`。这只是数据引用关系，不是自动
-编排；任意 skill 都只在被明确调用时执行。
+最新状态按 `(source ID, syscall, generated_at_utc)` 从所有 report 扫描得到。fingerprint 未变化
+时，`formed_rules` 与 `no_rules` 都跳过。旧 report 若包含已由新 report 更新的 syscall，不能再
+用于 mapping。
 
-## 增量语义
+## Rule
 
-规格来源指纹包含 source ID、adapter/version、工具版本、解析后的 revision、adapter 参数、
-extractor 内容和 syscall 相关源内容。只选择未见或指纹变化的 syscall，并按 adapter 稳定顺序
-截取 `count`。
+`library/rules/*.yaml` 是唯一通用规则库，不存在 index。Rule 包含 category、semantics、
+`semantic_hash`、`generated_at_utc` 和 sources。`semantic_hash` 只覆盖 category 与 semantics。
+新增或更新 sources 时不推进规则时间戳；语义变化同时推进时间戳与 hash。
 
-下游从上游 run 读取实体 ID，但从共享目录读取内容并重算 hash。输入和目标 hash 均相同时
-可跳过；规则文件人工变化或 Starry commit 变化时不得复用旧结果。
+每个 syscall 只有在所有证据都解析且至少产生一条规则时才记为 `formed_rules` 并发布候选。
+任何未解析证据或零规则都会使该 syscall 记为 `no_rules`，候选规则全部丢弃。原始和归一化证据
+只存在于执行内存和终端诊断中。
+
+## 下游 run
+
+普通 run schema 只覆盖 `mapping`、`check` 和 `fix`：
+
+- mapping manifest 使用 `from_report_id`，并保存 `rule_syscalls`；
+- check/fix manifest 使用 `from_run_id`；
+- mapping 读取 report 中的规则版本，不读取 syscall spec；
+- check 使用 `rule_syscalls` 生成 finding 的 syscall 归属。
+
+所有依赖先比较 `generated_at_utc`，再比较 `content_hash`；任一不同即 stale。第二次 hash 比较
+保证人工编辑即使漏更新时间也会被拒绝。
 
 ## 描述符
 
@@ -29,12 +43,10 @@ LTP 来源：
 
 ```yaml
 source_id: ltp-local
-adapter: ltp-extractor
+adapter: ltp
 location: /path/to/ltp
 revision: HEAD
-parameters:
-  tool: tools/syscall_spec_extract.py
-  syscalls: [read, write]
+default_count: 50
 ```
 
 Starry 目标：
@@ -48,8 +60,8 @@ worktree_root: /tmp/syscallguard-worktrees
 
 完整字段约束位于 `schemas/`。
 
-## Finding 与 Blocker
+## Reset
 
-finding 必须绑定 `syscall + rule_id + target_revision`，具有可靠的静态缺失或动态失败证据。
-磁盘、构建、toolchain、rootfs、QEMU、timeout 和测试注入问题只写入 run blocker。修复阶段
-只处理 `status: confirmed` 且 `resolution: open` 的 finding。
+`$reset-syscallguard` 只删除 `library/rules/*.yaml` 和 `runs/spec-*/report.md`。它保留来源配置、
+recognizer、Starry 共享实体以及 mapping/check/fix 历史；下一次 ingest 因无 report 状态而从首个
+字典序 syscall 重新开始。

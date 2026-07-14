@@ -18,4 +18,8 @@ patterns:
   regex: const RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?flags & !RENAMEAT2_SUPPORTED_FLAGS[\s\S]*?AxError::InvalidInput
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
+upstream_dependencies:
+- id: FLAG_MASK_REJECTS_UNKNOWN
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:ae0aa3d5ac991a2264c12822b4a65ced6c841f9e0b8fcacb05d2ff455289f7ee
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

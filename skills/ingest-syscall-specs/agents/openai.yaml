@@ -1,4 +1,4 @@
 interface:
   display_name: "Ingest Syscall Specs"
-  short_description: "Ingest changed syscall specs incrementally"
-  default_prompt: "Use $ingest-syscall-specs source=<source-descriptor> count=<N> to ingest changed syscall specifications."
+  short_description: "Import target-independent syscall rules"
+  default_prompt: "Use $ingest-syscall-specs with optional source=<alias-or-descriptor> and count=<N-or-all> to import pending syscall rules."

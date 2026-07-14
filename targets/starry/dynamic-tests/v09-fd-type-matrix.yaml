@@ -22,5 +22,9 @@ blocker_patterns:
 - rootfs
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/outputs/starry-dynamic-tests.yaml#V09-FD-TYPE-MATRIX
+upstream_dependencies:
+- id: FD_TYPE_ERRNO
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:e07974be0464fe8a6d8e666ebbe27e109c9c06a1d0590cff98a9d59a7b577571
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

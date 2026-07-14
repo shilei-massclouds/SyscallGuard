@@ -13,8 +13,7 @@ semantics:
   - ESPIPE
   - EINVAL
   - EBADF
+semantic_hash: sha256:e07974be0464fe8a6d8e666ebbe27e109c9c06a1d0590cff98a9d59a7b577571
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: partial_static
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

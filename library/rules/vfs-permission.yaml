@@ -11,8 +11,7 @@ semantics:
   - EACCES
   - EPERM
   - EROFS
+semantic_hash: sha256:7ff7783231971c6cd20631d4bc2a6fcfc68a863b9cd7eb5baae4ed391a052f80
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: dynamic
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

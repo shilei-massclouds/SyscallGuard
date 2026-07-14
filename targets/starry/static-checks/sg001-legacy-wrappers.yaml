@@ -33,4 +33,8 @@ patterns:
   regex: pub fn sys_renameat[\s\S]*?sys_renameat2\(old_dirfd,\s*old_path,\s*new_dirfd,\s*new_path,\s*0\)
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
+upstream_dependencies:
+- id: SYSCALL_ENTRY_ALIAS
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:8c91e19d896dcbb8fbd42e44eb86672201183aa767c3f1f9ca015358d5776020
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

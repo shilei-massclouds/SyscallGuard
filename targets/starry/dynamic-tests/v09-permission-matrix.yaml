@@ -34,5 +34,9 @@ blocker_patterns:
 - rootfs
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/outputs/starry-dynamic-tests.yaml#V09-PERMISSION-MATRIX
+upstream_dependencies:
+- id: VFS_PERMISSION
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:7ff7783231971c6cd20631d4bc2a6fcfc68a863b9cd7eb5baae4ed391a052f80
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

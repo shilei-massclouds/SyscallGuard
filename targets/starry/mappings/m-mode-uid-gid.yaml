@@ -11,9 +11,11 @@ static_check_refs:
 - SG001_MODE_NODE_GUARD
 dynamic_test_refs:
 - V09-MODE-UID-GID
-source_rule_hashes:
-  MODE_UID_GID_GUARD: sha256:c8c9c79d3f7293ee3aa5f8b837755d6d4c190a3ca94471db757460bd1972135a
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md
+upstream_dependencies:
+- id: MODE_UID_GID_GUARD
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:007b91e607bdf46f961c854755fef632c7dd7707cdfb3a409bb593be4a45e2b6
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

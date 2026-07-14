@@ -1,9 +1,11 @@
 # 工具接入
 
-当前来源 adapter 为 `ltp-extractor`，调用来源仓库中的 `tools/syscall_spec_extract.py` API。
-adapter 读取 descriptor 的 location、revision、tool 和可选稳定 syscall 顺序；它只读取 LTP，
-所有产物写入 SyscallGuard run 和共享库。
+当前来源 adapter 为仓库内置 `ltp`，外部 LTP checkout 只读。识别行为由
+`sources/adapters/ltp/recognition-rules.yaml` 唯一配置。Adapter 只暴露 `discover`、`prescan`
+和 `extract`；syscall 始终按规范化名字典序处理。
 
-Starry 静态检查使用共享 `targets/starry/static-checks/*.yaml` 中的参数化路径与 regex。动态
-测试使用 `targets/starry/dynamic-tests/*.yaml` 中的补丁、构建、命令和 blocker pattern。
-增加 adapter 或 checker 时保持相同实体和 hash 契约，不增加高层流程命令。
+新增 adapter 必须产生 source/recognition fingerprint，并遵守 report-only 增量状态、证据全量
+解析门槛和失败无落盘契约。不要增加 raw evidence、spec、index 或独立 state 持久化。
+
+Starry 静态检查与动态测试继续使用 `targets/starry/` 下的共享分片和 index。新增 checker 必须
+使用 mapping manifest 的 `rule_syscalls`，不能重新引入 syscall spec 依赖。

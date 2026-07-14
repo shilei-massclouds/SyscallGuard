@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import sys
+import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -14,18 +15,56 @@ SKILLS = {
     "map-starry-checks",
     "check-starry-compliance",
     "fix-starry-compliance",
+    "reset-syscallguard",
 }
 RUN_STATUSES = {"running", "completed", "completed_with_blockers", "failed", "superseded"}
-UPSTREAM = {"mapping": "spec", "check": "mapping", "fix": "check"}
-INDEXES = {
-    "library/specs/index.yaml": ("syscallguard_spec_index", "syscallguard_syscall_spec"),
-    "library/rules/index.yaml": ("syscallguard_rule_index", "syscallguard_rule"),
-    "targets/starry/mappings/index.yaml": ("syscallguard_starry_mapping_index", "syscallguard_starry_mapping"),
-    "targets/starry/static-checks/index.yaml": ("syscallguard_starry_static_check_index", "syscallguard_starry_static_check"),
-    "targets/starry/dynamic-tests/index.yaml": ("syscallguard_starry_dynamic_test_index", "syscallguard_starry_dynamic_test"),
-    "targets/starry/findings/index.yaml": ("syscallguard_starry_finding_index", "syscallguard_starry_finding"),
-    "targets/starry/fixes/index.yaml": ("syscallguard_starry_fix_index", "syscallguard_starry_fix"),
+TARGET_INDEXES = {
+    "targets/starry/mappings/index.yaml": (
+        "syscallguard_starry_mapping_index",
+        "syscallguard_starry_mapping",
+    ),
+    "targets/starry/static-checks/index.yaml": (
+        "syscallguard_starry_static_check_index",
+        "syscallguard_starry_static_check",
+    ),
+    "targets/starry/dynamic-tests/index.yaml": (
+        "syscallguard_starry_dynamic_test_index",
+        "syscallguard_starry_dynamic_test",
+    ),
+    "targets/starry/findings/index.yaml": (
+        "syscallguard_starry_finding_index",
+        "syscallguard_starry_finding",
+    ),
+    "targets/starry/fixes/index.yaml": (
+        "syscallguard_starry_fix_index",
+        "syscallguard_starry_fix",
+    ),
 }
+
+
+def content_hash(value: Any) -> str:
+    data = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+    return "sha256:" + hashlib.sha256(data).hexdigest()
+
+
+def version_hash(entity: dict[str, Any]) -> str:
+    if entity.get("kind") == "syscallguard_rule":
+        return content_hash(
+            {"category": entity.get("category"), "semantics": entity.get("semantics")}
+        )
+    payload = dict(entity)
+    payload.pop("generated_at_utc", None)
+    payload.pop("content_hash", None)
+    return content_hash(payload)
+
+
+def valid_version(row: Any) -> bool:
+    return (
+        isinstance(row, dict)
+        and isinstance(row.get("id"), str)
+        and isinstance(row.get("generated_at_utc"), str)
+        and isinstance(row.get("content_hash"), str)
+    )
 
 
 def load(path: Path, errors: list[str]) -> Any:
@@ -38,6 +77,32 @@ def load(path: Path, errors: list[str]) -> Any:
     return None
 
 
+def frontmatter(path: Path, errors: list[str]) -> dict[str, Any] | None:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        errors.append(f"cannot read {path.relative_to(ROOT)}: {exc}")
+        return None
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        errors.append(f"missing Markdown frontmatter: {path.relative_to(ROOT)}")
+        return None
+    try:
+        closing = lines[1:].index("---") + 1
+    except ValueError:
+        errors.append(f"unclosed Markdown frontmatter: {path.relative_to(ROOT)}")
+        return None
+    try:
+        value = yaml.safe_load("\n".join(lines[1:closing]))
+    except yaml.YAMLError as exc:
+        errors.append(f"invalid Markdown frontmatter in {path.relative_to(ROOT)}: {exc}")
+        return None
+    if not isinstance(value, dict):
+        errors.append(f"frontmatter is not a mapping: {path.relative_to(ROOT)}")
+        return None
+    return value
+
+
 def validate_skills(errors: list[str]) -> None:
     actual = {
         path.name
@@ -45,164 +110,238 @@ def validate_skills(errors: list[str]) -> None:
         if path.is_dir() and (path / "SKILL.md").is_file()
     }
     if actual != SKILLS:
-        errors.append(f"expected exactly four skills {sorted(SKILLS)}, found {sorted(actual)}")
-    for name in SKILLS:
+        errors.append(f"expected exactly five skills {sorted(SKILLS)}, found {sorted(actual)}")
+    for name in sorted(SKILLS):
         directory = ROOT / "skills" / name
-        skill_path = directory / "SKILL.md"
-        try:
-            text = skill_path.read_text(encoding="utf-8")
-            parts = text.split("---", 2)
-            frontmatter = yaml.safe_load(parts[1]) if len(parts) == 3 else None
-        except (OSError, yaml.YAMLError) as exc:
-            errors.append(f"cannot read skills/{name}/SKILL.md: {exc}")
-            frontmatter = None
-        if not isinstance(frontmatter, dict) or frontmatter.get("name") != name:
-            errors.append(f"invalid SKILL.md frontmatter: skills/{name}/SKILL.md")
-        metadata = load(directory / "agents/openai.yaml", errors)
-        if not isinstance(metadata, dict):
-            continue
-        prompt = metadata.get("interface", {}).get("default_prompt", "")
+        metadata = frontmatter(directory / "SKILL.md", errors)
+        if not isinstance(metadata, dict) or metadata.get("name") != name:
+            errors.append(f"invalid SKILL.md name: skills/{name}/SKILL.md")
+        agent = load(directory / "agents/openai.yaml", errors)
+        prompt = agent.get("interface", {}).get("default_prompt", "") if isinstance(agent, dict) else ""
         if f"${name}" not in str(prompt):
             errors.append(f"default_prompt does not mention ${name}: skills/{name}/agents/openai.yaml")
         if not (directory / "scripts/run.py").is_file():
             errors.append(f"missing runner: skills/{name}/scripts/run.py")
 
 
-def validate_runs(errors: list[str]) -> dict[str, dict[str, Any]]:
-    manifests: dict[str, dict[str, Any]] = {}
+def validate_rules(errors: list[str]) -> dict[str, dict[str, Any]]:
+    rules: dict[str, dict[str, Any]] = {}
+    for path in sorted((ROOT / "library/rules").glob("*.yaml")):
+        entity = load(path, errors)
+        if not isinstance(entity, dict):
+            continue
+        rule_id = entity.get("rule_id")
+        if entity.get("kind") != "syscallguard_rule" or not isinstance(rule_id, str):
+            errors.append(f"invalid rule entity: {path.relative_to(ROOT)}")
+            continue
+        if rule_id in rules:
+            errors.append(f"duplicate rule id: {rule_id}")
+        rules[rule_id] = entity
+        if not isinstance(entity.get("generated_at_utc"), str):
+            errors.append(f"rule has no generated_at_utc: {path.relative_to(ROOT)}")
+        if entity.get("semantic_hash") != version_hash(entity):
+            errors.append(f"rule semantic_hash mismatch: {path.relative_to(ROOT)}")
+        if not isinstance(entity.get("sources"), list):
+            errors.append(f"rule sources is not a list: {path.relative_to(ROOT)}")
+        forbidden = {"last_processed_run", "mapping_refs", "finding_refs", "fix_refs"}
+        if forbidden.intersection(entity):
+            errors.append(f"downstream state leaked into rule: {path.relative_to(ROOT)}")
+    return rules
+
+
+def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    for path in sorted((ROOT / "runs").glob("spec-*/report.md")):
+        value = frontmatter(path, errors)
+        if not isinstance(value, dict):
+            continue
+        report_id = path.parent.name
+        if value.get("kind") != "syscallguard_ingest_report" or value.get("report_id") != report_id:
+            errors.append(f"invalid ingest report identity: {path.relative_to(ROOT)}")
+            continue
+        reports[report_id] = value
+        required = {
+            "generated_at_utc",
+            "source",
+            "count",
+            "pending_count",
+            "selected_syscalls",
+            "syscalls",
+        }
+        missing = sorted(required.difference(value))
+        if missing:
+            errors.append(f"ingest report {report_id} missing {missing}")
+            continue
+        source = value.get("source")
+        if not isinstance(source, dict) or not all(
+            isinstance(source.get(key), str)
+            for key in ("id", "type", "revision", "descriptor_hash", "recognition_rules_hash")
+        ):
+            errors.append(f"ingest report {report_id} has invalid source metadata")
+        rows = value.get("syscalls")
+        if not isinstance(rows, list):
+            errors.append(f"ingest report {report_id} syscalls is not a list")
+            continue
+        selected = value.get("selected_syscalls")
+        row_ids = [row.get("syscall") for row in rows if isinstance(row, dict)]
+        if selected != row_ids:
+            errors.append(f"ingest report {report_id} selected_syscalls mismatch")
+        for row in rows:
+            if not isinstance(row, dict) or row.get("result") not in {"formed_rules", "no_rules"}:
+                errors.append(f"ingest report {report_id} has invalid syscall result")
+                continue
+            for key in ("source_fingerprint", "recognition_fingerprint", "reason"):
+                if not isinstance(row.get(key), str):
+                    errors.append(f"ingest report {report_id} syscall has invalid {key}")
+            versions = row.get("rules")
+            if not isinstance(versions, list) or not all(valid_version(item) for item in versions):
+                errors.append(f"ingest report {report_id} has invalid rule versions")
+            if row.get("result") == "no_rules" and versions:
+                errors.append(f"ingest report {report_id} publishes rules for no_rules")
+            if not isinstance(row.get("evidence_count"), int) or not isinstance(
+                row.get("unresolved_evidence_count"), int
+            ):
+                errors.append(f"ingest report {report_id} has invalid evidence counts")
+        extras = [item.name for item in path.parent.iterdir() if item.name != "report.md"]
+        if extras:
+            errors.append(f"ingest report directory {report_id} has extra artifacts: {sorted(extras)}")
+    return reports
+
+
+def validate_runs(errors: list[str], reports: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    runs: dict[str, dict[str, Any]] = {}
     for path in sorted((ROOT / "runs").glob("*/manifest.yaml")):
         value = load(path, errors)
         if not isinstance(value, dict):
             continue
-        run_id = value.get("run_id")
-        if run_id != path.parent.name:
-            errors.append(f"run id mismatch: {path.relative_to(ROOT)}")
-            continue
-        if value.get("kind") != "syscallguard_run":
-            errors.append(f"invalid run kind: {path.relative_to(ROOT)}")
+        run_id = path.parent.name
+        stage = value.get("stage")
+        if value.get("kind") != "syscallguard_run" or value.get("run_id") != run_id:
+            errors.append(f"invalid run identity: {path.relative_to(ROOT)}")
+        if stage not in {"mapping", "check", "fix"}:
+            errors.append(f"run {run_id} has invalid stage {stage!r}")
         if value.get("status") not in RUN_STATUSES:
-            errors.append(f"invalid run status: {path.relative_to(ROOT)}")
+            errors.append(f"run {run_id} has invalid status {value.get('status')!r}")
         if value.get("status") == "running":
             errors.append(f"repository contains unfinished run: {run_id}")
         if not (path.parent / "changeset.yaml").is_file():
             errors.append(f"run has no changeset: {run_id}")
-        manifests[str(run_id)] = value
-    for run_id, value in manifests.items():
+        if stage == "mapping":
+            if not isinstance(value.get("from_report_id"), str):
+                errors.append(f"mapping run {run_id} has no from_report_id")
+            if not isinstance(value.get("rule_syscalls"), dict):
+                errors.append(f"mapping run {run_id} has no rule_syscalls")
+            if "from_run_id" in value:
+                errors.append(f"mapping run {run_id} must not use from_run_id")
+        elif stage in {"check", "fix"} and not isinstance(value.get("from_run_id"), str):
+            errors.append(f"run {run_id} has no from_run_id")
+        runs[run_id] = value
+    for run_id, value in runs.items():
         stage = value.get("stage")
-        expected = UPSTREAM.get(str(stage))
-        from_id = value.get("from_run_id")
-        if expected:
-            upstream = manifests.get(str(from_id))
-            if upstream is None:
-                errors.append(f"run {run_id} references missing upstream {from_id}")
-            elif upstream.get("stage") != expected:
-                errors.append(
-                    f"run {run_id} expects {expected} upstream, found {upstream.get('stage')}"
-                )
-        elif stage == "spec" and from_id is not None:
-            errors.append(f"spec run {run_id} must not have from_run_id")
-        if stage not in {"spec", "mapping", "check", "fix"}:
-            errors.append(f"run {run_id} has invalid stage {stage!r}")
-    return manifests
+        if stage == "check":
+            parent = runs.get(str(value.get("from_run_id")))
+            if parent is not None and parent.get("stage") != "mapping":
+                errors.append(f"check run {run_id} has non-mapping parent")
+        if stage == "fix":
+            parent = runs.get(str(value.get("from_run_id")))
+            if parent is not None and parent.get("stage") != "check":
+                errors.append(f"fix run {run_id} has non-check parent")
+    return runs
 
 
-def validate_indexes(errors: list[str]) -> None:
-    for relative, (index_kind, entity_kind) in INDEXES.items():
-        index_path = ROOT / relative
-        index = load(index_path, errors)
+def validate_indexes(errors: list[str]) -> dict[str, dict[str, Any]]:
+    entities: dict[str, dict[str, Any]] = {}
+    for relative, (index_kind, entity_kind) in TARGET_INDEXES.items():
+        index = load(ROOT / relative, errors)
         if not isinstance(index, dict):
             continue
-        if index.get("kind") != index_kind:
-            errors.append(f"wrong index kind in {relative}")
-        entities = index.get("entities")
-        if not isinstance(entities, list):
-            errors.append(f"index entities is not a list in {relative}")
+        if index.get("kind") != index_kind or not isinstance(index.get("entities"), list):
+            errors.append(f"invalid index: {relative}")
             continue
-        ids: set[str] = set()
-        for row in entities:
+        seen: set[str] = set()
+        for row in index["entities"]:
             if not isinstance(row, dict) or not isinstance(row.get("id"), str):
                 errors.append(f"invalid index row in {relative}")
                 continue
-            if row["id"] in ids:
-                errors.append(f"duplicate id {row['id']} in {relative}")
-            ids.add(row["id"])
-            entity_path = ROOT / str(row.get("path", ""))
-            entity = load(entity_path, errors)
-            if isinstance(entity, dict) and entity.get("kind") != entity_kind:
-                errors.append(f"wrong entity kind in {entity_path.relative_to(ROOT)}")
+            entity_id = row["id"]
+            if entity_id in seen:
+                errors.append(f"duplicate id {entity_id} in {relative}")
+            seen.add(entity_id)
+            raw_path = row.get("path")
+            if not isinstance(raw_path, str):
+                errors.append(f"index row {entity_id} has no path in {relative}")
+                continue
+            entity = load(ROOT / raw_path, errors)
+            if not isinstance(entity, dict):
+                continue
+            entities[entity_id] = entity
+            if entity.get("kind") != entity_kind:
+                errors.append(f"wrong entity kind: {raw_path}")
+            generated = entity.get("generated_at_utc")
+            if not isinstance(generated, str):
+                errors.append(f"entity has no generated_at_utc: {raw_path}")
+            if row.get("generated_at_utc") != generated:
+                errors.append(f"index generation mismatch: {raw_path}")
+            if row.get("content_hash") != version_hash(entity):
+                errors.append(f"index content hash mismatch: {raw_path}")
+    return entities
 
 
-def validate_migration(errors: list[str], runs: dict[str, dict[str, Any]]) -> None:
-    required = {
-        "spec-migrated-batch-001": "spec",
-        "mapping-migrated-batch-001": "mapping",
-        "check-migrated-batch-001": "check",
-        "fix-migrated-batch-001": "fix",
-    }
-    for run_id, stage in required.items():
-        if runs.get(run_id, {}).get("stage") != stage:
-            errors.append(f"missing migrated {stage} run: {run_id}")
-    specs_index = load(ROOT / "library/specs/index.yaml", errors)
-    rules_index = load(ROOT / "library/rules/index.yaml", errors)
-    static_index = load(ROOT / "targets/starry/static-checks/index.yaml", errors)
-    dynamic_index = load(ROOT / "targets/starry/dynamic-tests/index.yaml", errors)
-    expected_counts = [(specs_index, 20, "syscalls"), (rules_index, 12, "rules"), (static_index, 9, "static checks"), (dynamic_index, 7, "dynamic tests")]
-    for index, expected, label in expected_counts:
-        actual = len(index.get("entities", [])) if isinstance(index, dict) else -1
-        if actual != expected:
-            errors.append(f"migration expected {expected} {label}, found {actual}")
-    behavior_count = 0
-    if isinstance(specs_index, dict):
-        for row in specs_index.get("entities", []):
-            entity = load(ROOT / row["path"], errors)
-            if isinstance(entity, dict):
-                behaviors = entity.get("normalized_behaviors", [])
-                behavior_count += len(behaviors) if isinstance(behaviors, list) else 0
-    if behavior_count != 289:
-        errors.append(f"migration expected 289 normalized specs, found {behavior_count}")
-    reviews = list((ROOT / "runs").glob("*/legacy-artifacts/reviews/*-signoff.yaml"))
-    if len(reviews) != 10:
-        errors.append(f"migration expected 10 legacy review records, found {len(reviews)}")
+def validate_sources(errors: list[str]) -> None:
+    index = load(ROOT / "sources/index.yaml", errors)
+    if not isinstance(index, dict) or index.get("default_source") != "ltp-local":
+        errors.append("source index must define default_source: ltp-local")
+    rules = load(ROOT / "sources/adapters/ltp/recognition-rules.yaml", errors)
+    recognizers = rules.get("recognizers", []) if isinstance(rules, dict) else []
+    ids = [row.get("id") for row in recognizers if isinstance(row, dict)]
+    if not ids or len(ids) != len(set(ids)):
+        errors.append("LTP recognizers need unique stable ids")
 
 
-def validate_finding_boundary(errors: list[str]) -> None:
-    index = load(ROOT / "targets/starry/findings/index.yaml", errors)
-    if not isinstance(index, dict):
-        return
-    for row in index.get("entities", []):
-        entity = load(ROOT / row["path"], errors)
-        if not isinstance(entity, dict):
+def validate_removed_legacy(errors: list[str]) -> None:
+    forbidden = [
+        "library/specs",
+        "library/rules/index.yaml",
+        "state/ingest",
+        "batches/syscall-check-history.yaml",
+        "runs/spec-migrated-batch-001",
+        "runs/mapping-migrated-batch-001",
+        "runs/check-migrated-batch-001",
+        "runs/fix-migrated-batch-001",
+    ]
+    for relative in forbidden:
+        if (ROOT / relative).exists():
+            errors.append(f"legacy artifact still exists: {relative}")
+    if list((ROOT / "runs").glob("*/legacy-artifacts")):
+        errors.append("legacy-artifacts directories must be removed")
+
+
+def validate_all_yaml(errors: list[str]) -> None:
+    for path in ROOT.rglob("*.yaml"):
+        if ".git" in path.parts:
             continue
-        if entity.get("status") != "confirmed":
-            errors.append(f"finding is not confirmed: {row['id']}")
-        if "blocker" in entity or "blockers" in entity:
-            errors.append(f"blocker field leaked into finding: {row['id']}")
-        occurrences = entity.get("occurrences", [])
-        if not isinstance(occurrences, list):
-            errors.append(f"finding occurrences is not a list: {row['id']}")
-            continue
-        for occurrence in occurrences:
-            result = occurrence.get("result", {}) if isinstance(occurrence, dict) else {}
-            if not isinstance(result, dict) or result.get("result") != "fail":
-                errors.append(f"non-failure evidence leaked into finding: {row['id']}")
+        load(path, errors)
 
 
 def main() -> int:
     errors: list[str] = []
     validate_skills(errors)
-    runs = validate_runs(errors)
+    rules = validate_rules(errors)
+    reports = validate_reports(errors)
+    runs = validate_runs(errors, reports)
     validate_indexes(errors)
-    validate_migration(errors, runs)
-    validate_finding_boundary(errors)
-    history = load(ROOT / "batches/syscall-check-history.yaml", errors)
-    if not isinstance(history, dict) or history.get("kind") != "syscallguard_entity_history":
-        errors.append("history is not entity-hash based")
+    validate_sources(errors)
+    validate_removed_legacy(errors)
+    validate_all_yaml(errors)
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
     print("repository validation: OK")
-    print("skills=4 runs=4 syscalls=20 normalized_specs=289 rules=12 static_checks=9 dynamic_tests=7")
+    print(
+        f"skills={len(SKILLS)} ingest_reports={len(reports)} "
+        f"rules={len(rules)} downstream_runs={len(runs)}"
+    )
     return 0
 
 

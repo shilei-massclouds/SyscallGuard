@@ -14,4 +14,8 @@ patterns:
   regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?FD_TABLE[\s\S]*?ok_or\(AxError::BadFileDescriptor\)'
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
+upstream_dependencies:
+- id: BAD_FD_EBADF
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:017e976fde4ab62ce10b713de4351044d9cb6adccf64fa5372dec1036a61ea12
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

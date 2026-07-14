@@ -13,11 +13,11 @@ from .common import (
     SCHEMA_VERSION,
     RunRecorder,
     SyscallGuardError,
-    append_history,
     atomic_write_text,
     atomic_write_yaml,
     content_hash,
-    entity_hash,
+    dependency_mismatch,
+    entity_version,
     git,
     git_output,
     load_mapping,
@@ -29,6 +29,7 @@ from .common import (
     slug,
     update_index,
     utc_now,
+    version_content_hash,
 )
 
 
@@ -58,7 +59,7 @@ def _load_entities(
         if entity.get("kind") != expected_kind or entity.get(id_field) != entity_id:
             raise SyscallGuardError(f"invalid {expected_kind} entity for {entity_id}: {path}")
         entities[entity_id] = entity
-        hashes[entity_id] = entity_hash(path)
+        hashes[entity_id] = version_content_hash(entity)
     return entities, hashes
 
 
@@ -68,13 +69,6 @@ def _current_input(
     entity_ids = mapping_run.get("entities", {})
     if not isinstance(entity_ids, dict):
         raise SyscallGuardError("mapping run entities must be a mapping")
-    specs, spec_hashes = _load_entities(
-        root,
-        list(entity_ids.get("syscalls", [])),
-        "library/specs",
-        "syscall",
-        "syscallguard_syscall_spec",
-    )
     rules, rule_hashes = _load_entities(
         root,
         list(entity_ids.get("rules", [])),
@@ -104,21 +98,57 @@ def _current_input(
         "syscallguard_starry_dynamic_test",
     )
     entities = {
-        "syscall_specs": specs,
         "rules": rules,
         "mappings": mappings,
         "static_checks": checks,
         "dynamic_tests": tests,
     }
     hashes = {
-        "syscall_specs": spec_hashes,
         "rules": rule_hashes,
         "mappings": mapping_hashes,
         "static_checks": check_hashes,
         "dynamic_tests": test_hashes,
     }
     target_hash = str(mapping_run.get("target", {}).get("target_hash", ""))
-    return entities, hashes, content_hash({"entities": hashes, "target_hash": target_hash})
+    rule_syscalls = mapping_run.get("rule_syscalls", {})
+    if not isinstance(rule_syscalls, dict):
+        raise SyscallGuardError("mapping run rule_syscalls must be a mapping")
+    return entities, hashes, content_hash(
+        {"entities": hashes, "target_hash": target_hash, "rule_syscalls": rule_syscalls}
+    )
+
+
+def _current_versions(
+    entities: dict[str, dict[str, dict[str, Any]]]
+) -> dict[str, dict[str, dict[str, str]]]:
+    return {
+        kind: {entity_id: entity_version(entity_id, entity) for entity_id, entity in rows.items()}
+        for kind, rows in entities.items()
+    }
+
+
+def _mapping_staleness(
+    mapping_run: dict[str, Any], entities: dict[str, dict[str, dict[str, Any]]]
+) -> list[str]:
+    recorded_all = mapping_run.get("entity_versions", {})
+    if not isinstance(recorded_all, dict):
+        return ["mapping run has no entity_versions"]
+    reasons: list[str] = []
+    for kind in ("rules", "mappings", "static_checks", "dynamic_tests"):
+        recorded = recorded_all.get(kind, {})
+        current = entities.get(kind, {})
+        if not isinstance(recorded, dict):
+            reasons.append(f"mapping run has no {kind} versions")
+            continue
+        for entity_id, entity in current.items():
+            row = recorded.get(entity_id)
+            if not isinstance(row, dict):
+                reasons.append(f"mapping run has no version for {kind}/{entity_id}")
+                continue
+            mismatch = dependency_mismatch(row, entity_id, entity)
+            if mismatch:
+                reasons.append(mismatch)
+    return reasons
 
 
 def _prior_identical_check(root: Path, input_hash: str, current_run_id: str) -> dict[str, Any] | None:
@@ -407,16 +437,16 @@ def _run_dynamic_test(
 
 
 def _syscalls_for_rules(
-    specs: dict[str, dict[str, Any]], rule_refs: list[str], explicit: Any
+    rule_syscalls: dict[str, list[str]], rule_refs: list[str], explicit: Any
 ) -> list[str]:
+    selected = {
+        syscall
+        for rule_id in rule_refs
+        for syscall in rule_syscalls.get(rule_id, [])
+        if isinstance(syscall, str)
+    }
     if isinstance(explicit, list) and all(isinstance(item, str) for item in explicit):
-        return sorted(set(explicit))
-    selected: list[str] = []
-    refs = set(rule_refs)
-    for syscall, spec in specs.items():
-        spec_refs = spec.get("rule_refs", [])
-        if isinstance(spec_refs, list) and refs.intersection(str(item) for item in spec_refs):
-            selected.append(syscall)
+        selected.intersection_update(explicit)
     return sorted(selected)
 
 
@@ -424,11 +454,13 @@ def _finding_entities(
     root: Path,
     run_id: str,
     commit: str,
-    specs: dict[str, dict[str, Any]],
+    rule_syscalls: dict[str, list[str]],
     static_results: list[dict[str, Any]],
     dynamic_results: list[dict[str, Any]],
     checks: dict[str, dict[str, Any]],
     tests: dict[str, dict[str, Any]],
+    result_version: dict[str, str],
+    generated_at: str,
 ) -> dict[str, dict[str, Any]]:
     findings: dict[str, dict[str, Any]] = {}
     evidence_rows: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
@@ -442,8 +474,14 @@ def _finding_entities(
         refs = definition.get("rule_refs", [])
         if not isinstance(refs, list):
             refs = []
-        syscalls = _syscalls_for_rules(specs, [str(ref) for ref in refs], definition.get("applies_to_syscalls"))
         for rule_id in refs or ["unmapped-rule"]:
+            syscalls = _syscalls_for_rules(
+                rule_syscalls,
+                [str(rule_id)],
+                definition.get("applies_to_syscalls"),
+            )
+            if refs and not syscalls:
+                continue
             for syscall in syscalls or ["unmapped-syscall"]:
                 finding_id = f"finding-{slug(syscall)}-{slug(str(rule_id))}-{commit[:12]}"
                 existing_path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
@@ -461,6 +499,7 @@ def _finding_entities(
                 }
                 if content_hash(occurrence) not in {content_hash(item) for item in occurrences}:
                     occurrences.append(occurrence)
+                changed = content_hash(occurrences) != content_hash(existing.get("occurrences", []))
                 findings[finding_id] = {
                     "schema_version": SCHEMA_VERSION,
                     "kind": "syscallguard_starry_finding",
@@ -470,9 +509,11 @@ def _finding_entities(
                     "target_revision": commit,
                     "status": "confirmed",
                     "resolution": existing.get("resolution", "open"),
-                    "confirmed_by_run": run_id,
                     "occurrences": occurrences,
-                    "last_processed_run": run_id,
+                    "generated_at_utc": generated_at
+                    if changed or not existing.get("generated_at_utc")
+                    else existing["generated_at_utc"],
+                    "upstream_dependencies": [result_version],
                 }
     return findings
 
@@ -516,18 +557,23 @@ def run_check(
             raise SyscallGuardError(f"mapping run {from_run_id} has invalid target metadata")
         current_commit = git_output(repository, ["rev-parse", "HEAD"])
         entities, hashes, input_hash = _current_input(root, mapping_run)
+        versions = _current_versions(entities)
         recorder.manifest["input_hash"] = input_hash
         recorder.manifest["entity_hashes"] = hashes
+        recorder.manifest["entity_versions"] = versions
         recorder.manifest["target"] = dict(target)
         recorder.manifest["entities"] = {
             key: sorted(values) for key, values in entities.items()
         }
-        if current_commit != base_commit:
+        recorder.manifest["rule_syscalls"] = mapping_run.get("rule_syscalls", {})
+        stale_reasons = _mapping_staleness(mapping_run, entities)
+        if current_commit != base_commit or stale_reasons:
             blocker = {
                 "kind": "stale_mapping",
-                "reason": "Starry HEAD differs from the mapping base commit; run map-starry-checks again",
+                "reason": "mapping dependencies or Starry HEAD changed; run map-starry-checks again",
                 "mapped_commit": base_commit,
                 "current_commit": current_commit,
+                "dependency_mismatches": stale_reasons,
             }
             recorder.manifest["counts"] = {"skipped_stale_mapping": 1, "findings": 0}
             recorder.complete([blocker])
@@ -539,11 +585,40 @@ def run_check(
         if prior is not None:
             recorder.manifest["reused_run"] = prior["run_id"]
             recorder.manifest["entities"]["findings"] = prior.get("entities", {}).get("findings", [])
+            generated_at = utc_now()
+            prior_results_path = root / "runs" / str(prior["run_id"]) / "results.yaml"
+            prior_results = load_mapping(prior_results_path) if prior_results_path.is_file() else {}
+            dependencies = [
+                version
+                for kind in ("mappings", "static_checks", "dynamic_tests")
+                for _entity_id, version in sorted(versions[kind].items())
+            ]
+            reused_results = {
+                "schema_version": SCHEMA_VERSION,
+                "kind": "syscallguard_check_results",
+                "run_id": run_id,
+                "generated_at_utc": generated_at,
+                "upstream_dependencies": dependencies,
+                "target_revision": base_commit,
+                "reused_from": prior["run_id"],
+                "static": prior_results.get("static", []),
+                "dynamic": prior_results.get("dynamic", []),
+                "blockers": prior.get("blockers", []),
+            }
+            atomic_write_yaml(recorder.directory / "results.yaml", reused_results)
+            recorder.manifest["result_version"] = entity_version(run_id, reused_results)
+            finding_versions: dict[str, dict[str, str]] = {}
+            for finding_id in recorder.manifest["entities"]["findings"]:
+                finding_path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+                finding_versions[finding_id] = entity_version(
+                    finding_id, load_mapping(finding_path)
+                )
+            recorder.manifest["entity_versions"]["findings"] = finding_versions
             recorder.manifest["counts"] = {
                 "skipped_unchanged": 1,
                 "findings": len(recorder.manifest["entities"]["findings"]),
             }
-            recorder.manifest["outputs"] = {"report": "report.md"}
+            recorder.manifest["outputs"] = {"results": "results.yaml", "report": "report.md"}
             blockers = prior.get("blockers", [])
             recorder.complete(blockers if isinstance(blockers, list) else [])
             _write_report(recorder, {"static": [], "dynamic": []})
@@ -579,10 +654,18 @@ def run_check(
             if blocker and content_hash(blocker) not in {content_hash(item) for item in blockers}:
                 blockers.append(blocker)
 
+        generated_at = utc_now()
+        result_dependencies = [
+            version
+            for kind in ("mappings", "static_checks", "dynamic_tests")
+            for _entity_id, version in sorted(versions[kind].items())
+        ]
         results = {
             "schema_version": SCHEMA_VERSION,
             "kind": "syscallguard_check_results",
             "run_id": run_id,
+            "generated_at_utc": generated_at,
+            "upstream_dependencies": result_dependencies,
             "target_revision": base_commit,
             "worktree": str(worktree),
             "static": static_results,
@@ -590,15 +673,18 @@ def run_check(
             "blockers": blockers,
         }
         atomic_write_yaml(recorder.directory / "results.yaml", results)
+        result_version = entity_version(run_id, results)
         findings = _finding_entities(
             root,
             run_id,
             base_commit,
-            entities["syscall_specs"],
+            mapping_run.get("rule_syscalls", {}),
             static_results,
             dynamic_results,
             entities["static_checks"],
             entities["dynamic_tests"],
+            result_version,
+            generated_at,
         )
         publish_yaml_entities(
             [
@@ -622,26 +708,17 @@ def run_check(
                     "target_revision": base_commit,
                     "status": finding["status"],
                     "resolution": finding["resolution"],
-                    "processed_run": run_id,
-                    "content_hash": content_hash(finding),
+                    "generated_at_utc": finding["generated_at_utc"],
+                    "content_hash": version_content_hash(finding),
                 }
                 for finding_id, finding in findings.items()
             ],
         )
-        append_history(
-            root,
-            [
-                {
-                    "entity_type": "finding",
-                    "entity_id": finding_id,
-                    "input_hash": input_hash,
-                    "processed_run": run_id,
-                    "finding_status": "confirmed",
-                    "fix_status": finding["resolution"],
-                }
-                for finding_id, finding in findings.items()
-            ],
-        )
+        recorder.manifest["result_version"] = result_version
+        recorder.manifest["entity_versions"]["findings"] = {
+            finding_id: entity_version(finding_id, finding)
+            for finding_id, finding in findings.items()
+        }
         recorder.manifest["entities"]["findings"] = sorted(findings)
         recorder.manifest["counts"] = {
             "static_pass": sum(row["result"] == "pass" for row in static_results),

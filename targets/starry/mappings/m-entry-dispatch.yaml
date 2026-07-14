@@ -13,9 +13,11 @@ static_check_refs:
 - SG001_ENTRY_DISPATCH
 - SG001_LEGACY_WRAPPERS
 dynamic_test_refs: []
-source_rule_hashes:
-  SYSCALL_ENTRY_ALIAS: sha256:b9ad60a26c1a8bcdc6b26d22d3221589c3820e8357c224334d92e255280a1fcd
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md
+upstream_dependencies:
+- id: SYSCALL_ENTRY_ALIAS
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:8c91e19d896dcbb8fbd42e44eb86672201183aa767c3f1f9ca015358d5776020
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

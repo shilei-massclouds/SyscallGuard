@@ -1,27 +1,34 @@
 schema_name: syscallguard-shared-entities
-version: 1
+version: 3
 entities:
-  syscall_spec:
-    kind: syscallguard_syscall_spec
-    required: [syscall, source_records, normalized_behaviors, rule_refs, source_fingerprint, last_processed_run]
+  ingest_report:
+    kind: syscallguard_ingest_report
+    storage: runs/spec-*/report.md YAML frontmatter
+    required: [report_id, generated_at_utc, source, count, pending_count, selected_syscalls, syscalls]
+    syscall_result_values: [formed_rules, no_rules]
+    rule_version_required: [id, generated_at_utc, content_hash]
   rule:
     kind: syscallguard_rule
-    required: [rule_id, semantics, provenance, last_processed_run]
+    required: [rule_id, category, semantics, semantic_hash, generated_at_utc, sources]
+    notes: sources do not participate in semantic_hash or downstream invalidation.
   starry_mapping:
     kind: syscallguard_starry_mapping
-    required: [mapping_id, rule_refs, classification, target_locations, base_commit, target_hash, last_mapped_run]
+    required: [mapping_id, rule_refs, classification, target_locations, base_commit, target_hash, generated_at_utc, upstream_dependencies]
     classification_values: [static, partial_static, dynamic, unsupported, needs_review]
   static_check:
     kind: syscallguard_starry_static_check
-    required: [check_id, rule_refs, path, patterns, base_commit, target_hash]
+    required: [check_id, rule_refs, path, patterns, base_commit, target_hash, generated_at_utc, upstream_dependencies]
   dynamic_test:
     kind: syscallguard_starry_dynamic_test
-    required: [test_id, rule_refs, test_source, build, command, base_commit, target_hash]
+    required: [test_id, rule_refs, test_source, build, command, base_commit, target_hash, generated_at_utc, upstream_dependencies]
     result_values: [pass, fail, skipped, not_run]
   finding:
     kind: syscallguard_starry_finding
-    required: [finding_id, syscall, rule_id, target_revision, status, resolution, occurrences]
+    required: [finding_id, syscall, rule_id, target_revision, status, resolution, occurrences, generated_at_utc, upstream_dependencies]
     status_values: [confirmed]
   fix:
     kind: syscallguard_starry_fix
-    required: [fix_id, finding_refs, patch, starry_branch, starry_commit, regression, status]
+    required: [fix_id, finding_refs, patch, starry_branch, starry_commit, regression, status, generated_at_utc, upstream_dependencies]
+dependency_version:
+  required: [id, generated_at_utc, content_hash]
+  validation: Compare generated_at_utc first, then content_hash; reject either mismatch as stale.

@@ -1,12 +1,14 @@
 # SyscallGuard 概览
 
-SyscallGuard 将 syscall 合规性拆成四个可独立重跑的增量操作：规格导入、Starry 映射、
-隔离检查和隔离修复。操作之间只通过不可变 run 快照中的实体 ID 关联，不自动调度。
+SyscallGuard 将合规性工作拆成独立的规则导入、Starry 映射、隔离检查、隔离修复和状态重置。
+操作之间只通过 report 或 run 的直接引用连接，不自动调度。
 
-共享实体文件是可直接编辑的当前视图，run 是执行时快照。消费者不信任历史内容副本：它
-使用上游 run 限定实体集合，再读取共享文件并重算 hash。因此来源变化、人工编辑和 Starry
-commit 变化都会自然触发重新处理。
+导入阶段刻意保持极简：report 同时承担人类报告、增量状态和 mapping 输入，规则 YAML 是唯一
+通用库。成功时先原子替换规则、最后发布 report；失败时两者都不推进。`no_rules` 也是可跳过的
+成功状态，但从不发布未完整解析的候选语义。
 
-成功运行使用原子文件替换发布共享实体。失败运行保留 manifest、changeset、日志、patch
-和 worktree 信息，但不覆盖已完成实体。环境问题可以产生 `completed_with_blockers`，但不能
-产生 Starry implementation finding。
+Mapping 将 report 中的规则版本与 syscall 归属保存到 run。Check 只从该归属生成 finding，
+不依赖聚合 syscall spec。所有下游消费者先比较依赖时间戳，再复核内容 hash，并同时固定
+Starry commit。
+
+Reset 只清空通用规则和 ingest report 状态。来源配置和 Starry 映射、检查、测试定义保持不变。

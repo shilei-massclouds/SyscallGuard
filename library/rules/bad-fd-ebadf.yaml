@@ -9,8 +9,7 @@ semantics:
   expected_result: An invalid or closed file descriptor returns EBADF.
   errno:
   - EBADF
+semantic_hash: sha256:017e976fde4ab62ce10b713de4351044d9cb6adccf64fa5372dec1036a61ea12
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: static
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

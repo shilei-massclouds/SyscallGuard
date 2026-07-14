@@ -29,4 +29,8 @@ patterns:
   regex: pub fn vm_load_path_string[\s\S]*?path\.len\(\) >= PATH_MAX[\s\S]*?AxError::NameTooLong
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
+upstream_dependencies:
+- id: PATH_LONG_ENAMETOOLONG
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:8e782463ef4e0e9c25e979f5dde79d512d4dfd9b3f90185df2d6a0d90022d7c2
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

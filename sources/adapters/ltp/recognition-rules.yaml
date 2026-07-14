@@ -1,0 +1,100 @@
+schema_version: 1
+adapter: ltp
+aliases:
+  getdents64: [tst_getdents, getdents, getdents64]
+  pread64: [pread, pread64]
+  pwrite64: [pwrite, pwrite64]
+  epoll_create: [epoll_create, do_epoll_create]
+  epoll_wait: [epoll_wait, SAFE_EPOLL_WAIT]
+  select: [select, do_select, do_select_faulty_to]
+  symlinkat: [symlinkat, mysymlinkat]
+  chown: [chown, lchown, fchownat, CHOWN]
+  fchown: [fchown, FCHOWN]
+  memfd_create: [memfd_create, sys_memfd_create]
+  copy_file_range: [copy_file_range, sys_copy_file_range]
+recognizers:
+  - id: ltp.tst-exp.fail
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_FAIL, TST_EXP_FAIL2, TST_EXP_FAIL2_ARR, TST_EXP_FAIL2_SILENT, TST_EXP_FAIL_ARR, TST_EXP_FAIL_PTR_NULL, TST_EXP_FAIL_PTR_VOID, TST_EXP_FAIL_SILENT]
+    call_argument: 0
+    expected: {kind: return_errno, return: '-1', errno_argument: 1}
+  - id: ltp.tst-exp.fd
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_FD, TST_EXP_FD_OR_FAIL, TST_EXP_FD_SILENT]
+    call_argument: 0
+    expected: {kind: return_fd, return: FD}
+  - id: ltp.tst-exp.pass
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_PASS, TST_EXP_PASS_PTR_VOID, TST_EXP_PASS_SILENT]
+    call_argument: 0
+    expected: {kind: success, return: SUCCESS}
+  - id: ltp.tst-exp.positive
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_PID, TST_EXP_PID_SILENT, TST_EXP_POSITIVE]
+    call_argument: 0
+    expected: {kind: positive_return, return: '>0'}
+  - id: ltp.tst-exp.value
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_VAL, TST_EXP_VAL_SILENT]
+    call_argument: 0
+    expected: {kind: return_value, return_argument: 1}
+  - id: ltp.tst-exp.equal-value
+    enabled: true
+    kind: tst_exp
+    names: [TST_EXP_EQ_LI, TST_EXP_EQ_LI_SILENT, TST_EXP_EQ_LU, TST_EXP_EQ_SSZ, TST_EXP_EQ_STR, TST_EXP_EQ_SZ, TST_EXP_LE_LU]
+    call_argument: 0
+    expected: {kind: return_value, return_argument: 1}
+  - id: ltp.tst-exp.property-evidence
+    enabled: true
+    kind: property
+    names: [TST_EXP_EXPR]
+    call_argument: 0
+    target_match: source_directory
+    emit_rule: false
+    expected: {kind: property, expression_argument: 0}
+  - id: ltp.legacy-test.result
+    enabled: true
+    kind: old_test
+    names: [TEST]
+    call_argument: 0
+    window: 900
+    markers: ['\bTEST_RETURN\b', '\bTEST_ERRNO\b', '\bTST_RET\b', '\bTST_ERR\b']
+    return_patterns:
+      - '\bTEST_RETURN\s*!=\s*([^;)\n{]+)'
+      - '\bTST_RET\s*!=\s*([^;)\n{]+)'
+    errno_patterns:
+      - '\bTEST_ERRNO\s*(?:==|!=)\s*([A-Z][A-Z0-9_]*)'
+      - '\bTST_ERR\s*(?:==|!=)\s*([A-Z][A-Z0-9_]*)'
+    expected: {kind: linked_test_result}
+  - id: ltp.safe-helper.pipe2
+    enabled: true
+    kind: safe_helper
+    names: [SAFE_PIPE2]
+    syscalls: {pipe2: [SAFE_PIPE2]}
+    expected: {kind: success, return: SUCCESS}
+array_expansion:
+  pointer: tc->field
+  supported_initializers: [positional, designated]
+expected_normalization:
+  return_errno: {return_default: '-1'}
+  return_fd: {return: FD}
+  success: {return: SUCCESS}
+  positive_return: {return: '>0'}
+preconditions:
+  - {tag: INVALID_FD, any: ['(^|[,( ])-1($|[, )])', fd_invalid]}
+  - {tag: BAD_USER_ADDRESS, errno: EFAULT, any: [BAD_ADDR, bad_addr]}
+  - {tag: NONEXISTENT_PATH, errno: ENOENT}
+  - {tag: NON_DIRECTORY_PATH_COMPONENT, errno: ENOTDIR}
+  - {tag: PATH_TOO_LONG, errno: ENAMETOOLONG}
+  - {tag: SYMLINK_LOOP, errno: ELOOP}
+  - {tag: PERMISSION_DENIED_STATE, errno: EACCES}
+  - {tag: OBJECT_ALREADY_EXISTS, errno: EEXIST}
+  - {tag: USER_BUFFER, any: ['\bbuf\b', stat_buf, dirp]}
+rule_template:
+  category: syscall_behavior
+  action_operation: invoke_syscall

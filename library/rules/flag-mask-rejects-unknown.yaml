@@ -9,8 +9,7 @@ semantics:
   expected_result: Unknown flag bits are rejected with EINVAL.
   errno:
   - EINVAL
+semantic_hash: sha256:ae0aa3d5ac991a2264c12822b4a65ced6c841f9e0b8fcacb05d2ff455289f7ee
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: static
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

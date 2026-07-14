@@ -1,0 +1,10 @@
+schema_name: syscallguard-ltp-recognition-rules
+version: 1
+required: [adapter, recognizers, array_expansion, expected_normalization, preconditions, rule_template]
+adapter: ltp
+recognizer_required: [id, enabled, kind, names, expected]
+recognizer_kinds: [tst_exp, property, old_test, safe_helper]
+notes:
+  - Recognizer IDs are stable and unique.
+  - C call parsing, parenthesis matching, and struct-array parsing remain adapter code.
+  - Every changeable recognition or normalization decision belongs in this file.

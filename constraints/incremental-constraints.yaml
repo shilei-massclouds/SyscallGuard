@@ -1,12 +1,21 @@
-version: 2
+version: 3
 selection:
-  unit: syscall_source_fingerprint
-  order: source_adapter_stable_order
+  unit: source_and_recognition_fingerprint
+  order: normalized_syscall_lexical
   unchanged: skip
 consumer:
-  entity_scope: ids_from_upstream_run_only
+  entity_scope: ids_and_syscall_ownership_from_upstream_report_or_run
   content_source: current_shared_entity_files
-  hash_policy: recompute_before_processing
+  invalidation_policy: generated_at_first_then_content_hash
+  stale_action: refuse_direct_execution
+dependencies:
+  direction: upstream_only
+  fields: [id, generated_at_utc, content_hash]
+rule_semantic_version:
+  includes: [category, semantics]
+  excludes: [sources]
 publication:
   successful_entity_updates: atomic_replace
-  failed_run_overwrites_shared_entities: false
+  ingest_outputs: [runs/spec-*/report.md, library/rules/*.yaml]
+  ingest_report_published_last: true
+  failed_ingest_writes_report_or_rules: false

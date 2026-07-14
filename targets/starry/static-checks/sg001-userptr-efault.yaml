@@ -18,4 +18,8 @@ patterns:
   regex: pub fn sys_getcwd[\s\S]*?vm_write_slice\(buf,\s*cwd\)\?
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
+upstream_dependencies:
+- id: USERPTR_EFAULT
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:187b7fd1dfa7b1d2e65e82163b90bfafa216dc8e918b09510bd10602d1bac9ef
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

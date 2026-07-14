@@ -11,8 +11,7 @@ semantics:
   - ENOENT
   - ENOTDIR
   - ELOOP
+semantic_hash: sha256:942d81cf17f6b9e3d9bff1f1dfe52b48e94880eead324b76eaf654bb08c9669f
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: partial_static
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

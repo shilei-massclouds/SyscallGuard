@@ -9,8 +9,7 @@ semantics:
   expected_result: A path at or above PATH_MAX is rejected with ENAMETOOLONG.
   errno:
   - ENAMETOOLONG
+semantic_hash: sha256:8e782463ef4e0e9c25e979f5dde79d512d4dfd9b3f90185df2d6a0d90022d7c2
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
+sources: []
 default_checkability: partial_static
-provenance:
-- source_id: legacy-batch-001-normalization
-  ref: runs/spec-migrated-batch-001/legacy-artifacts/steps/03-normalization-review.md
-last_processed_run: spec-migrated-batch-001

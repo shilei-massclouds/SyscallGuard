@@ -9,6 +9,8 @@ from .checking import (
     _apply_test_patches,
     _create_worktree,
     _current_input,
+    _current_versions,
+    _mapping_staleness,
     _run_dynamic_test,
     _run_static_check,
     _worktree_path,
@@ -17,10 +19,12 @@ from .common import (
     SCHEMA_VERSION,
     RunRecorder,
     SyscallGuardError,
-    append_history,
     atomic_write_text,
     atomic_write_yaml,
     content_hash,
+    dependency_mismatch,
+    entity_version,
+    file_hash,
     entity_hash,
     git,
     git_output,
@@ -32,6 +36,7 @@ from .common import (
     slug,
     update_index,
     utc_now,
+    version_content_hash,
 )
 
 
@@ -50,6 +55,39 @@ def _open_findings(root: Path, check_run: dict[str, Any]) -> dict[str, dict[str,
         if finding.get("status") == "confirmed" and finding.get("resolution") == "open":
             findings[finding_id] = finding
     return findings
+
+
+def _check_staleness(
+    root: Path,
+    check_run: dict[str, Any],
+    _findings: dict[str, dict[str, Any]],
+) -> list[str]:
+    reasons: list[str] = []
+    result_path = root / "runs" / str(check_run.get("run_id")) / "results.yaml"
+    recorded_result = check_run.get("result_version")
+    if not result_path.is_file() or not isinstance(recorded_result, dict):
+        reasons.append("check run has no versioned results")
+    else:
+        result = load_mapping(result_path)
+        mismatch = dependency_mismatch(recorded_result, str(check_run.get("run_id")), result)
+        if mismatch:
+            reasons.append(mismatch)
+    recorded_findings = check_run.get("entity_versions", {}).get("findings", {})
+    if not isinstance(recorded_findings, dict):
+        reasons.append("check run has no finding versions")
+    else:
+        for finding_id, row in recorded_findings.items():
+            if not isinstance(row, dict):
+                reasons.append(f"check run has an invalid version for finding {finding_id}")
+                continue
+            path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+            if not path.is_file():
+                reasons.append(f"finding {finding_id} no longer exists")
+                continue
+            mismatch = dependency_mismatch(row, finding_id, load_mapping(path))
+            if mismatch:
+                reasons.append(mismatch)
+    return reasons
 
 
 def _copy_patch(source: Path, destination: Path) -> None:
@@ -126,6 +164,10 @@ def run_fix(
         current_commit = git_output(repository, ["rev-parse", "HEAD"])
         recorder.manifest["target"] = dict(target)
         recorder.manifest["entities"] = {"findings": sorted(findings), "fixes": []}
+        finding_versions = {
+            key: entity_version(key, value) for key, value in findings.items()
+        }
+        recorder.manifest["entity_versions"] = {"findings": finding_versions}
         recorder.manifest["input_hash"] = content_hash(
             {
                 "check_run": from_run_id,
@@ -133,7 +175,10 @@ def run_fix(
                 "target": target,
             }
         )
-        if current_commit != base_commit:
+        stale_reasons = _check_staleness(root, check_run, findings)
+        mapping_entities, _mapping_hashes, _mapping_input = _current_input(root, mapping_run)
+        stale_reasons.extend(_mapping_staleness(mapping_run, mapping_entities))
+        if current_commit != base_commit or stale_reasons:
             recorder.manifest["counts"] = {"selected_findings": 0, "blockers": 1}
             recorder.complete(
                 [
@@ -142,6 +187,7 @@ def run_fix(
                         "reason": "Starry HEAD changed after compliance check; remap and recheck before fixing",
                         "checked_commit": base_commit,
                         "current_commit": current_commit,
+                        "dependency_mismatches": stale_reasons,
                     }
                 ]
             )
@@ -172,8 +218,9 @@ def run_fix(
                 f"runs/{from_run_id}/implementation-fix.patch or pass --patch"
             )
 
-        entities, hashes, regression_input_hash = _current_input(root, mapping_run)
+        entities, hashes, regression_input_hash = mapping_entities, _mapping_hashes, _mapping_input
         recorder.manifest["entity_hashes"] = hashes
+        recorder.manifest["entity_versions"].update(_current_versions(entities))
         recorder.manifest["regression_input_hash"] = regression_input_hash
         worktree = _worktree_path(mapping_run, run_id)
         _create_worktree(repository, base_commit, worktree)
@@ -182,6 +229,12 @@ def run_fix(
         logs.mkdir(parents=True, exist_ok=True)
         saved_patch = recorder.directory / "implementation.patch"
         _copy_patch(patch.resolve(), saved_patch)
+        patch_generated_at = utc_now()
+        recorder.manifest["patch_version"] = {
+            "id": "implementation.patch",
+            "generated_at_utc": patch_generated_at,
+            "content_hash": file_hash(saved_patch),
+        }
 
         blocked_tests, blockers = _apply_test_patches(
             root, worktree, entities["dynamic_tests"], logs
@@ -228,16 +281,26 @@ def run_fix(
             dynamic_results.append(result)
             if blocker and content_hash(blocker) not in {content_hash(item) for item in blockers}:
                 blockers.append(blocker)
+        regression_generated_at = utc_now()
+        regression_dependencies = [
+            version
+            for kind in ("mappings", "static_checks", "dynamic_tests")
+            for _entity_id, version in sorted(recorder.manifest["entity_versions"][kind].items())
+        ]
         results = {
             "schema_version": SCHEMA_VERSION,
             "kind": "syscallguard_fix_regression",
             "run_id": run_id,
+            "generated_at_utc": regression_generated_at,
+            "upstream_dependencies": regression_dependencies,
             "target_revision": base_commit,
             "static": static_results,
             "dynamic": dynamic_results,
             "blockers": blockers,
         }
         atomic_write_yaml(recorder.directory / "regression-results.yaml", results)
+        regression_version = entity_version(run_id, results)
+        recorder.manifest["regression_result_version"] = regression_version
         static_failures = sum(row.get("result") != "pass" for row in static_results)
         dynamic_failures = sum(
             row.get("result") not in {"pass", "skipped"} for row in dynamic_results
@@ -291,6 +354,7 @@ def run_fix(
 
         fix_entities: dict[str, dict[str, Any]] = {}
         updated_findings: dict[str, dict[str, Any]] = {}
+        fix_generated_at = utc_now()
         for finding_id, finding in findings.items():
             fix_id = f"fix-{slug(finding_id)}"
             fix_entity = {
@@ -304,7 +368,13 @@ def run_fix(
                 "starry_commit": commit,
                 "regression": f"runs/{run_id}/regression-results.yaml",
                 "status": "fixed",
-                "processed_run": run_id,
+                "generated_at_utc": fix_generated_at,
+                "upstream_dependencies": [
+                    finding_versions[finding_id],
+                    check_run["result_version"],
+                    recorder.manifest["patch_version"],
+                    regression_version,
+                ],
             }
             fix_entities[fix_id] = fix_entity
             updated = dict(finding)
@@ -312,6 +382,8 @@ def run_fix(
             updated["fix_ref"] = fix_id
             updated["fixed_by_run"] = run_id
             updated["fixed_commit"] = commit
+            updated["generated_at_utc"] = fix_generated_at
+            updated["upstream_dependencies"] = [entity_version(fix_id, fix_entity)]
             updated_findings[finding_id] = updated
         publish_yaml_entities(
             [
@@ -341,8 +413,8 @@ def run_fix(
                     "finding_refs": entity["finding_refs"],
                     "status": "fixed",
                     "starry_commit": commit,
-                    "processed_run": run_id,
-                    "content_hash": content_hash(entity),
+                    "generated_at_utc": entity["generated_at_utc"],
+                    "content_hash": version_content_hash(entity),
                 }
                 for fix_id, entity in fix_entities.items()
             ],
@@ -359,27 +431,15 @@ def run_fix(
                     "target_revision": entity["target_revision"],
                     "status": entity["status"],
                     "resolution": "fixed",
-                    "processed_run": run_id,
-                    "content_hash": content_hash(entity),
+                    "generated_at_utc": entity["generated_at_utc"],
+                    "content_hash": version_content_hash(entity),
                 }
                 for finding_id, entity in updated_findings.items()
             ],
         )
-        append_history(
-            root,
-            [
-                {
-                    "entity_type": "finding",
-                    "entity_id": finding_id,
-                    "input_hash": recorder.manifest["input_hash"],
-                    "processed_run": run_id,
-                    "finding_status": "confirmed",
-                    "fix_status": "fixed",
-                    "fix_commit": commit,
-                }
-                for finding_id in updated_findings
-            ],
-        )
+        recorder.manifest["entity_versions"]["fixes"] = {
+            fix_id: entity_version(fix_id, entity) for fix_id, entity in fix_entities.items()
+        }
         recorder.manifest["entities"]["fixes"] = sorted(fix_entities)
         recorder.manifest["outputs"]["fix_index"] = "targets/starry/fixes/index.yaml"
         recorder.manifest["outputs"]["finding_index"] = "targets/starry/findings/index.yaml"

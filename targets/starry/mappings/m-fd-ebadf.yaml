@@ -10,9 +10,11 @@ target_locations:
 static_check_refs:
 - SG001_BAD_FD_EBADF
 dynamic_test_refs: []
-source_rule_hashes:
-  BAD_FD_EBADF: sha256:1347aa930270dedc9fb73eaa6d660a69a750026fd66ec25506591d5bddf581a2
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md
+upstream_dependencies:
+- id: BAD_FD_EBADF
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:017e976fde4ab62ce10b713de4351044d9cb6adccf64fa5372dec1036a61ea12
+generated_at_utc: '2026-07-13T00:00:00.000000Z'

@@ -1,6 +1,4 @@
 source_id: ltp-local
-adapter: ltp-extractor
+adapter: ltp
 location: /home/cloud/gitStudy/ltp
 revision: HEAD
-parameters:
-  tool: tools/syscall_spec_extract.py

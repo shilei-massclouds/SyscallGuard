@@ -1,76 +1,112 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
+import os
 import sys
+import tempfile
 from pathlib import Path
-from types import ModuleType
-from typing import Any
+from typing import Any, Iterable
 
-from . import __version__
+import yaml
+
+from .adapters.ltp import LtpAdapter
 from .common import (
     SCHEMA_VERSION,
-    RunRecorder,
     SyscallGuardError,
-    append_history,
-    atomic_write_yaml,
     content_hash,
-    entity_hash,
     git_output,
     load_mapping,
-    load_yaml,
     new_run_id,
-    publish_yaml_entities,
+    normalize_run_id,
+    read_frontmatter,
     repo_root,
     slug,
-    tree_hash,
-    update_index,
     utc_now,
+    version_content_hash,
 )
 
 
-ADAPTER = "ltp-extractor"
-ADAPTER_VERSION = "1"
+GLOBAL_DEFAULT_COUNT = 20
+REPORT_KIND = "syscallguard_ingest_report"
+REPORT_RESULTS = {"formed_rules", "no_rules"}
 
 
-def import_extractor(path: Path) -> ModuleType:
+def resolve_source(source: str | Path | None, root: Path) -> tuple[Path, str]:
+    """Resolve an alias before treating an explicit value as a descriptor path."""
+    index_path = root / "sources" / "index.yaml"
+    if index_path.is_file():
+        index = load_mapping(index_path)
+    elif source is None:
+        raise SyscallGuardError(f"missing YAML file: {index_path}")
+    else:
+        index = {}
+    aliases = index.get("sources", index.get("aliases", {}))
+    value: Any = str(source) if source is not None else index.get("default_source")
+    if not isinstance(value, str) or not value:
+        raise SyscallGuardError(
+            f"no source was supplied and {index_path} has no default_source"
+        )
+
+    if isinstance(aliases, dict) and value in aliases:
+        resolved = aliases[value]
+        reason = "default_source" if source is None else "source_alias"
+    elif source is None:
+        raise SyscallGuardError(
+            f"default source alias {value!r} is not defined in {index_path}"
+        )
+    else:
+        resolved = value
+        reason = "explicit_descriptor"
+    if not isinstance(resolved, str) or not resolved:
+        raise SyscallGuardError(f"source alias {value!r} has no descriptor path")
+    path = Path(resolved).expanduser()
+    if not path.is_absolute():
+        path = root / path
+    path = path.resolve()
     if not path.is_file():
-        raise SyscallGuardError(f"LTP extractor does not exist: {path}")
-    spec = importlib.util.spec_from_file_location("syscallguard_ltp_extractor", path)
-    if spec is None or spec.loader is None:
-        raise SyscallGuardError(f"cannot import LTP extractor: {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
+        raise SyscallGuardError(f"source descriptor does not exist: {path}")
+    return path, reason
+
+
+def resolve_count(
+    value: int | str | None, descriptor: dict[str, Any]
+) -> tuple[int | None, str, str]:
+    if value is not None:
+        raw: Any = value
+        reason = "command"
+    elif "default_count" in descriptor:
+        raw = descriptor["default_count"]
+        reason = "descriptor"
+    else:
+        raw = GLOBAL_DEFAULT_COUNT
+        reason = "global_default"
+    if isinstance(raw, str) and raw.lower() == "all":
+        return None, "all", reason
+    if isinstance(raw, bool):
+        raise SyscallGuardError("count must be a positive integer or 'all'")
     try:
-        spec.loader.exec_module(module)
-    except Exception as exc:
-        raise SyscallGuardError(f"cannot load LTP extractor {path}: {exc}") from exc
-    required = [
-        "ManifestEntry",
-        "build_candidates",
-        "normalize_specs",
-        "write_candidates",
-        "write_normalized_specs",
-    ]
-    missing = [name for name in required if not hasattr(module, name)]
-    if missing:
-        raise SyscallGuardError(f"LTP extractor is missing APIs: {', '.join(missing)}")
-    return module
+        parsed = int(raw)
+    except (TypeError, ValueError) as exc:
+        raise SyscallGuardError("count must be a positive integer or 'all'") from exc
+    if parsed <= 0 or str(raw).strip() != str(parsed):
+        raise SyscallGuardError("count must be a positive integer or 'all'")
+    return parsed, str(parsed), reason
 
 
-def require_descriptor(path: Path) -> tuple[dict[str, Any], Path, Path, str]:
+def require_descriptor(
+    path: Path, root: Path
+) -> tuple[dict[str, Any], Path, str, LtpAdapter]:
     descriptor = load_mapping(path)
     source_id = descriptor.get("source_id")
     if not isinstance(source_id, str) or not source_id:
         raise SyscallGuardError(f"source descriptor must define source_id: {path}")
-    if descriptor.get("adapter") != ADAPTER:
-        raise SyscallGuardError(
-            f"unsupported source adapter {descriptor.get('adapter')!r}; expected {ADAPTER!r}"
-        )
-    raw_location = descriptor.get("location")
-    if not isinstance(raw_location, str) or not raw_location:
+    adapter_name = descriptor.get("adapter")
+    if adapter_name != "ltp":
+        raise SyscallGuardError(f"unsupported source adapter: {adapter_name!r}")
+    location_value = descriptor.get("location")
+    if not isinstance(location_value, str) or not location_value:
         raise SyscallGuardError(f"source descriptor must define location: {path}")
-    location = Path(raw_location).expanduser().resolve()
+    location = Path(location_value).expanduser().resolve()
     if not location.is_dir():
         raise SyscallGuardError(f"source location does not exist: {location}")
     revision = descriptor.get("revision")
@@ -79,475 +115,578 @@ def require_descriptor(path: Path) -> tuple[dict[str, Any], Path, Path, str]:
     try:
         resolved_revision = git_output(location, ["rev-parse", f"{revision}^{{commit}}"])
     except SyscallGuardError as exc:
-        raise SyscallGuardError(f"cannot resolve source revision {revision!r}: {exc}") from exc
-    parameters = descriptor.get("parameters", {})
-    if not isinstance(parameters, dict):
-        raise SyscallGuardError(f"source descriptor parameters must be a mapping: {path}")
-    raw_tool = parameters.get("tool", "tools/syscall_spec_extract.py")
-    if not isinstance(raw_tool, str) or not raw_tool:
-        raise SyscallGuardError("source descriptor parameters.tool must be a path")
-    tool = Path(raw_tool).expanduser()
-    if not tool.is_absolute():
-        tool = location / tool
-    return descriptor, location, tool.resolve(), resolved_revision
-
-
-def candidate_order(descriptor: dict[str, Any], location: Path) -> list[str]:
-    parameters = descriptor.get("parameters", {})
-    configured = parameters.get("syscalls")
-    if configured is not None:
-        if not isinstance(configured, list) or not all(
-            isinstance(item, str) and item for item in configured
-        ):
-            raise SyscallGuardError("source descriptor parameters.syscalls must be a string list")
-        result: list[str] = []
-        seen: set[str] = set()
-        for item in configured:
-            value = item.lower()
-            if value not in seen:
-                result.append(value)
-                seen.add(value)
-        return result
-    syscalls_root = location / "testcases" / "kernel" / "syscalls"
-    if not syscalls_root.is_dir():
         raise SyscallGuardError(
-            "cannot discover syscalls: set parameters.syscalls or provide testcases/kernel/syscalls"
+            f"cannot resolve source revision {revision!r}: {exc}"
+        ) from exc
+    rules_path = root / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
+    if not rules_path.is_file():
+        rules_path = repo_root() / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
+    return descriptor, location, resolved_revision, LtpAdapter(location, rules_path)
+
+
+def _report_source_id(report: dict[str, Any]) -> str | None:
+    source = report.get("source")
+    if not isinstance(source, dict):
+        return None
+    value = source.get("id", source.get("source_id"))
+    return value if isinstance(value, str) and value else None
+
+
+def _report_syscalls(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = report.get("syscalls", [])
+    if not isinstance(rows, list):
+        return []
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def load_ingest_report(root: Path, report_id: str) -> dict[str, Any]:
+    report_id = normalize_run_id(report_id)
+    path = root / "runs" / report_id / "report.md"
+    report, _body = read_frontmatter(path)
+    if report.get("kind") != REPORT_KIND or report.get("report_id") != report_id:
+        raise SyscallGuardError(f"not a SyscallGuard ingest report: {path}")
+    if not isinstance(report.get("generated_at_utc"), str):
+        raise SyscallGuardError(f"ingest report has no generated_at_utc: {path}")
+    source_id = _report_source_id(report)
+    if source_id is None:
+        raise SyscallGuardError(f"ingest report has no source id: {path}")
+    for row in _report_syscalls(report):
+        if not isinstance(row.get("syscall"), str):
+            raise SyscallGuardError(f"ingest report has an invalid syscall row: {path}")
+        if row.get("result") not in REPORT_RESULTS:
+            raise SyscallGuardError(f"ingest report has an invalid result: {path}")
+    return report
+
+
+def scan_ingest_reports(
+    root: Path,
+) -> tuple[
+    dict[tuple[str, str], dict[str, Any]],
+    dict[str, dict[str, Any]],
+]:
+    """Return the latest report row per (source, syscall) and all valid reports."""
+    latest: dict[tuple[str, str], dict[str, Any]] = {}
+    reports: dict[str, dict[str, Any]] = {}
+    runs = root / "runs"
+    if not runs.is_dir():
+        return latest, reports
+    for path in sorted(runs.glob("spec-*/report.md")):
+        try:
+            report, _body = read_frontmatter(path)
+        except SyscallGuardError:
+            # Legacy Markdown reports are not state and are ignored.
+            continue
+        report_id = report.get("report_id")
+        generated = report.get("generated_at_utc")
+        source_id = _report_source_id(report)
+        if (
+            report.get("kind") != REPORT_KIND
+            or report_id != path.parent.name
+            or not isinstance(generated, str)
+            or source_id is None
+        ):
+            continue
+        reports[str(report_id)] = report
+        for row in _report_syscalls(report):
+            syscall = row.get("syscall")
+            if not isinstance(syscall, str) or row.get("result") not in REPORT_RESULTS:
+                continue
+            candidate = {
+                "report_id": report_id,
+                "generated_at_utc": generated,
+                "source_id": source_id,
+                **row,
+            }
+            key = (source_id, syscall)
+            prior = latest.get(key)
+            order = (generated, str(report_id))
+            prior_order = (
+                str(prior.get("generated_at_utc", "")),
+                str(prior.get("report_id", "")),
+            ) if prior else ("", "")
+            if prior is None or order > prior_order:
+                latest[key] = candidate
+    return latest, reports
+
+
+def assert_latest_ingest_report(root: Path, report: dict[str, Any]) -> None:
+    latest, _reports = scan_ingest_reports(root)
+    report_id = str(report["report_id"])
+    source_id = _report_source_id(report)
+    assert source_id is not None
+    superseded: list[str] = []
+    for row in _report_syscalls(report):
+        syscall = str(row["syscall"])
+        current = latest.get((source_id, syscall))
+        if current is not None and current.get("report_id") != report_id:
+            superseded.append(
+                f"{syscall} -> {current.get('report_id')}"
+            )
+    if superseded:
+        raise SyscallGuardError(
+            f"ingest report {report_id} is superseded: " + ", ".join(superseded)
         )
-    return sorted(path.name.lower() for path in syscalls_root.iterdir() if path.is_dir())
 
 
-def ltp_dirs(syscall: str, module: ModuleType, location: Path) -> list[str]:
-    aliases = getattr(module, "ALIASES", {})
-    candidates = [syscall]
-    if isinstance(aliases, dict):
-        raw_aliases = aliases.get(syscall, [])
-        if isinstance(raw_aliases, list):
-            candidates.extend(str(item) for item in raw_aliases)
-    root = location / "testcases" / "kernel" / "syscalls"
-    result: list[str] = []
-    for candidate in candidates:
-        if candidate not in result and (root / candidate).is_dir():
-            result.append(candidate)
+def _needs_processing(
+    item: dict[str, Any], prior: dict[str, Any] | None
+) -> tuple[bool, str]:
+    if prior is None:
+        return True, "new"
+    if prior.get("source_fingerprint") != item["source_fingerprint"]:
+        return True, "source_changed"
+    if prior.get("recognition_fingerprint") != item["recognition_fingerprint"]:
+        return True, "recognition_changed"
+    return False, "unchanged"
+
+
+def _rule_files(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
+    result: dict[str, tuple[Path, dict[str, Any]]] = {}
+    directory = root / "library" / "rules"
+    if not directory.is_dir():
+        return result
+    for path in sorted(directory.glob("*.yaml")):
+        entity = load_mapping(path)
+        if entity.get("kind") != "syscallguard_rule":
+            raise SyscallGuardError(f"invalid rule entity: {path}")
+        rule_id = entity.get("rule_id")
+        if not isinstance(rule_id, str) or not rule_id:
+            raise SyscallGuardError(f"rule has no rule_id: {path}")
+        if rule_id in result:
+            raise SyscallGuardError(f"duplicate rule id {rule_id}: {path}")
+        expected_hash = version_content_hash(entity)
+        if entity.get("semantic_hash") != expected_hash:
+            raise SyscallGuardError(f"rule semantic_hash mismatch: {path}")
+        result[rule_id] = (path, entity)
     return result
 
 
-def source_fingerprint(
-    descriptor: dict[str, Any],
-    location: Path,
-    tool: Path,
-    syscall: str,
-    directories: list[str],
-) -> str:
-    syscalls_root = location / "testcases" / "kernel" / "syscalls"
-    source_paths = [syscalls_root / item for item in directories]
-    payload = {
-        "source_id": descriptor["source_id"],
-        "adapter": ADAPTER,
-        "adapter_version": ADAPTER_VERSION,
-        "tool_version": __version__,
-        "syscall": syscall,
-        "ltp_dirs": directories,
-        "source_tree_hash": tree_hash(source_paths, location),
-        "extractor_hash": tree_hash([tool], location),
-        "adapter_parameters": descriptor.get("parameters", {}),
-    }
-    return content_hash(payload)
-
-
-def existing_spec_fingerprint(root: Path, syscall: str) -> str | None:
-    path = root / "library" / "specs" / f"{slug(syscall)}.yaml"
-    if not path.exists():
-        return None
-    value = load_mapping(path)
-    fingerprint = value.get("source_fingerprint")
-    return fingerprint if isinstance(fingerprint, str) else None
-
-
-def write_extractor_outputs(
-    module: ModuleType,
-    run: RunRecorder,
-    selected: list[dict[str, Any]],
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    entry_type = getattr(module, "ManifestEntry")
-    entries = [
-        entry_type(name=item["syscall"], group="syscallguard_increment", ltp_dirs=item["ltp_dirs"])
-        for item in selected
-    ]
-    candidates, summaries = module.build_candidates(entries)
-    specs = module.normalize_specs(candidates)
-    raw_path = run.directory / "raw-candidates.yaml"
-    normalized_path = run.directory / "normalized-specs.yaml"
-    module.write_candidates(raw_path, candidates)
-    module.write_normalized_specs(normalized_path, specs)
-    raw_data = load_mapping(raw_path).get("candidates", [])
-    normalized_data = load_mapping(normalized_path).get("specs", [])
-    if not isinstance(raw_data, list) or not isinstance(normalized_data, list):
-        raise SyscallGuardError("LTP extractor produced invalid candidate/spec lists")
-    atomic_write_yaml(
-        run.directory / "extract-summary.yaml",
-        {
-            "schema_version": SCHEMA_VERSION,
-            "kind": "syscallguard_ltp_extract_summary",
-            "candidate_summaries": summaries,
-            "raw_candidates": len(raw_data),
-            "normalized_specs": len(normalized_data),
-        },
+def _source_identity(source: dict[str, Any]) -> tuple[str, str, int, str, str]:
+    return (
+        str(source.get("source_id", "")),
+        str(source.get("file", "")),
+        int(source.get("line", 0) or 0),
+        str(source.get("recognizer_id", "")),
+        str(source.get("case", "")),
     )
-    return raw_data, normalized_data
 
 
-def semantic_for(spec: dict[str, Any]) -> dict[str, Any]:
-    expected = spec.get("expected", {})
-    errno: list[str] = []
-    if isinstance(expected, dict) and isinstance(expected.get("errno"), str):
-        errno = [expected["errno"]]
-    return {
-        "preconditions": spec.get("preconditions", []),
-        "action": {
-            "operation": "invoke_syscall",
-            "syscall": spec.get("syscall"),
-            "arguments": spec.get("args", []),
-        },
-        "expected_result": expected,
-        "errno": errno,
-    }
-
-
-def provenance_for(spec: dict[str, Any], descriptor: dict[str, Any], revision: str) -> dict[str, Any]:
-    source = spec.get("source", {})
+def _provenance(
+    normalized: dict[str, Any], descriptor: dict[str, Any], revision: str
+) -> dict[str, Any]:
+    source = normalized.get("source", {})
+    if not isinstance(source, dict):
+        source = {}
     return {
         "source_id": descriptor["source_id"],
+        "source_type": descriptor["adapter"],
         "revision": revision,
-        "file": source.get("file") if isinstance(source, dict) else None,
-        "line": source.get("line") if isinstance(source, dict) else None,
-        "case": spec.get("case"),
-        "confidence": spec.get("confidence"),
+        "file": source.get("file"),
+        "line": source.get("line"),
+        "recognizer_id": normalized.get("recognizer_id"),
+        "evidence_hash": normalized.get("evidence_hash"),
+        "case": normalized.get("case"),
     }
 
 
-def merge_rule(
+def _merge_rules(
     root: Path,
-    rule_id: str,
-    semantics: dict[str, Any],
-    provenance: dict[str, Any],
-    run_id: str,
-    conflicts: list[dict[str, Any]],
-) -> tuple[str, dict[str, Any], str]:
-    preferred = rule_id
-    path = root / "library" / "rules" / f"{slug(preferred)}.yaml"
-    action = "created"
-    if path.exists():
-        existing = load_mapping(path)
-        if existing.get("semantics") != semantics:
-            variant = content_hash(semantics).split(":", 1)[1][:12]
-            rule_id = f"{preferred}--{variant}"
-            path = root / "library" / "rules" / f"{slug(rule_id)}.yaml"
-            conflicts.append(
-                {
-                    "preferred_rule_id": preferred,
-                    "variant_rule_id": rule_id,
-                    "reason": "same stable id has different semantics",
-                }
-            )
-            existing = load_mapping(path) if path.exists() else {}
-        provenance_rows = existing.get("provenance", [])
-        if not isinstance(provenance_rows, list):
-            provenance_rows = []
-        if content_hash(provenance) not in {content_hash(item) for item in provenance_rows}:
-            provenance_rows.append(provenance)
-            action = "updated"
+    normalized_rows: list[dict[str, Any]],
+    descriptor: dict[str, Any],
+    revision: str,
+    now: str,
+) -> tuple[
+    dict[str, tuple[Path, dict[str, Any], str]],
+    dict[str, list[str]],
+    list[dict[str, Any]],
+]:
+    rules = _rule_files(root)
+    staged: dict[str, tuple[Path, dict[str, Any], str]] = {}
+    refs: dict[str, list[str]] = {}
+    conflicts: list[dict[str, Any]] = []
+
+    def available() -> dict[str, tuple[Path, dict[str, Any]]]:
+        current = dict(rules)
+        current.update((key, (row[0], row[1])) for key, row in staged.items())
+        return current
+
+    for normalized in normalized_rows:
+        syscall = str(normalized["syscall"])
+        semantics = normalized["semantics"]
+        category = str(normalized.get("category", "syscall_behavior"))
+        semantic_hash = content_hash({"category": category, "semantics": semantics})
+        provenance = _provenance(normalized, descriptor, revision)
+        current = available()
+        same = next(
+            (
+                (rule_id, path, entity)
+                for rule_id, (path, entity) in current.items()
+                if entity.get("semantic_hash") == semantic_hash
+            ),
+            None,
+        )
+        action = "reused"
+        old_entity: dict[str, Any] | None = None
+        if same is not None:
+            rule_id, path, old_entity = same
+            entity = dict(old_entity)
+            if rule_id in staged:
+                action = staged[rule_id][2]
         else:
-            action = "unchanged"
-        entity = dict(existing)
-        entity.update(
-            {
-                "schema_version": SCHEMA_VERSION,
-                "kind": "syscallguard_rule",
-                "rule_id": rule_id,
-                "semantics": semantics,
-                "provenance": provenance_rows,
-                "last_processed_run": run_id,
-            }
+            identity = _source_identity(provenance)
+            prior = next(
+                (
+                    (rule_id, path, entity)
+                    for rule_id, (path, entity) in current.items()
+                    if any(
+                        _source_identity(row) == identity
+                        for row in entity.get("sources", [])
+                        if isinstance(row, dict)
+                    )
+                ),
+                None,
+            )
+            explicit = normalized.get("rule_id")
+            if prior is not None and not explicit and len(prior[2].get("sources", [])) == 1:
+                rule_id, path, old_entity = prior
+                entity = dict(old_entity)
+                entity.update(
+                    {
+                        "category": category,
+                        "semantics": semantics,
+                        "semantic_hash": semantic_hash,
+                        "generated_at_utc": now,
+                    }
+                )
+                entity["sources"] = []
+                action = "semantic_updated"
+            else:
+                if prior is not None and not explicit:
+                    prior_rule_id, prior_path, prior_entity = prior
+                    detached = dict(prior_entity)
+                    detached["sources"] = [
+                        row
+                        for row in detached.get("sources", [])
+                        if not isinstance(row, dict)
+                        or _source_identity(row) != identity
+                    ]
+                    staged[prior_rule_id] = (prior_path, detached, "sources_updated")
+                preferred = (
+                    str(explicit)
+                    if isinstance(explicit, str) and explicit
+                    else "LTP_" + semantic_hash.split(":", 1)[1][:16].upper()
+                )
+                rule_id = preferred
+                if (
+                    rule_id in current
+                    and current[rule_id][1].get("semantic_hash") != semantic_hash
+                ):
+                    rule_id = f"{preferred}--{semantic_hash.split(':', 1)[1][:12]}"
+                    conflicts.append(
+                        {
+                            "preferred_rule_id": preferred,
+                            "variant_rule_id": rule_id,
+                            "reason": "stable rule id has different semantics",
+                        }
+                    )
+                    action = "conflict_variant"
+                else:
+                    action = "created"
+                path = root / "library" / "rules" / f"{slug(rule_id)}.yaml"
+                entity = {
+                    "schema_version": SCHEMA_VERSION,
+                    "kind": "syscallguard_rule",
+                    "rule_id": rule_id,
+                    "category": category,
+                    "semantics": semantics,
+                    "semantic_hash": semantic_hash,
+                    "generated_at_utc": now,
+                    "sources": [],
+                }
+
+        sources = entity.get("sources", [])
+        sources = list(sources) if isinstance(sources, list) else []
+        identity = _source_identity(provenance)
+        same_identity = [
+            row
+            for row in sources
+            if isinstance(row, dict) and _source_identity(row) == identity
+        ]
+        if not any(row == provenance for row in same_identity):
+            # A source location is a current provenance record, not an event log.
+            sources = [
+                row
+                for row in sources
+                if not isinstance(row, dict) or _source_identity(row) != identity
+            ]
+            sources.append(provenance)
+        entity["sources"] = sorted(
+            sources,
+            key=lambda row: (
+                str(row.get("source_id", "")),
+                str(row.get("file", "")),
+                int(row.get("line", 0) or 0),
+                str(row.get("recognizer_id", "")),
+                str(row.get("case", "")),
+            ),
         )
-    else:
-        entity = {
-            "schema_version": SCHEMA_VERSION,
-            "kind": "syscallguard_rule",
-            "rule_id": rule_id,
-            "semantics": semantics,
-            "provenance": [provenance],
-            "last_processed_run": run_id,
-        }
-    return rule_id, entity, action
+        if old_entity is not None and entity != old_entity and action == "reused":
+            action = "sources_updated"
+        staged[rule_id] = (path, entity, action)
+        refs.setdefault(syscall, [])
+        if rule_id not in refs[syscall]:
+            refs[syscall].append(rule_id)
+    return staged, refs, conflicts
 
 
-def merge_rule_for_run(
-    root: Path,
-    staged: dict[str, tuple[dict[str, Any], str]],
-    preferred: str,
-    semantics: dict[str, Any],
-    provenance: dict[str, Any],
-    run_id: str,
-    conflicts: list[dict[str, Any]],
-) -> tuple[str, dict[str, Any], str]:
-    rule_id = preferred
-    staged_row = staged.get(rule_id)
-    if staged_row is not None and staged_row[0].get("semantics") != semantics:
-        variant = content_hash(semantics).split(":", 1)[1][:12]
-        rule_id = f"{preferred}--{variant}"
-        conflicts.append(
-            {
-                "preferred_rule_id": preferred,
-                "variant_rule_id": rule_id,
-                "reason": "same stable id has different semantics",
-            }
+def _yaml_text(value: Any) -> str:
+    return yaml.safe_dump(
+        value,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+        width=100,
+    )
+
+
+def _report_text(frontmatter: dict[str, Any]) -> str:
+    lines = ["---", _yaml_text(frontmatter).rstrip(), "---", "", "# Syscall rule ingestion", ""]
+    source = frontmatter["source"]
+    count = frontmatter["count"]
+    lines.extend(
+        [
+            f"Report: `{frontmatter['report_id']}`",
+            f"Source: `{source['id']}` (`{source['revision']}`)",
+            f"Count: `{count['value']}` from `{count['source']}`",
+            f"Pending before selection: {frontmatter['pending_count']}",
+            "",
+            "| Syscall | Result | Evidence | Unresolved | Rules | Reason |",
+            "| --- | --- | ---: | ---: | --- | --- |",
+        ]
+    )
+    for row in frontmatter["syscalls"]:
+        rule_ids = ", ".join(f"`{rule['id']}`" for rule in row["rules"]) or "-"
+        lines.append(
+            f"| `{row['syscall']}` | `{row['result']}` | {row['evidence_count']} | "
+            f"{row['unresolved_evidence_count']} | {rule_ids} | `{row['reason']}` |"
         )
-        staged_row = staged.get(rule_id)
-    if staged_row is None:
-        return merge_rule(
-            root, rule_id, semantics, provenance, run_id, conflicts
-        )
-    entity = dict(staged_row[0])
-    provenance_rows = entity.get("provenance", [])
-    if not isinstance(provenance_rows, list):
-        provenance_rows = []
-    action = staged_row[1]
-    if content_hash(provenance) not in {content_hash(item) for item in provenance_rows}:
-        provenance_rows.append(provenance)
-        if action == "unchanged":
-            action = "updated"
-    entity["provenance"] = provenance_rows
-    entity["last_processed_run"] = run_id
-    return rule_id, entity, action
+    if not frontmatter["syscalls"]:
+        lines.append("| - | - | 0 | 0 | - | `nothing_pending` |")
+    if frontmatter.get("conflicts"):
+        lines.extend(["", "## Stable ID conflicts", ""])
+        for conflict in frontmatter["conflicts"]:
+            lines.append(
+                f"- `{conflict['preferred_rule_id']}` was published as "
+                f"`{conflict['variant_rule_id']}`."
+            )
+    return "\n".join(lines) + "\n"
+
+
+def _stage_text(destination: Path, text: str) -> Path:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, name = tempfile.mkstemp(prefix=f".{destination.name}.", dir=destination.parent)
+    path = Path(name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+    except BaseException:
+        path.unlink(missing_ok=True)
+        raise
+    return path
+
+
+def _publish_transaction(
+    rule_updates: Iterable[tuple[Path, dict[str, Any]]],
+    report_path: Path,
+    report_text: str,
+) -> None:
+    """Stage every output, publish the report last, and roll rules back on failure."""
+    updates = list(rule_updates)
+    staged: list[tuple[Path, Path]] = []
+    originals: dict[Path, bytes | None] = {}
+    report_directory_existed = report_path.parent.exists()
+    changed: list[Path] = []
+    try:
+        for destination, entity in updates:
+            originals[destination] = destination.read_bytes() if destination.exists() else None
+            staged.append((destination, _stage_text(destination, _yaml_text(entity))))
+        report_temp = _stage_text(report_path, report_text)
+        staged.append((report_path, report_temp))
+        for destination, temp in staged:
+            os.replace(temp, destination)
+            changed.append(destination)
+    except BaseException:
+        for _destination, temp in staged:
+            temp.unlink(missing_ok=True)
+        report_path.unlink(missing_ok=True)
+        for destination in reversed(changed):
+            if destination == report_path:
+                continue
+            original = originals.get(destination)
+            if original is None:
+                destination.unlink(missing_ok=True)
+            else:
+                restore = _stage_text(destination, original.decode("utf-8"))
+                os.replace(restore, destination)
+        if not report_directory_existed:
+            try:
+                report_path.parent.rmdir()
+            except OSError:
+                pass
+        raise
 
 
 def run_ingest(
-    source: Path,
-    count: int,
+    source: str | Path | None = None,
+    count: int | str | None = None,
     root: Path | None = None,
     requested_run_id: str | None = None,
 ) -> str:
-    if count <= 0:
-        raise SyscallGuardError("count must be a positive integer")
     root = (root or repo_root()).resolve()
-    seed = {"source": str(source.resolve()), "count": count, "at": utc_now()}
-    run_id = requested_run_id or new_run_id("spec", seed)
-    recorder = RunRecorder(
-        root,
-        "spec",
-        run_id,
-        {"source": str(source.resolve()), "count": count},
+    descriptor_path, source_reason = resolve_source(source, root)
+    descriptor, _location, revision, adapter = require_descriptor(descriptor_path, root)
+    limit, count_label, count_reason = resolve_count(count, descriptor)
+    report_id = requested_run_id or new_run_id(
+        "spec", {"source": str(descriptor_path), "count": count_label, "at": utc_now()}
     )
-    try:
-        descriptor, location, tool, revision = require_descriptor(source.resolve())
-        module = import_extractor(tool)
-        candidates: list[dict[str, Any]] = []
-        for syscall in candidate_order(descriptor, location):
-            directories = ltp_dirs(syscall, module, location)
-            fingerprint = source_fingerprint(
-                descriptor, location, tool, syscall, directories
-            )
-            candidates.append(
-                {
-                    "syscall": syscall,
-                    "ltp_dirs": directories,
-                    "fingerprint": fingerprint,
-                    "prior_fingerprint": existing_spec_fingerprint(root, syscall),
-                }
-            )
-        changed = [item for item in candidates if item["fingerprint"] != item["prior_fingerprint"]]
-        selected = changed[:count]
-        recorder.manifest["source"] = {
-            "source_id": descriptor["source_id"],
-            "adapter": ADAPTER,
-            "adapter_version": ADAPTER_VERSION,
-            "location": str(location),
-            "revision": revision,
-            "descriptor_hash": entity_hash(source.resolve()),
-        }
-        recorder.manifest["selection"] = {
-            "stable_order": [item["syscall"] for item in candidates],
-            "changed_or_new": [item["syscall"] for item in changed],
-            "selected": [item["syscall"] for item in selected],
-            "requested_count": count,
-            "available_count": len(changed),
-        }
-        if not selected:
-            recorder.manifest["entities"] = {"syscalls": [], "rules": []}
-            recorder.manifest["counts"] = {
-                "selected_syscalls": 0,
-                "normalized_specs": 0,
-                "rules": 0,
-                "skipped_unchanged_syscalls": len(candidates),
-            }
-            recorder.complete()
-            return run_id
+    report_id = normalize_run_id(report_id)
+    report_path = root / "runs" / report_id / "report.md"
+    if report_path.parent.exists():
+        raise SyscallGuardError(f"report already exists: {report_path.parent}")
 
-        raw_rows, normalized_rows = write_extractor_outputs(module, recorder, selected)
-        by_syscall: dict[str, list[dict[str, Any]]] = {
-            item["syscall"]: [] for item in selected
-        }
-        for spec in normalized_rows:
-            if isinstance(spec, dict) and spec.get("syscall") in by_syscall:
-                by_syscall[str(spec["syscall"])].append(spec)
+    latest, _reports = scan_ingest_reports(root)
+    candidates = [adapter.prescan(item) for item in adapter.discover()]
+    pending: list[dict[str, Any]] = []
+    reasons: dict[str, str] = {}
+    for item in candidates:
+        prior = latest.get((str(descriptor["source_id"]), str(item["syscall"])))
+        changed, reason = _needs_processing(item, prior)
+        if changed:
+            pending.append(item)
+            reasons[str(item["syscall"])] = reason
+    pending.sort(key=lambda item: str(item["syscall"]))
+    selected = pending if limit is None else pending[:limit]
 
-        staged_rules: dict[str, tuple[dict[str, Any], str]] = {}
-        syscall_entities: list[tuple[Path, Path, Any]] = []
-        rule_refs_by_syscall: dict[str, list[str]] = {}
-        for item in selected:
-            syscall = item["syscall"]
-            rule_refs: list[str] = []
-            for spec in by_syscall[syscall]:
-                semantics = semantic_for(spec)
-                preferred = spec.get("rule_id")
-                if not isinstance(preferred, str) or not preferred:
-                    preferred = "LTP_" + content_hash(semantics).split(":", 1)[1][:16].upper()
-                rule_id, rule, action = merge_rule_for_run(
-                    root,
-                    staged_rules,
-                    preferred,
-                    semantics,
-                    provenance_for(spec, descriptor, revision),
-                    run_id,
-                    recorder.changeset["conflicts"],
-                )
-                staged_rules[rule_id] = (rule, action)
-                if rule_id not in rule_refs:
-                    rule_refs.append(rule_id)
-            rule_refs_by_syscall[syscall] = rule_refs
-            entity = {
-                "schema_version": SCHEMA_VERSION,
-                "kind": "syscallguard_syscall_spec",
-                "syscall": syscall,
-                "source_records": [
-                    {
-                        "source_id": descriptor["source_id"],
-                        "adapter": ADAPTER,
-                        "location": str(location),
-                        "revision": revision,
-                        "ltp_dirs": item["ltp_dirs"],
-                    }
-                ],
-                "normalized_behaviors": by_syscall[syscall],
-                "rule_refs": rule_refs,
-                "source_fingerprint": item["fingerprint"],
-                "last_processed_run": run_id,
-            }
-            destination = root / "library" / "specs" / f"{slug(syscall)}.yaml"
-            syscall_entities.append((recorder.directory, destination, entity))
-            recorder.changeset["changes"].append(
-                {
-                    "entity_type": "syscall_spec",
-                    "entity_id": syscall,
-                    "action": "created" if item["prior_fingerprint"] is None else "updated",
-                    "input_hash": item["fingerprint"],
-                    "output_hash": content_hash(entity),
-                    "path": str(destination.relative_to(root)),
-                }
-            )
-
-        rule_entities: list[tuple[Path, Path, Any]] = []
-        for rule_id, (entity, action) in sorted(staged_rules.items()):
-            destination = root / "library" / "rules" / f"{slug(rule_id)}.yaml"
-            rule_entities.append((recorder.directory, destination, entity))
-            recorder.changeset["changes"].append(
-                {
-                    "entity_type": "rule",
-                    "entity_id": rule_id,
-                    "action": action,
-                    "input_hash": content_hash(entity["semantics"]),
-                    "output_hash": content_hash(entity),
-                    "path": str(destination.relative_to(root)),
-                }
-            )
-
-        publish_yaml_entities([*syscall_entities, *rule_entities])
-        update_index(
-            root / "library" / "specs" / "index.yaml",
-            "syscallguard_spec_index",
-            [
-                {
-                    "id": item["syscall"],
-                    "path": f"library/specs/{slug(item['syscall'])}.yaml",
-                    "input_hash": item["fingerprint"],
-                    "processed_run": run_id,
-                }
-                for item in selected
-            ],
-        )
-        update_index(
-            root / "library" / "rules" / "index.yaml",
-            "syscallguard_rule_index",
-            [
-                {
-                    "id": rule_id,
-                    "path": f"library/rules/{slug(rule_id)}.yaml",
-                    "content_hash": content_hash(entity),
-                    "processed_run": run_id,
-                }
-                for rule_id, (entity, _action) in sorted(staged_rules.items())
-            ],
-        )
-        append_history(
-            root,
-            [
-                {
-                    "entity_type": "syscall_spec",
-                    "entity_id": item["syscall"],
-                    "input_hash": item["fingerprint"],
-                    "processed_run": run_id,
-                    "finding_status": "unknown",
-                    "fix_status": "unknown",
-                }
-                for item in selected
-            ],
-        )
-        rule_ids = sorted(staged_rules)
-        recorder.manifest["entities"] = {
-            "syscalls": [item["syscall"] for item in selected],
-            "rules": rule_ids,
-        }
-        recorder.manifest["entity_hashes"] = {
-            "syscall_specs": {
-                item["syscall"]: entity_hash(
-                    root / "library" / "specs" / f"{slug(item['syscall'])}.yaml"
-                )
-                for item in selected
-            },
-            "rules": {
-                rule_id: entity_hash(root / "library" / "rules" / f"{slug(rule_id)}.yaml")
-                for rule_id in rule_ids
-            },
-        }
-        recorder.manifest["outputs"] = {
-            "raw_candidates": "raw-candidates.yaml",
-            "normalized_specs": "normalized-specs.yaml",
-            "extract_summary": "extract-summary.yaml",
-            "spec_index": "library/specs/index.yaml",
-            "rule_index": "library/rules/index.yaml",
-        }
-        recorder.manifest["counts"] = {
-            "selected_syscalls": len(selected),
-            "normalized_specs": sum(len(rows) for rows in by_syscall.values()),
-            "raw_candidates": len(raw_rows),
-            "rules": len(rule_ids),
-            "semantic_conflicts": len(recorder.changeset["conflicts"]),
-            "unchanged_not_selected": len(candidates) - len(changed),
-            "changed_deferred_by_count": max(0, len(changed) - len(selected)),
-        }
-        recorder.complete()
-        return run_id
-    except BaseException as exc:
-        recorder.fail(exc)
-        if isinstance(exc, SyscallGuardError):
+    extracted: dict[str, dict[str, Any]] = {}
+    publishable_rows: list[dict[str, Any]] = []
+    result_rows: list[dict[str, Any]] = []
+    for item in selected:
+        syscall = str(item["syscall"])
+        try:
+            result = adapter.extract(item)
+        except SyscallGuardError:
             raise
+        except BaseException as exc:
+            raise SyscallGuardError(str(exc)) from exc
+        raw = result.get("raw", [])
+        normalized = result.get("normalized", [])
+        if not isinstance(raw, list) or not isinstance(normalized, list):
+            raise SyscallGuardError(f"adapter returned invalid evidence for {syscall}")
+        normalized_hashes = {
+            row.get("evidence_hash")
+            for row in normalized
+            if isinstance(row, dict) and isinstance(row.get("evidence_hash"), str)
+        }
+        unresolved = [
+            row
+            for row in raw
+            if not isinstance(row, dict) or row.get("evidence_hash") not in normalized_hashes
+        ]
+        if unresolved:
+            outcome = "no_rules"
+            reason = "unresolved_evidence"
+        elif not normalized:
+            outcome = "no_rules"
+            reason = "no_evidence" if not raw else "zero_rules"
+        else:
+            outcome = "formed_rules"
+            reason = "all_evidence_resolved"
+            publishable_rows.extend(row for row in normalized if isinstance(row, dict))
+        extracted[syscall] = {
+            "item": item,
+            "raw": raw,
+            "normalized": normalized,
+            "unresolved_count": len(unresolved),
+            "outcome": outcome,
+            "reason": reason,
+        }
+
+    generated_at = utc_now()
+    staged_rules, refs, conflicts = _merge_rules(
+        root, publishable_rows, descriptor, revision, generated_at
+    )
+    current_rules = _rule_files(root)
+    for item in selected:
+        syscall = str(item["syscall"])
+        result = extracted[syscall]
+        rule_versions: list[dict[str, str]] = []
+        if result["outcome"] == "formed_rules":
+            for rule_id in sorted(refs.get(syscall, [])):
+                entity = staged_rules.get(rule_id, current_rules.get(rule_id))[1]
+                rule_versions.append(
+                    {
+                        "id": rule_id,
+                        "generated_at_utc": str(entity["generated_at_utc"]),
+                        "content_hash": version_content_hash(entity),
+                    }
+                )
+        result_rows.append(
+            {
+                "syscall": syscall,
+                "source_fingerprint": item["source_fingerprint"],
+                "recognition_fingerprint": item["recognition_fingerprint"],
+                "selection_reason": reasons[syscall],
+                "result": result["outcome"],
+                "rules": rule_versions,
+                "evidence_count": len(result["raw"]),
+                "unresolved_evidence_count": result["unresolved_count"],
+                "reason": result["reason"],
+            }
+        )
+
+    frontmatter: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": REPORT_KIND,
+        "report_id": report_id,
+        "generated_at_utc": generated_at,
+        "source": {
+            "id": descriptor["source_id"],
+            "type": descriptor["adapter"],
+            "revision": revision,
+            "descriptor_hash": content_hash(descriptor),
+            "recognition_rules_hash": adapter.rules_hash,
+            "resolution": source_reason,
+        },
+        "count": {"value": count_label, "source": count_reason},
+        "pending_count": len(pending),
+        "selected_syscalls": [str(item["syscall"]) for item in selected],
+        "syscalls": result_rows,
+    }
+    if conflicts:
+        frontmatter["conflicts"] = conflicts
+
+    updates: list[tuple[Path, dict[str, Any]]] = []
+    for rule_id, (path, entity, _action) in staged_rules.items():
+        existing = current_rules.get(rule_id)
+        if existing is None or existing[1] != entity:
+            updates.append((path, entity))
+    try:
+        _publish_transaction(updates, report_path, _report_text(frontmatter))
+    except SyscallGuardError:
+        raise
+    except BaseException as exc:
         raise SyscallGuardError(str(exc)) from exc
+    return report_id
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Ingest incremental syscall specifications")
-    parser.add_argument("--source", required=True, type=Path, help="source descriptor YAML")
-    parser.add_argument("--count", required=True, type=int, help="maximum changed syscalls")
+    parser = argparse.ArgumentParser(
+        description="Ingest target-independent syscall specifications"
+    )
+    parser.add_argument("--source", help="source alias or descriptor YAML")
+    parser.add_argument("--count", help="positive integer or all")
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
     return parser
@@ -555,24 +694,30 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    requested_run_id = args.run_id or new_run_id(
-        "spec", {"source": str(args.source), "count": args.count}
+    requested = args.run_id or new_run_id(
+        "spec", {"source": args.source, "count": args.count}
     )
     try:
-        run_id = run_ingest(args.source, args.count, args.root, requested_run_id)
+        report_id = run_ingest(args.source, args.count, args.root, requested)
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
-        failed_path = args.root.resolve() / "runs" / requested_run_id
-        if failed_path.exists():
-            print(f"result: {failed_path}", file=sys.stderr)
         return 2
-    path = args.root.resolve() / "runs" / run_id
-    manifest = load_mapping(path / "manifest.yaml")
-    print(f"run_id: {run_id}")
-    print(f"status: {manifest['status']}")
-    print(f"result: {path}")
-    print(f"spec_index: {args.root.resolve() / 'library/specs/index.yaml'}")
-    print(f"rule_index: {args.root.resolve() / 'library/rules/index.yaml'}")
+    path = args.root.resolve() / "runs" / report_id / "report.md"
+    report, _body = read_frontmatter(path)
+    source = report["source"]
+    print(f"source: {source['id']} ({source['revision']})")
+    print(f"recognition_rules_hash: {source['recognition_rules_hash']}")
+    print(f"count: {report['count']['value']} ({report['count']['source']})")
+    print(f"pending: {report['pending_count']}")
+    print("selected: " + (", ".join(report["selected_syscalls"]) or "none"))
+    for row in report["syscalls"]:
+        rules = ",".join(rule["id"] for rule in row["rules"]) or "none"
+        print(
+            f"syscall: {row['syscall']} | result={row['result']} | rules={rules} | "
+            f"evidence={row['evidence_count']} | unresolved={row['unresolved_evidence_count']}"
+        )
+    print(f"report_id: {report_id}")
+    print(f"report: {path}")
     return 0
 
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reset SyscallGuard"
+  short_description: "Clear syscall rules and ingest report history"
+  default_prompt: "Use $reset-syscallguard to restore the syscall ingestion state to an empty baseline."

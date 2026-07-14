@@ -10,9 +10,11 @@ target_locations:
 static_check_refs:
 - SG001_FLAG_MASKS
 dynamic_test_refs: []
-source_rule_hashes:
-  FLAG_MASK_REJECTS_UNKNOWN: sha256:fee63661066511acce4d2a803fc3e70b1968ac50e739d50d1e0edbd531ddef30
 base_commit: 4f30e12d17e4da175233bb3a51889efe747a45f9
 target_hash: sha256:ca0e6e8e1bdd52b96fa089f9df6936ce6641097c3311ecbb45c891dde0f1334d
-last_mapped_run: mapping-migrated-batch-001
 legacy_provenance: runs/mapping-migrated-batch-001/legacy-artifacts/steps/05-starry-evidence-mapping.md
+upstream_dependencies:
+- id: FLAG_MASK_REJECTS_UNKNOWN
+  generated_at_utc: '2026-07-13T00:00:00.000000Z'
+  content_hash: sha256:ae0aa3d5ac991a2264c12822b4a65ced6c841f9e0b8fcacb05d2ff455289f7ee
+generated_at_utc: '2026-07-13T00:00:00.000000Z'
