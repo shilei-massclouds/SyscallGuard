@@ -16,7 +16,7 @@
 
 ## 技术参考
 
-- 报告 ID：`spec-20260714t132927z-f6dba5cd`
+- 报告 ID：`spec-20260714t133502z-772aa222`
 - 来源：`ltp-local`，revision `534222c4f3908e9642f913399e37a66fdd266bbe`
 - 全局待处理 syscall：373
 - 指定 syscall：`close`
@@ -29,8 +29,8 @@
 ```yaml
 schema_version: 1
 kind: syscallguard_ingest_report
-report_id: spec-20260714t132927z-f6dba5cd
-generated_at_utc: '2026-07-14T13:29:27.698322Z'
+report_id: spec-20260714t133502z-772aa222
+generated_at_utc: '2026-07-14T13:35:02.567816Z'
 source:
   id: ltp-local
   type: ltp
@@ -52,13 +52,13 @@ syscalls:
   result: formed_rules
   rules:
   - id: LTP_09B39E9C9254ECB2
-    generated_at_utc: '2026-07-14T13:29:27.698322Z'
+    generated_at_utc: '2026-07-14T13:35:02.567816Z'
     content_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
   - id: LTP_0CD17E662AFD2956
-    generated_at_utc: '2026-07-14T13:29:27.698322Z'
+    generated_at_utc: '2026-07-14T13:35:02.567816Z'
     content_hash: sha256:0cd17e662afd2956c8c1a42d49b46dca16c37c1972fc6d3632c05c317939a996
   - id: LTP_5CB803B873F78BA0
-    generated_at_utc: '2026-07-14T13:29:27.698322Z'
+    generated_at_utc: '2026-07-14T13:35:02.567816Z'
     content_hash: sha256:5cb803b873f78ba0c0cafe0d4ab7a0e69be0d150de939bbf030e0c66f583d1c6
   evidence_count: 2
   unresolved_evidence_count: 0

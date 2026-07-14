@@ -17,7 +17,7 @@ semantics:
   errno:
   - EBADF
 semantic_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
-generated_at_utc: '2026-07-14T13:29:27.698322Z'
+generated_at_utc: '2026-07-14T13:35:02.567816Z'
 sources:
 - source_id: ltp-local
   source_type: ltp
