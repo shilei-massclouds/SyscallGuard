@@ -1,10 +1,14 @@
 schema_name: syscallguard-shared-entities
-version: 3
+version: 4
 entities:
   ingest_report:
     kind: syscallguard_ingest_report
     storage: runs/spec-*/report.md YAML frontmatter
     required: [report_id, generated_at_utc, source, count, pending_count, selected_syscalls, syscalls]
+    optional: [requested_syscalls]
+    selection_modes:
+      count: "requested_syscalls is absent and count records the resolved command, descriptor, or global default."
+      explicit_syscalls: "requested_syscalls is a normalized non-empty sorted unique list and count is {value: null, source: explicit_syscalls}."
     syscall_result_values: [formed_rules, no_rules]
     rule_version_required: [id, generated_at_utc, content_hash]
   rule:

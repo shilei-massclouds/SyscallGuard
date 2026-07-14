@@ -93,6 +93,20 @@ def resolve_count(
     return parsed, str(parsed), reason
 
 
+def resolve_syscalls(value: str | None) -> list[str] | None:
+    """Normalize an explicit comma-separated syscall selection."""
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise SyscallGuardError("syscalls must be a comma-separated list")
+    names = [item.strip().lower() for item in value.split(",")]
+    if not names or any(not name for name in names):
+        raise SyscallGuardError(
+            "syscalls must be a non-empty comma-separated list without empty entries"
+        )
+    return sorted(set(names))
+
+
 def require_descriptor(
     path: Path, root: Path
 ) -> tuple[dict[str, Any], Path, str, LtpAdapter]:
@@ -457,7 +471,15 @@ def _report_text(frontmatter: dict[str, Any]) -> str:
         [
             f"Report: `{frontmatter['report_id']}`",
             f"Source: `{source['id']}` (`{source['revision']}`)",
-            f"Count: `{count['value']}` from `{count['source']}`",
+        ]
+    )
+    if "requested_syscalls" in frontmatter:
+        requested = ", ".join(f"`{name}`" for name in frontmatter["requested_syscalls"])
+        lines.append(f"Requested syscalls: {requested}")
+    else:
+        lines.append(f"Count: `{count['value']}` from `{count['source']}`")
+    lines.extend(
+        [
             f"Pending before selection: {frontmatter['pending_count']}",
             "",
             "| Syscall | Result | Evidence | Unresolved | Rules | Reason |",
@@ -543,13 +565,26 @@ def run_ingest(
     count: int | str | None = None,
     root: Path | None = None,
     requested_run_id: str | None = None,
+    syscalls: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
+    if count is not None and syscalls is not None:
+        raise SyscallGuardError("count and syscalls are mutually exclusive")
+    requested_syscalls = resolve_syscalls(syscalls)
     descriptor_path, source_reason = resolve_source(source, root)
     descriptor, _location, revision, adapter = require_descriptor(descriptor_path, root)
-    limit, count_label, count_reason = resolve_count(count, descriptor)
+    if requested_syscalls is None:
+        limit, count_label, count_reason = resolve_count(count, descriptor)
+    else:
+        limit, count_label, count_reason = None, None, "explicit_syscalls"
     report_id = requested_run_id or new_run_id(
-        "spec", {"source": str(descriptor_path), "count": count_label, "at": utc_now()}
+        "spec",
+        {
+            "source": str(descriptor_path),
+            "count": count_label,
+            "syscalls": requested_syscalls,
+            "at": utc_now(),
+        },
     )
     report_id = normalize_run_id(report_id)
     report_path = root / "runs" / report_id / "report.md"
@@ -557,7 +592,15 @@ def run_ingest(
         raise SyscallGuardError(f"report already exists: {report_path.parent}")
 
     latest, _reports = scan_ingest_reports(root)
-    candidates = [adapter.prescan(item) for item in adapter.discover()]
+    discovered = adapter.discover()
+    if requested_syscalls is not None:
+        available = {str(item["syscall"]) for item in discovered}
+        unknown = sorted(set(requested_syscalls) - available)
+        if unknown:
+            raise SyscallGuardError(
+                "requested syscalls do not exist in source: " + ", ".join(unknown)
+            )
+    candidates = [adapter.prescan(item) for item in discovered]
     pending: list[dict[str, Any]] = []
     reasons: dict[str, str] = {}
     for item in candidates:
@@ -567,7 +610,11 @@ def run_ingest(
             pending.append(item)
             reasons[str(item["syscall"])] = reason
     pending.sort(key=lambda item: str(item["syscall"]))
-    selected = pending if limit is None else pending[:limit]
+    if requested_syscalls is not None:
+        requested_set = set(requested_syscalls)
+        selected = [item for item in pending if str(item["syscall"]) in requested_set]
+    else:
+        selected = pending if limit is None else pending[:limit]
 
     extracted: dict[str, dict[str, Any]] = {}
     publishable_rows: list[dict[str, Any]] = []
@@ -664,6 +711,8 @@ def run_ingest(
         "selected_syscalls": [str(item["syscall"]) for item in selected],
         "syscalls": result_rows,
     }
+    if requested_syscalls is not None:
+        frontmatter["requested_syscalls"] = requested_syscalls
     if conflicts:
         frontmatter["conflicts"] = conflicts
 
@@ -686,7 +735,9 @@ def build_parser() -> argparse.ArgumentParser:
         description="Ingest target-independent syscall specifications"
     )
     parser.add_argument("--source", help="source alias or descriptor YAML")
-    parser.add_argument("--count", help="positive integer or all")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--count", help="positive integer or all")
+    selection.add_argument("--syscalls", help="comma-separated syscall names")
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
     return parser
@@ -695,10 +746,12 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     requested = args.run_id or new_run_id(
-        "spec", {"source": args.source, "count": args.count}
+        "spec", {"source": args.source, "count": args.count, "syscalls": args.syscalls}
     )
     try:
-        report_id = run_ingest(args.source, args.count, args.root, requested)
+        report_id = run_ingest(
+            args.source, args.count, args.root, requested, args.syscalls
+        )
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
@@ -707,7 +760,10 @@ def main(argv: list[str] | None = None) -> int:
     source = report["source"]
     print(f"source: {source['id']} ({source['revision']})")
     print(f"recognition_rules_hash: {source['recognition_rules_hash']}")
-    print(f"count: {report['count']['value']} ({report['count']['source']})")
+    if "requested_syscalls" in report:
+        print("requested_syscalls: " + ", ".join(report["requested_syscalls"]))
+    else:
+        print(f"count: {report['count']['value']} ({report['count']['source']})")
     print(f"pending: {report['pending_count']}")
     print("selected: " + (", ".join(report["selected_syscalls"]) or "none"))
     for row in report["syscalls"]:

@@ -4,6 +4,14 @@ Resolve an omitted source through `sources/index.yaml:default_source`; resolve a
 an alias first and then as a descriptor path. Resolve count in this order: command, descriptor
 `default_count`, global default 20. Accept only a positive integer or `all`.
 
+Alternatively, accept `syscalls=<name1,name2,...>` as an explicit candidate restriction. Reject it
+when command count is also explicit; descriptor `default_count` does not apply in list mode. Split on
+commas, trim, lowercase, deduplicate, and sort syscall names. Reject an empty item, an empty list, or
+any name that the resolved source does not contain before writing output. Apply the usual fingerprint
+skip to requested names, so only new or changed requested syscalls are selected. Keep `pending_count`
+global. In list-mode reports, store normalized names in `requested_syscalls` and store count as
+`{value: null, source: explicit_syscalls}`.
+
 Implement every source adapter with `discover`, `prescan`, and `extract`. The current `ltp` adapter
 reads source instances containing only `source_id`, `adapter`, `location`, `revision`, and optional
 `default_count`. Keep all macro, helper, old-API, array, normalization, precondition, and rule-template

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Ingest Syscall Specs"
+  display_name: "$提取规则"
   short_description: "Import target-independent syscall rules"
-  default_prompt: "Use $ingest-syscall-specs with optional source=<alias-or-descriptor> and count=<N-or-all> to import pending syscall rules."
+  default_prompt: "Use $ingest-syscall-specs with optional source=<alias-or-descriptor> and either count=<N-or-all> or syscalls=<name1,name2> to import pending syscall rules."

@@ -1,9 +1,9 @@
 schema_name: syscallguard-source-descriptor
-version: 2
+version: 3
 required: [source_id, adapter, location, revision]
 adapter_values: [ltp]
 optional:
-  default_count: Positive integer or all. Used only when the command omits count.
+  default_count: Positive integer or all. Used only when the command omits both count and syscalls.
 notes:
   - Source aliases and default_source live in sources/index.yaml.
   - LTP syscall candidates are always sorted by normalized syscall name.

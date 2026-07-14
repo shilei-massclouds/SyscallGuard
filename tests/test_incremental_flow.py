@@ -24,9 +24,16 @@ from syscallguard.common import (
     update_index,
 )
 from syscallguard.fixing import run_fix
-from syscallguard.ingest import resolve_count, resolve_source, run_ingest
+from syscallguard.ingest import (
+    build_parser as build_ingest_parser,
+    resolve_count,
+    resolve_source,
+    resolve_syscalls,
+    run_ingest,
+)
 from syscallguard.mapping import run_mapping
 from syscallguard.reset import reset_project
+from tools import validate_repository
 
 
 def command(args: list[str], cwd: Path) -> str:
@@ -322,6 +329,143 @@ class IngestTests(FlowTestCase):
         for invalid in (0, -1, "0", "nope", "1.5"):
             with self.assertRaisesRegex(SyscallGuardError, "positive integer"):
                 resolve_count(invalid, {})
+
+    def test_syscall_list_normalization_and_cli(self) -> None:
+        self.assertEqual(
+            resolve_syscalls(" beta, Alpha,alpha, BETA "), ["alpha", "beta"]
+        )
+        self.assertIsNone(resolve_syscalls(None))
+        for invalid in ("", "   ", ",", "alpha,", ",alpha", "alpha,,beta"):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(SyscallGuardError, "non-empty"):
+                    resolve_syscalls(invalid)
+        args = build_ingest_parser().parse_args(["--syscalls", "alpha,beta"])
+        self.assertEqual(args.syscalls, "alpha,beta")
+
+    def test_syscall_list_selection_is_incremental_and_global_pending_is_retained(self) -> None:
+        _source, descriptor = self.make_ltp()
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-beta",
+            syscalls=" BETA,beta ",
+        )
+        first = report(self.root, "spec-list-beta")
+        self.assertEqual(first["requested_syscalls"], ["beta"])
+        self.assertEqual(first["count"], {"value": None, "source": "explicit_syscalls"})
+        self.assertEqual(first["pending_count"], 2)
+        self.assertEqual(first["selected_syscalls"], ["beta"])
+        body = (self.root / "runs/spec-list-beta/report.md").read_text(encoding="utf-8")
+        self.assertIn("Requested syscalls: `beta`", body)
+        self.assertNotIn("Count: `", body)
+
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-partial",
+            syscalls="beta, ALPHA,alpha",
+        )
+        partial = report(self.root, "spec-list-partial")
+        self.assertEqual(partial["requested_syscalls"], ["alpha", "beta"])
+        self.assertEqual(partial["pending_count"], 1)
+        self.assertEqual(partial["selected_syscalls"], ["alpha"])
+
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-unchanged",
+            syscalls="alpha,beta",
+        )
+        unchanged = report(self.root, "spec-list-unchanged")
+        self.assertEqual(unchanged["pending_count"], 0)
+        self.assertEqual(unchanged["selected_syscalls"], [])
+        errors: list[str] = []
+        with mock.patch.object(validate_repository, "ROOT", self.root):
+            validate_repository.validate_reports(errors)
+        self.assertEqual(errors, [])
+
+    def test_syscall_list_ignores_descriptor_default_count(self) -> None:
+        _source, descriptor = self.make_ltp()
+        value = load_mapping(descriptor)
+        value["default_count"] = 1
+        atomic_write_yaml(descriptor, value)
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-ignore-default",
+            syscalls="beta,alpha",
+        )
+        selected = report(self.root, "spec-list-ignore-default")
+        self.assertEqual(selected["selected_syscalls"], ["alpha", "beta"])
+
+    def test_syscall_list_reacts_to_source_and_recognizer_changes(self) -> None:
+        source, descriptor = self.make_ltp()
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-baseline",
+            syscalls="alpha",
+        )
+        commit_file(
+            source,
+            "testcases/kernel/syscalls/alpha/alpha01.c",
+            "void run(void) { TST_EXP_FAIL(alpha(), EFAULT); ALPHA_EXP(alpha()); }\n",
+        )
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-source-change",
+            syscalls="alpha",
+        )
+        changed = report(self.root, "spec-list-source-change")
+        self.assertEqual(changed["selected_syscalls"], ["alpha"])
+        self.assertEqual(changed["syscalls"][0]["selection_reason"], "source_changed")
+
+        rules_path = self.root / "sources/adapters/ltp/recognition-rules.yaml"
+        rules = load_mapping(rules_path)
+        rules["recognizers"].append(
+            {
+                "id": "fixture.alpha-list",
+                "enabled": True,
+                "kind": "tst_exp",
+                "names": ["ALPHA_EXP"],
+                "call_argument": 0,
+                "expected": {"kind": "success", "return": "SUCCESS"},
+            }
+        )
+        atomic_write_yaml(rules_path, rules)
+        run_ingest(
+            descriptor,
+            root=self.root,
+            requested_run_id="spec-list-recognizer-change",
+            syscalls="alpha",
+        )
+        recognized = report(self.root, "spec-list-recognizer-change")
+        self.assertEqual(recognized["selected_syscalls"], ["alpha"])
+        self.assertEqual(
+            recognized["syscalls"][0]["selection_reason"], "recognition_changed"
+        )
+
+    def test_invalid_syscall_lists_write_nothing(self) -> None:
+        _source, descriptor = self.make_ltp()
+        cases = [
+            ("spec-list-empty", None, "", "non-empty"),
+            ("spec-list-gap", None, "alpha,,beta", "non-empty"),
+            ("spec-list-unknown", None, "missing", "do not exist"),
+            ("spec-list-conflict", 1, "alpha", "mutually exclusive"),
+        ]
+        for run_id, count, syscalls, message in cases:
+            with self.subTest(run_id=run_id):
+                with self.assertRaisesRegex(SyscallGuardError, message):
+                    run_ingest(
+                        descriptor,
+                        count,
+                        self.root,
+                        run_id,
+                        syscalls,
+                    )
+                self.assertFalse((self.root / "runs" / run_id).exists())
+        self.assertEqual(list((self.root / "library/rules").glob("*.yaml")), [])
 
     def test_failure_writes_nothing_and_retries(self) -> None:
         _source, descriptor = self.make_ltp()

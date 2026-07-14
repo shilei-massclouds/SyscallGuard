@@ -15,6 +15,10 @@
 时，`formed_rules` 与 `no_rules` 都跳过。旧 report 若包含已由新 report 更新的 syscall，不能再
 用于 mapping。
 
+显式名单模式额外记录已去重排序的 `requested_syscalls`，并将 count 记录为
+`{value: null, source: explicit_syscalls}`。`selected_syscalls` 只包含名单内 fingerprint 首次
+出现或发生变化的 syscall，`pending_count` 仍表示来源的全局待处理数。
+
 ## Rule
 
 `library/rules/*.yaml` 是唯一通用规则库，不存在 index。Rule 包含 category、semantics、

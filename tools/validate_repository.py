@@ -186,6 +186,42 @@ def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
         row_ids = [row.get("syscall") for row in rows if isinstance(row, dict)]
         if selected != row_ids:
             errors.append(f"ingest report {report_id} selected_syscalls mismatch")
+        count = value.get("count")
+        if not isinstance(count, dict) or set(count) != {"value", "source"}:
+            errors.append(f"ingest report {report_id} has invalid count metadata")
+        if "requested_syscalls" in value:
+            requested = value.get("requested_syscalls")
+            if (
+                not isinstance(requested, list)
+                or not requested
+                or not all(
+                    isinstance(item, str) and item and item == item.strip().lower()
+                    for item in requested
+                )
+                or requested != sorted(set(requested))
+            ):
+                errors.append(f"ingest report {report_id} has invalid requested_syscalls")
+            elif not isinstance(selected, list) or not set(selected).issubset(requested):
+                errors.append(f"ingest report {report_id} selects unrequested syscalls")
+            if count != {"value": None, "source": "explicit_syscalls"}:
+                errors.append(f"ingest report {report_id} has invalid syscall-list count")
+        elif isinstance(count, dict) and count.get("source") == "explicit_syscalls":
+            errors.append(f"ingest report {report_id} has no requested_syscalls")
+        elif isinstance(count, dict):
+            count_value = count.get("value")
+            count_source = count.get("source")
+            valid_count = count_value == "all" or (
+                isinstance(count_value, str)
+                and count_value.isdigit()
+                and int(count_value) > 0
+                and str(int(count_value)) == count_value
+            )
+            if not valid_count or count_source not in {
+                "command",
+                "descriptor",
+                "global_default",
+            }:
+                errors.append(f"ingest report {report_id} has invalid resolved count")
         for row in rows:
             if not isinstance(row, dict) or row.get("result") not in {"formed_rules", "no_rules"}:
                 errors.append(f"ingest report {report_id} has invalid syscall result")
