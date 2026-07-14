@@ -610,6 +610,47 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
+    def test_preseeded_pending_rule_is_counted_as_added(self) -> None:
+        self.prepare_spec_run()
+        rule = load_mapping(self.root / "library/rules/rule-one.yaml")
+        atomic_write_yaml(
+            self.root / "targets/starry/rule-coverage.yaml",
+            {
+                "schema_version": 1,
+                "kind": "syscallguard_starry_rule_coverage",
+                "updated_at_utc": None,
+                "target": {
+                    "target_id": "starry",
+                    "repository_identity": None,
+                    "descriptor_hash": None,
+                    "last_snapshot_hash": None,
+                },
+                "rules": {
+                    "RULE_ONE": {
+                        "syscalls": ["alpha"],
+                        "rule_version": entity_version("RULE_ONE", rule),
+                        "status": "pending",
+                        "classification": None,
+                        "mapping_refs": [],
+                        "static_check_refs": [],
+                        "dynamic_test_refs": [],
+                        "artifact_versions": {},
+                        "target_dependencies": [],
+                        "repository_identity": None,
+                        "target_descriptor_hash": None,
+                        "last_verified_snapshot_hash": None,
+                        "last_processed_run": None,
+                        "reason": "initial_coverage",
+                    }
+                },
+            },
+        )
+        _repo, _descriptor, _snapshot = self.make_target("good\n")
+        run_mapping(None, self.root, "mapping-first-attempt")
+        manifest = load_mapping(self.root / "runs/mapping-first-attempt/manifest.yaml")
+        self.assertEqual(manifest["counts"]["added"], 1)
+        self.assertEqual(manifest["counts"]["updated"], 0)
+
     def test_rule_library_manifest_and_content_staleness(self) -> None:
         self.prepare_spec_run()
         self.add_static_check("good")

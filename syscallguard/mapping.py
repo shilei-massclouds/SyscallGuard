@@ -1036,7 +1036,12 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
             for values in outputs.values()
             for _path, _entity, action in values.values()
         ]
-        added = sum(1 for rule_id in selected if not isinstance(old_rows.get(rule_id), dict))
+        added = sum(
+            1
+            for rule_id in selected
+            if not isinstance(old_rows.get(rule_id), dict)
+            or not old_rows[rule_id].get("last_processed_run")
+        )
         updated = len(selected) - added
         remaining = sorted(pending_ids - selected)
         skipped_rules = sorted(preparation.get("skipped_rule_ids", []))
