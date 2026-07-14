@@ -1,0 +1,54 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_CLOSE_FD_TABLE
+title: close removes existing descriptors and rejects missing descriptors
+rule_refs:
+- LTP_09B39E9C9254ECB2
+- LTP_0CD17E662AFD2956
+- LTP_5CB803B873F78BA0
+applies_to_syscalls:
+- close
+path: os/StarryOS/kernel/src/file/mod.rs
+patterns:
+- label: close removes the descriptor from the current fd table
+  regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?FD_TABLE\.write\(\)\.remove\(fd as usize\)'
+- label: a removed descriptor succeeds and a missing descriptor is EBADF
+  regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?return Ok\(\(\)\);[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+upstream_dependencies:
+- id: LTP_09B39E9C9254ECB2
+  generated_at_utc: '2026-07-14T13:35:02.567816Z'
+  content_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
+- id: LTP_0CD17E662AFD2956
+  generated_at_utc: '2026-07-14T13:35:02.567816Z'
+  content_hash: sha256:0cd17e662afd2956c8c1a42d49b46dca16c37c1972fc6d3632c05c317939a996
+- id: LTP_5CB803B873F78BA0
+  generated_at_utc: '2026-07-14T13:35:02.567816Z'
+  content_hash: sha256:5cb803b873f78ba0c0cafe0d4ab7a0e69be0d150de939bbf030e0c66f583d1c6
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - close_file_like
+  scope: symbols
+  file_hash: sha256:6155028f03d0acfe42f410b0b3e553b6a32411988d08a78e6ee03e09fa80e716
+  symbol_hashes:
+    close_file_like: sha256:4d1f8d29801b3d463bb4413e8325214d7af8f86f0cae7ada5006dd90e18be8e8
+  missing_symbols: []
+  content_hash: sha256:58a89ea09d3782630014814fc50f8c47c237503228195d53faf41af2f40d4026
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_close
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    sys_close: sha256:e7aca9df1278d812347be922bb2ca7b5be5fff1cf995a42300adc9a77de496ba
+  missing_symbols: []
+  content_hash: sha256:83f68616aa28981b6d088330cf93b948e1e4c0eb2a3029552811f0b4b8789a12
+target_content_fingerprint: sha256:f7385448af3925d2043bf6c425fc333c9bb949731c8b164fc24e4abd1ad6cf26
+generated_at_utc: '2026-07-14T16:14:51.791596Z'

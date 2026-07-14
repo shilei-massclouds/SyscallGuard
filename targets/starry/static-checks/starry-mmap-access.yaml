@@ -1,0 +1,58 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MMAP_ACCESS
+title: file-backed mmap enforces read and shared-write access
+rule_refs:
+- LTP_36C99C10CD38F8DB
+- LTP_45439D8F2BAB0832
+- LTP_52BAFC01DEA6E172
+- LTP_C346EFF1233F7061
+- LTP_F36F8C0CC1A6D840
+- LTP_FD1B65B0BCC88E0D
+applies_to_syscalls:
+- mmap
+path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+patterns:
+- label: all regular file mappings require fd read access
+  regex: if needs_file_mmap_checks \{[\s\S]*?if !flags\.contains\(FileFlags::READ\) \{[\s\S]*?return Err\(AxError::PermissionDenied\);
+- label: shared writable mappings additionally require fd write access
+  regex: matches!\(map_type, MmapFlags::SHARED\)[\s\S]*?permission_flags\.contains\(MmapProt::WRITE\)[\s\S]*?if
+    !flags\.contains\(FileFlags::WRITE\) \{[\s\S]*?return Err\(AxError::PermissionDenied\);
+upstream_dependencies:
+- id: LTP_36C99C10CD38F8DB
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:36c99c10cd38f8db26e721ea351430f0ebc4767b9a31257223ad8fd5519c7d0d
+- id: LTP_45439D8F2BAB0832
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:45439d8f2bab0832027a39e78d024f72cc6449adff9fb823af60ff7c004d7bc5
+- id: LTP_52BAFC01DEA6E172
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:52bafc01dea6e1725e71d23e11424031141e37ea07b99e151db6bcfc16116bde
+- id: LTP_C346EFF1233F7061
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:c346eff1233f706172a595326e9215b63dd1f455b13880c762f92532db036e2e
+- id: LTP_F36F8C0CC1A6D840
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:f36f8c0cc1a6d84025a2394e30fa1d7c273ce9c13d8f58d759383c75dbf8c10a
+- id: LTP_FD1B65B0BCC88E0D
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:fd1b65b0bcc88e0d283d47737c8b9d244de44d7461e8efd5bc6eb699ebaa0d54
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_mmap
+  scope: symbols
+  file_hash: sha256:b37bd11c9b637e9b3a2aff1b562e4d1bf4406308c8fbe67ee1c4f75fe3031f01
+  symbol_hashes:
+    sys_mmap: sha256:95ec5c43c23cb422260c8e31cc2c12f1be122cc188aafb59e68aa86b97346a1d
+  missing_symbols: []
+  content_hash: sha256:87b0d9d13887c5200143332c90906559b5ba8e298d4c2805c875f159375c6b62
+target_content_fingerprint: sha256:e1908a7c05c9eb2939bc25985b195c17f4d49126b8b444530fba0a322fd18c89
+generated_at_utc: '2026-07-14T16:14:51.791596Z'

@@ -1,4 +1,53 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: null
-syscalls: {}
+updated_at_utc: '2026-07-14T16:14:51.791596Z'
+syscalls:
+  close:
+  - check_id: STARRY_CLOSE_FD_TABLE
+    path: targets/starry/static-checks/starry-close-fd-table.yaml
+    rule_refs:
+    - LTP_09B39E9C9254ECB2
+    - LTP_0CD17E662AFD2956
+    - LTP_5CB803B873F78BA0
+  - check_id: STARRY_CLOSE_SYSCALL
+    path: targets/starry/static-checks/starry-close-syscall.yaml
+    rule_refs:
+    - LTP_09B39E9C9254ECB2
+    - LTP_0CD17E662AFD2956
+    - LTP_5CB803B873F78BA0
+  - check_id: STARRY_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-errno-translation.yaml
+    rule_refs: &id001
+    - LTP_09B39E9C9254ECB2
+    - LTP_0CD17E662AFD2956
+    - LTP_36C99C10CD38F8DB
+    - LTP_45439D8F2BAB0832
+    - LTP_51E295101A9F4411
+    - LTP_52BAFC01DEA6E172
+    - LTP_791DEA825D66980B
+    - LTP_C346EFF1233F7061
+    - LTP_F36F8C0CC1A6D840
+    - LTP_FD1B65B0BCC88E0D
+    - LTP_FEACDC300C3E1DD7
+  mmap:
+  - check_id: STARRY_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-errno-translation.yaml
+    rule_refs: *id001
+  - check_id: STARRY_MMAP_ACCESS
+    path: targets/starry/static-checks/starry-mmap-access.yaml
+    rule_refs:
+    - LTP_36C99C10CD38F8DB
+    - LTP_45439D8F2BAB0832
+    - LTP_52BAFC01DEA6E172
+    - LTP_C346EFF1233F7061
+    - LTP_F36F8C0CC1A6D840
+    - LTP_FD1B65B0BCC88E0D
+  - check_id: STARRY_MMAP_ARGUMENTS
+    path: targets/starry/static-checks/starry-mmap-arguments.yaml
+    rule_refs:
+    - LTP_51E295101A9F4411
+    - LTP_FEACDC300C3E1DD7
+  - check_id: STARRY_MMAP_FD
+    path: targets/starry/static-checks/starry-mmap-fd.yaml
+    rule_refs:
+    - LTP_791DEA825D66980B

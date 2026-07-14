@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MMAP_ARGUMENTS
+title: mmap rejects zero length and missing map type
+rule_refs:
+- LTP_51E295101A9F4411
+- LTP_FEACDC300C3E1DD7
+applies_to_syscalls:
+- mmap
+path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+patterns:
+- label: zero length is invalid input
+  regex: pub fn sys_mmap\([\s\S]*?if length == 0 \{[\s\S]*?return Err\(AxError::InvalidInput\);
+- label: map type must be shared private or shared validate
+  regex: let map_type = match flags & MmapFlags::TYPE\.bits\(\)[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+upstream_dependencies:
+- id: LTP_51E295101A9F4411
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:51e295101a9f4411b8c43521d430e85bd27ac1d7a96127b66675d7dc024ba9d2
+- id: LTP_FEACDC300C3E1DD7
+  generated_at_utc: '2026-07-14T13:38:13.033184Z'
+  content_hash: sha256:feacdc300c3e1dd754c7925df645b95995a6f17fd0ebcb6a50578071e2f9636f
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_mmap
+  scope: symbols
+  file_hash: sha256:b37bd11c9b637e9b3a2aff1b562e4d1bf4406308c8fbe67ee1c4f75fe3031f01
+  symbol_hashes:
+    sys_mmap: sha256:95ec5c43c23cb422260c8e31cc2c12f1be122cc188aafb59e68aa86b97346a1d
+  missing_symbols: []
+  content_hash: sha256:87b0d9d13887c5200143332c90906559b5ba8e298d4c2805c875f159375c6b62
+target_content_fingerprint: sha256:e1908a7c05c9eb2939bc25985b195c17f4d49126b8b444530fba0a322fd18c89
+generated_at_utc: '2026-07-14T16:14:51.791596Z'
