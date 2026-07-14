@@ -73,6 +73,11 @@ def _yaml_text(value: Any) -> str:
     )
 
 
+def yaml_text(value: Any) -> str:
+    """Render repository YAML consistently for transactional publishers."""
+    return _yaml_text(value)
+
+
 def atomic_write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
@@ -90,6 +95,69 @@ def atomic_write_text(path: Path, text: str) -> None:
 
 def atomic_write_yaml(path: Path, value: Any) -> None:
     atomic_write_text(path, _yaml_text(value))
+
+
+def transactional_write(files: list[tuple[Path, bytes]]) -> None:
+    """Replace a set of files atomically from the repository's perspective.
+
+    Files are staged first, then replaced in the supplied order.  If any
+    replacement fails, every destination already touched is restored.  A
+    caller that publishes a report alongside entities should therefore put
+    the report last: its presence is the transaction's completion marker.
+    """
+    destinations = [path for path, _content in files]
+    if len(destinations) != len(set(destinations)):
+        raise SyscallGuardError("transaction contains duplicate output paths")
+    originals: dict[Path, bytes | None] = {}
+    staged: list[tuple[Path, Path]] = []
+    replaced: list[Path] = []
+    created_directories: list[Path] = []
+    try:
+        for destination, content in files:
+            missing: list[Path] = []
+            parent = destination.parent
+            while not parent.exists():
+                missing.append(parent)
+                parent = parent.parent
+            for directory in reversed(missing):
+                directory.mkdir()
+                created_directories.append(directory)
+            originals[destination] = destination.read_bytes() if destination.exists() else None
+            descriptor, name = tempfile.mkstemp(
+                prefix=f".{destination.name}.publish.", dir=destination.parent
+            )
+            temp = Path(name)
+            staged.append((temp, destination))
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+        for temp, destination in staged:
+            os.replace(temp, destination)
+            replaced.append(destination)
+    except BaseException:
+        for temp, _destination in staged:
+            temp.unlink(missing_ok=True)
+        for destination in reversed(replaced):
+            original = originals[destination]
+            if original is None:
+                destination.unlink(missing_ok=True)
+            else:
+                descriptor, name = tempfile.mkstemp(
+                    prefix=f".{destination.name}.rollback.", dir=destination.parent
+                )
+                temp = Path(name)
+                with os.fdopen(descriptor, "wb") as handle:
+                    handle.write(original)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temp, destination)
+        for directory in reversed(created_directories):
+            try:
+                directory.rmdir()
+            except OSError:
+                pass
+        raise
 
 
 def read_frontmatter(path: Path) -> tuple[dict[str, Any], str]:

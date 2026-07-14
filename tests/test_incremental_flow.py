@@ -11,7 +11,11 @@ from unittest import mock
 
 import yaml
 
-from syscallguard.checking import run_check
+from syscallguard.checking import (
+    TEMP_ROOT as CHECK_TEMP_ROOT,
+    load_check_report,
+    run_check,
+)
 from syscallguard.common import (
     SyscallGuardError,
     atomic_write_text,
@@ -25,7 +29,7 @@ from syscallguard.common import (
     slug,
     update_index,
 )
-from syscallguard.fixing import run_fix
+from syscallguard.fixing import FIX_TEMP_ROOT, run_fix
 from syscallguard.ingest import (
     build_parser as build_ingest_parser,
     resolve_count,
@@ -138,6 +142,21 @@ class FlowTestCase(unittest.TestCase):
                     continue
                 if value.get("root") == str(self.root.resolve()):
                     shutil.rmtree(workspace)
+        for path in (self.root / "runs").glob("check-*/report.md"):
+            try:
+                value = load_check_report(self.root, path.parent.name)
+            except SyscallGuardError:
+                continue
+            diagnostic = value.get("diagnostic_directory")
+            if isinstance(diagnostic, str):
+                shutil.rmtree(diagnostic, ignore_errors=True)
+        for report_id in (
+            "check-stale",
+            "check-manual-stale",
+            "check-publish-failure",
+        ):
+            shutil.rmtree(CHECK_TEMP_ROOT / report_id, ignore_errors=True)
+        shutil.rmtree(FIX_TEMP_ROOT / "check-finding", ignore_errors=True)
         self.temp.cleanup()
 
     def update_executable_index(
@@ -691,9 +710,10 @@ class MappingTests(FlowTestCase):
         preparation = load_mapping(TEMP_ROOT / prepared / "preparation.yaml")
         self.assertEqual(preparation["selected_rule_ids"], ["RULE_ONE"])
 
-        run_check("mapping-old", self.root, "check-stale")
-        stale = load_mapping(self.root / "runs/check-stale/manifest.yaml")
-        self.assertEqual(stale["blockers"][0]["kind"], "stale_mapping")
+        with self.assertRaisesRegex(SyscallGuardError, "stale mapping"):
+            run_check("mapping-old", self.root, "check-stale")
+        self.assertFalse((self.root / "runs/check-stale").exists())
+        self.assertTrue((CHECK_TEMP_ROOT / "check-stale/failure.yaml").is_file())
 
     def test_syscall_filter_and_needs_review_retry(self) -> None:
         self.prepare_spec_run()
@@ -858,16 +878,27 @@ class CheckTests(FlowTestCase):
         self.map_fixture(descriptor)
         before = command(["git", "status", "--short"], repo)
         run_check("mapping-fixture", self.root, "check-first")
-        first = load_mapping(self.root / "runs/check-first/manifest.yaml")
+        first = load_check_report(self.root, "check-first")
         self.assertEqual(first["status"], "completed")
         self.assertEqual(first["counts"]["static_pass"], 1)
+        self.assertEqual(
+            {item.name for item in (self.root / "runs/check-first").iterdir()},
+            {"report.md"},
+        )
+        report_text = (self.root / "runs/check-first/report.md").read_text(encoding="utf-8")
+        self.assertIn("# Starry 合规检查报告", report_text)
+        self.assertIn("`CHECK_ONE`", report_text)
+        self.assertIn("matched=`true`", report_text)
+        self.assertTrue((self.root / "targets/starry/findings/index.yaml").is_file())
+        self.assertFalse((CHECK_TEMP_ROOT / "check-first").exists())
         self.assertEqual(command(["git", "rev-parse", "HEAD"], repo), commit)
         self.assertEqual(command(["git", "status", "--short"], repo), before)
 
         run_check("mapping-fixture", self.root, "check-second")
-        second = load_mapping(self.root / "runs/check-second/manifest.yaml")
-        self.assertEqual(second["reused_run"], "check-first")
-        self.assertEqual(second["counts"]["skipped_unchanged"], 1)
+        second = load_check_report(self.root, "check-second")
+        self.assertEqual(second["reused_from"], "check-first")
+        self.assertEqual(second["counts"]["reused"], 1)
+        self.assertFalse((CHECK_TEMP_ROOT / "check-second").exists())
 
     def test_findings_use_mapping_syscall_ownership(self) -> None:
         self.prepare_spec_run()
@@ -875,13 +906,55 @@ class CheckTests(FlowTestCase):
         _repo, descriptor, _commit = self.make_target()
         self.map_fixture(descriptor)
         run_check("mapping-fixture", self.root, "check-ownership")
-        manifest = load_mapping(self.root / "runs/check-ownership/manifest.yaml")
-        self.assertTrue(manifest["entities"]["findings"])
-        for finding_id in manifest["entities"]["findings"]:
+        check_report = load_check_report(self.root, "check-ownership")
+        self.assertTrue(check_report["finding_ids"])
+        for finding_id in check_report["finding_ids"]:
             finding = load_mapping(
                 self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
             )
             self.assertEqual(finding["syscall"], "alpha")
+            self.assertNotIn("diagnostic_log", yaml.safe_dump(finding))
+
+    def test_reuse_does_not_add_finding_occurrence(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-reuse-first")
+        first = load_check_report(self.root, "check-reuse-first")
+        finding_id = first["finding_ids"][0]
+        finding_path = self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+        occurrence_count = len(load_mapping(finding_path)["occurrences"])
+
+        run_check("mapping-fixture", self.root, "check-reuse-second")
+        second = load_check_report(self.root, "check-reuse-second")
+        self.assertEqual(second["reused_from"], "check-reuse-first")
+        self.assertEqual(len(load_mapping(finding_path)["occurrences"]), occurrence_count)
+
+    def test_reliable_dynamic_failure_keeps_only_eight_kib_tail(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("bad")
+        self.add_dynamic_test(
+            "DYNAMIC_LONG_FAIL",
+            ["/bin/sh", "-c", "printf '%09000d' 0; exit 9"],
+        )
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-long-output")
+        check_report = load_check_report(self.root, "check-long-output")
+        result = check_report["dynamic"][0]
+        self.assertEqual(result["result"], "fail")
+        self.assertEqual(result["exit_code"], 9)
+        self.assertTrue(result["output_truncated"])
+        self.assertLessEqual(len(result["output_tail"].encode("utf-8")), 8 * 1024)
+        finding = load_mapping(
+            self.root
+            / "targets/starry/findings"
+            / f"{slug(result['finding_ids'][0])}.yaml"
+        )
+        evidence = finding["occurrences"][-1]["evidence"]
+        self.assertLessEqual(len(evidence["output_tail"].encode("utf-8")), 8 * 1024)
+        self.assertNotIn("diagnostic_log", evidence)
 
     def test_static_and_dynamic_findings_do_not_absorb_environment_blocker(self) -> None:
         self.prepare_spec_run()
@@ -898,23 +971,33 @@ class CheckTests(FlowTestCase):
         atomic_write_yaml(skipped_path, skipped)
         _repo, descriptor, _commit = self.make_target()
         self.map_fixture(descriptor)
-        run_check("mapping-fixture", self.root, "check-mixed")
-        manifest = load_mapping(self.root / "runs/check-mixed/manifest.yaml")
-        results = load_mapping(self.root / "runs/check-mixed/results.yaml")
-        self.assertEqual(manifest["status"], "completed_with_blockers")
+        run_check("mapping-fixture", self.root, "check-mixed-report")
+        check_report = load_check_report(self.root, "check-mixed-report")
+        self.assertEqual(check_report["status"], "completed_with_blockers")
         self.assertEqual(
-            {row["test_id"]: row["result"] for row in results["dynamic"]},
+            {row["test_id"]: row["result"] for row in check_report["dynamic"]},
             {
                 "DYNAMIC_BLOCKER": "not_run",
                 "DYNAMIC_FAIL": "fail",
                 "DYNAMIC_SKIPPED": "skipped",
             },
         )
-        for finding_id in manifest["entities"]["findings"]:
+        self.assertTrue(Path(check_report["diagnostic_directory"]).is_dir())
+        self.assertTrue(Path(check_report["worktree"]).is_dir())
+        self.assertEqual(
+            {item.name for item in (self.root / "runs/check-mixed-report").iterdir()},
+            {"report.md"},
+        )
+        for finding_id in check_report["finding_ids"]:
             finding = load_mapping(
                 self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
             )
             self.assertNotIn("No space left on device", yaml.safe_dump(finding))
+        dynamic_finding = next(
+            row for row in check_report["dynamic"] if row["test_id"] == "DYNAMIC_FAIL"
+        )
+        self.assertTrue(dynamic_finding["finding_ids"])
+        self.assertEqual(dynamic_finding["exit_code"], 7)
 
     def test_manual_check_edit_without_timestamp_is_rejected(self) -> None:
         self.prepare_spec_run()
@@ -925,10 +1008,25 @@ class CheckTests(FlowTestCase):
         entity = load_mapping(path)
         entity["patterns"][0]["regex"] = "manual-change"
         atomic_write_yaml(path, entity)
-        run_check("mapping-fixture", self.root, "check-manual-stale")
-        manifest = load_mapping(self.root / "runs/check-manual-stale/manifest.yaml")
-        self.assertEqual(manifest["status"], "completed_with_blockers")
-        self.assertIn("content changed", manifest["blockers"][0]["dependency_mismatches"][0])
+        with self.assertRaisesRegex(SyscallGuardError, "content changed"):
+            run_check("mapping-fixture", self.root, "check-manual-stale")
+        self.assertFalse((self.root / "runs/check-manual-stale").exists())
+        self.assertTrue((CHECK_TEMP_ROOT / "check-manual-stale/failure.yaml").is_file())
+
+    def test_publication_failure_does_not_partially_publish(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        with mock.patch(
+            "syscallguard.checking.transactional_write", side_effect=OSError("publish failed")
+        ):
+            with self.assertRaisesRegex(SyscallGuardError, "publish failed"):
+                run_check("mapping-fixture", self.root, "check-publish-failure")
+        self.assertFalse((self.root / "runs/check-publish-failure").exists())
+        self.assertFalse((self.root / "targets/starry/findings/index.yaml").exists())
+        self.assertFalse((self.root / "targets/starry/findings").exists())
+        self.assertTrue((CHECK_TEMP_ROOT / "check-publish-failure/failure.yaml").is_file())
 
 
 class FixTests(FlowTestCase):
@@ -968,14 +1066,15 @@ new file mode 100644
         repo, descriptor, base_commit = self.make_target()
         self.map_fixture(descriptor)
         run_check("mapping-fixture", self.root, "check-finding")
-        check_manifest = load_mapping(self.root / "runs/check-finding/manifest.yaml")
-        self.assertEqual(check_manifest["counts"]["static_fail"], 1)
-        self.assertEqual(check_manifest["counts"]["dynamic_pass"], 1)
+        check_report = load_check_report(self.root, "check-finding")
+        self.assertEqual(check_report["counts"]["static_fail"], 1)
+        self.assertEqual(check_report["counts"]["dynamic_pass"], 1)
         return repo, base_commit
 
     def test_success_commits_fix_and_injected_test_without_touching_original_branch(self) -> None:
         repo, base_commit = self.prepare_failed_check()
-        patch = self.root / "runs/check-finding/implementation-fix.patch"
+        patch = FIX_TEMP_ROOT / "check-finding/implementation-fix.patch"
+        patch.parent.mkdir(parents=True, exist_ok=True)
         patch.write_text(self.FIX_PATCH, encoding="utf-8")
         run_fix("check-finding", None, self.root, "fix-success")
         manifest = load_mapping(self.root / "runs/fix-success/manifest.yaml")
@@ -984,14 +1083,19 @@ new file mode 100644
         self.assertEqual(command(["git", "rev-parse", "HEAD"], repo), base_commit)
         self.assertNotIn("commit", manifest)
         self.assertEqual(
+            {item.name for item in (self.root / "runs/check-finding").iterdir()},
+            {"report.md"},
+        )
+        self.assertEqual(
             command(["git", "show", f"{manifest['branch']}:code.txt"], repo), "good"
         )
 
     def test_failed_regression_keeps_worktree_and_creates_no_branch(self) -> None:
         repo, _base_commit = self.prepare_failed_check()
-        patch = self.root / "runs/check-finding/implementation-fix.patch"
+        patch = self.root / "fix-input/ineffective.patch"
+        patch.parent.mkdir(parents=True)
         patch.write_text(self.INEFFECTIVE_PATCH, encoding="utf-8")
-        run_fix("check-finding", None, self.root, "fix-failed")
+        run_fix("check-finding", patch, self.root, "fix-failed")
         manifest = load_mapping(self.root / "runs/fix-failed/manifest.yaml")
         self.assertEqual(manifest["status"], "failed")
         self.assertTrue(Path(manifest["worktree"]).is_dir())
@@ -999,8 +1103,8 @@ new file mode 100644
 
     def test_manual_finding_edit_without_timestamp_is_rejected(self) -> None:
         _repo, _base_commit = self.prepare_failed_check()
-        check = load_mapping(self.root / "runs/check-finding/manifest.yaml")
-        finding_id = check["entities"]["findings"][0]
+        check = load_check_report(self.root, "check-finding")
+        finding_id = check["finding_ids"][0]
         path = self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
         finding = load_mapping(path)
         finding["manual_note"] = "edited without generation update"

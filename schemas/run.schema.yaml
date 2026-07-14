@@ -1,5 +1,5 @@
 schema_name: syscallguard-run
-version: 5
+version: 6
 required:
   - schema_version
   - kind
@@ -15,14 +15,11 @@ required:
   - counts
   - blockers
   - error
-stage_values: [check, fix]
+stage_values: [fix]
 status_values: [running, completed, completed_with_blockers, failed, superseded]
 upstream_stage:
-  check: mapping_report
-  fix: check
+  fix: check_report
 optional:
-  from_run_id: Required for check and fix runs.
-  rule_syscalls: Rule-to-syscall ownership copied from the mapping report for check runs.
+  from_run_id: Required for fix runs and identifies the parent check report.
   entity_versions: Version snapshots keyed by entity type and ID.
-  result_version: Version of a check result entity.
   patch_version: Version of a generated implementation patch.

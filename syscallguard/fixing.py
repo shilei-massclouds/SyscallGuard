@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,7 @@ from .checking import (
     _run_dynamic_test,
     _run_static_check,
     _worktree_path,
+    load_check_report,
 )
 from .common import (
     SCHEMA_VERSION,
@@ -26,13 +28,11 @@ from .common import (
     dependency_mismatch,
     entity_version,
     file_hash,
-    entity_hash,
     git,
     git_output,
     load_mapping,
     new_run_id,
     publish_yaml_entities,
-    read_run,
     repository_snapshot_hash,
     repo_root,
     slug,
@@ -43,14 +43,17 @@ from .common import (
 from .mapping import load_mapping_report
 
 
+FIX_TEMP_ROOT = Path(os.environ.get("SYSCALLGUARD_FIX_TEMP_ROOT", "/tmp/syscallguard-fix"))
+
+
 def _open_findings(root: Path, check_run: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    ids = check_run.get("entities", {}).get("findings", [])
+    ids = check_run.get("finding_ids", [])
     if not isinstance(ids, list):
-        raise SyscallGuardError("check run finding ids must be a list")
+        raise SyscallGuardError("check report finding ids must be a list")
     findings: dict[str, dict[str, Any]] = {}
     for finding_id in ids:
         if not isinstance(finding_id, str):
-            raise SyscallGuardError("check run finding id must be a string")
+            raise SyscallGuardError("check report finding id must be a string")
         path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
         finding = load_mapping(path)
         if finding.get("finding_id") != finding_id or finding.get("kind") != "syscallguard_starry_finding":
@@ -66,22 +69,13 @@ def _check_staleness(
     _findings: dict[str, dict[str, Any]],
 ) -> list[str]:
     reasons: list[str] = []
-    result_path = root / "runs" / str(check_run.get("run_id")) / "results.yaml"
-    recorded_result = check_run.get("result_version")
-    if not result_path.is_file() or not isinstance(recorded_result, dict):
-        reasons.append("check run has no versioned results")
-    else:
-        result = load_mapping(result_path)
-        mismatch = dependency_mismatch(recorded_result, str(check_run.get("run_id")), result)
-        if mismatch:
-            reasons.append(mismatch)
-    recorded_findings = check_run.get("entity_versions", {}).get("findings", {})
+    recorded_findings = check_run.get("finding_versions", {})
     if not isinstance(recorded_findings, dict):
-        reasons.append("check run has no finding versions")
+        reasons.append("check report has no finding versions")
     else:
         for finding_id, row in recorded_findings.items():
             if not isinstance(row, dict):
-                reasons.append(f"check run has an invalid version for finding {finding_id}")
+                reasons.append(f"check report has an invalid version for finding {finding_id}")
                 continue
             path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
             if not path.is_file():
@@ -140,10 +134,10 @@ def run_fix(
     requested_run_id: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
-    check_run = read_run(root, from_run_id, "check")
-    mapping_report_id = check_run.get("from_run_id")
+    check_run = load_check_report(root, from_run_id)
+    mapping_report_id = check_run.get("mapping_report_id")
     if not isinstance(mapping_report_id, str) or not mapping_report_id:
-        raise SyscallGuardError(f"check run {from_run_id} has no mapping report parent")
+        raise SyscallGuardError(f"check report {from_run_id} has no mapping report parent")
     mapping_report = load_mapping_report(root, mapping_report_id)
     run_id = requested_run_id or new_run_id("fix", {"from": from_run_id, "at": utc_now()})
     recorder = RunRecorder(
@@ -162,7 +156,7 @@ def run_fix(
         revision_ref = str(_mapping_target_descriptor(mapping_report).get("revision", "HEAD"))
         checked_snapshot = str(target.get("snapshot_hash", ""))
         if not repository.is_dir() or not checked_snapshot:
-            raise SyscallGuardError(f"check run {from_run_id} has invalid target metadata")
+            raise SyscallGuardError(f"check report {from_run_id} has invalid target metadata")
         current_snapshot = repository_snapshot_hash(repository)
         recorder.manifest["target"] = dict(target)
         recorder.manifest["entities"] = {"findings": sorted(findings), "fixes": []}
@@ -178,6 +172,15 @@ def run_fix(
             }
         )
         stale_reasons = _check_staleness(root, check_run, findings)
+        recorded_mapping = check_run.get("mapping_report_version")
+        if not isinstance(recorded_mapping, dict):
+            stale_reasons.append("check report has no mapping report version")
+        else:
+            mismatch = dependency_mismatch(
+                recorded_mapping, mapping_report_id, mapping_report
+            )
+            if mismatch:
+                stale_reasons.append(mismatch)
         mapping_entities, _mapping_hashes, _mapping_input = _current_input(root, mapping_report)
         stale_reasons.extend(_mapping_staleness(mapping_report, mapping_entities))
         if current_snapshot != checked_snapshot or stale_reasons:
@@ -211,13 +214,13 @@ def run_fix(
             return run_id
 
         if patch is None:
-            candidate = root / "runs" / from_run_id / "implementation-fix.patch"
+            candidate = FIX_TEMP_ROOT / from_run_id / "implementation-fix.patch"
             if candidate.exists():
                 patch = candidate
         if patch is None or not patch.resolve().is_file():
             raise SyscallGuardError(
                 "confirmed findings require an implementation patch; generate "
-                f"runs/{from_run_id}/implementation-fix.patch or pass --patch"
+                f"{FIX_TEMP_ROOT / from_run_id / 'implementation-fix.patch'} or pass --patch"
             )
 
         entities, hashes, regression_input_hash = mapping_entities, _mapping_hashes, _mapping_input
@@ -375,7 +378,7 @@ def run_fix(
                 "generated_at_utc": fix_generated_at,
                 "upstream_dependencies": [
                     finding_versions[finding_id],
-                    check_run["result_version"],
+                    entity_version(from_run_id, check_run),
                     recorder.manifest["patch_version"],
                     regression_version,
                 ],
@@ -458,7 +461,7 @@ def run_fix(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Fix confirmed Starry compliance findings")
-    parser.add_argument("--from", dest="from_run_id", required=True, help="check run id")
+    parser.add_argument("--from", dest="from_run_id", required=True, help="check report id")
     parser.add_argument("--patch", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)

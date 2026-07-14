@@ -8,8 +8,8 @@ skill；它们不会自动编排或触发下一个阶段。
 ```text
 $ingest-syscall-specs [source=<alias-or-descriptor>] [count=<N-or-all> | syscalls=<name1,name2,...>]
 $映射规则 [syscalls=<name1,name2,...>]
-$check-starry-compliance from=<mapping-report-id>
-$fix-starry-compliance from=<check-run-id>
+$合规检查 from=<mapping-report-id>
+$fix-starry-compliance from=<check-report-id>
 $reset-syscallguard
 ```
 
@@ -18,7 +18,8 @@ $reset-syscallguard
   `$ingest-syscall-specs`。
 - `map-starry-checks`（中文显示名 `$映射规则`）：直接读取通用规则库，按最新 mapping report 增量生成映射；
   `syscalls=` 只限制本轮处理范围，其他 pending 规则保留。
-- `check-starry-compliance`：在隔离 worktree 注入测试并执行检查，分离 finding 与环境 blocker。
+- `check-starry-compliance`（中文显示名 `$合规检查`）：在隔离 worktree 注入测试并执行检查，
+  分离 finding 与环境 blocker；稳定调用标识仍可作为兼容别名。
 - `fix-starry-compliance`：修复 confirmed finding；成功后只提交到隔离分支。
 - `reset-syscallguard`：清空通用规则 YAML 和 ingest report 历史，使导入回到空白状态。
 
@@ -42,7 +43,12 @@ state。失败 ingest 不写 report、不更新规则，下一次调用会自动
 
 成功 mapping 只写 `runs/mapping-*/report.md`、静态检查两级库和动态测试两级库。报告末尾元数据
 保存完整规则状态、`execution_scope`、规则库索引 hash、实体版本、`rule_syscalls` 和目标内容依赖。
-Check/fix 继续使用 `runs/<run-id>/manifest.yaml`。规则和下游实体使用
+成功 check 只写 `runs/check-*/report.md`、finding 一级索引和 finding 二级详情。中文正文逐项
+展示静态/动态结果及精简证据，末尾元数据保存完整机器状态。check 不再生成 manifest、changeset、
+`results.yaml` 或成功运行日志；正常完成后删除 `/tmp/syscallguard-check/<id>`，blocker 或失败时保留。
+Fix 直接读取 check report 及其中的 finding 版本，默认补丁暂存于 `/tmp/syscallguard-fix/`。
+
+Fix run 继续使用 `runs/<run-id>/manifest.yaml`。规则和下游实体使用
 `{id, generated_at_utc, content_hash}` 版本；消费者先比较时间戳，再比较 hash，从而发现漏改
 时间戳的人工编辑。Rule 的版本 hash 只覆盖 category 与 semantics，来源追溯变化不使下游失效。
 规则库与所有中间结果禁止持久化 Git commit ID；来源和 Starry 一致性使用内容快照，逐规则失效
@@ -61,7 +67,8 @@ targets/starry/dynamic-tests.yaml 按 syscall 分组的动态测试一级索引
 targets/starry/dynamic-tests/  动态测试详情及 assets
 targets/starry/findings/       syscall + rule + target content snapshot 实现缺口
 targets/starry/fixes/          补丁、commit 和回归结果
-runs/{check,fix}-*/            下游 run 快照、报告和日志
+runs/check-*/report.md         中文检查结果和完整机器状态
+runs/fix-*/                    修复 run 快照、报告和日志
 ```
 
 来源示例见 [sources/ltp-local.yaml](sources/ltp-local.yaml)，Starry 目标示例见

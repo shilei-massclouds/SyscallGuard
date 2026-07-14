@@ -136,6 +136,11 @@ def validate_skills(errors: list[str]) -> None:
         prompt = agent.get("interface", {}).get("default_prompt", "") if isinstance(agent, dict) else ""
         if f"${name}" not in str(prompt):
             errors.append(f"default_prompt does not mention ${name}: skills/{name}/agents/openai.yaml")
+        if name == "check-starry-compliance" and (
+            not isinstance(agent, dict)
+            or agent.get("interface", {}).get("display_name") != "$合规检查"
+        ):
+            errors.append("check-starry-compliance display name must be $合规检查")
         if not (directory / "scripts/run.py").is_file():
             errors.append(f"missing runner: skills/{name}/scripts/run.py")
 
@@ -384,7 +389,7 @@ def validate_mapping_reports(
 
 
 def validate_runs(
-    errors: list[str], mapping_reports: dict[str, dict[str, Any]]
+    errors: list[str], check_reports: dict[str, dict[str, Any]]
 ) -> dict[str, dict[str, Any]]:
     runs: dict[str, dict[str, Any]] = {}
     for path in sorted((ROOT / "runs").glob("*/manifest.yaml")):
@@ -395,7 +400,7 @@ def validate_runs(
         stage = value.get("stage")
         if value.get("kind") != "syscallguard_run" or value.get("run_id") != run_id:
             errors.append(f"invalid run identity: {path.relative_to(ROOT)}")
-        if stage not in {"check", "fix"}:
+        if stage != "fix":
             errors.append(f"run {run_id} has invalid stage {stage!r}")
         if value.get("status") not in RUN_STATUSES:
             errors.append(f"run {run_id} has invalid status {value.get('status')!r}")
@@ -403,20 +408,135 @@ def validate_runs(
             errors.append(f"repository contains unfinished run: {run_id}")
         if not (path.parent / "changeset.yaml").is_file():
             errors.append(f"run has no changeset: {run_id}")
-        if stage in {"check", "fix"} and not isinstance(value.get("from_run_id"), str):
+        if not isinstance(value.get("from_run_id"), str):
             errors.append(f"run {run_id} has no from_run_id")
         runs[run_id] = value
     for run_id, value in runs.items():
         stage = value.get("stage")
-        if stage == "check":
-            parent_id = str(value.get("from_run_id"))
-            if parent_id not in mapping_reports:
-                errors.append(f"check run {run_id} has no mapping report parent")
         if stage == "fix":
-            parent = runs.get(str(value.get("from_run_id")))
-            if parent is not None and parent.get("stage") != "check":
-                errors.append(f"fix run {run_id} has non-check parent")
+            parent_id = str(value.get("from_run_id"))
+            if parent_id not in check_reports:
+                errors.append(f"fix run {run_id} has no check report parent")
     return runs
+
+
+def validate_check_reports(
+    errors: list[str], mapping_reports: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    for path in sorted((ROOT / "runs").glob("check-*/report.md")):
+        value = frontmatter(path, errors)
+        if not isinstance(value, dict):
+            continue
+        report_id = path.parent.name
+        if (
+            value.get("kind") != "syscallguard_check_report"
+            or value.get("report_id") != report_id
+            or value.get("status") not in {"completed", "completed_with_blockers"}
+        ):
+            errors.append(f"invalid check report identity: {path.relative_to(ROOT)}")
+            continue
+        reports[report_id] = value
+        extras = [item.name for item in path.parent.iterdir() if item.name != "report.md"]
+        if extras:
+            errors.append(f"check report directory {report_id} has extra artifacts: {sorted(extras)}")
+        if value.get("content_hash") != version_hash(value):
+            errors.append(f"check report {report_id} content hash mismatch")
+        parent_id = value.get("mapping_report_id")
+        if not isinstance(parent_id, str) or parent_id not in mapping_reports:
+            errors.append(f"check report {report_id} has no mapping report parent")
+        elif not valid_version(value.get("mapping_report_version")):
+            errors.append(f"check report {report_id} has invalid mapping report version")
+        else:
+            parent = mapping_reports[parent_id]
+            recorded_parent = value["mapping_report_version"]
+            if (
+                recorded_parent.get("id") != parent_id
+                or recorded_parent.get("generated_at_utc") != parent.get("generated_at_utc")
+                or recorded_parent.get("content_hash") != version_hash(parent)
+            ):
+                errors.append(f"check report {report_id} mapping report version mismatch")
+        target = value.get("target")
+        if not isinstance(target, dict) or not isinstance(target.get("snapshot_hash"), str):
+            errors.append(f"check report {report_id} has invalid target metadata")
+        scope = value.get("execution_scope")
+        versions = value.get("entity_versions")
+        if not isinstance(scope, dict) or not all(
+            isinstance(scope.get(key), list)
+            for key in ("rules", "static_checks", "dynamic_tests")
+        ):
+            errors.append(f"check report {report_id} has invalid execution scope")
+        if not isinstance(versions, dict) or not all(
+            isinstance(versions.get(key), dict)
+            for key in ("rules", "static_checks", "dynamic_tests")
+        ):
+            errors.append(f"check report {report_id} has invalid entity versions")
+        static = value.get("static")
+        dynamic = value.get("dynamic")
+        if not isinstance(static, list) or not all(
+            isinstance(row, dict) and row.get("result") in {"pass", "fail", "error"}
+            for row in static
+        ):
+            errors.append(f"check report {report_id} has invalid static results")
+        if not isinstance(dynamic, list) or not all(
+            isinstance(row, dict)
+            and row.get("result") in {"pass", "fail", "skipped", "not_run"}
+            for row in dynamic
+        ):
+            errors.append(f"check report {report_id} has invalid dynamic results")
+        if isinstance(scope, dict) and isinstance(static, list) and isinstance(dynamic, list):
+            static_ids = [row.get("check_id") for row in static if isinstance(row, dict)]
+            dynamic_ids = [row.get("test_id") for row in dynamic if isinstance(row, dict)]
+            if static_ids != scope.get("static_checks"):
+                errors.append(f"check report {report_id} static scope mismatch")
+            if dynamic_ids != scope.get("dynamic_tests"):
+                errors.append(f"check report {report_id} dynamic scope mismatch")
+            for row in static + dynamic:
+                if not isinstance(row, dict) or not isinstance(row.get("finding_ids"), list):
+                    errors.append(f"check report {report_id} result has invalid finding IDs")
+            for row in dynamic:
+                if not isinstance(row, dict):
+                    continue
+                output = row.get("output_tail", "")
+                if not isinstance(output, str) or len(output.encode("utf-8")) > 8 * 1024:
+                    errors.append(f"check report {report_id} has oversized dynamic evidence")
+                if row.get("result") == "fail" and not isinstance(row.get("exit_code"), int):
+                    errors.append(f"check report {report_id} reliable failure has no exit code")
+        blockers = value.get("blockers")
+        if not isinstance(blockers, list):
+            errors.append(f"check report {report_id} blockers is not a list")
+        elif (value.get("status") == "completed_with_blockers") != bool(blockers):
+            errors.append(f"check report {report_id} status/blocker mismatch")
+        counts = value.get("counts")
+        if not isinstance(counts, dict):
+            errors.append(f"check report {report_id} counts is not a mapping")
+        elif isinstance(static, list) and isinstance(dynamic, list) and isinstance(blockers, list):
+            expected_counts = {
+                "static_pass": sum(row.get("result") == "pass" for row in static),
+                "static_fail": sum(row.get("result") == "fail" for row in static),
+                "static_error": sum(row.get("result") == "error" for row in static),
+                "dynamic_pass": sum(row.get("result") == "pass" for row in dynamic),
+                "dynamic_fail": sum(row.get("result") == "fail" for row in dynamic),
+                "dynamic_skipped": sum(row.get("result") == "skipped" for row in dynamic),
+                "dynamic_not_run": sum(row.get("result") == "not_run" for row in dynamic),
+                "blockers": len(blockers),
+            }
+            finding_ids_for_count = value.get("finding_ids")
+            if isinstance(finding_ids_for_count, list):
+                expected_counts["findings"] = len(finding_ids_for_count)
+            for key, expected in expected_counts.items():
+                if counts.get(key) != expected:
+                    errors.append(f"check report {report_id} count mismatch for {key}")
+        finding_ids = value.get("finding_ids")
+        finding_versions = value.get("finding_versions")
+        if (
+            not isinstance(finding_ids, list)
+            or not isinstance(finding_versions, dict)
+            or sorted(finding_versions) != sorted(finding_ids)
+            or not all(valid_version(row) for row in finding_versions.values())
+        ):
+            errors.append(f"check report {report_id} has invalid finding versions")
+    return reports
 
 
 def validate_indexes(errors: list[str]) -> dict[str, dict[str, Any]]:
@@ -455,6 +575,36 @@ def validate_indexes(errors: list[str]) -> dict[str, dict[str, Any]]:
             if row.get("content_hash") != version_hash(entity):
                 errors.append(f"index content hash mismatch: {raw_path}")
     return entities
+
+
+def validate_finding_evidence(
+    errors: list[str],
+    entities: dict[str, dict[str, Any]],
+    check_reports: dict[str, dict[str, Any]],
+) -> None:
+    for entity_id, entity in entities.items():
+        if entity.get("kind") != "syscallguard_starry_finding":
+            continue
+        occurrences = entity.get("occurrences")
+        if not isinstance(occurrences, list):
+            errors.append(f"finding {entity_id} occurrences is not a list")
+            continue
+        for occurrence in occurrences:
+            if not isinstance(occurrence, dict):
+                errors.append(f"finding {entity_id} has invalid occurrence")
+                continue
+            report_id = occurrence.get("check_report_id")
+            evidence = occurrence.get("evidence")
+            if not isinstance(report_id, str) or report_id not in check_reports:
+                errors.append(f"finding {entity_id} occurrence has no check report")
+            if not isinstance(evidence, dict):
+                errors.append(f"finding {entity_id} occurrence has invalid evidence")
+                continue
+            if {"log", "diagnostic_log"}.intersection(evidence):
+                errors.append(f"finding {entity_id} occurrence references temporary logs")
+            output = evidence.get("output_tail", "")
+            if not isinstance(output, str) or len(output.encode("utf-8")) > 8 * 1024:
+                errors.append(f"finding {entity_id} has oversized dynamic evidence")
 
 
 def validate_executable_indexes(
@@ -656,8 +806,10 @@ def main() -> int:
     validate_syscall_index(errors, rules)
     reports = validate_reports(errors)
     mapping_reports = validate_mapping_reports(errors, rules)
-    runs = validate_runs(errors, mapping_reports)
-    validate_indexes(errors)
+    check_reports = validate_check_reports(errors, mapping_reports)
+    runs = validate_runs(errors, check_reports)
+    shared_entities = validate_indexes(errors)
+    validate_finding_evidence(errors, shared_entities, check_reports)
     validate_executable_indexes(errors, rules)
     validate_sources(errors)
     validate_no_persisted_commit_ids(errors)
@@ -670,7 +822,8 @@ def main() -> int:
     print("repository validation: OK")
     print(
         f"skills={len(SKILLS)} ingest_reports={len(reports)} "
-        f"mapping_reports={len(mapping_reports)} rules={len(rules)} downstream_runs={len(runs)}"
+        f"mapping_reports={len(mapping_reports)} check_reports={len(check_reports)} "
+        f"rules={len(rules)} fix_runs={len(runs)}"
     )
     return 0
 

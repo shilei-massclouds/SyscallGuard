@@ -1,0 +1,32 @@
+schema_name: syscallguard-check-report
+version: 1
+kind: syscallguard_check_report
+storage: runs/check-*/report.md
+status_values: [completed, completed_with_blockers]
+required:
+  - schema_version
+  - kind
+  - report_id
+  - status
+  - generated_at_utc
+  - content_hash
+  - mapping_report_id
+  - mapping_report_version
+  - target
+  - input_hash
+  - entity_versions
+  - execution_scope
+  - rule_syscalls
+  - static
+  - dynamic
+  - counts
+  - blockers
+  - finding_ids
+  - finding_versions
+result_values:
+  static: [pass, fail, error]
+  dynamic: [pass, fail, skipped, not_run]
+optional:
+  reused_from: Prior check report whose unchanged results were reused.
+  diagnostic_directory: Retained temporary directory for blockers.
+  worktree: Retained isolated worktree for blockers.

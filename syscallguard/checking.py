@@ -4,6 +4,7 @@ import argparse
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -11,28 +12,32 @@ from typing import Any
 
 from .common import (
     SCHEMA_VERSION,
-    RunRecorder,
     SyscallGuardError,
     atomic_write_text,
-    atomic_write_yaml,
     content_hash,
     dependency_mismatch,
     entity_version,
     git,
+    load_index,
     load_mapping,
     new_run_id,
-    publish_yaml_entities,
+    normalize_run_id,
+    read_frontmatter,
     repository_snapshot_hash,
     repo_root,
     safe_relative_path,
     slug,
-    update_index,
+    transactional_write,
     utc_now,
     version_content_hash,
+    yaml_text,
 )
 from .mapping import load_mapping_report
 
 
+REPORT_KIND = "syscallguard_check_report"
+TEMP_ROOT = Path(os.environ.get("SYSCALLGUARD_CHECK_TEMP_ROOT", "/tmp/syscallguard-check"))
+MAX_OUTPUT_EVIDENCE_BYTES = 8 * 1024
 DEFAULT_BLOCKER_PATTERNS = [
     r"No space left on device",
     r"failed to unpack",
@@ -90,11 +95,7 @@ def _current_input(
         "test_id",
         "syscallguard_starry_dynamic_test",
     )
-    entities = {
-        "rules": rules,
-        "static_checks": checks,
-        "dynamic_tests": tests,
-    }
+    entities = {"rules": rules, "static_checks": checks, "dynamic_tests": tests}
     hashes = {
         "rules": rule_hashes,
         "static_checks": check_hashes,
@@ -146,24 +147,37 @@ def _mapping_staleness(
     return reasons
 
 
-def _prior_identical_check(root: Path, input_hash: str, current_run_id: str) -> dict[str, Any] | None:
+def load_check_report(root: Path, report_id: str) -> dict[str, Any]:
+    report_id = normalize_run_id(report_id)
+    path = root / "runs" / report_id / "report.md"
+    report, _body = read_frontmatter(path)
+    if report.get("kind") != REPORT_KIND or report.get("report_id") != report_id:
+        raise SyscallGuardError(f"not a SyscallGuard check report: {path}")
+    if report.get("status") not in {"completed", "completed_with_blockers"}:
+        raise SyscallGuardError(
+            f"check report {report_id} is not readable: status={report.get('status')!r}"
+        )
+    recorded_hash = report.get("content_hash")
+    if not isinstance(recorded_hash, str) or recorded_hash != version_content_hash(report):
+        raise SyscallGuardError(f"check report content hash mismatch: {path}")
+    return report
+
+
+def _prior_identical_check(root: Path, input_hash: str, current_report_id: str) -> dict[str, Any] | None:
     runs_root = root / "runs"
     if not runs_root.is_dir():
         return None
-    for manifest_path in sorted(runs_root.glob("*/manifest.yaml"), reverse=True):
-        if manifest_path.parent.name == current_run_id:
+    candidates: list[dict[str, Any]] = []
+    for report_path in sorted(runs_root.glob("check-*/report.md"), reverse=True):
+        if report_path.parent.name == current_report_id:
             continue
         try:
-            manifest = load_mapping(manifest_path)
+            report = load_check_report(root, report_path.parent.name)
         except SyscallGuardError:
             continue
-        if (
-            manifest.get("stage") == "check"
-            and manifest.get("status") in {"completed", "completed_with_blockers"}
-            and manifest.get("input_hash") == input_hash
-        ):
-            return manifest
-    return None
+        if report.get("input_hash") == input_hash:
+            candidates.append(report)
+    return candidates[0] if candidates else None
 
 
 def _mapping_target_descriptor(mapping_report: dict[str, Any]) -> dict[str, Any]:
@@ -174,11 +188,16 @@ def _mapping_target_descriptor(mapping_report: dict[str, Any]) -> dict[str, Any]
 
 
 def _worktree_path(mapping_report: dict[str, Any], run_id: str) -> Path:
+    """Return the legacy/configured worktree location used by fix runs."""
     descriptor = _mapping_target_descriptor(mapping_report)
     raw_root = descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")
     if not isinstance(raw_root, str) or not raw_root:
         raise SyscallGuardError("target descriptor worktree_root must be a path")
     return Path(raw_root).expanduser().resolve() / run_id
+
+
+def _check_workspace(report_id: str) -> Path:
+    return TEMP_ROOT / normalize_run_id(report_id)
 
 
 def _create_worktree(repository: Path, revision_ref: str, worktree: Path) -> None:
@@ -218,7 +237,7 @@ def _apply_test_patches(
                     "kind": "test_injection",
                     "entity_ids": test_ids,
                     "reason": detail,
-                    "log": str(log_path),
+                    "diagnostic_log": str(log_path),
                 }
             )
             blocked_tests.update(test_ids)
@@ -231,7 +250,7 @@ def _apply_test_patches(
                     "kind": "test_injection",
                     "entity_ids": test_ids,
                     "reason": "git apply failed for dynamic test patch",
-                    "log": str(log_path),
+                    "diagnostic_log": str(log_path),
                 }
             )
             blocked_tests.update(test_ids)
@@ -249,25 +268,22 @@ def _run_static_check(
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
     raw_path = check.get("path")
     patterns = check.get("patterns")
+    base = {"check_id": check_id, "rule_refs": check.get("rule_refs", [])}
     if not isinstance(raw_path, str) or not raw_path:
-        return (
-            {"check_id": check_id, "result": "error", "reason": "missing path"},
-            {"kind": "static_definition", "entity_ids": [check_id], "reason": "missing path"},
-        )
+        row = {**base, "result": "error", "reason": "missing path"}
+        return row, {"kind": "static_definition", "entity_ids": [check_id], "reason": "missing path"}
     if not isinstance(patterns, list) or not patterns:
-        return (
-            {"check_id": check_id, "result": "error", "reason": "missing patterns"},
-            {
-                "kind": "static_definition",
-                "entity_ids": [check_id],
-                "reason": "missing patterns",
-            },
-        )
+        row = {**base, "result": "error", "reason": "missing patterns"}
+        return row, {
+            "kind": "static_definition",
+            "entity_ids": [check_id],
+            "reason": "missing patterns",
+        }
     path = worktree / safe_relative_path(raw_path)
     if not path.is_file():
         return (
             {
-                "check_id": check_id,
+                **base,
                 "result": "fail",
                 "path": raw_path,
                 "patterns": [],
@@ -280,25 +296,18 @@ def _run_static_check(
     all_match = True
     for item in patterns:
         if not isinstance(item, dict) or not isinstance(item.get("regex"), str):
-            return (
-                {"check_id": check_id, "result": "error", "reason": "invalid pattern entry"},
-                {
-                    "kind": "static_definition",
-                    "entity_ids": [check_id],
-                    "reason": "invalid pattern entry",
-                },
-            )
+            row = {**base, "result": "error", "reason": "invalid pattern entry"}
+            return row, {
+                "kind": "static_definition",
+                "entity_ids": [check_id],
+                "reason": "invalid pattern entry",
+            }
         try:
             match = re.search(item["regex"], text, re.MULTILINE | re.DOTALL)
         except re.error as exc:
-            return (
-                {"check_id": check_id, "result": "error", "reason": f"invalid regex: {exc}"},
-                {
-                    "kind": "static_definition",
-                    "entity_ids": [check_id],
-                    "reason": f"invalid regex: {exc}",
-                },
-            )
+            reason = f"invalid regex: {exc}"
+            row = {**base, "result": "error", "reason": reason}
+            return row, {"kind": "static_definition", "entity_ids": [check_id], "reason": reason}
         matched = match is not None
         all_match = all_match and matched
         pattern_results.append(
@@ -311,11 +320,11 @@ def _run_static_check(
         )
     return (
         {
-            "check_id": check_id,
+            **base,
             "result": "pass" if all_match else "fail",
             "path": raw_path,
-            "rule_refs": check.get("rule_refs", []),
             "patterns": pattern_results,
+            "reason": "all required patterns matched" if all_match else "one or more required patterns did not match",
         },
         None,
     )
@@ -337,6 +346,19 @@ def _matches_blocker(log: str, test: dict[str, Any]) -> bool:
     return any(re.search(pattern, log, re.IGNORECASE) for pattern in patterns)
 
 
+def _as_text(value: str | bytes | None) -> str:
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value or ""
+
+
+def _output_tail(text: str, limit: int = MAX_OUTPUT_EVIDENCE_BYTES) -> tuple[str, bool]:
+    encoded = text.encode("utf-8", errors="replace")
+    if len(encoded) <= limit:
+        return text, False
+    return encoded[-limit:].decode("utf-8", errors="ignore"), True
+
+
 def _run_dynamic_test(
     worktree: Path,
     test_id: str,
@@ -344,31 +366,34 @@ def _run_dynamic_test(
     log_path: Path,
     blocked_by_patch: bool,
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    base = {"test_id": test_id, "rule_refs": test.get("rule_refs", [])}
     if test.get("enabled", True) is False:
         atomic_write_text(log_path, "test disabled by mapping\n")
-        return {"test_id": test_id, "result": "skipped", "log": str(log_path)}, None
+        return {**base, "result": "skipped", "reason": "disabled by mapping"}, None
     if blocked_by_patch:
         atomic_write_text(log_path, "test injection failed; command not run\n")
+        blocker = {
+            "kind": "test_injection",
+            "entity_ids": [test_id],
+            "reason": "test patch was not applied",
+            "diagnostic_log": str(log_path),
+        }
         return (
-            {"test_id": test_id, "result": "not_run", "log": str(log_path)},
-            {
-                "kind": "test_injection",
-                "entity_ids": [test_id],
-                "reason": "test patch was not applied",
-                "log": str(log_path),
-            },
+            {**base, "result": "not_run", "reason": blocker["reason"], "diagnostic_log": str(log_path)},
+            blocker,
         )
     command = _command_list(test.get("command"))
     if not command:
         atomic_write_text(log_path, "dynamic test has no execution command\n")
+        blocker = {
+            "kind": "dynamic_binding",
+            "entity_ids": [test_id],
+            "reason": "dynamic test has no execution command",
+            "diagnostic_log": str(log_path),
+        }
         return (
-            {"test_id": test_id, "result": "not_run", "log": str(log_path)},
-            {
-                "kind": "dynamic_binding",
-                "entity_ids": [test_id],
-                "reason": "dynamic test has no execution command",
-                "log": str(log_path),
-            },
+            {**base, "result": "not_run", "reason": blocker["reason"], "diagnostic_log": str(log_path)},
+            blocker,
         )
     raw_cwd = test.get("working_directory", ".")
     if not isinstance(raw_cwd, str):
@@ -394,41 +419,65 @@ def _run_dynamic_test(
         log = result.stdout + result.stderr
         atomic_write_text(log_path, log)
     except subprocess.TimeoutExpired as exc:
-        log = (exc.stdout or "") + (exc.stderr or "")
+        log = _as_text(exc.stdout) + _as_text(exc.stderr)
         atomic_write_text(log_path, log + f"\nTIMEOUT after {timeout}s\n")
+        tail, truncated = _output_tail(log)
+        blocker = {
+            "kind": "environment",
+            "entity_ids": [test_id],
+            "reason": f"command timed out after {timeout}s",
+            "diagnostic_log": str(log_path),
+        }
+        row = {
+            **base,
+            "result": "not_run",
+            "command": command,
+            "reason": blocker["reason"],
+            "output_tail": tail,
+            "output_truncated": truncated,
+            "diagnostic_log": str(log_path),
+        }
+        return row, blocker
+    except OSError as exc:
+        reason = f"dynamic command could not be executed: {exc}"
+        atomic_write_text(log_path, reason + "\n")
+        blocker = {
+            "kind": "environment",
+            "entity_ids": [test_id],
+            "reason": reason,
+            "diagnostic_log": str(log_path),
+        }
         return (
             {
-                "test_id": test_id,
+                **base,
                 "result": "not_run",
                 "command": command,
-                "log": str(log_path),
+                "reason": reason,
+                "diagnostic_log": str(log_path),
             },
-            {
-                "kind": "environment",
-                "entity_ids": [test_id],
-                "reason": f"command timed out after {timeout}s",
-                "log": str(log_path),
-            },
+            blocker,
         )
+    tail, truncated = _output_tail(log)
     row = {
-        "test_id": test_id,
+        **base,
         "result": "pass" if result.returncode == 0 else "fail",
         "exit_code": result.returncode,
         "command": command,
-        "rule_refs": test.get("rule_refs", []),
-        "log": str(log_path),
+        "reason": "command exited successfully" if result.returncode == 0 else "command produced reliable implementation failure evidence",
+        "output_tail": tail,
+        "output_truncated": truncated,
     }
     if result.returncode != 0 and _matches_blocker(log, test):
         row["result"] = "not_run"
-        return (
-            row,
-            {
-                "kind": "environment",
-                "entity_ids": [test_id],
-                "reason": "command failed before reliable implementation evidence was produced",
-                "log": str(log_path),
-            },
-        )
+        row["reason"] = "command failed before reliable implementation evidence was produced"
+        row["diagnostic_log"] = str(log_path)
+        blocker = {
+            "kind": "environment",
+            "entity_ids": [test_id],
+            "reason": row["reason"],
+            "diagnostic_log": str(log_path),
+        }
+        return row, blocker
     return row, None
 
 
@@ -446,19 +495,24 @@ def _syscalls_for_rules(
     return sorted(selected)
 
 
+def _stable_result(result: dict[str, Any]) -> dict[str, Any]:
+    return {key: value for key, value in result.items() if key != "diagnostic_log" and key != "finding_ids"}
+
+
 def _finding_entities(
     root: Path,
-    run_id: str,
+    report_id: str,
     target_snapshot_hash: str,
     rule_syscalls: dict[str, list[str]],
     static_results: list[dict[str, Any]],
     dynamic_results: list[dict[str, Any]],
     checks: dict[str, dict[str, Any]],
     tests: dict[str, dict[str, Any]],
-    result_version: dict[str, str],
+    versions: dict[str, dict[str, dict[str, str]]],
     generated_at: str,
-) -> dict[str, dict[str, Any]]:
+) -> tuple[dict[str, dict[str, Any]], dict[tuple[str, str], list[str]]]:
     findings: dict[str, dict[str, Any]] = {}
+    result_findings: dict[tuple[str, str], list[str]] = {}
     evidence_rows: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
     for row in static_results:
         if row.get("result") == "fail":
@@ -470,17 +524,17 @@ def _finding_entities(
         refs = definition.get("rule_refs", [])
         if not isinstance(refs, list):
             refs = []
-        for rule_id in refs or ["unmapped-rule"]:
+        source_id = str(result["check_id"] if evidence_kind == "static" else result["test_id"])
+        for raw_rule_id in refs or ["unmapped-rule"]:
+            rule_id = str(raw_rule_id)
             syscalls = _syscalls_for_rules(
-                rule_syscalls,
-                [str(rule_id)],
-                definition.get("applies_to_syscalls"),
+                rule_syscalls, [rule_id], definition.get("applies_to_syscalls")
             )
             if refs and not syscalls:
                 continue
             for syscall in syscalls or ["unmapped-syscall"]:
                 snapshot_suffix = target_snapshot_hash.removeprefix("sha256:")[:12]
-                finding_id = f"finding-{slug(syscall)}-{slug(str(rule_id))}-{snapshot_suffix}"
+                finding_id = f"finding-{slug(syscall)}-{slug(rule_id)}-{snapshot_suffix}"
                 existing_path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
                 if finding_id in findings:
                     existing = findings[finding_id]
@@ -490,13 +544,25 @@ def _finding_entities(
                 if not isinstance(occurrences, list):
                     occurrences = []
                 occurrence = {
-                    "check_run": run_id,
+                    "check_report_id": report_id,
                     "evidence_kind": evidence_kind,
-                    "result": result,
+                    "source_id": source_id,
+                    "evidence": _stable_result(result),
                 }
                 if content_hash(occurrence) not in {content_hash(item) for item in occurrences}:
                     occurrences.append(occurrence)
                 changed = content_hash(occurrences) != content_hash(existing.get("occurrences", []))
+                dependencies = [versions[f"{evidence_kind}_checks" if evidence_kind == "static" else "dynamic_tests"][source_id]]
+                if rule_id in versions["rules"]:
+                    dependencies.append(versions["rules"][rule_id])
+                dependency_rows = existing.get("upstream_dependencies", [])
+                if not isinstance(dependency_rows, list):
+                    dependency_rows = []
+                by_dependency = {
+                    str(row.get("id")): row
+                    for row in dependency_rows + dependencies
+                    if isinstance(row, dict) and isinstance(row.get("id"), str)
+                }
                 findings[finding_id] = {
                     "schema_version": SCHEMA_VERSION,
                     "kind": "syscallguard_starry_finding",
@@ -510,28 +576,311 @@ def _finding_entities(
                     "generated_at_utc": generated_at
                     if changed or not existing.get("generated_at_utc")
                     else existing["generated_at_utc"],
-                    "upstream_dependencies": [result_version],
+                    "upstream_dependencies": [
+                        by_dependency[key] for key in sorted(by_dependency)
+                    ],
                 }
-    return findings
+                result_findings.setdefault((evidence_kind, source_id), []).append(finding_id)
+    for key in result_findings:
+        result_findings[key] = sorted(set(result_findings[key]))
+    return findings, result_findings
 
 
-def _write_report(recorder: RunRecorder, results: dict[str, Any]) -> None:
+def _annotate_findings(
+    static_results: list[dict[str, Any]],
+    dynamic_results: list[dict[str, Any]],
+    result_findings: dict[tuple[str, str], list[str]],
+) -> None:
+    for row in static_results:
+        row["finding_ids"] = result_findings.get(("static", str(row["check_id"])), [])
+    for row in dynamic_results:
+        row["finding_ids"] = result_findings.get(("dynamic", str(row["test_id"])), [])
+
+
+def _counts(
+    static_results: list[dict[str, Any]],
+    dynamic_results: list[dict[str, Any]],
+    findings: dict[str, Any],
+    blockers: list[dict[str, Any]],
+) -> dict[str, int]:
+    return {
+        "static_pass": sum(row.get("result") == "pass" for row in static_results),
+        "static_fail": sum(row.get("result") == "fail" for row in static_results),
+        "static_error": sum(row.get("result") == "error" for row in static_results),
+        "dynamic_pass": sum(row.get("result") == "pass" for row in dynamic_results),
+        "dynamic_fail": sum(row.get("result") == "fail" for row in dynamic_results),
+        "dynamic_skipped": sum(row.get("result") == "skipped" for row in dynamic_results),
+        "dynamic_not_run": sum(row.get("result") == "not_run" for row in dynamic_results),
+        "findings": len(findings),
+        "blockers": len(blockers),
+    }
+
+
+def _finding_index(
+    root: Path, findings: dict[str, dict[str, Any]], generated_at: str
+) -> dict[str, Any]:
+    path = root / "targets/starry/findings/index.yaml"
+    index = load_index(path, "syscallguard_starry_finding_index")
+    by_id = {
+        str(row["id"]): row
+        for row in index["entities"]
+        if isinstance(row, dict) and isinstance(row.get("id"), str)
+    }
+    for finding_id, finding in findings.items():
+        by_id[finding_id] = {
+            "id": finding_id,
+            "path": f"targets/starry/findings/{slug(finding_id)}.yaml",
+            "syscall": finding["syscall"],
+            "rule_id": finding["rule_id"],
+            "target_snapshot_hash": finding["target_snapshot_hash"],
+            "status": finding["status"],
+            "resolution": finding["resolution"],
+            "generated_at_utc": finding["generated_at_utc"],
+            "content_hash": version_content_hash(finding),
+        }
+    index["entities"] = [by_id[key] for key in sorted(by_id)]
+    index["updated_at_utc"] = generated_at
+    return index
+
+
+def _result_syscalls(
+    definition: dict[str, Any], rule_syscalls: dict[str, list[str]]
+) -> list[str]:
+    refs = definition.get("rule_refs", [])
+    return _syscalls_for_rules(
+        rule_syscalls,
+        [str(item) for item in refs] if isinstance(refs, list) else [],
+        definition.get("applies_to_syscalls"),
+    )
+
+
+def _md(value: Any) -> str:
+    return str(value).replace("|", "\\|").replace("\n", " ")
+
+
+def _report_text(
+    metadata: dict[str, Any],
+    checks: dict[str, dict[str, Any]],
+    tests: dict[str, dict[str, Any]],
+) -> str:
+    counts = metadata["counts"]
+    relation = metadata["rule_syscalls"]
     lines = [
-        "# Starry Compliance Check",
+        "# Starry 合规检查报告",
         "",
-        f"Run: `{recorder.run_id}`",
-        f"Status: `{recorder.manifest['status']}`",
-        f"Worktree: `{recorder.manifest.get('worktree', '')}`",
+        "## 本轮结论",
         "",
-        f"- Static pass: {sum(row['result'] == 'pass' for row in results['static'])}",
-        f"- Static fail: {sum(row['result'] == 'fail' for row in results['static'])}",
-        f"- Dynamic pass: {sum(row['result'] == 'pass' for row in results['dynamic'])}",
-        f"- Dynamic fail: {sum(row['result'] == 'fail' for row in results['dynamic'])}",
-        f"- Dynamic skipped/not run: {sum(row['result'] in {'skipped', 'not_run'} for row in results['dynamic'])}",
-        f"- Confirmed findings: {len(recorder.manifest.get('entities', {}).get('findings', []))}",
-        f"- Environment blockers: {len(recorder.manifest.get('blockers', []))}",
+        f"- 状态：`{metadata['status']}`",
+        f"- 静态检查：pass {counts['static_pass']}、fail {counts['static_fail']}、error {counts['static_error']}",
+        f"- 动态测试：pass {counts['dynamic_pass']}、fail {counts['dynamic_fail']}、skipped {counts['dynamic_skipped']}、not_run {counts['dynamic_not_run']}",
+        f"- confirmed finding：{counts['findings']}",
+        f"- 环境或执行 blocker：{counts['blockers']}（不视为实现缺口）",
+        "",
+        "## 静态检查",
+        "",
     ]
-    atomic_write_text(recorder.directory / "report.md", "\n".join(lines) + "\n")
+    if not metadata["static"]:
+        lines.extend(["本轮没有静态检查。", ""])
+    for row in metadata["static"]:
+        check_id = str(row["check_id"])
+        definition = checks.get(check_id, {})
+        syscalls = _result_syscalls(definition, relation)
+        refs = definition.get("rule_refs", [])
+        lines.extend(
+            [
+                f"### `{check_id}`",
+                "",
+                f"- 类型：`static`",
+                f"- 关联 syscall：{('、'.join(f'`{item}`' for item in syscalls) or '—')}",
+                f"- 通用规则：{('、'.join(f'`{item}`' for item in refs) or '—')}",
+                f"- 结果：`{row['result']}`",
+                f"- 原因：{_md(row.get('reason', ''))}",
+            ]
+        )
+        patterns = row.get("patterns", [])
+        if patterns:
+            lines.extend(["- pattern 证据：", ""])
+            for pattern in patterns:
+                location = f"第 {pattern['line']} 行" if pattern.get("line") else "未匹配"
+                lines.append(
+                    f"  - `{_md(pattern.get('regex', ''))}`：matched=`{str(bool(pattern.get('matched'))).lower()}`，{location}"
+                )
+        finding_ids = row.get("finding_ids", [])
+        lines.extend(
+            [
+                f"- finding：{('、'.join(f'`{item}`' for item in finding_ids) or '—')}",
+                "",
+            ]
+        )
+    lines.extend(["## 动态测试", ""])
+    if not metadata["dynamic"]:
+        lines.extend(["本轮没有动态测试。", ""])
+    for row in metadata["dynamic"]:
+        test_id = str(row["test_id"])
+        definition = tests.get(test_id, {})
+        syscalls = _result_syscalls(definition, relation)
+        refs = definition.get("rule_refs", [])
+        lines.extend(
+            [
+                f"### `{test_id}`",
+                "",
+                "- 类型：`dynamic`",
+                f"- 关联 syscall：{('、'.join(f'`{item}`' for item in syscalls) or '—')}",
+                f"- 通用规则：{('、'.join(f'`{item}`' for item in refs) or '—')}",
+                f"- 结果：`{row['result']}`",
+                f"- 原因：{_md(row.get('reason', ''))}",
+            ]
+        )
+        if "exit_code" in row:
+            lines.append(f"- 退出码：`{row['exit_code']}`")
+        output = row.get("output_tail")
+        if output:
+            lines.extend(["- 精简输出证据：", "", "```text", str(output).rstrip(), "```"])
+        finding_ids = row.get("finding_ids", [])
+        lines.extend(
+            [
+                f"- finding：{('、'.join(f'`{item}`' for item in finding_ids) or '—')}",
+                "",
+            ]
+        )
+    blockers = metadata.get("blockers", [])
+    if blockers:
+        lines.extend(["## Blockers（非实现缺口）", ""])
+        for blocker in blockers:
+            ids = blocker.get("entity_ids", [])
+            lines.append(
+                f"- `{blocker.get('kind', 'unknown')}` {('、'.join(f'`{item}`' for item in ids))}：{_md(blocker.get('reason', ''))}"
+            )
+        lines.append("")
+    lines.extend(
+        [
+            "<details>",
+            "<summary>机器可读元数据</summary>",
+            "",
+            "<!-- syscallguard-metadata -->",
+            "```yaml",
+            yaml_text(metadata).rstrip(),
+            "```",
+            "</details>",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def _base_metadata(
+    report_id: str,
+    mapping_report_id: str,
+    mapping_report: dict[str, Any],
+    input_hash: str,
+    hashes: dict[str, dict[str, str]],
+    versions: dict[str, dict[str, dict[str, str]]],
+) -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "kind": REPORT_KIND,
+        "report_id": report_id,
+        "status": "completed",
+        "generated_at_utc": utc_now(),
+        "mapping_report_id": mapping_report_id,
+        "mapping_report_version": entity_version(mapping_report_id, mapping_report),
+        "target": dict(mapping_report.get("target", {})),
+        "input_hash": input_hash,
+        "entity_hashes": hashes,
+        "entity_versions": versions,
+        "execution_scope": {
+            key: sorted(values)
+            for key, values in mapping_report.get("execution_scope", {}).items()
+            if key in {"rules", "static_checks", "dynamic_tests"}
+        },
+        "rule_syscalls": mapping_report.get("rule_syscalls", {}),
+        "static": [],
+        "dynamic": [],
+        "counts": {},
+        "blockers": [],
+        "finding_ids": [],
+        "finding_versions": {},
+    }
+
+
+def _seal_metadata(metadata: dict[str, Any]) -> None:
+    metadata["content_hash"] = version_content_hash(metadata)
+
+
+def _mark_failure(workspace: Path, exc: BaseException) -> None:
+    try:
+        atomic_write_text(
+            workspace / "failure.yaml",
+            yaml_text(
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "kind": "syscallguard_check_failure",
+                    "failed_at_utc": utc_now(),
+                    "error": f"{type(exc).__name__}: {exc}",
+                }
+            ),
+        )
+    except BaseException:
+        pass
+
+
+def _publish_report(
+    root: Path,
+    report_id: str,
+    metadata: dict[str, Any],
+    checks: dict[str, dict[str, Any]],
+    tests: dict[str, dict[str, Any]],
+    findings: dict[str, dict[str, Any]],
+) -> None:
+    files: list[tuple[Path, bytes]] = []
+    for finding_id, finding in sorted(findings.items()):
+        files.append(
+            (
+                root / "targets/starry/findings" / f"{slug(finding_id)}.yaml",
+                yaml_text(finding).encode("utf-8"),
+            )
+        )
+    files.append(
+        (
+            root / "targets/starry/findings/index.yaml",
+            yaml_text(_finding_index(root, findings, metadata["generated_at_utc"])).encode("utf-8"),
+        )
+    )
+    report_path = root / "runs" / report_id / "report.md"
+    files.append((report_path, _report_text(metadata, checks, tests).encode("utf-8")))
+    transactional_write(files)
+
+
+def _cleanup_success(repository: Path, workspace: Path, worktree: Path | None) -> None:
+    if worktree is not None and worktree.exists():
+        result = git(repository, ["worktree", "remove", "--force", str(worktree)], check=False)
+        if result.returncode != 0:
+            shutil.rmtree(worktree, ignore_errors=True)
+            git(repository, ["worktree", "prune"], check=False)
+    shutil.rmtree(workspace, ignore_errors=True)
+    try:
+        TEMP_ROOT.rmdir()
+    except OSError:
+        pass
+
+
+def _validate_reused_findings(root: Path, prior: dict[str, Any]) -> dict[str, dict[str, str]] | None:
+    recorded = prior.get("finding_versions", {})
+    ids = prior.get("finding_ids", [])
+    if not isinstance(recorded, dict) or not isinstance(ids, list):
+        return None
+    current: dict[str, dict[str, str]] = {}
+    for finding_id in ids:
+        if not isinstance(finding_id, str):
+            return None
+        path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+        if not path.is_file():
+            return None
+        finding = load_mapping(path)
+        version = recorded.get(finding_id)
+        if not isinstance(version, dict) or dependency_mismatch(version, finding_id, finding):
+            return None
+        current[finding_id] = entity_version(finding_id, finding)
+    return current
 
 
 def run_check(
@@ -541,10 +890,17 @@ def run_check(
 ) -> str:
     root = (root or repo_root()).resolve()
     mapping_report = load_mapping_report(root, from_run_id)
-    run_id = requested_run_id or new_run_id(
-        "check", {"from": from_run_id, "at": utc_now()}
+    report_id = normalize_run_id(
+        requested_run_id or new_run_id("check", {"from": from_run_id, "at": utc_now()})
     )
-    recorder = RunRecorder(root, "check", run_id, {"from": from_run_id}, from_run_id)
+    report_path = root / "runs" / report_id / "report.md"
+    if report_path.parent.exists():
+        raise SyscallGuardError(f"check report already exists: {report_path.parent}")
+    workspace = _check_workspace(report_id)
+    if workspace.exists():
+        raise SyscallGuardError(f"check workspace already exists: {workspace}")
+    workspace.mkdir(parents=True)
+    worktree: Path | None = None
     try:
         target = mapping_report.get("target", {})
         repository = Path(str(target.get("repository", ""))).expanduser().resolve()
@@ -555,91 +911,67 @@ def run_check(
         current_snapshot = repository_snapshot_hash(repository)
         entities, hashes, input_hash = _current_input(root, mapping_report)
         versions = _current_versions(entities)
-        recorder.manifest["input_hash"] = input_hash
-        recorder.manifest["entity_hashes"] = hashes
-        recorder.manifest["entity_versions"] = versions
-        recorder.manifest["target"] = dict(target)
-        recorder.manifest["entities"] = {
-            key: sorted(values) for key, values in entities.items()
-        }
-        recorder.manifest["rule_syscalls"] = mapping_report.get("rule_syscalls", {})
         stale_reasons = _mapping_staleness(mapping_report, entities)
         if current_snapshot != mapped_snapshot or stale_reasons:
-            blocker = {
-                "kind": "stale_mapping",
-                "reason": "mapping dependencies or Starry content changed; run map-starry-checks again",
-                "mapped_snapshot_hash": mapped_snapshot,
-                "current_snapshot_hash": current_snapshot,
-                "dependency_mismatches": stale_reasons,
-            }
-            recorder.manifest["counts"] = {"skipped_stale_mapping": 1, "findings": 0}
-            recorder.complete([blocker])
-            _write_report(recorder, {"static": [], "dynamic": []})
-            recorder.flush()
-            return run_id
-
-        prior = _prior_identical_check(root, input_hash, run_id)
-        if prior is not None:
-            recorder.manifest["reused_run"] = prior["run_id"]
-            recorder.manifest["entities"]["findings"] = prior.get("entities", {}).get("findings", [])
-            generated_at = utc_now()
-            prior_results_path = root / "runs" / str(prior["run_id"]) / "results.yaml"
-            prior_results = load_mapping(prior_results_path) if prior_results_path.is_file() else {}
-            dependencies = [
-                version
-                for kind in ("static_checks", "dynamic_tests")
-                for _entity_id, version in sorted(versions[kind].items())
-            ]
-            reused_results = {
-                "schema_version": SCHEMA_VERSION,
-                "kind": "syscallguard_check_results",
-                "run_id": run_id,
-                "generated_at_utc": generated_at,
-                "upstream_dependencies": dependencies,
-                "target_snapshot_hash": mapped_snapshot,
-                "reused_from": prior["run_id"],
-                "static": prior_results.get("static", []),
-                "dynamic": prior_results.get("dynamic", []),
-                "blockers": prior.get("blockers", []),
-            }
-            atomic_write_yaml(recorder.directory / "results.yaml", reused_results)
-            recorder.manifest["result_version"] = entity_version(run_id, reused_results)
-            finding_versions: dict[str, dict[str, str]] = {}
-            for finding_id in recorder.manifest["entities"]["findings"]:
-                finding_path = root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
-                finding_versions[finding_id] = entity_version(
-                    finding_id, load_mapping(finding_path)
+            raise SyscallGuardError(
+                "stale mapping; run map-starry-checks again: "
+                + "; ".join(
+                    ([f"target snapshot changed: {mapped_snapshot} != {current_snapshot}"] if current_snapshot != mapped_snapshot else [])
+                    + stale_reasons
                 )
-            recorder.manifest["entity_versions"]["findings"] = finding_versions
-            recorder.manifest["counts"] = {
-                "skipped_unchanged": 1,
-                "findings": len(recorder.manifest["entities"]["findings"]),
-            }
-            recorder.manifest["outputs"] = {"results": "results.yaml", "report": "report.md"}
-            blockers = prior.get("blockers", [])
-            recorder.complete(blockers if isinstance(blockers, list) else [])
-            _write_report(recorder, {"static": [], "dynamic": []})
-            recorder.flush()
-            return run_id
+            )
+        metadata = _base_metadata(
+            report_id, from_run_id, mapping_report, input_hash, hashes, versions
+        )
 
-        worktree = _worktree_path(mapping_report, run_id)
+        prior = _prior_identical_check(root, input_hash, report_id)
+        reused_versions = _validate_reused_findings(root, prior) if prior else None
+        if prior is not None and reused_versions is not None:
+            metadata["status"] = prior["status"]
+            metadata["reused_from"] = prior["report_id"]
+            metadata["static"] = prior.get("static", [])
+            metadata["dynamic"] = prior.get("dynamic", [])
+            metadata["blockers"] = prior.get("blockers", [])
+            metadata["finding_ids"] = prior.get("finding_ids", [])
+            metadata["finding_versions"] = reused_versions
+            metadata["counts"] = _counts(
+                metadata["static"],
+                metadata["dynamic"],
+                {key: None for key in metadata["finding_ids"]},
+                metadata["blockers"],
+            )
+            metadata["counts"]["reused"] = 1
+            if metadata["blockers"]:
+                for key in ("diagnostic_directory", "worktree"):
+                    if isinstance(prior.get(key), str):
+                        metadata[key] = prior[key]
+            _seal_metadata(metadata)
+            _publish_report(
+                root,
+                report_id,
+                metadata,
+                entities["static_checks"],
+                entities["dynamic_tests"],
+                {},
+            )
+            _cleanup_success(repository, workspace, None)
+            return report_id
+
+        worktree = workspace / "worktree"
+        logs = workspace / "logs"
+        logs.mkdir(parents=True)
         _create_worktree(repository, revision_ref, worktree)
         if repository_snapshot_hash(worktree) != mapped_snapshot:
             raise SyscallGuardError("isolated Starry worktree does not match the mapped content snapshot")
-        recorder.manifest["worktree"] = str(worktree)
-        logs = recorder.directory / "logs"
-        logs.mkdir(parents=True, exist_ok=True)
         blocked_tests, blockers = _apply_test_patches(
             root, worktree, entities["dynamic_tests"], logs
         )
-
         static_results: list[dict[str, Any]] = []
         for check_id, definition in entities["static_checks"].items():
             result, blocker = _run_static_check(worktree, check_id, definition)
             static_results.append(result)
             if blocker:
                 blockers.append(blocker)
-
         dynamic_results: list[dict[str, Any]] = []
         for test_id, definition in entities["dynamic_tests"].items():
             result, blocker = _run_dynamic_test(
@@ -652,102 +984,56 @@ def run_check(
             dynamic_results.append(result)
             if blocker and content_hash(blocker) not in {content_hash(item) for item in blockers}:
                 blockers.append(blocker)
-
-        generated_at = utc_now()
-        result_dependencies = [
-            version
-            for kind in ("static_checks", "dynamic_tests")
-            for _entity_id, version in sorted(versions[kind].items())
-        ]
-        results = {
-            "schema_version": SCHEMA_VERSION,
-            "kind": "syscallguard_check_results",
-            "run_id": run_id,
-            "generated_at_utc": generated_at,
-            "upstream_dependencies": result_dependencies,
-            "target_snapshot_hash": mapped_snapshot,
-            "worktree": str(worktree),
-            "static": static_results,
-            "dynamic": dynamic_results,
-            "blockers": blockers,
-        }
-        atomic_write_yaml(recorder.directory / "results.yaml", results)
-        result_version = entity_version(run_id, results)
-        findings = _finding_entities(
+        metadata["generated_at_utc"] = utc_now()
+        generated_at = metadata["generated_at_utc"]
+        rule_syscalls = mapping_report.get("rule_syscalls", {})
+        findings, result_findings = _finding_entities(
             root,
-            run_id,
+            report_id,
             mapped_snapshot,
-            mapping_report.get("rule_syscalls", {}),
+            rule_syscalls,
             static_results,
             dynamic_results,
             entities["static_checks"],
             entities["dynamic_tests"],
-            result_version,
+            versions,
             generated_at,
         )
-        publish_yaml_entities(
-            [
-                (
-                    recorder.directory,
-                    root / "targets/starry/findings" / f"{slug(finding_id)}.yaml",
-                    finding,
-                )
-                for finding_id, finding in findings.items()
-            ]
-        )
-        update_index(
-            root / "targets/starry/findings/index.yaml",
-            "syscallguard_starry_finding_index",
-            [
-                {
-                    "id": finding_id,
-                    "path": f"targets/starry/findings/{slug(finding_id)}.yaml",
-                    "syscall": finding["syscall"],
-                    "rule_id": finding["rule_id"],
-                    "target_snapshot_hash": mapped_snapshot,
-                    "status": finding["status"],
-                    "resolution": finding["resolution"],
-                    "generated_at_utc": finding["generated_at_utc"],
-                    "content_hash": version_content_hash(finding),
-                }
-                for finding_id, finding in findings.items()
-            ],
-        )
-        recorder.manifest["result_version"] = result_version
-        recorder.manifest["entity_versions"]["findings"] = {
+        _annotate_findings(static_results, dynamic_results, result_findings)
+        metadata["status"] = "completed_with_blockers" if blockers else "completed"
+        metadata["static"] = static_results
+        metadata["dynamic"] = dynamic_results
+        metadata["blockers"] = blockers
+        metadata["finding_ids"] = sorted(findings)
+        metadata["finding_versions"] = {
             finding_id: entity_version(finding_id, finding)
             for finding_id, finding in findings.items()
         }
-        recorder.manifest["entities"]["findings"] = sorted(findings)
-        recorder.manifest["counts"] = {
-            "static_pass": sum(row["result"] == "pass" for row in static_results),
-            "static_fail": sum(row["result"] == "fail" for row in static_results),
-            "dynamic_pass": sum(row["result"] == "pass" for row in dynamic_results),
-            "dynamic_fail": sum(row["result"] == "fail" for row in dynamic_results),
-            "dynamic_skipped": sum(row["result"] == "skipped" for row in dynamic_results),
-            "dynamic_not_run": sum(row["result"] == "not_run" for row in dynamic_results),
-            "findings": len(findings),
-            "blockers": len(blockers),
-        }
-        recorder.manifest["outputs"] = {
-            "results": "results.yaml",
-            "report": "report.md",
-            "logs": "logs/",
-            "finding_index": "targets/starry/findings/index.yaml",
-        }
-        recorder.complete(blockers)
-        _write_report(recorder, results)
-        recorder.flush()
-        return run_id
+        metadata["counts"] = _counts(static_results, dynamic_results, findings, blockers)
+        if blockers:
+            metadata["diagnostic_directory"] = str(workspace)
+            metadata["worktree"] = str(worktree)
+        _seal_metadata(metadata)
+        _publish_report(
+            root,
+            report_id,
+            metadata,
+            entities["static_checks"],
+            entities["dynamic_tests"],
+            findings,
+        )
+        if not blockers:
+            _cleanup_success(repository, workspace, worktree)
+        return report_id
     except BaseException as exc:
-        recorder.fail(exc)
+        _mark_failure(workspace, exc)
         if isinstance(exc, SyscallGuardError):
             raise
         raise SyscallGuardError(str(exc)) from exc
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Check Starry compliance in an isolated worktree")
+    parser = argparse.ArgumentParser(description="检查 Starry 合规性")
     parser.add_argument("--from", dest="from_run_id", required=True, help="mapping report id")
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
@@ -756,22 +1042,22 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    requested_run_id = args.run_id or new_run_id("check", {"from": args.from_run_id})
+    requested_report_id = args.run_id or new_run_id("check", {"from": args.from_run_id})
     try:
-        run_id = run_check(args.from_run_id, args.root, requested_run_id)
+        report_id = run_check(args.from_run_id, args.root, requested_report_id)
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
-        failed_path = args.root.resolve() / "runs" / requested_run_id
-        if failed_path.exists():
-            print(f"result: {failed_path}", file=sys.stderr)
+        workspace = _check_workspace(requested_report_id)
+        if workspace.exists():
+            print(f"diagnostics: {workspace}", file=sys.stderr)
         return 2
-    path = args.root.resolve() / "runs" / run_id
-    manifest = load_mapping(path / "manifest.yaml")
-    print(f"run_id: {run_id}")
-    print(f"status: {manifest['status']}")
-    print(f"result: {path}")
-    if manifest.get("worktree"):
-        print(f"worktree: {manifest['worktree']}")
+    path = args.root.resolve() / "runs" / report_id / "report.md"
+    report = load_check_report(args.root.resolve(), report_id)
+    print(f"report_id: {report_id}")
+    print(f"status: {report['status']}")
+    print(f"report: {path}")
+    if report.get("diagnostic_directory"):
+        print(f"diagnostics: {report['diagnostic_directory']}")
     print(f"finding_index: {args.root.resolve() / 'targets/starry/findings/index.yaml'}")
     return 0
 

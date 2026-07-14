@@ -10,6 +10,8 @@ SyscallGuard 将合规性工作拆成独立的规则导入、Starry 映射、隔
 
 Mapping 将完整规则状态写入中文报告尾部元数据，并只把本轮产出的检查与测试写入
 `execution_scope`。Check 从该范围执行、从完整归属生成 finding，不依赖聚合 syscall spec。
-所有下游消费者先比较依赖时间戳，再复核内容 hash，并固定 Starry 内容快照。
+Check 的中文报告本身承载完整机器状态，finding 与报告在单次事务中发布；成功运行不保留
+manifest、results 或日志。Fix 直接消费该报告及 finding 版本。所有下游消费者先比较依赖时间戳，
+再复核内容 hash，并固定 Starry 内容快照。
 
 Reset 只清空 syscall 索引、通用规则和 ingest report 状态。来源配置、mapping report、检查和测试定义保持不变。

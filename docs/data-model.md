@@ -41,7 +41,19 @@
 `targets/starry/static-checks.yaml` 与 `targets/starry/dynamic-tests.yaml` 是按 syscall 分组的一级索引；
 同名目录保存一个实体一个 YAML 的二级详情。动态测试的独立源码或 patch 位于其 `assets/` 子目录。
 Mapping 的 `execution_scope` 只记录本轮产出的检查和测试；check 只执行该范围，并使用报告的完整
-`rule_syscalls` 生成 finding 归属。Check/fix manifest 仍使用 `from_run_id` 串接父结果。
+`rule_syscalls` 生成 finding 归属。
+
+`runs/check-*/report.md` 是 check 的唯一运行结果。中文正文逐项列出 ID、类型、syscall、通用规则、
+`pass`/`fail`/`skipped`/`not_run`/`error`、原因和精简证据；末尾
+`syscallguard_check_report` 元数据保存父 mapping report、目标快照、输入实体版本、执行范围、完整
+静态/动态结果、计数、blocker 和 finding 版本。正常完成目录中只有 `report.md`，执行临时区固定为
+`/tmp/syscallguard-check/<id>`。环境 blocker 不生成 finding，并使报告状态为
+`completed_with_blockers`、临时区保留；无 blocker 时删除临时日志和 worktree。报告、finding 详情和
+一级索引在同一事务中发布，报告最后落盘。
+
+Fix manifest 的 `from_run_id` 指向 check report；Fix 直接读取其机器元数据和 finding 版本。默认实现
+补丁位于 `/tmp/syscallguard-fix/<check-report-id>/implementation-fix.patch`，check report 目录不接收
+任何下游产物。
 
 所有依赖先比较 `generated_at_utc`，再比较 `content_hash`；任一不同即 stale。第二次 hash 比较
 保证人工编辑即使漏更新时间也会被拒绝。
@@ -76,5 +88,5 @@ worktree_root: /tmp/syscallguard-worktrees
 
 `$reset-syscallguard` 只删除 `library/syscalls.yaml`、`library/rules/*.yaml` 和
 `runs/spec-*/report.md`。它保留来源配置、
-recognizer、Starry 共享实体、mapping report 以及 check/fix 历史；下一次 ingest 因无 report 状态而从首个
+recognizer、Starry 共享实体、mapping/check report 以及 fix 历史；下一次 ingest 因无 report 状态而从首个
 字典序 syscall 重新开始。

@@ -1,4 +1,4 @@
 interface:
   display_name: "Fix Starry Compliance"
   short_description: "Fix confirmed Starry compliance gaps"
-  default_prompt: "Use $fix-starry-compliance from=<check-run-id> to patch confirmed findings and run regressions."
+  default_prompt: "Use $fix-starry-compliance from=<check-report-id> to patch confirmed findings and run regressions."
