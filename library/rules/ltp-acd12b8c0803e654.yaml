@@ -1,0 +1,39 @@
+# 合规检查：条件：文件描述符无效；检查：调用 epoll_wait(epfd, &ret_evs, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_ACD12B8C0803E654
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - '&ret_evs'
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_value
+    return: '1'
+  errno: []
+semantic_hash: sha256:acd12b8c0803e654854f1267c8e89786da595fa9788ba431fda06dfd0cbcd5d2
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+  line: 101
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c119a1eb65556356d950f3c9fb6954f7fa3308cd0610b6ad4da471dc63e82a5f
+  case: epoll_wait01_101_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+  line: 139
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b5d5a8aa3be897f1ad8d816d46f2d654d08493b6c81fa256d7019873c2f381b9
+  case: epoll_wait01_139_raw

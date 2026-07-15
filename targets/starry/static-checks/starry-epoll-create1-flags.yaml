@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_CREATE1_FLAGS
+title: epoll_create1 accepts only EPOLL_CLOEXEC and installs a new descriptor
+rule_refs:
+- LTP_5D8D2B3BEDA79604
+- LTP_89745BB32E6D4D02
+applies_to_syscalls:
+- epoll_create1
+path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+patterns:
+- label: unknown create flags are rejected as invalid input
+  regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?EpollCreateFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?'
+- label: a valid request creates and installs an epoll descriptor
+  regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?Epoll::new\(\)[\s\S]*?\.add_to_fd_table\(flags\.contains\(EpollCreateFlags::CLOEXEC\)\)'
+upstream_dependencies:
+- id: LTP_5D8D2B3BEDA79604
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:5d8d2b3beda79604301b79695ead77bb1cca6ec4c1e6b679aabacb702befdccf
+- id: LTP_89745BB32E6D4D02
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:89745bb32e6d4d02b6ab504c2a88f1b47d35f128eb07bb1921b1c2adb76977d0
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_create1
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
+  missing_symbols: []
+  content_hash: sha256:8b1f3a635fd16e577f2008b648f0d0e423ee30f9fda039c2e1ed8a1aae3da884
+target_content_fingerprint: sha256:f5d0d9388b378a27a837ec48e4d6416ba220a437d699a598a34fc17b5a3726ff
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

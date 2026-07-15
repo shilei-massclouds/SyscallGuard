@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 faccessat2(dir_fd, testfile, R_OK, 0)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C2909AC2ECEDED94
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dir_fd
+    - testfile
+    - R_OK
+    - '0'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:c2909ac2eceded9462052049abaac7e397b9366e68188495ac945f457e9c9ae1
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat201.c
+  line: 50
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:32b0f5fbdb0d7155dd505fb49f7e51a4484bf9d5abe3194a8e3d703c2289af68
+  case: faccessat201_50_0

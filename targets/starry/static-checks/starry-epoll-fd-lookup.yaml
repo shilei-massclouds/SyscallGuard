@@ -1,0 +1,56 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_FD_LOOKUP
+title: epoll lookup distinguishes absent descriptors from descriptors of another type
+rule_refs:
+- LTP_6FFB17DB762F3167
+- LTP_8F30861E18D66625
+- LTP_EC1CA29BE6888A6B
+applies_to_syscalls:
+- epoll_ctl
+- epoll_wait
+path: os/StarryOS/kernel/src/file/mod.rs
+patterns:
+- label: absent descriptors return BadFileDescriptor
+  regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+- label: a descriptor of the wrong concrete type returns InvalidInput
+  regex: 'fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?\.downcast_arc\(\)[\s\S]*?\.map_err\(\|_\|
+    AxError::InvalidInput\)'
+upstream_dependencies:
+- id: LTP_6FFB17DB762F3167
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:6ffb17db762f3167790a052bae0fa49f44b1075991c29dcec06f56509e9ae743
+- id: LTP_8F30861E18D66625
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:8f30861e18d666256af3aaaa7bd2a46e35d4fa8cb90ab3960bb318a6b7f25a51
+- id: LTP_EC1CA29BE6888A6B
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:ec1ca29be6888a6b373d18e61642398247eb0d3006feee8826fd7fda26f99ab4
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - get_file_like
+  scope: symbols
+  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
+  symbol_hashes:
+    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
+  missing_symbols: []
+  content_hash: sha256:a0ac4f88598370fae1b30592b26c7f4bc7ec59aaecd3083ab5a806fd86592985
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_ctl
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_ctl: sha256:4d53badb6cc8f5feb9e41ebd62e2e9fe3a648ab4ac28bcc2a04ebc7b1130906d
+  missing_symbols: []
+  content_hash: sha256:e9206fdbe5cd3f024e28fc57d357f1aac641703de7ee34117da22b404e8bc53a
+target_content_fingerprint: sha256:badcebd98d1433f0e7180964d7b3b57d58eef41be638de28d415e5ae67297bbd
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

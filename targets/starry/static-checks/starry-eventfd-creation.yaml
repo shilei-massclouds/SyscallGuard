@@ -1,0 +1,37 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EVENTFD_CREATION
+title: eventfd creates a nonblocking event counter descriptor
+rule_refs:
+- LTP_1AA7F21DA5C55800
+- LTP_5622491E8A2227F2
+applies_to_syscalls:
+- eventfd
+path: os/StarryOS/kernel/src/syscall/fs/event.rs
+patterns:
+- label: legacy eventfd delegates to eventfd2 without extra flags
+  regex: 'pub fn sys_eventfd\(initval: u32\)[\s\S]*?sys_eventfd2\(initval, 0\)'
+- label: eventfd2 creates configures and installs the counter
+  regex: pub fn sys_eventfd2\([\s\S]*?EventFd::new\(initval as _,[\s\S]*?set_nonblocking\([\s\S]*?add_file_like\(event_fd
+    as _,
+upstream_dependencies:
+- id: LTP_1AA7F21DA5C55800
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:1aa7f21da5c558007d9fd7b2943285112b799046994663336b5a0137eb08fc30
+- id: LTP_5622491E8A2227F2
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:5622491e8a2227f2b5f90dbefb8a45560139a3cfbea5be104cbfca5fe10c4e09
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/event.rs
+  symbols:
+  - sys_eventfd
+  - sys_eventfd2
+  scope: symbols
+  file_hash: sha256:1d074813c1f71f23ce97cf2fb7897555c3714b76b798c2262ae684bbfc988e06
+  symbol_hashes:
+    sys_eventfd: sha256:2abeeef991af2799e50a2f560a0505a8a15998965d16a4c36312966b0f245db8
+    sys_eventfd2: sha256:20997c97565895d0d40b033273a222c0fcbdd24f0c6d5b05d065b01c0bea5b94
+  missing_symbols: []
+  content_hash: sha256:63c4625acaf0c9b82bfb49b461c90845760a503fc58cb134c9d8fd64c117182b
+target_content_fingerprint: sha256:e72698b5641e0d9a37a13df0462c2ad72850d069439aa8091eb3da15268e174b
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

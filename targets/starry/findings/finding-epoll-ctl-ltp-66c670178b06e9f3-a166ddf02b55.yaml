@@ -1,0 +1,31 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+syscall: epoll_ctl
+rule_id: LTP_66C670178B06E9F3
+target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260715t104203z-7854877c
+  evidence_kind: static
+  source_id: STARRY_EPOLL_NESTED_LOOP
+  evidence:
+    check_id: STARRY_EPOLL_NESTED_LOOP
+    rule_refs:
+    - LTP_66C670178B06E9F3
+    result: fail
+    path: os/StarryOS/kernel/src/file/epoll.rs
+    patterns:
+    - label: add detects whether a nested epoll reaches the destination instance
+      regex: pub fn add\([\s\S]*?downcast_arc::<Epoll>\(\)[\s\S]*?reaches_epoll\([\s\S]*?AxError::FilesystemLoop
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-15T10:48:47.469083Z'
+upstream_dependencies:
+- id: fix-finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:590e864f24d01619501d108a50f8ddb917d9a2dc2fb6f2cfc47403814463eb09
+fix_ref: fix-finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+fixed_by_run: fix-20260715t104608z-01d0c47b

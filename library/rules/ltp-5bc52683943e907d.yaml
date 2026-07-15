@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events)；预期：返回 -1，errno 为 exp_errnos。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5BC52683943E907D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - new_epfd
+    - EPOLL_CTL_ADD
+    - epfd
+    - '&events'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: exp_errnos
+  errno:
+  - exp_errnos
+semantic_hash: sha256:5bc52683943e907d8c1ee104d1a6f46436beca5f3b6ebd776c52407f65940b5c
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
+  line: 61
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1734e3af06114b75d70409c5b1911332e97c30c511326033462278f9ae4e8a82
+  case: epoll_ctl04_61_raw

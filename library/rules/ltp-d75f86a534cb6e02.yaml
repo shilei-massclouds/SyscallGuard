@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_wait(epfd, epevs, 1, sleep_ms)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D75F86A534CB6E02
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - epevs
+    - '1'
+    - sleep_ms
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d75f86a534cb6e02dbd3de6fb64ef149396db4e63651815433cdec7ec6f9ce05
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+  line: 28
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f6e3ad86f833b73688353c18db53e66d22ead52e6fb3e36c5ab3f6cd1f523e78
+  case: epoll_wait02_28_raw

@@ -1,0 +1,60 @@
+# 合规检查：条件：无额外前置条件；检查：调用 eventfd(0, EFD_NONBLOCK)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1AA7F21DA5C55800
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: eventfd
+    arguments:
+    - '0'
+    - EFD_NONBLOCK
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:1aa7f21da5c558007d9fd7b2943285112b799046994663336b5a0137eb08fc30
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd02.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:c634caed0eba48b12c820831333c05dbe4e52157687a7cc0ad1e52fdce667398
+  case: eventfd02_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd03.c
+  line: 27
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:2a9ff906a9fcf335590d923649adde21dab4dee4880c2ef6791157f7c0e448e6
+  case: eventfd03_27_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd04.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:584f742d55d70748860e6e2a6ad898a88ec14c847a45ba5d6a86857c76d3d994
+  case: eventfd04_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd05.c
+  line: 23
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:92edaf78dc3f252d0268cf9c7f1ed45a799b6bb982911039617a398f7ff9f82a
+  case: eventfd05_23_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd06.c
+  line: 143
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:38297316415ca2bf7d260875550c30d2683072be4a3a1217f473bacf3ed1bba1
+  case: eventfd06_143_raw

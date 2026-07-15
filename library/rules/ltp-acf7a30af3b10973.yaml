@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 execveat(bad_fd, "", argv, environ, AT_EMPTY_PATH)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_ACF7A30AF3B10973
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - bad_fd
+    - '""'
+    - argv
+    - environ
+    - AT_EMPTY_PATH
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:acf7a30af3b10973088f22334a5e2b35a00bbc3ff6530b1fb644856f637f06e4
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/execveat/execveat02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ef68674328fd1b436f1c23c8bd8e5b00842b2c8c45af6b7b0791d237a333b29
+  case: execveat02_57_0

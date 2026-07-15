@@ -1,0 +1,47 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_FACCESSAT2_VALIDATION
+title: faccessat2 validates mode flags and the user pathname before resolution
+rule_refs:
+- LTP_4BCFF61005DC2E9A
+- LTP_4D51F55F25C6F2A3
+- LTP_6885CE6A54F7716E
+applies_to_syscalls:
+- faccessat2
+path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+patterns:
+- label: only Linux access mode and faccessat2 flag bits are accepted
+  regex: const FACCESSAT2_VALID_FLAGS:[\s\S]*?const FACCESSAT2_VALID_MODE:[\s\S]*?mode & !FACCESSAT2_VALID_MODE
+    != 0 \|\| flags & !FACCESSAT2_VALID_FLAGS != 0[\s\S]*?Err\(AxError::InvalidInput\)
+- label: the optional user path is copied before resolve_at
+  regex: pub fn sys_faccessat2\([\s\S]*?path\.nullable\(\)\.map\(vm_load_path_string\)\.transpose\(\)\?;[\s\S]*?resolve_at\(dirfd,
+    path\.as_deref\(\), flags\)\?
+upstream_dependencies:
+- id: LTP_4BCFF61005DC2E9A
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:4bcff61005dc2e9a8baad1357435ae47571fe775bbdbee71ceb80f709a098f9e
+- id: LTP_4D51F55F25C6F2A3
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:4d51f55f25c6f2a3a51ed2c2be2b507816d6ae2d9ba1dd1adcc28340924b1a89
+- id: LTP_6885CE6A54F7716E
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:6885ce6a54f7716e5b79cac1af65007cb4f63aad6398b472d5a7539824bf4de9
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_faccessat2
+  scope: symbols
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes:
+    sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
+  missing_symbols: []
+  content_hash: sha256:b9d3889e8fbb42df5c189b100603b8ef0b4dc10a215e57e67299745e99c479bd
+target_content_fingerprint: sha256:318eabf0980dcfe84d0542686e92fb6ace56b0846acb8fe7ba2fb99c0cfdeb8d
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

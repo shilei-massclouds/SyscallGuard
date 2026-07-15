@@ -1,0 +1,31 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+syscall: copy_file_range
+rule_id: LTP_74BB3F96CBA52D02
+target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260715t104203z-7854877c
+  evidence_kind: static
+  source_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  evidence:
+    check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+    rule_refs:
+    - LTP_74BB3F96CBA52D02
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/fs/io.rs
+    patterns:
+    - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+      regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-15T10:48:47.469083Z'
+upstream_dependencies:
+- id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:d4664df2c09afdd6ead72a3019a87256ba7359f46de7ec6a23f27a1c55678a3e
+fix_ref: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+fixed_by_run: fix-20260715t104608z-01d0c47b

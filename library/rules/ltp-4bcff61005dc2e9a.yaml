@@ -1,0 +1,33 @@
+# 合规检查：条件：文件描述符无效；检查：调用 faccessat2(atcwd_fd, rel_path, -1, 0)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4BCFF61005DC2E9A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - atcwd_fd
+    - rel_path
+    - '-1'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4bcff61005dc2e9a8baad1357435ae47571fe775bbdbee71ceb80f709a098f9e
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat202.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0262ed12557dd2d6095de58479d0eb81b4a91dd7482f6906003a8476c80134a5
+  case: faccessat202_65_2

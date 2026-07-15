@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+syscall: close_range
+rule_id: LTP_425E5A3502541DE8
+target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260715t104203z-7854877c
+  evidence_kind: static
+  source_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  evidence:
+    check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+    rule_refs:
+    - LTP_425E5A3502541DE8
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+    patterns:
+    - label: first and last use unsigned 32-bit syscall semantics
+      regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+      matched: false
+      line: null
+    - label: the maximum unsigned range is accepted and capped to open descriptors
+      regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-15T10:48:47.469083Z'
+upstream_dependencies:
+- id: fix-finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:536ae18f7813f38c13c11dd4d16d652dfab81d3dded0358dcf53830cd7ff7faf
+fix_ref: fix-finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+fixed_by_run: fix-20260715t104608z-01d0c47b

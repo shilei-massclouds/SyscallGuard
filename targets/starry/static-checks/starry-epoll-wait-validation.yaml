@@ -1,0 +1,51 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_WAIT_VALIDATION
+title: epoll_wait validates event count and writable user storage
+rule_refs:
+- LTP_18ECD15E5451228D
+- LTP_1ADEBF230DD2C214
+- LTP_EA5D1572B890F71E
+applies_to_syscalls:
+- epoll_wait
+path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+patterns:
+- label: nonpositive maximum event counts are invalid
+  regex: fn do_epoll_wait\([\s\S]*?if maxevents <= 0 \{[\s\S]*?return Err\(AxError::InvalidInput\);
+- label: null and inaccessible event buffers are rejected
+  regex: fn do_epoll_wait\([\s\S]*?if events\.is_null\(\) \{[\s\S]*?Err\(AxError::BadAddress\)[\s\S]*?check_epoll_events_access\(events,
+    maxevents\)\?
+- label: event buffer access is checked for the complete output slice
+  regex: fn check_epoll_events_access\([\s\S]*?checked_mul\(size_of::<epoll_event>\(\)\)[\s\S]*?check_access\(start,
+    len\)\?
+upstream_dependencies:
+- id: LTP_18ECD15E5451228D
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:18ecd15e5451228d55bbb4e06d2aeec746b9af6c9aca8fedd0b387d8e3484b50
+- id: LTP_1ADEBF230DD2C214
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:1adebf230dd2c214f844468f75ee44f3ee8a8cec961a0ba26caa9afe58bd6d25
+- id: LTP_EA5D1572B890F71E
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:ea5d1572b890f71ea1a55cdcad2c53e9061edc3234a5c30ab4af4952cba049ad
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - do_epoll_wait
+  - sys_epoll_wait
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    do_epoll_wait: sha256:65e449cd5f57429867eafddff0c4f2bf9288089c7fc553ba5efe1027f569d470
+    sys_epoll_wait: sha256:35cea4c0b882c6dfb79cbf625e90c08ec1fd9810bec449614cc8cca633ec5507
+  missing_symbols: []
+  content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
+target_content_fingerprint: sha256:afe014eed14af6e25e88f04ce764d9a557b9f610f250b6a46367e7f6aa18c558
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

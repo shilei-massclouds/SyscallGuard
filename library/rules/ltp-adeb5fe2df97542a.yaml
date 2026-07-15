@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_ctl(epfd, EPOLL_CTL_MOD, fds[0], &events)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_ADEB5FE2DF97542A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - EPOLL_CTL_MOD
+    - fds[0]
+    - '&events'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:adeb5fe2df97542a0ab4a690668fb6ff8bf5dabf6dc571b9f1ad50e9a6cd3c7e
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
+  line: 40
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:fd4b0416ab74b19cceb60d29755fba921c1118077096a3131a67ed572e77802f
+  case: epoll_ctl03_40_raw

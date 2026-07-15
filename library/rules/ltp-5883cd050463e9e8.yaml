@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_ctl(epfd, opt, fd, epvs)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5883CD050463E9E8
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - opt
+    - fd
+    - epvs
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:5883cd050463e9e8d7a616eded312d138c7a9d06ee39d3947a818a32e9738f36
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+  line: 123
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fdefabec5f843db77d24ccc49ee7ccadbb80f248232e6ad6e7ff912165ef7d4d
+  case: epoll_ctl01_123_raw

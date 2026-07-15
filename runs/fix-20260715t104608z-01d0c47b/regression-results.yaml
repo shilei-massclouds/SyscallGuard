@@ -1,0 +1,723 @@
+schema_version: 1
+kind: syscallguard_fix_regression
+run_id: fix-20260715t104608z-01d0c47b
+generated_at_utc: '2026-07-15T10:48:47.302992Z'
+upstream_dependencies:
+- id: STARRY_ACCESS_PATH_RESOLUTION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:59f7cbc5fbe5077f11cd55307fc9ca3f3844dd6eabd28619a9453510c409ad9c
+- id: STARRY_BATCH_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:0be875a05e3b4df63663e31e8c95aafe8b388822e765cef223bdcb5c7b37d477
+- id: STARRY_CHROOT_PATH
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:e25dbeb702347c1eedd59c17dad6b29aa453ca9dace84af2ac0c698808452d19
+- id: STARRY_CLOSE_BAD_FD_ERRNO
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:fcad47e84a29f539a2a6a53adfdcd199490b10488b6a9a5a7940d769f2a60649
+- id: STARRY_CLOSE_FD_TABLE
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:34ef6d71b70316f29b7004a8d40073c9abe8e9e28eafb133f44e7eb08d5c3e89
+- id: STARRY_CLOSE_RANGE_SWEEP
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:4e88963575692c36d555da7061d02698d3d4259e819d49ac82be4d9de9a04036
+- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:c1966da2721011ee7641bb1314ce7afe241eb8ec5a5345292eb7df68b810d9f6
+- id: STARRY_CLOSE_RANGE_VALIDATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:98f5f0b1fb735d2931ce83567721576ce9b18cb24babfb22da0edabeaa098176
+- id: STARRY_CLOSE_SYSCALL
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:5a1bf75c91efd93883e51762bac3bab0e13712a8684ac577b9448904a8f29a82
+- id: STARRY_CONNECT_ENTRY
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:d5e316237cb6cb69b1f50d038eeedf347916dfca80fc6d35db8b490ac0325522
+- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  generated_at_utc: '2026-07-15T05:39:36.212938Z'
+  content_hash: sha256:6762073d1ceebfed08c172e40495ac3d2d484296c43a114b1477042dc051b87f
+- id: STARRY_DUP2_DUP3_BEHAVIOR
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:2e8529415f73111744b663439e0583f547c35ee3c17d62682414996013c1ce6e
+- id: STARRY_EPOLL_CREATE1_FLAGS
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:51eee0f940507df3725b65549431ccb834c48e90438852536b0d4891dcf9ab70
+- id: STARRY_EPOLL_CTL_ENTRY
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:677f708fcf4b457b2ab3a77504a122c7f74802979aaca7deff4e4151c33bf8f4
+- id: STARRY_EPOLL_CTL_INTEREST
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:01fae940e12b1d8a8166e525b742a6f891b6ad1980312ff4579b059760af10dd
+- id: STARRY_EPOLL_FACCESS_ERRNO
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:2c6acb90325603b0a0ade7c8c4f29bde92ed02a287ab2d72bc026ede5757ea21
+- id: STARRY_EPOLL_FD_LOOKUP
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:9a3cad9a27edc8437188828d8868cb95706f2fa2e05edec3b00f2c47b10d0b1a
+- id: STARRY_EPOLL_NESTED_LOOP
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:8dcdde5509c8176d51e757d380872a5ada1a4a24354d3eadbbea03123763e408
+- id: STARRY_EPOLL_WAIT_VALIDATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:7c1412caf66abde2a5e7521c2b401cc401d45061930544a362ae63378e739d93
+- id: STARRY_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:bd4def6341975c380c4a1cbe89a55ddcc4bb9c90faf2a7feffffb0acb012bce2
+- id: STARRY_EVENTFD_CREATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:fa17a4868b8cf24ffc7617fa2927162c8f3ea766f11e019dbb3e730d81e0f9a3
+- id: STARRY_EXECVEAT_FACCESSAT_RESOLVE
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:0db77df41b801977ad2b2467491bb54ecb10a5ee5795ee984d66e5d5ea70dd11
+- id: STARRY_EXECVEAT_VALIDATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:0a338a3d1bc0bc2dcde3a2758b12cd2ff5f98d62beaf90e4ab32de080ef6ee98
+- id: STARRY_FACCESSAT2_VALIDATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:1f3a859c597e7a4161712444be99d321f2769aeee7ecc5b7762e12cac7bced34
+- id: STARRY_MMAP_ACCESS
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:bd656f11e8b1877031cec1670b6ad8255c9b809d7c0689f74cb2de9b1d999bed
+- id: STARRY_MMAP_ARGUMENTS
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:1b1603afb7931b1903a10f7b330ad3c94f870aa5224633231b7059b50d46d098
+- id: STARRY_MMAP_FD
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:772447d690c84fb7e86f19ccdb278e8006730e166e35d79d8f49b21266302000
+- id: STARRY_ROUND2_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:8d074dbe76c45042dfcf161ada0789fd30fde71e65d2c66b8c73fbce99ea2516
+- id: STARRY_SOCKET_FD_VALIDATION
+  generated_at_utc: '2026-07-15T10:30:27.733209Z'
+  content_hash: sha256:ffd73e147d85bf90cc1e45c02698787094a005c8de4a5c6a5686405eb7fe3dfd
+target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+static:
+- check_id: STARRY_ACCESS_PATH_RESOLUTION
+  rule_refs:
+  - LTP_2F99FA84C445363C
+  - LTP_4661BBF1B3CD3A1E
+  - LTP_8BB576EB2E1E6B23
+  - LTP_C8DAE34819E335F8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: checked pathname flows into resolve_at
+    regex: let path = path\.nullable\(\)\.map\(vm_load_path_string\)\.transpose\(\)\?;[\s\S]*?let file
+      = resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;
+    matched: true
+    line: 71
+  - label: existence mode returns only after successful resolution
+    regex: let file = resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;[\s\S]*?if mode == 0 \{[\s\S]*?return
+      Ok\(0\);
+    matched: true
+    line: 160
+  reason: all required patterns matched
+- check_id: STARRY_BATCH_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_245CD61DAA19DC98
+  - LTP_2F99FA84C445363C
+  - LTP_4661BBF1B3CD3A1E
+  - LTP_71C54C624831C7F0
+  - LTP_8BB576EB2E1E6B23
+  - LTP_99DF5C34778032E1
+  - LTP_C8DAE34819E335F8
+  - LTP_EBD54180D0CAB16B
+  - LTP_FF9C0F9669A39525
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad user memory maps to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: missing paths map to ENOENT
+    regex: NotFound => ENOENT
+    matched: true
+    line: 249
+  - label: non directory components map to ENOTDIR
+    regex: NotADirectory => ENOTDIR
+    matched: true
+    line: 243
+  - label: symlink loops map to ELOOP
+    regex: FilesystemLoop => ELOOP
+    matched: true
+    line: 230
+  - label: overlong names map to ENAMETOOLONG
+    regex: NameTooLong => ENAMETOOLONG
+    matched: true
+    line: 238
+  - label: permission denial maps to EACCES
+    regex: PermissionDenied => EACCES
+    matched: true
+    line: 253
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  reason: all required patterns matched
+- check_id: STARRY_CHROOT_PATH
+  rule_refs:
+  - LTP_245CD61DAA19DC98
+  - LTP_71C54C624831C7F0
+  - LTP_99DF5C34778032E1
+  - LTP_EBD54180D0CAB16B
+  - LTP_EE7A979F212D6C0C
+  - LTP_FF9C0F9669A39525
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: user pathname is loaded and resolved
+    regex: 'pub fn sys_chroot\(path: \*const c_char\)[\s\S]*?vm_load_(?:path_)?string\(path\)\?[\s\S]*?fs\.resolve\(path\)\?'
+    matched: true
+    line: 114
+  - label: non directories are rejected
+    regex: if loc\.node_type\(\) != NodeType::Directory \{[\s\S]*?return Err\(AxError::NotADirectory\);
+    matched: true
+    line: 120
+  - label: valid directory becomes the new filesystem context
+    regex: \*fs = FsContext::new\(loc\);[\s\S]*?Ok\(0\)
+    matched: true
+    line: 123
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_BAD_FD_ERRNO
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - LTP_0CD17E662AFD2956
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: BadFileDescriptor maps to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_FD_TABLE
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - LTP_0CD17E662AFD2956
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: close removes the descriptor from the current fd table
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?FD_TABLE\.write\(\)\.remove\(fd as usize\)'
+    matched: true
+    line: 312
+  - label: a removed descriptor succeeds and a missing descriptor is EBADF
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?return Ok\(\(\)\);[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 312
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_RANGE_SWEEP
+  rule_refs:
+  - LTP_76BFF56F735A0074
+  - LTP_F4DE81D703447628
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: the sweep is capped at the current maximum descriptor
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as (?:i32|u32)\)
+    matched: true
+    line: 489
+  - label: missing descriptors are skipped and completion returns zero
+    regex: for fd in first\.\.=last\.min\(max_index as (?:i32|u32)\)[\s\S]*?if let Some\(f\) = fd_table\.remove\(fd
+      as _\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 514
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  rule_refs:
+  - LTP_425E5A3502541DE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: first and last use unsigned 32-bit syscall semantics
+    regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+    matched: true
+    line: 489
+  - label: the maximum unsigned range is accepted and capped to open descriptors
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 489
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_RANGE_VALIDATION
+  rule_refs:
+  - LTP_31D9D767D6888DDA
+  - LTP_CBF4B6C8A1458A28
+  - LTP_F1DC44813DCA6A05
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: reversed ranges are invalid
+    regex: pub fn sys_close_range\([\s\S]*?if (?:first < 0 \|\| )?last < first \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 489
+  - label: unknown close_range flags are invalid
+    regex: pub fn sys_close_range\([\s\S]*?CloseRangeFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?
+    matched: true
+    line: 489
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_SYSCALL
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - LTP_0CD17E662AFD2956
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: sys_close calls close_file_like and propagates errors
+    regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;'
+    matched: true
+    line: 475
+  - label: successful close returns zero
+    regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;[\s\S]*?Ok\(0\)'
+    matched: true
+    line: 475
+  reason: all required patterns matched
+- check_id: STARRY_CONNECT_ENTRY
+  rule_refs:
+  - LTP_0FCE63CBC47F69DA
+  - LTP_2F153EBAAD2A779C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: connect validates the fd before reading and normalizing the address
+    regex: pub fn sys_connect\([\s\S]*?Socket::from_fd\(fd\)\?;[\s\S]*?SocketAddrEx::read_from_user\(addr,
+      addrlen\)\?;
+    matched: true
+    line: 174
+  - label: parsed addresses are passed to the socket and errors propagate except nonblocking progress
+    regex: pub fn sys_connect\([\s\S]*?socket\.connect\(addr\)\.map_err\([\s\S]*?AxError::WouldBlock[\s\S]*?AxError::InProgress[\s\S]*?\?;[\s\S]*?Ok\(0\)
+    matched: true
+    line: 174
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  rule_refs:
+  - LTP_74BB3F96CBA52D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+    regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+    matched: true
+    line: 773
+  reason: all required patterns matched
+- check_id: STARRY_DUP2_DUP3_BEHAVIOR
+  rule_refs:
+  - LTP_098AFE0E8E10B0EF
+  - LTP_1726C16756E9651C
+  - LTP_37C625BD7D7C5F1D
+  - LTP_3A7B17AF231D4158
+  - LTP_4F02ACC6E2F6B094
+  - LTP_75D52C5E9C93B6D7
+  - LTP_9B3646398697EA64
+  - LTP_9F560A103CB6F910
+  - LTP_B7F51635806E7E59
+  - LTP_BDA36F61423EEB3E
+  - LTP_D296A517F138A0C0
+  - LTP_EE8E695CF61D6D8A
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: dup2 same-fd validates the descriptor and otherwise delegates to dup3
+    regex: 'pub fn sys_dup2\(old_fd: c_int, new_fd: c_int\)[\s\S]*?if old_fd == new_fd \{[\s\S]*?get_file_like\(new_fd\)\?;[\s\S]*?return
+      Ok\(new_fd as _\);[\s\S]*?sys_dup3\(old_fd, new_fd, 0\)'
+    matched: true
+    line: 563
+  - label: dup3 rejects unknown flags and equal descriptors
+    regex: pub fn sys_dup3\([\s\S]*?Dup3Flags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;[\s\S]*?if
+      old_fd == new_fd \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 578
+  - label: dup3 validates the old fd, replaces the target, and returns it
+    regex: pub fn sys_dup3\([\s\S]*?\.get\(old_fd as _\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)\?;[\s\S]*?fd_table\.remove\(new_fd
+      as _\)[\s\S]*?\.add_at\(new_fd as _, f\)[\s\S]*?Ok\(new_fd as _\)
+    matched: true
+    line: 578
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CREATE1_FLAGS
+  rule_refs:
+  - LTP_5D8D2B3BEDA79604
+  - LTP_89745BB32E6D4D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  patterns:
+  - label: unknown create flags are rejected as invalid input
+    regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?EpollCreateFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?'
+    matched: true
+    line: 104
+  - label: a valid request creates and installs an epoll descriptor
+    regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?Epoll::new\(\)[\s\S]*?\.add_to_fd_table\(flags\.contains\(EpollCreateFlags::CLOEXEC\)\)'
+    matched: true
+    line: 104
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CTL_ENTRY
+  rule_refs:
+  - LTP_22E98D1569DAB493
+  - LTP_6FFB17DB762F3167
+  - LTP_83709E56D6285F71
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  patterns:
+  - label: the epoll descriptor is resolved before the operation
+    regex: pub fn sys_epoll_ctl\([\s\S]*?let epoll = Epoll::from_fd\(epfd\)\?;
+    matched: true
+    line: 121
+  - label: adding the epoll descriptor to itself is invalid
+    regex: pub fn sys_epoll_ctl\([\s\S]*?if epfd == fd \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 121
+  - label: only ADD MOD and DEL operations are accepted
+    regex: match op \{[\s\S]*?EPOLL_CTL_ADD =>[\s\S]*?EPOLL_CTL_MOD =>[\s\S]*?EPOLL_CTL_DEL =>[\s\S]*?_
+      => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 149
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CTL_INTEREST
+  rule_refs:
+  - LTP_468FC84DEAB0BCB8
+  - LTP_4953FAD330ADE150
+  - LTP_61778C450B602081
+  - LTP_8ADB82F00C61D567
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll.rs
+  patterns:
+  - label: monitored descriptors are resolved through the fd table
+    regex: 'fn new\(fd: i32\)[\s\S]*?let file = get_file_like\(fd\)\?;'
+    matched: true
+    line: 130
+  - label: duplicate registrations return AlreadyExists
+    regex: pub fn add\([\s\S]*?guard\.contains_key\(&key\)[\s\S]*?return Err\(AxError::AlreadyExists\);
+    matched: true
+    line: 501
+  - label: modifying a missing interest returns NotFound
+    regex: pub fn modify\([\s\S]*?guard\.get_mut\(&key\)\.ok_or\(AxError::NotFound\)\?
+    matched: true
+    line: 537
+  - label: deleting a missing interest returns NotFound
+    regex: pub fn delete\([\s\S]*?\.remove\(&key\)[\s\S]*?\.ok_or\(AxError::NotFound\)\?
+    matched: true
+    line: 577
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_FACCESS_ERRNO
+  rule_refs:
+  - LTP_0FEC274199CCD0A0
+  - LTP_18ECD15E5451228D
+  - LTP_1ADEBF230DD2C214
+  - LTP_22E98D1569DAB493
+  - LTP_468FC84DEAB0BCB8
+  - LTP_4953FAD330ADE150
+  - LTP_4BCFF61005DC2E9A
+  - LTP_4C1F446C9C520B36
+  - LTP_4D51F55F25C6F2A3
+  - LTP_5D8D2B3BEDA79604
+  - LTP_61778C450B602081
+  - LTP_66C670178B06E9F3
+  - LTP_6885CE6A54F7716E
+  - LTP_6FFB17DB762F3167
+  - LTP_77AA3EAF2AD0C07A
+  - LTP_83709E56D6285F71
+  - LTP_89745BB32E6D4D02
+  - LTP_8ADB82F00C61D567
+  - LTP_8F30861E18D66625
+  - LTP_ACF7A30AF3B10973
+  - LTP_EA5D1572B890F71E
+  - LTP_EC1CA29BE6888A6B
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: missing interests map to ENOENT
+    regex: NotFound => ENOENT
+    matched: true
+    line: 249
+  - label: non-directory descriptors map to ENOTDIR
+    regex: NotADirectory => ENOTDIR
+    matched: true
+    line: 243
+  - label: duplicate interests map to EEXIST
+    regex: AlreadyExists => EEXIST
+    matched: true
+    line: 221
+  - label: nested filesystem-style loops map to ELOOP
+    regex: FilesystemLoop => ELOOP
+    matched: true
+    line: 230
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_FD_LOOKUP
+  rule_refs:
+  - LTP_6FFB17DB762F3167
+  - LTP_8F30861E18D66625
+  - LTP_EC1CA29BE6888A6B
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: absent descriptors return BadFileDescriptor
+    regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 280
+  - label: a descriptor of the wrong concrete type returns InvalidInput
+    regex: 'fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?\.downcast_arc\(\)[\s\S]*?\.map_err\(\|_\|
+      AxError::InvalidInput\)'
+    matched: true
+    line: 250
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_NESTED_LOOP
+  rule_refs:
+  - LTP_66C670178B06E9F3
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll.rs
+  patterns:
+  - label: add detects whether a nested epoll reaches the destination instance
+    regex: pub fn add\([\s\S]*?downcast_arc::<Epoll>\(\)[\s\S]*?reaches_epoll\([\s\S]*?AxError::FilesystemLoop
+    matched: true
+    line: 501
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_WAIT_VALIDATION
+  rule_refs:
+  - LTP_18ECD15E5451228D
+  - LTP_1ADEBF230DD2C214
+  - LTP_EA5D1572B890F71E
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  patterns:
+  - label: nonpositive maximum event counts are invalid
+    regex: fn do_epoll_wait\([\s\S]*?if maxevents <= 0 \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 176
+  - label: null and inaccessible event buffers are rejected
+    regex: fn do_epoll_wait\([\s\S]*?if events\.is_null\(\) \{[\s\S]*?Err\(AxError::BadAddress\)[\s\S]*?check_epoll_events_access\(events,
+      maxevents\)\?
+    matched: true
+    line: 176
+  - label: event buffer access is checked for the complete output slice
+    regex: fn check_epoll_events_access\([\s\S]*?checked_mul\(size_of::<epoll_event>\(\)\)[\s\S]*?check_access\(start,
+      len\)\?
+    matched: true
+    line: 36
+  reason: all required patterns matched
+- check_id: STARRY_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - LTP_0CD17E662AFD2956
+  - LTP_36C99C10CD38F8DB
+  - LTP_45439D8F2BAB0832
+  - LTP_51E295101A9F4411
+  - LTP_52BAFC01DEA6E172
+  - LTP_791DEA825D66980B
+  - LTP_C346EFF1233F7061
+  - LTP_F36F8C0CC1A6D840
+  - LTP_FD1B65B0BCC88E0D
+  - LTP_FEACDC300C3E1DD7
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: BadFileDescriptor maps to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: InvalidInput maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: PermissionDenied maps to EACCES
+    regex: PermissionDenied => EACCES
+    matched: true
+    line: 253
+  reason: all required patterns matched
+- check_id: STARRY_EVENTFD_CREATION
+  rule_refs:
+  - LTP_1AA7F21DA5C55800
+  - LTP_5622491E8A2227F2
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/event.rs
+  patterns:
+  - label: legacy eventfd delegates to eventfd2 without extra flags
+    regex: 'pub fn sys_eventfd\(initval: u32\)[\s\S]*?sys_eventfd2\(initval, 0\)'
+    matched: true
+    line: 21
+  - label: eventfd2 creates configures and installs the counter
+    regex: pub fn sys_eventfd2\([\s\S]*?EventFd::new\(initval as _,[\s\S]*?set_nonblocking\([\s\S]*?add_file_like\(event_fd
+      as _,
+    matched: true
+    line: 26
+  reason: all required patterns matched
+- check_id: STARRY_EXECVEAT_FACCESSAT_RESOLVE
+  rule_refs:
+  - LTP_4C1F446C9C520B36
+  - LTP_5109EDF645F51D7E
+  - LTP_77AA3EAF2AD0C07A
+  - LTP_ACF7A30AF3B10973
+  - LTP_EEDED564522D8D2D
+  result: pass
+  path: os/StarryOS/kernel/src/file/fs.rs
+  patterns:
+  - label: empty paths require AT_EMPTY_PATH and resolve the supplied descriptor
+    regex: Some\(""\) \| None =>[\s\S]*?flags & AT_EMPTY_PATH == 0[\s\S]*?get_file_like\(dirfd\)\?
+    matched: true
+    line: 61
+  - label: absolute paths ignore dirfd while relative paths resolve through it
+    regex: Some\(path\) =>[\s\S]*?if path\.starts_with\('/'\) \{[\s\S]*?AT_FDCWD[\s\S]*?with_fs\(dirfd,
+    matched: true
+    line: 79
+  - label: relative non-directory descriptors return NotADirectory
+    regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?AxError::NotADirectory'
+    matched: true
+    line: 312
+  reason: all required patterns matched
+- check_id: STARRY_EXECVEAT_VALIDATION
+  rule_refs:
+  - LTP_0FEC274199CCD0A0
+  - LTP_ACF7A30AF3B10973
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  patterns:
+  - label: unknown execveat flags are invalid
+    regex: pub fn sys_execveat\([\s\S]*?if flags & !\(AT_EMPTY_PATH \| AT_SYMLINK_NOFOLLOW\) != 0 \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 46
+  - label: the pathname is loaded and resolved through resolve_at
+    regex: pub fn sys_execveat\([\s\S]*?vm_load_string\(path\)\?;[\s\S]*?resolve_at\(dirfd, Some\(path\.as_str\(\)\),
+      flags\)\?
+    matched: true
+    line: 46
+  reason: all required patterns matched
+- check_id: STARRY_FACCESSAT2_VALIDATION
+  rule_refs:
+  - LTP_4BCFF61005DC2E9A
+  - LTP_4D51F55F25C6F2A3
+  - LTP_6885CE6A54F7716E
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: only Linux access mode and faccessat2 flag bits are accepted
+    regex: const FACCESSAT2_VALID_FLAGS:[\s\S]*?const FACCESSAT2_VALID_MODE:[\s\S]*?mode & !FACCESSAT2_VALID_MODE
+      != 0 \|\| flags & !FACCESSAT2_VALID_FLAGS != 0[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 151
+  - label: the optional user path is copied before resolve_at
+    regex: pub fn sys_faccessat2\([\s\S]*?path\.nullable\(\)\.map\(vm_load_path_string\)\.transpose\(\)\?;[\s\S]*?resolve_at\(dirfd,
+      path\.as_deref\(\), flags\)\?
+    matched: true
+    line: 147
+  reason: all required patterns matched
+- check_id: STARRY_MMAP_ACCESS
+  rule_refs:
+  - LTP_36C99C10CD38F8DB
+  - LTP_45439D8F2BAB0832
+  - LTP_52BAFC01DEA6E172
+  - LTP_C346EFF1233F7061
+  - LTP_F36F8C0CC1A6D840
+  - LTP_FD1B65B0BCC88E0D
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: all regular file mappings require fd read access
+    regex: if needs_file_mmap_checks \{[\s\S]*?if !flags\.contains\(FileFlags::READ\) \{[\s\S]*?return
+      Err\(AxError::PermissionDenied\);
+    matched: true
+    line: 246
+  - label: shared writable mappings additionally require fd write access
+    regex: matches!\(map_type, MmapFlags::SHARED\)[\s\S]*?permission_flags\.contains\(MmapProt::WRITE\)[\s\S]*?if
+      !flags\.contains\(FileFlags::WRITE\) \{[\s\S]*?return Err\(AxError::PermissionDenied\);
+    matched: true
+    line: 214
+  reason: all required patterns matched
+- check_id: STARRY_MMAP_ARGUMENTS
+  rule_refs:
+  - LTP_51E295101A9F4411
+  - LTP_FEACDC300C3E1DD7
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: zero length is invalid input
+    regex: pub fn sys_mmap\([\s\S]*?if length == 0 \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 128
+  - label: map type must be shared private or shared validate
+    regex: let map_type = match flags & MmapFlags::TYPE\.bits\(\)[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 160
+  reason: all required patterns matched
+- check_id: STARRY_MMAP_FD
+  rule_refs:
+  - LTP_791DEA825D66980B
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: negative file descriptor is rejected as EBADF
+    regex: if !anonymous && fd < 0 \{[\s\S]*?return Err\(AxError::BadFileDescriptor\);
+    matched: true
+    line: 170
+  - label: non-anonymous mmap resolves the descriptor through get_file_like
+    regex: let file = if anonymous \{[\s\S]*?None[\s\S]*?\} else \{[\s\S]*?Some\(get_file_like\(fd\)\?\)
+    matched: true
+    line: 203
+  reason: all required patterns matched
+- check_id: STARRY_ROUND2_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_098AFE0E8E10B0EF
+  - LTP_0FCE63CBC47F69DA
+  - LTP_2F153EBAAD2A779C
+  - LTP_31D9D767D6888DDA
+  - LTP_37C625BD7D7C5F1D
+  - LTP_4F02ACC6E2F6B094
+  - LTP_75D52C5E9C93B6D7
+  - LTP_9B3646398697EA64
+  - LTP_9F560A103CB6F910
+  - LTP_BDA36F61423EEB3E
+  - LTP_CBF4B6C8A1458A28
+  - LTP_D296A517F138A0C0
+  - LTP_F1DC44813DCA6A05
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: exhausted descriptor limits map to EMFILE
+    regex: TooManyOpenFiles => EMFILE
+    matched: true
+    line: 258
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: non-sockets map to ENOTSOCK
+    regex: NotASocket => ENOTSOCK
+    matched: true
+    line: 244
+  - label: directories map to EISDIR
+    regex: IsADirectory => EISDIR
+    matched: true
+    line: 237
+  reason: all required patterns matched
+- check_id: STARRY_SOCKET_FD_VALIDATION
+  rule_refs:
+  - LTP_0FCE63CBC47F69DA
+  - LTP_2F153EBAAD2A779C
+  result: pass
+  path: os/StarryOS/kernel/src/file/net.rs
+  patterns:
+  - label: Socket from_fd propagates fd lookup and maps type mismatch to NotASocket
+    regex: 'fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?\.downcast_arc\(\)[\s\S]*?\.map_err\(\|_\|
+      AxError::NotASocket\)'
+    matched: true
+    line: 374
+  reason: all required patterns matched
+dynamic: []
+blockers: []

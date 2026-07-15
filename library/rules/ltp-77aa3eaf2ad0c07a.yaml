@@ -1,0 +1,33 @@
+# 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 faccessat2(fd, rel_path, R_OK, 0)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_77AA3EAF2AD0C07A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NON_DIRECTORY_PATH_COMPONENT
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - fd
+    - rel_path
+    - R_OK
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:77aa3eaf2ad0c07a8c890e541d76ea25203c93ad6fbacc025943afc55a92bc17
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat202.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0262ed12557dd2d6095de58479d0eb81b4a91dd7482f6906003a8476c80134a5
+  case: faccessat202_65_4

@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_fix_index
-updated_at_utc: '2026-07-15T09:47:05.015440Z'
+updated_at_utc: '2026-07-15T10:48:47.469083Z'
 entities:
 - id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -9,6 +9,13 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-15T09:47:05.015440Z'
   content_hash: sha256:ea3ef4c0f57c3f3985e01fa27498bf676075f8007bb9d83dc38027ac16e654ef
+- id: fix-finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+  path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-a166ddf02b55.yaml
+  finding_refs:
+  - finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+  status: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:536ae18f7813f38c13c11dd4d16d652dfab81d3dded0358dcf53830cd7ff7faf
 - id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
   path: targets/starry/fixes/fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327.yaml
   finding_refs:
@@ -16,3 +23,17 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-15T09:47:05.015440Z'
   content_hash: sha256:86a4a30b98b64dbdb653dcd5ab04e50c7b817d6f337f9a8c1eaff611c1c09f07
+- id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+  path: targets/starry/fixes/fix-finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55.yaml
+  finding_refs:
+  - finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+  status: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:d4664df2c09afdd6ead72a3019a87256ba7359f46de7ec6a23f27a1c55678a3e
+- id: fix-finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+  path: targets/starry/fixes/fix-finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55.yaml
+  finding_refs:
+  - finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+  status: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:590e864f24d01619501d108a50f8ddb917d9a2dc2fb6f2cfc47403814463eb09

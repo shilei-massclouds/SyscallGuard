@@ -1,0 +1,33 @@
+# 合规检查：条件：文件描述符无效；检查：调用 epoll_wait(bad_epfd, ev_rdwr, 1, -1)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EC1CA29BE6888A6B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - bad_epfd
+    - ev_rdwr
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ec1ca29be6888a6b373d18e61642398247eb0d3006feee8826fd7fda26f99ab4
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
+  line: 63
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b61a259366f2c5435ba463e64f5b06178885794d17bf99e69f227a9a20487dd
+  case: epoll_wait03_63_0

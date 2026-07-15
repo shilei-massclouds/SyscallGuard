@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_wait(epfd, &evt_receive, 1, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D12172005842E2A5
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - '&evt_receive'
+    - '1'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d12172005842e2a5c84eabfd9e2ee4a02a5cd9f56457607850d08658f9c7b8a4
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
+  line: 89
+  recognizer_id: ltp.tst-exp.equal-value
+  evidence_hash: sha256:f53f19b93d766f24fb5e876f7f7073b957d1e9b7affc2c629f1727b0941651b5
+  case: epoll_wait06_89_raw

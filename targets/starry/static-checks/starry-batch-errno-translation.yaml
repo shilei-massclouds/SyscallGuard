@@ -3,21 +3,13 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_BATCH_ERRNO_TRANSLATION
 title: AxError kinds map to Linux errno values used by this mapping batch
 rule_refs:
-- LTP_075318C437B76E06
-- LTP_0799FC60BADD2B18
 - LTP_245CD61DAA19DC98
 - LTP_2F99FA84C445363C
-- LTP_38FB918826669241
 - LTP_4661BBF1B3CD3A1E
-- LTP_58416E6747519699
-- LTP_5F1D35ACCEFD4971
-- LTP_6D86AFD541A61388
 - LTP_71C54C624831C7F0
-- LTP_827CE5CB448A411B
 - LTP_8BB576EB2E1E6B23
 - LTP_99DF5C34778032E1
 - LTP_C8DAE34819E335F8
-- LTP_E06D53042C10C99E
 - LTP_EBD54180D0CAB16B
 - LTP_FF9C0F9669A39525
 applies_to_syscalls:
@@ -42,39 +34,18 @@ patterns:
 - label: invalid input maps to EINVAL
   regex: InvalidInput \| InvalidData => EINVAL
 upstream_dependencies:
-- id: LTP_075318C437B76E06
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:075318c437b76e067682a9c6aab95a64558daf471c20df7205f62a72b1fd82ee
-- id: LTP_0799FC60BADD2B18
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:0799fc60badd2b189b242a57ba5740cd832aa2477cbe8497f5b09324880ca7f4
 - id: LTP_245CD61DAA19DC98
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:245cd61daa19dc987195efcf282a428df3dfc7429cd89bcc1fbc741e96407c30
 - id: LTP_2F99FA84C445363C
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:2f99fa84c445363ccdb31044c1a489fb3da71ffb0efca79bea63770a584e2bde
-- id: LTP_38FB918826669241
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:38fb918826669241ebbe77827a90f4347f124cf6de78fd4f4b46b3495fb3ab2f
 - id: LTP_4661BBF1B3CD3A1E
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:4661bbf1b3cd3a1ed9794183dd018046d195e23d06cfc4a8e2fa282fef66c737
-- id: LTP_58416E6747519699
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:58416e6747519699e7b507fc0ff7e8c00852ff81eaff2cf425bb2d4a84e4e6f3
-- id: LTP_5F1D35ACCEFD4971
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:5f1d35accefd49711e3b8b82de258ecb2f04bba65083b919659edb660948ef2f
-- id: LTP_6D86AFD541A61388
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:6d86afd541a613880ff94fbbb7fbfdbbebd5fd32d94544f7cc6e3f2ee850df77
 - id: LTP_71C54C624831C7F0
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:71c54c624831c7f01c5ac8d48046dc370b784af8dc2099633843d4269593e9f7
-- id: LTP_827CE5CB448A411B
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:827ce5cb448a411bcd82f3a89e9c733eb11fa4d44a8f563ff1658dac81bd73a4
 - id: LTP_8BB576EB2E1E6B23
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:8bb576eb2e1e6b23ecfe5c8b7d2bb21eb7fba161f200ce874a6282e806ee9180
@@ -84,9 +55,6 @@ upstream_dependencies:
 - id: LTP_C8DAE34819E335F8
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:c8dae34819e335f88d2bad8650e2067ec51e8a1c6d21ef37198241a9af5a56f2
-- id: LTP_E06D53042C10C99E
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:e06d53042c10c99e7bdc61242d4ac56e1aace8c13e3442e875e2574ca74e60d3
 - id: LTP_EBD54180D0CAB16B
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:ebd54180d0cab16b9271d149769e3e3e522ef97222514360017b81114bcc90e1
@@ -94,19 +62,35 @@ upstream_dependencies:
   generated_at_utc: '2026-07-15T03:09:52.149069Z'
   content_hash: sha256:ff9c0f9669a39525986267a75a9b66e6249d23f8939029c388c3f8f1c9ec1472
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_chroot
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_chroot: sha256:bc9de7a363f6bce3900023d3dbafecd371fdedb2abe005c7f3d86c8ce95072fd
+  missing_symbols: []
+  content_hash: sha256:0a97329e3b3ca8f95f02121663a8a8beffd2a953737185ce7484509d299b37e2
 - path: os/arceos/modules/axfs-ng/src/fs_core/context.rs
   symbols:
   - resolve
   - resolve_inner
   - try_resolve_symlink
   scope: symbols
-  file_hash: sha256:6cd56d9acec5dc2b33d0d931a4e147c7dcd13318fe706800a02503c2220f7204
+  file_hash: sha256:12a2e42cfd5699826f7115c9462b25e3d5ff1aa8d55da4bddb3a21b5ef331d81
   symbol_hashes:
     resolve: sha256:14a2b52408caa4b091a4b90ec30e6412155884199bbc592741da38777fc3581a
     resolve_inner: sha256:702d76c45f2ff1046f5d437d0e459366482b7ef2e76b1cfb259d536be7b52cc5
     try_resolve_symlink: sha256:2577319f282965c000834bd77c6fd7e1f77f7d44f10b688767d6391bab4169f3
   missing_symbols: []
   content_hash: sha256:0cf7ffc1f42cba981fa89780d918b03c47f71d465064f3e12b024bf39d071734
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:17d7a04e1a8a303c1b2023167d9b6092b11aafde6f56442bfa85ef971aade4b1
 - path: components/starry-vm/src/thin.rs
   symbols:
   - VmMutPtr
@@ -118,15 +102,6 @@ target_dependencies:
     VmPtr: sha256:6c0ff10e65451fa76a4eb2caa472c0a96ff53459ae357d86f2dbf389f50e8804
   missing_symbols: []
   content_hash: sha256:1b7ca80cea190deec16a1cec479d83444169c6259f68ca0bf314edc58015fecd
-- path: components/axfs-ng-vfs/src/path.rs
-  symbols:
-  - verify_entry_name
-  scope: symbols
-  file_hash: sha256:6e44a62c3142a5ebecb4c5c4c93f2d06c24ff549457c5c8b6787c8e90e46c11e
-  symbol_hashes:
-    verify_entry_name: sha256:516c7b090800149dc2bf3b7312761813844477a67da496c991099780f62c7ce5
-  missing_symbols: []
-  content_hash: sha256:2b2482c278ed782ee473d1a44f6611931e19f6b8db3edb22a40b3333d6bf50a0
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -134,6 +109,21 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/arceos/modules/axfs-ng/src/fs_core/context.rs
+  symbols:
+  - new
+  - resolve
+  - resolve_inner
+  - try_resolve_symlink
+  scope: symbols
+  file_hash: sha256:12a2e42cfd5699826f7115c9462b25e3d5ff1aa8d55da4bddb3a21b5ef331d81
+  symbol_hashes:
+    new: sha256:1bcd2659bab35965fce1fa88342b70b1b804b7030617f1d1236201100770a271
+    resolve: sha256:14a2b52408caa4b091a4b90ec30e6412155884199bbc592741da38777fc3581a
+    resolve_inner: sha256:702d76c45f2ff1046f5d437d0e459366482b7ef2e76b1cfb259d536be7b52cc5
+    try_resolve_symlink: sha256:2577319f282965c000834bd77c6fd7e1f77f7d44f10b688767d6391bab4169f3
+  missing_symbols: []
+  content_hash: sha256:5d1cbfb75e6d59316fc521fa665d4b03e584495b894a7a17f3357664e596ca31
 - path: os/StarryOS/kernel/src/syscall/task/ctl.rs
   symbols:
   - cap_data_from_cred
@@ -158,41 +148,33 @@ target_dependencies:
     vm_load_until_nul: sha256:f65607e74fce137d86a282539ef80615a63582cf551668aa44115ed3b4e49767
   missing_symbols: []
   content_hash: sha256:8d542c4492f2dfe413baf6453ad0fd2edc7ac82a1ba69e9c16ca0f5a27bd691c
-- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
-  symbols:
-  - sys_chroot
-  scope: symbols
-  file_hash: sha256:a42d57fc2422560978476f017ea2ae3d59e59be8c3f119e45fb5f18529d2e7e5
-  symbol_hashes:
-    sys_chroot: sha256:2445750c1d3c822f8438f9a1914fe47b5360157364ca20142ad673492d889756
-  missing_symbols: []
-  content_hash: sha256:928d58e7292bc7e8922d1000e5aabe85e9fdb3f1f6c3f84b52583584b92d0d55
-- path: os/arceos/modules/axfs-ng/src/fs_core/context.rs
-  symbols:
-  - new
-  - resolve
-  - resolve_inner
-  - try_resolve_symlink
-  scope: symbols
-  file_hash: sha256:6cd56d9acec5dc2b33d0d931a4e147c7dcd13318fe706800a02503c2220f7204
-  symbol_hashes:
-    new: sha256:3d17bd68745b169b5dbdd92e4dae5756b1d41e3850eea66a0cf7be91f1c551b2
-    resolve: sha256:14a2b52408caa4b091a4b90ec30e6412155884199bbc592741da38777fc3581a
-    resolve_inner: sha256:702d76c45f2ff1046f5d437d0e459366482b7ef2e76b1cfb259d536be7b52cc5
-    try_resolve_symlink: sha256:2577319f282965c000834bd77c6fd7e1f77f7d44f10b688767d6391bab4169f3
-  missing_symbols: []
-  content_hash: sha256:955067eb239a31c67297a10606806cadf346d537ebd469118db448e88e52f236
 - path: os/StarryOS/kernel/src/syscall/fs/stat.rs
   symbols:
   - sys_access
   - sys_faccessat2
   scope: symbols
-  file_hash: sha256:8c2b95c055a36e86b297489cffb8e9d0b4aee3d82941680f6abb9716f3fb2f8e
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
   symbol_hashes:
     sys_access: sha256:e53d5b954a3ef9ff58ed71b80472fb3f2b0ccaa44cb3004d725642a4a4689410
     sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
   missing_symbols: []
   content_hash: sha256:a54fce312aa6a1f336b085bc3620f03cb300748c4b561a5eef4e55d55de13ed0
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a792b678a012108e37743173ef2de96643a9dfcaf5674f5d60d50dfc46b2c9eb
+- path: components/axfs-ng-vfs/src/path.rs
+  symbols:
+  - verify_entry_name
+  scope: symbols
+  file_hash: sha256:c3a469579958f3b08276982ade4b7da6ba38855ed53e3c8afa8842bb04edc24a
+  symbol_hashes:
+    verify_entry_name: sha256:854e90349431c7357333d8d0b62e29aba8c74635d363799e427d72bf2c7acfce
+  missing_symbols: []
+  content_hash: sha256:ace3ca80831d77653f1b54c5d8779d9a337b51a3e8d2a931451112094d6a9bc1
 - path: os/StarryOS/kernel/src/file/fs.rs
   symbols:
   - resolve_at
@@ -219,7 +201,7 @@ target_dependencies:
   symbols:
   - vm_load_string
   scope: symbols
-  file_hash: sha256:4c4fd8a5e5fdf74824fba2666041a10ff4daf9a0214bf6ddeabe8c9e67fc60a6
+  file_hash: sha256:d25c3ba1ae38daa8ef5d84f98666a3b267121cb1ff30ccafbce268549adbd299
   symbol_hashes:
     vm_load_string: sha256:cee098cc352143ede741ebb982ba6d15f7eac71b6667871500b4a5ac4d42bb2e
   missing_symbols: []
@@ -229,11 +211,11 @@ target_dependencies:
   - vm_load_path_string
   - vm_load_string
   scope: symbols
-  file_hash: sha256:4c4fd8a5e5fdf74824fba2666041a10ff4daf9a0214bf6ddeabe8c9e67fc60a6
+  file_hash: sha256:d25c3ba1ae38daa8ef5d84f98666a3b267121cb1ff30ccafbce268549adbd299
   symbol_hashes:
     vm_load_path_string: sha256:95f8b4926ce8e625750404ccab6b5faf51ebf398553aac30035185c0d56642f4
     vm_load_string: sha256:cee098cc352143ede741ebb982ba6d15f7eac71b6667871500b4a5ac4d42bb2e
   missing_symbols: []
   content_hash: sha256:f6fdd2214052ea5f56fef51f35d895763600c89e1aba847f54432d0346f2d3d4
-target_content_fingerprint: sha256:5b12a92e077bfaea827b77a216395bfc7dfd09c620e0983e2414e606373d9d43
-generated_at_utc: '2026-07-15T04:13:20.108411Z'
+target_content_fingerprint: sha256:a317aaaaddb52ec297b1f1f082bb7cd2544fd979344e674c0d33ca74d501ffa3
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 epoll_ctl(epfd, EPOLL_CTL_ADD, fd[1], NULL)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_35CB47575F7752A4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - EPOLL_CTL_ADD
+    - fd[1]
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:35cb47575f7752a4b4814c5629309fc02f2a6405e2e075ca1945c287a38d1c81
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+  line: 85
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b451ce6499a718fc05056a4260e9a1d863dea4510c97220819b18818d349773
+  case: epoll_ctl02_85_5

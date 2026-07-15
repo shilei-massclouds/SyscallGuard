@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-15T09:47:05.015440Z'
+updated_at_utc: '2026-07-15T10:48:47.469083Z'
 entities:
 - id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -11,6 +11,15 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-15T09:47:05.015440Z'
   content_hash: sha256:8bfcc38f55e6cb7f52bb7595aa8b774d3532b8ef038f59626e7bf840a39fdd11
+- id: finding-close-range-ltp-425e5a3502541de8-a166ddf02b55
+  path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-a166ddf02b55.yaml
+  syscall: close_range
+  rule_id: LTP_425E5A3502541DE8
+  target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:f541dda8b247153162d2512784ea78904c150b99cf1d6f1547eb45bbeb4ef317
 - id: finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
   path: targets/starry/findings/finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327.yaml
   syscall: copy_file_range
@@ -20,3 +29,21 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-15T09:47:05.015440Z'
   content_hash: sha256:9926125399c4410fedf7afbbb4d2bea104a73f433e4a7c37a78a8bc78e5fb2dc
+- id: finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+  path: targets/starry/findings/finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55.yaml
+  syscall: copy_file_range
+  rule_id: LTP_74BB3F96CBA52D02
+  target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:699f276e4d20fb528e40dd6c5279a108a940cee40e421af2968ac700e1d588c3
+- id: finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
+  path: targets/starry/findings/finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55.yaml
+  syscall: epoll_ctl
+  rule_id: LTP_66C670178B06E9F3
+  target_snapshot_hash: sha256:a166ddf02b559c91279a81a3b5a885ed06597dcdf08f241d748468e425fa51c8
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-15T10:48:47.469083Z'
+  content_hash: sha256:edf2ba5cd58b90a109ebe7afc3961cdea8999a17aa656de09bf25c6759a1c6fd

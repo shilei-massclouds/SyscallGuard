@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 eventfd(EVENT_COUNT, EFD_NONBLOCK)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5622491E8A2227F2
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: eventfd
+    arguments:
+    - EVENT_COUNT
+    - EFD_NONBLOCK
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:5622491e8a2227f2b5f90dbefb8a45560139a3cfbea5be104cbfca5fe10c4e09
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd01.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:eac069bc9aa5223b0bd7c8b751f63d7aa33bdb418d239ba0dd82be980f37dd97
+  case: eventfd01_28_raw

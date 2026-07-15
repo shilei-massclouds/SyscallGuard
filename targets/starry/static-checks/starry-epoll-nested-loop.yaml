@@ -1,0 +1,33 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_NESTED_LOOP
+title: epoll rejects registrations that would create a nested epoll cycle
+rule_refs:
+- LTP_66C670178B06E9F3
+applies_to_syscalls:
+- epoll_ctl
+path: os/StarryOS/kernel/src/file/epoll.rs
+patterns:
+- label: add detects whether a nested epoll reaches the destination instance
+  regex: pub fn add\([\s\S]*?downcast_arc::<Epoll>\(\)[\s\S]*?reaches_epoll\([\s\S]*?AxError::FilesystemLoop
+upstream_dependencies:
+- id: LTP_66C670178B06E9F3
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:66c670178b06e9f3eae76490edd09b4a26bb0e1c2ccba3c4cbc2a625d12c39bb
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:d5211ace3d1bda6f44c007dfd231f44f8059fbc1997424891f1cf8f2a502cdb6
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a0e4acaf6ae3284af85e4c39ac34a90e122495b558edcacbd32c149d59a25275
+target_content_fingerprint: sha256:1bbc38d3b9b7abca0e8296c11fd6558d39391a2f6a624763c2a732a6236b1250
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

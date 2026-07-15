@@ -1,0 +1,34 @@
+# 合规检查：条件：文件描述符无效；检查：调用 execveat(fd, app_abs_path, argv, environ, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0FEC274199CCD0A0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - fd
+    - app_abs_path
+    - argv
+    - environ
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0fec274199ccd0a04984fadd1588ef353a2bcb0400a8e713f1adaa3f3a36c208
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/execveat/execveat02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ef68674328fd1b436f1c23c8bd8e5b00842b2c8c45af6b7b0791d237a333b29
+  case: execveat02_57_1

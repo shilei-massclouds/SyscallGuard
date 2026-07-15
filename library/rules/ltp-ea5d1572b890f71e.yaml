@@ -1,0 +1,34 @@
+# 合规检查：条件：文件描述符无效、BAD_USER_ADDRESS；检查：调用 epoll_wait(epfd, ev_rdonly, 1, -1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EA5D1572B890F71E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - ev_rdonly
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ea5d1572b890f71ea1a55cdcad2c53e9061edc3234a5c30ab4af4952cba049ad
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
+  line: 63
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b61a259366f2c5435ba463e64f5b06178885794d17bf99e69f227a9a20487dd
+  case: epoll_wait03_63_4

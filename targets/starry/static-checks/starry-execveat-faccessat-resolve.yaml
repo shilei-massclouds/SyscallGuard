@@ -1,0 +1,65 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EXECVEAT_FACCESSAT_RESOLVE
+title: resolve_at enforces empty relative and absolute dirfd semantics
+rule_refs:
+- LTP_4C1F446C9C520B36
+- LTP_5109EDF645F51D7E
+- LTP_77AA3EAF2AD0C07A
+- LTP_ACF7A30AF3B10973
+- LTP_EEDED564522D8D2D
+applies_to_syscalls:
+- execveat
+- faccessat2
+path: os/StarryOS/kernel/src/file/fs.rs
+patterns:
+- label: empty paths require AT_EMPTY_PATH and resolve the supplied descriptor
+  regex: Some\(""\) \| None =>[\s\S]*?flags & AT_EMPTY_PATH == 0[\s\S]*?get_file_like\(dirfd\)\?
+- label: absolute paths ignore dirfd while relative paths resolve through it
+  regex: Some\(path\) =>[\s\S]*?if path\.starts_with\('/'\) \{[\s\S]*?AT_FDCWD[\s\S]*?with_fs\(dirfd,
+- label: relative non-directory descriptors return NotADirectory
+  regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?AxError::NotADirectory'
+upstream_dependencies:
+- id: LTP_4C1F446C9C520B36
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:4c1f446c9c520b36b7f3b5a39c42fea74e7befa2adf95e4a919a1bb760184320
+- id: LTP_5109EDF645F51D7E
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:5109edf645f51d7ec6698c72239e0feedbcea9ffb1e4f9150d5e066527c66630
+- id: LTP_77AA3EAF2AD0C07A
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:77aa3eaf2ad0c07a8c890e541d76ea25203c93ad6fbacc025943afc55a92bc17
+- id: LTP_ACF7A30AF3B10973
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:acf7a30af3b10973088f22334a5e2b35a00bbc3ff6530b1fb644856f637f06e4
+- id: LTP_EEDED564522D8D2D
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:eeded564522d8d2df106307960b9b399555f31b2f4945dc5e10cff79a9fa1454
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  symbols:
+  - sys_execveat
+  scope: symbols
+  file_hash: sha256:41612e40819cf89f7d6c6dd9ccffd9dc8dee0857fb2d200bfdbade9ae036542d
+  symbol_hashes:
+    sys_execveat: sha256:d6d86dd90f2558edc739dc31bb45261901911a99ef93a17c8203ec6b138102b7
+  missing_symbols: []
+  content_hash: sha256:053f961d4ed11ae1471e01d9c395601d4516827c0e6271858bdbc775ef05f83a
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols:
+  - resolve_at
+  scope: symbols
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes:
+    resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
+  missing_symbols: []
+  content_hash: sha256:b3dce20309fe9f480c0da78b10b6995550acae12ab1f7f9f348ac78ca0cebbe2
+target_content_fingerprint: sha256:1120583db5e5f287972a0b64a0b1b519a2eeae6a5b20397f531aba1bcdd58501
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

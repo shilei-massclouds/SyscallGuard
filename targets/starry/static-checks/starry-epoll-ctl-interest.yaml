@@ -1,0 +1,51 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_CTL_INTEREST
+title: epoll interest operations validate descriptors duplicates and missing entries
+rule_refs:
+- LTP_468FC84DEAB0BCB8
+- LTP_4953FAD330ADE150
+- LTP_61778C450B602081
+- LTP_8ADB82F00C61D567
+applies_to_syscalls:
+- epoll_ctl
+path: os/StarryOS/kernel/src/file/epoll.rs
+patterns:
+- label: monitored descriptors are resolved through the fd table
+  regex: 'fn new\(fd: i32\)[\s\S]*?let file = get_file_like\(fd\)\?;'
+- label: duplicate registrations return AlreadyExists
+  regex: pub fn add\([\s\S]*?guard\.contains_key\(&key\)[\s\S]*?return Err\(AxError::AlreadyExists\);
+- label: modifying a missing interest returns NotFound
+  regex: pub fn modify\([\s\S]*?guard\.get_mut\(&key\)\.ok_or\(AxError::NotFound\)\?
+- label: deleting a missing interest returns NotFound
+  regex: pub fn delete\([\s\S]*?\.remove\(&key\)[\s\S]*?\.ok_or\(AxError::NotFound\)\?
+upstream_dependencies:
+- id: LTP_468FC84DEAB0BCB8
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:468fc84deab0bcb8749bee2c8342c88aa3345e7f8d1ff568958918217fc129de
+- id: LTP_4953FAD330ADE150
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:4953fad330ade1503bf7a6d4d6bf2c353a337844f58042ceb3214149d1025945
+- id: LTP_61778C450B602081
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:61778c450b60208142d63a0628d3f3a112b7bbdafa09587ce6e84c7618f736c5
+- id: LTP_8ADB82F00C61D567
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:8adb82f00c61d5671840571f67ba2e6ea75175e1b94b6fbe88f37d95f8031e40
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:d5211ace3d1bda6f44c007dfd231f44f8059fbc1997424891f1cf8f2a502cdb6
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a0e4acaf6ae3284af85e4c39ac34a90e122495b558edcacbd32c149d59a25275
+target_content_fingerprint: sha256:1bbc38d3b9b7abca0e8296c11fd6558d39391a2f6a624763c2a732a6236b1250
+generated_at_utc: '2026-07-15T10:30:27.733209Z'

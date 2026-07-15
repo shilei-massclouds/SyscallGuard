@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+finding_refs:
+- finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+source_check_report_ids:
+- check-20260715t104203z-7854877c
+patch: runs/fix-20260715t104608z-01d0c47b/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-syscalls-compliance-1
+regression: runs/fix-20260715t104608z-01d0c47b/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-15T10:48:47.469083Z'
+upstream_dependencies:
+- id: finding-copy-file-range-ltp-74bb3f96cba52d02-a166ddf02b55
+  generated_at_utc: '2026-07-15T10:42:05.872471Z'
+  content_hash: sha256:55f7fbc29e3741d88e2e5c9ef7d290b2a2904465d830b004683a435aa5f3a718
+- id: check-20260715t104203z-7854877c
+  generated_at_utc: '2026-07-15T10:42:05.872471Z'
+  content_hash: sha256:149cfb8feb27e545ff260fbc4d6e6342307cb8f21ce8b0cbc4d4845f39163d88
+- id: implementation.patch
+  generated_at_utc: '2026-07-15T10:48:47.266160Z'
+  content_hash: sha256:a50e2f14e21e40a3eaea1e0fd45a5c064c73acc8ae66530a8e2c100347032e3a
+- id: fix-20260715t104608z-01d0c47b
+  generated_at_utc: '2026-07-15T10:48:47.302992Z'
+  content_hash: sha256:ee408ac20bb2efc9dcfe31f4aa648d17b8a28947bcb6e2ab8b4ee9ba907838c4

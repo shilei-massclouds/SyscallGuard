@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_ctl(epfd, EPOLL_CTL_ADD, unsupported_fd, &events[1])；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CBB1680336D53D2A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - EPOLL_CTL_ADD
+    - unsupported_fd
+    - '&events[1]'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:cbb1680336d53d2a1eeae3e329d0c4d0144ad9da05ca737d1a9573a537224a39
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+  line: 85
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b451ce6499a718fc05056a4260e9a1d863dea4510c97220819b18818d349773
+  case: epoll_ctl02_85_1

@@ -1,0 +1,38 @@
+# 合规检查：条件：无额外前置条件；检查：调用 epoll_wait(epfd, &evt_receive, 10, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7DC583D73FC4A726
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - '&evt_receive'
+    - '10'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:7dc583d73fc4a7267709ff0452c11b7a2fc91965670254ab0cce04b64223d1aa
+generated_at_utc: '2026-07-15T10:14:12.969080Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+  line: 56
+  recognizer_id: ltp.tst-exp.equal-value
+  evidence_hash: sha256:6dd726ede3f7f8d601883c572aa4c5d151d56dc9fdb1f1760be15aa97fca3b4b
+  case: epoll_wait07_56_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+  line: 61
+  recognizer_id: ltp.tst-exp.equal-value
+  evidence_hash: sha256:296b264c5dd00b18af7fce85c1dc990a5361b74100c147c6c48ea38ad955fafd
+  case: epoll_wait07_61_raw

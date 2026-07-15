@@ -10,9 +10,9 @@ applies_to_syscalls:
 path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
 patterns:
 - label: the sweep is capped at the current maximum descriptor
-  regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as i32\)
+  regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as (?:i32|u32)\)
 - label: missing descriptors are skipped and completion returns zero
-  regex: for fd in first\.\.=last\.min\(max_index as i32\)[\s\S]*?if let Some\(f\) = fd_table\.remove\(fd
+  regex: for fd in first\.\.=last\.min\(max_index as (?:i32|u32)\)[\s\S]*?if let Some\(f\) = fd_table\.remove\(fd
     as _\)[\s\S]*?Ok\(0\)
 upstream_dependencies:
 - id: LTP_76BFF56F735A0074
@@ -26,10 +26,17 @@ target_dependencies:
   symbols:
   - sys_close_range
   scope: symbols
-  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
   symbol_hashes:
-    sys_close_range: sha256:e68528d8b11d0548e507e400ce5f87b9bf34a40925a7555ed5f4fdc1dc0401dd
+    sys_close_range: sha256:7c6451c5a5b1ae0b87827be48057fc21b8957da656ec859a28bbefb5d217f971
   missing_symbols: []
-  content_hash: sha256:96ad9feab61e5fb894ff86d66094ae434a78667fb37dcab1a161b3fd3a28c566
-target_content_fingerprint: sha256:f873ae6feb76d55bcb9f9b70e686216ba5f1d52663263bf472b6faa2ab5ecb86
-generated_at_utc: '2026-07-15T05:39:36.212938Z'
+  content_hash: sha256:3f9d9533f67b0d6df032ca2249b938b9ae788a6c27f7063128f8e835f5538952
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
+target_content_fingerprint: sha256:7a2abd1815ef9c2a5534b288a2285df2913faf6eab2f22931332df7ea59f4e27
+generated_at_utc: '2026-07-15T10:30:27.733209Z'
