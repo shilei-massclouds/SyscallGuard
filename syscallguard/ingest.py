@@ -754,7 +754,12 @@ def run_ingest(
         unresolved = [
             row
             for row in raw
-            if not isinstance(row, dict) or row.get("evidence_hash") not in normalized_hashes
+            if not isinstance(row, dict)
+            or row.get("evidence_class") == "unresolved"
+            or (
+                row.get("evidence_class", "authoritative") == "authoritative"
+                and row.get("evidence_hash") not in normalized_hashes
+            )
         ]
         if unresolved:
             outcome = "no_rules"

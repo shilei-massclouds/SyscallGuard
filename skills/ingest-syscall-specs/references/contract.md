@@ -29,7 +29,8 @@ rules atomically and publish the report last. Skip unchanged
 
 Each syscall row records source and recognition fingerprints, result, versioned rules, raw evidence
 count, unresolved evidence count, and reason. If any evidence is unresolved or no rule forms, record
-`no_rules` and publish none of that syscall's candidates. Do not persist raw or normalized evidence.
+`no_rules` and publish none of that syscall's candidates. Context evidence does not participate in
+this gate; explicitly unresolved expected evidence still does. Do not persist raw or normalized evidence.
 
 Hash rule category and semantics into `semantic_hash`. Reuse identical semantics and merge `sources`.
 Do not advance `generated_at_utc` for a sources-only change. Record every rule source with source ID

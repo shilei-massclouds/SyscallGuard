@@ -607,10 +607,16 @@ class IngestTests(FlowTestCase):
             source,
             {
                 "testcases/kernel/syscalls/alpha/alpha.c": (
-                    "void run(void) { TST_EXP_FAIL(alpha(), EBADF); }\n"
+                    "void run(void) { TST_EXP_FAIL(alpha(), EBADF); "
+                    "TST_EXP_EXPR(alpha()); }\n"
                 ),
                 "testcases/kernel/syscalls/beta/beta.c": (
                     "void run(void) { TST_EXP_EXPR(beta()); }\n"
+                ),
+                "testcases/kernel/syscalls/gamma/gamma.c": (
+                    "static struct test_case_t { int expected_errno; } tests[] = "
+                    "{{EBADF}};\n"
+                    "void run(void) { TST_EXP_FAIL(gamma(), EBADF); }\n"
                 ),
                 "testcases/kernel/syscalls/zero/zero.c": "void run(void) { helper(); }\n",
             },
@@ -624,9 +630,13 @@ class IngestTests(FlowTestCase):
         rows = {row["syscall"]: row for row in report(self.root, "spec-mixed")["syscalls"]}
         self.assertEqual(rows["alpha"]["result"], "formed_rules")
         self.assertTrue(rows["alpha"]["rules"])
+        self.assertEqual(rows["alpha"]["unresolved_evidence_count"], 0)
         self.assertEqual(rows["beta"]["result"], "no_rules")
-        self.assertEqual(rows["beta"]["unresolved_evidence_count"], 1)
+        self.assertEqual(rows["beta"]["unresolved_evidence_count"], 0)
         self.assertEqual(rows["beta"]["rules"], [])
+        self.assertEqual(rows["gamma"]["result"], "no_rules")
+        self.assertEqual(rows["gamma"]["unresolved_evidence_count"], 1)
+        self.assertEqual(rows["gamma"]["rules"], [])
         self.assertEqual(rows["zero"]["reason"], "no_evidence")
 
     def test_sources_only_merge_keeps_version_and_old_report_usable(self) -> None:

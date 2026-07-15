@@ -78,8 +78,19 @@ recognizers:
     syscalls: {pipe2: [SAFE_PIPE2]}
     expected: {kind: success, return: SUCCESS}
 array_expansion:
-  pointer: tc->field
+  access_forms: [pointer_alias, indexed_array]
+  simple_indices: [identifier, integer]
   supported_initializers: [positional, designated]
+  declarations: [inline_struct, separate_struct, typedef]
+  runtime_modified_fields: unresolved
+struct_evidence:
+  expected_field_pattern: '^(?:exp(?:ected)?_?(?:errno|err|error|ret(?:urn|val|value)?|result)|experrno|retval|errno)$'
+  unlinked_expected_field: unresolved
+  input_field_without_assertion: context
+document_context:
+  opening: '/*\\'
+  authority: context
+  conflict_resolution: code_assertion_wins
 expected_normalization:
   return_errno: {return_default: '-1'}
   return_fd: {return: FD}

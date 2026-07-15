@@ -11,6 +11,7 @@ $映射规则 [syscalls=<name1,name2,...>]
 $合规检查 from=<mapping-report-id>
 $fix-starry-compliance from=<check-report-id>
 $reset-syscallguard
+python3 tools/audit_ltp.py [--source <source>] [--syscalls <name1,name2,...>]
 ```
 
 - `ingest-syscall-specs`（中文显示名 `$提取规则`）：默认从 `ltp-local` 按名字典序分析前
@@ -22,6 +23,9 @@ $reset-syscallguard
   分离 finding 与环境 blocker；稳定调用标识仍可作为兼容别名。
 - `fix-starry-compliance`：修复 confirmed finding；成功后只提交到隔离分支。
 - `reset-syscallguard`：清空通用规则 YAML 和 ingest report 历史，使导入回到空白状态。
+- `audit_ltp.py`：只读运行旧 baseline、候选 extractor 和已发布 LTP 规则的三方全量审计；
+  完整 YAML 仅写入 `/tmp/syscallguard-ltp-audit/<audit-id>/report.yaml`。`--syscalls`
+  只过滤报告详情，`full_counts` 始终保留全量统计。
 
 ## 持久化模型
 
@@ -35,7 +39,8 @@ library/rules/*.yaml           二级规则详情
 
 不生成 ingest manifest、changeset、raw/normalized evidence、syscall spec 或独立
 state。失败 ingest 不写 report、不更新规则，下一次调用会自动重试。一个 syscall 只有在所有
-证据都能解析且至少形成一条规则时才发布候选规则；否则 report 记录 `no_rules`。
+authoritative 证据都能解析且至少形成一条规则时才发布候选规则；context 证据不阻塞发布，
+真正无法关联断言的预期证据仍使 report 记录 `no_rules`。
 
 `syscalls=` 名单按逗号分割、去除空白、转为小写、去重并按字典序处理。名单与显式 `count`
 互斥，空项、空名单或来源中不存在的名称会使整次执行失败。名单模式仍按 fingerprint 跳过未
