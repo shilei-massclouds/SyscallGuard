@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+finding_refs:
+- finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+source_check_report_ids:
+- check-20260715t094535z-97d2cf93
+patch: runs/fix-20260715t094617z-c9fd8c17/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-ltp-fix3
+regression: runs/fix-20260715t094617z-c9fd8c17/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-15T09:47:05.015440Z'
+upstream_dependencies:
+- id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  generated_at_utc: '2026-07-15T06:53:06.785885Z'
+  content_hash: sha256:92e533afa13ae2508d209611066ce2df6abc74662b31b9dc706dff4167dbcb66
+- id: check-20260715t094535z-97d2cf93
+  generated_at_utc: '2026-07-15T09:45:37.258931Z'
+  content_hash: sha256:fa1fd66fbbc5a6c24faac2161a453f8fecbc8c7110eec7b81b1df673bd197c8c
+- id: implementation.patch
+  generated_at_utc: '2026-07-15T09:47:04.805501Z'
+  content_hash: sha256:b6681dab4e72d36ee8b8ec22239b2205227847e88bcf46971fe84998086ccea7
+- id: fix-20260715t094617z-c9fd8c17
+  generated_at_utc: '2026-07-15T09:47:04.824471Z'
+  content_hash: sha256:4c99358a6c2e51dd8f2ac45ca6f989143472b66aecafa70fbd36b21146e24875

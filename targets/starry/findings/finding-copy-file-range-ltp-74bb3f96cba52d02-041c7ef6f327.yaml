@@ -5,7 +5,7 @@ syscall: copy_file_range
 rule_id: LTP_74BB3F96CBA52D02
 target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
 status: confirmed
-resolution: open
+resolution: fixed
 occurrences:
 - check_report_id: check-20260715t065305z-3b1566ec
   evidence_kind: static
@@ -22,11 +22,25 @@ occurrences:
       matched: false
       line: null
     reason: one or more required patterns did not match
-generated_at_utc: '2026-07-15T06:53:06.785885Z'
+- check_report_id: check-20260715t094535z-97d2cf93
+  evidence_kind: static
+  source_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  evidence:
+    check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+    rule_refs:
+    - LTP_74BB3F96CBA52D02
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/fs/io.rs
+    patterns:
+    - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+      regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-15T09:47:05.015440Z'
 upstream_dependencies:
-- id: LTP_74BB3F96CBA52D02
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:74bb3f96cba52d02850ad3c5e54c87acf278ce51290c99d5ae29da583be9ba38
-- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
-  generated_at_utc: '2026-07-15T05:39:36.212938Z'
-  content_hash: sha256:6762073d1ceebfed08c172e40495ac3d2d484296c43a114b1477042dc051b87f
+- id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+  generated_at_utc: '2026-07-15T09:47:05.015440Z'
+  content_hash: sha256:86a4a30b98b64dbdb653dcd5ab04e50c7b817d6f337f9a8c1eaff611c1c09f07
+fix_ref: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+fixed_by_run: fix-20260715t094617z-c9fd8c17

@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_fix_regression
+run_id: fix-20260715t094617z-c9fd8c17
+generated_at_utc: '2026-07-15T09:47:04.824471Z'
+upstream_dependencies:
+- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  generated_at_utc: '2026-07-15T05:39:36.212938Z'
+  content_hash: sha256:72f0ccfc42dbced9e73e1f1a0190437ce60275d7bc1e7c187f8c9a5d1c4d2660
+- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  generated_at_utc: '2026-07-15T05:39:36.212938Z'
+  content_hash: sha256:6762073d1ceebfed08c172e40495ac3d2d484296c43a114b1477042dc051b87f
+target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
+static:
+- check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  rule_refs:
+  - LTP_425E5A3502541DE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: first and last use unsigned 32-bit syscall semantics
+    regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+    matched: true
+    line: 455
+  - label: the maximum unsigned range is accepted and capped to open descriptors
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 455
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  rule_refs:
+  - LTP_74BB3F96CBA52D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+    regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+    matched: true
+    line: 773
+  reason: all required patterns matched
+dynamic: []
+blockers: []

@@ -5,7 +5,7 @@ syscall: close_range
 rule_id: LTP_425E5A3502541DE8
 target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
 status: confirmed
-resolution: open
+resolution: fixed
 occurrences:
 - check_report_id: check-20260715t065305z-3b1566ec
   evidence_kind: static
@@ -26,11 +26,29 @@ occurrences:
       matched: false
       line: null
     reason: one or more required patterns did not match
-generated_at_utc: '2026-07-15T06:53:06.785885Z'
+- check_report_id: check-20260715t094535z-97d2cf93
+  evidence_kind: static
+  source_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  evidence:
+    check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+    rule_refs:
+    - LTP_425E5A3502541DE8
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+    patterns:
+    - label: first and last use unsigned 32-bit syscall semantics
+      regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+      matched: false
+      line: null
+    - label: the maximum unsigned range is accepted and capped to open descriptors
+      regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-15T09:47:05.015440Z'
 upstream_dependencies:
-- id: LTP_425E5A3502541DE8
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:425e5a3502541de863d8b8e88eafb95db2f8d8e1f9cb88a32d8b3124950395b2
-- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
-  generated_at_utc: '2026-07-15T05:39:36.212938Z'
-  content_hash: sha256:72f0ccfc42dbced9e73e1f1a0190437ce60275d7bc1e7c187f8c9a5d1c4d2660
+- id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  generated_at_utc: '2026-07-15T09:47:05.015440Z'
+  content_hash: sha256:ea3ef4c0f57c3f3985e01fa27498bf676075f8007bb9d83dc38027ac16e654ef
+fix_ref: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+fixed_by_run: fix-20260715t094617z-c9fd8c17

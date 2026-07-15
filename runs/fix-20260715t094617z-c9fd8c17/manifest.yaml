@@ -1,0 +1,108 @@
+schema_version: 1
+kind: syscallguard_run
+run_id: fix-20260715t094617z-c9fd8c17
+stage: fix
+status: completed
+created_at_utc: '2026-07-15T09:47:04.575200Z'
+completed_at_utc: '2026-07-15T09:47:05.225535Z'
+invocation:
+  patch: /tmp/syscallguard-fix/fix-20260715t094617z-c9fd8c17/implementation-fix.patch
+entities:
+  findings:
+  - finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  - finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+  fixes:
+  - fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  - fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+entity_hashes:
+  rules:
+    LTP_425E5A3502541DE8: sha256:425e5a3502541de863d8b8e88eafb95db2f8d8e1f9cb88a32d8b3124950395b2
+    LTP_74BB3F96CBA52D02: sha256:74bb3f96cba52d02850ad3c5e54c87acf278ce51290c99d5ae29da583be9ba38
+  static_checks:
+    STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS: sha256:72f0ccfc42dbced9e73e1f1a0190437ce60275d7bc1e7c187f8c9a5d1c4d2660
+    STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO: sha256:6762073d1ceebfed08c172e40495ac3d2d484296c43a114b1477042dc051b87f
+  dynamic_tests: {}
+outputs:
+  patch: implementation.patch
+  regression_results: regression-results.yaml
+  logs: logs/
+  report: report.md
+  fix_index: targets/starry/fixes/index.yaml
+  finding_index: targets/starry/findings/index.yaml
+counts:
+  selected_findings: 2
+  static_failures: 0
+  dynamic_failures: 0
+  blockers: 0
+blockers: []
+error: null
+source_check_report_ids:
+- check-20260715t094535z-97d2cf93
+target:
+  target_id: starry
+  repository: /home/cloud/gitLinux/tgoskits
+  repository_identity: sha256:ef2d04968be9b7795da3c8841a4e23c0947c0f004d7340dc4c0cc5c863ba9029
+  descriptor_hash: sha256:dfb2f557debf958958024779c7c94bf5da31eceddf713a3b2328aea0e4be0d19
+  branch: dev-ltp-fix3
+  snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
+entity_versions:
+  findings:
+    finding-close-range-ltp-425e5a3502541de8-041c7ef6f327:
+      id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+      generated_at_utc: '2026-07-15T06:53:06.785885Z'
+      content_hash: sha256:92e533afa13ae2508d209611066ce2df6abc74662b31b9dc706dff4167dbcb66
+    finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327:
+      id: finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+      generated_at_utc: '2026-07-15T06:53:06.785885Z'
+      content_hash: sha256:51a8abfdd86c651b26b4d3b7931ca0f5edd269b5a961c67714c2c5796ef79c51
+  check_reports:
+    check-20260715t094535z-97d2cf93:
+      id: check-20260715t094535z-97d2cf93
+      generated_at_utc: '2026-07-15T09:45:37.258931Z'
+      content_hash: sha256:fa1fd66fbbc5a6c24faac2161a453f8fecbc8c7110eec7b81b1df673bd197c8c
+  rules:
+    LTP_425E5A3502541DE8:
+      id: LTP_425E5A3502541DE8
+      generated_at_utc: '2026-07-15T05:26:39.098440Z'
+      content_hash: sha256:425e5a3502541de863d8b8e88eafb95db2f8d8e1f9cb88a32d8b3124950395b2
+    LTP_74BB3F96CBA52D02:
+      id: LTP_74BB3F96CBA52D02
+      generated_at_utc: '2026-07-15T05:26:39.098440Z'
+      content_hash: sha256:74bb3f96cba52d02850ad3c5e54c87acf278ce51290c99d5ae29da583be9ba38
+  static_checks:
+    STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS:
+      id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+      generated_at_utc: '2026-07-15T05:39:36.212938Z'
+      content_hash: sha256:72f0ccfc42dbced9e73e1f1a0190437ce60275d7bc1e7c187f8c9a5d1c4d2660
+    STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO:
+      id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+      generated_at_utc: '2026-07-15T05:39:36.212938Z'
+      content_hash: sha256:6762073d1ceebfed08c172e40495ac3d2d484296c43a114b1477042dc051b87f
+  dynamic_tests: {}
+  fixes:
+    fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327:
+      id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+      generated_at_utc: '2026-07-15T09:47:05.015440Z'
+      content_hash: sha256:ea3ef4c0f57c3f3985e01fa27498bf676075f8007bb9d83dc38027ac16e654ef
+    fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327:
+      id: fix-finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+      generated_at_utc: '2026-07-15T09:47:05.015440Z'
+      content_hash: sha256:86a4a30b98b64dbdb653dcd5ab04e50c7b817d6f337f9a8c1eaff611c1c09f07
+regression_scope:
+  rules:
+  - LTP_425E5A3502541DE8
+  - LTP_74BB3F96CBA52D02
+  static_checks:
+  - STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  - STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  dynamic_tests: []
+input_hash: sha256:2317236ac4769e581aef1716d97c60332762c279397b082f8439d926ae6bc989
+branch: dev-ltp-fix3
+patch_version:
+  id: implementation.patch
+  generated_at_utc: '2026-07-15T09:47:04.805501Z'
+  content_hash: sha256:b6681dab4e72d36ee8b8ec22239b2205227847e88bcf46971fe84998086ccea7
+regression_result_version:
+  id: fix-20260715t094617z-c9fd8c17
+  generated_at_utc: '2026-07-15T09:47:04.824471Z'
+  content_hash: sha256:4c99358a6c2e51dd8f2ac45ca6f989143472b66aecafa70fbd36b21146e24875
