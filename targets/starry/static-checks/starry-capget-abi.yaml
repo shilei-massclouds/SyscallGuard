@@ -1,0 +1,62 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_CAPGET_ABI
+title: capget implements the Linux V3 capability ABI
+rule_refs:
+- LTP_208C833FF12217F5
+- LTP_5F1D35ACCEFD4971
+- LTP_827CE5CB448A411B
+applies_to_syscalls:
+- capget
+path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+patterns:
+- label: header pointer and V3 version are validated
+  regex: fn validate_cap_header\([\s\S]*?header_ptr\.vm_read_uninit\(\)\?[\s\S]*?header\.version != CAPABILITY_VERSION_3[\s\S]*?header_ptr\.vm_write\(header\)\?[\s\S]*?Err\(AxError::InvalidInput\)
+- label: capget copies both V3 words to userspace
+  regex: pub fn sys_capget\([\s\S]*?validate_cap_header\(header\)\?[\s\S]*?cred_for_pid\(pid\)\?[\s\S]*?cap_data_from_cred\(&cred\)[\s\S]*?data\.vm_write\(cap_data\[0\]\)\?[\s\S]*?data\.add\(1\)\.vm_write\(cap_data\[1\]\)\?[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: LTP_208C833FF12217F5
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:208c833ff12217f5ee10c2893ca4aab718793f8504783e4c1e69970fe3fc01dc
+- id: LTP_5F1D35ACCEFD4971
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:5f1d35accefd49711e3b8b82de258ecb2f04bba65083b919659edb660948ef2f
+- id: LTP_827CE5CB448A411B
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:827ce5cb448a411bcd82f3a89e9c733eb11fa4d44a8f563ff1658dac81bd73a4
+target_dependencies:
+- path: components/starry-vm/src/thin.rs
+  symbols:
+  - VmMutPtr
+  - VmPtr
+  scope: symbols
+  file_hash: sha256:b787237758b16cc38fc20fa79234f62e2bad5d70235621818f9771c4a0810aa4
+  symbol_hashes:
+    VmMutPtr: sha256:35ae0c032d454211b5a4d3e0b11bf6bf854bd550d635855677666f26fb1f730a
+    VmPtr: sha256:6c0ff10e65451fa76a4eb2caa472c0a96ff53459ae357d86f2dbf389f50e8804
+  missing_symbols: []
+  content_hash: sha256:1b7ca80cea190deec16a1cec479d83444169c6259f68ca0bf314edc58015fecd
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+  symbols:
+  - cap_data_from_cred
+  - cred_for_pid
+  - sys_capget
+  - validate_cap_header
+  scope: symbols
+  file_hash: sha256:901fc111c7b58af132705a41cf8a75d89164f522f89135f794e08b76a1ec05e9
+  symbol_hashes:
+    cap_data_from_cred: sha256:12056db903d695b783e772fd520dafe507b7315b9a2f2581105a450c9d56884c
+    cred_for_pid: sha256:5827d237893e92b1f7ac1cca89ee96df45f8bebd11d31d63dd76159e254674f8
+    sys_capget: sha256:2d1bd6599456ea3fe4ff537c67fce4708ca32a841c6199426ddfda7997da1556
+    validate_cap_header: sha256:f92b10dad6654ff4b7de228735357465447f4fc6010d9b0eb50afaae686cbf33
+  missing_symbols: []
+  content_hash: sha256:78191b3ad60afbde9d82f02ab40fc336efecdf1730cd04ce1b1052382fc2b197
+target_content_fingerprint: sha256:ac88cff819b1c28faf01223542134b4ae5d8ef54eb7bd9401566764fdbab43bc
+generated_at_utc: '2026-07-15T04:13:20.108411Z'

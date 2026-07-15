@@ -1,0 +1,64 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_CAPSET_ABI
+title: capset validates V3 data and capability transitions
+rule_refs:
+- LTP_6D86AFD541A61388
+- LTP_E06D53042C10C99E
+- LTP_EC23768761E40E9F
+applies_to_syscalls:
+- capset
+path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+patterns:
+- label: header and data pointers are validated before use
+  regex: pub fn sys_capset\([\s\S]*?validate_cap_header\(header\)\?[\s\S]*?if data\.is_null\(\) \{[\s\S]*?Err\(AxError::BadAddress\)[\s\S]*?data\.vm_read_uninit\(\)\?[\s\S]*?data\.add\(1\)\.vm_read_uninit\(\)\?
+- label: capability subsets are enforced
+  regex: if effective & !permitted != 0[\s\S]*?adds_permitted[\s\S]*?if adds_permitted != 0[\s\S]*?if
+    may_expand[\s\S]*?adds_inheritable
+- label: validated capability state replaces current credentials
+  regex: new\.cap_effective = effective;[\s\S]*?new\.cap_permitted = permitted;[\s\S]*?new\.cap_inheritable
+    = inheritable;[\s\S]*?new\.sanitize_capabilities\(\);[\s\S]*?thread\.set_cred\(new\);[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: LTP_6D86AFD541A61388
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:6d86afd541a613880ff94fbbb7fbfdbbebd5fd32d94544f7cc6e3f2ee850df77
+- id: LTP_E06D53042C10C99E
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:e06d53042c10c99e7bdc61242d4ac56e1aace8c13e3442e875e2574ca74e60d3
+- id: LTP_EC23768761E40E9F
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:ec23768761e40e9f99140715f9e6147dcc348f9f7bbdc7731948b1afb6d29d51
+target_dependencies:
+- path: components/starry-vm/src/thin.rs
+  symbols:
+  - VmMutPtr
+  - VmPtr
+  scope: symbols
+  file_hash: sha256:b787237758b16cc38fc20fa79234f62e2bad5d70235621818f9771c4a0810aa4
+  symbol_hashes:
+    VmMutPtr: sha256:35ae0c032d454211b5a4d3e0b11bf6bf854bd550d635855677666f26fb1f730a
+    VmPtr: sha256:6c0ff10e65451fa76a4eb2caa472c0a96ff53459ae357d86f2dbf389f50e8804
+  missing_symbols: []
+  content_hash: sha256:1b7ca80cea190deec16a1cec479d83444169c6259f68ca0bf314edc58015fecd
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+  symbols:
+  - data_to_mask
+  - sys_capset
+  - validate_cap_header
+  scope: symbols
+  file_hash: sha256:901fc111c7b58af132705a41cf8a75d89164f522f89135f794e08b76a1ec05e9
+  symbol_hashes:
+    data_to_mask: sha256:83fc2bb0eb44d7806a59c49b19d8600aadfdbe3b4e893514102d99611ad985ff
+    sys_capset: sha256:3e17536f5a7319b1ad18a17d39c88b715d8795162ccc1860d59845494d69265c
+    validate_cap_header: sha256:f92b10dad6654ff4b7de228735357465447f4fc6010d9b0eb50afaae686cbf33
+  missing_symbols: []
+  content_hash: sha256:df372a3e9f4e00850aad57aaee664224ee6a290029e828efea476bb40d9b46a5
+target_content_fingerprint: sha256:b705803ea3d36930721072ab50c46e0b2b3d2752628334fc97331299fba26704
+generated_at_utc: '2026-07-15T04:13:20.108411Z'

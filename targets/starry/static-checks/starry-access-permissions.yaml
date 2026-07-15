@@ -1,0 +1,77 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ACCESS_PERMISSIONS
+title: access validates modes and effective file permissions
+rule_refs:
+- LTP_0180982614AA9F7D
+- LTP_044E7C11E6B503BB
+- LTP_06891E2E299CF48E
+- LTP_0D1782EAAC26DEB4
+- LTP_67BF94A4ACD303C4
+- LTP_711D5693356A79F2
+- LTP_73DF50509BCC128B
+- LTP_839EC7BC904E42D5
+applies_to_syscalls:
+- access
+path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+patterns:
+- label: access delegates to faccessat2
+  regex: pub fn sys_access\([\s\S]*?sys_faccessat2\(AT_FDCWD, path, mode, 0\)
+- label: valid mode mask and F_OK success
+  regex: 'const FACCESSAT2_VALID_MODE: u32 = R_OK \| W_OK \| X_OK;[\s\S]*?if mode & !FACCESSAT2_VALID_MODE
+    != 0[\s\S]*?if mode == 0 \{[\s\S]*?return Ok\(0\);'
+- label: root permission behavior
+  regex: if cred\.fsuid == 0 \{[\s\S]*?mode & X_OK[\s\S]*?perm_bits & any_exec == 0[\s\S]*?return Err\(AxError::PermissionDenied\);[\s\S]*?return
+    Ok\(0\);
+- label: owner group other effective bits enforce R W X
+  regex: let effective_bits = if cred\.fsuid == file_uid[\s\S]*?cred\.fsgid == file_gid \|\| cred\.groups\.contains\(&file_gid\)[\s\S]*?mode
+    & R_OK[\s\S]*?effective_bits & 4 == 0[\s\S]*?mode & W_OK[\s\S]*?effective_bits & 2 == 0[\s\S]*?mode
+    & X_OK[\s\S]*?effective_bits & 1 == 0
+upstream_dependencies:
+- id: LTP_0180982614AA9F7D
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:0180982614aa9f7deb01d61e1891fc76f80a5dd2c63dd0b04340bb29d02ed2a5
+- id: LTP_044E7C11E6B503BB
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:044e7c11e6b503bb657c1f5d568942154575515e5bd090cfb272ebd5b2953217
+- id: LTP_06891E2E299CF48E
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:06891e2e299cf48e89e834978cafb8d3f54a5f988367d5ac9c5daf94202c0532
+- id: LTP_0D1782EAAC26DEB4
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:0d1782eaac26deb423a13b1bef2c3fc0e4647c3d464451e818c877ae67a0c0b9
+- id: LTP_67BF94A4ACD303C4
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:67bf94a4acd303c4bf5ee873c38bf51c6656dd4b572784d258639f552e8c49d3
+- id: LTP_711D5693356A79F2
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:711d5693356a79f2f78c29dc066b0de731afab838d59939646e4e7b1b2e98a60
+- id: LTP_73DF50509BCC128B
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:73df50509bcc128b1b669bc1dbf328da4c2eeccbf411699638eea46f6a5ffbe5
+- id: LTP_839EC7BC904E42D5
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:839ec7bc904e42d51fd03abcb0ea65b5030acf961067619e228750577be93c2f
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_access
+  - sys_faccessat2
+  scope: symbols
+  file_hash: sha256:8c2b95c055a36e86b297489cffb8e9d0b4aee3d82941680f6abb9716f3fb2f8e
+  symbol_hashes:
+    sys_access: sha256:e53d5b954a3ef9ff58ed71b80472fb3f2b0ccaa44cb3004d725642a4a4689410
+    sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
+  missing_symbols: []
+  content_hash: sha256:a54fce312aa6a1f336b085bc3620f03cb300748c4b561a5eef4e55d55de13ed0
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols:
+  - resolve_at
+  scope: symbols
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes:
+    resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
+  missing_symbols: []
+  content_hash: sha256:b3dce20309fe9f480c0da78b10b6995550acae12ab1f7f9f348ac78ca0cebbe2
+target_content_fingerprint: sha256:6a608db0672599c4ee1127a6b80e93e58caaf14e685db9042651733472212af1
+generated_at_utc: '2026-07-15T04:13:20.108411Z'

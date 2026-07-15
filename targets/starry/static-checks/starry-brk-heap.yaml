@@ -1,0 +1,101 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_BRK_HEAP
+title: brk validates the heap range and updates heap state
+rule_refs:
+- LTP_7A74A699442CEB99
+- LTP_E3E59B16A96A60BC
+applies_to_syscalls:
+- brk
+path: os/StarryOS/kernel/src/syscall/mm/brk.rs
+patterns:
+- label: zero and out of range requests preserve Linux return semantics
+  regex: if addr == 0 \{[\s\S]*?return Ok\(current_top as isize\);[\s\S]*?if !\(USER_HEAP_BASE\.\.=USER_HEAP_BASE
+    \+ USER_HEAP_SIZE_MAX\)\.contains\(&addr\) \{[\s\S]*?return Ok\(current_top as isize\);
+- label: expansion and shrink update the address space
+  regex: if new_top_aligned > current_top_aligned \{[\s\S]*?\.map\([\s\S]*?\)\s*\.is_err\(\)[\s\S]*?else
+    if new_top_aligned < current_top_aligned \{[\s\S]*?\.unmap\(shrink_start, shrink_size\)[\s\S]*?\.is_err\(\)
+- label: successful request records and returns the new break
+  regex: proc_data\.set_heap_top\(addr\);[\s\S]*?Ok\(addr as isize\)
+upstream_dependencies:
+- id: LTP_7A74A699442CEB99
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:7a74a699442ceb99b8495ac52144744c5a7e995035d4c06a10971ce532e8e954
+- id: LTP_E3E59B16A96A60BC
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:e3e59b16a96a60bce3de89603588b78a310e40b3710e530d67d5c30160121e86
+target_dependencies:
+- path: os/StarryOS/kernel/src/task/mod.rs
+  symbols:
+  - get_heap_top
+  - set_heap_top
+  scope: symbols
+  file_hash: sha256:270ce7a86e57c31a8018300d905443254ecca9994148a7c5a55d18461b7fb0f7
+  symbol_hashes:
+    get_heap_top: sha256:fa0326839ec0b84758dfc98aab0ba7190fa38250da9e7e672a767cc64315b497
+    set_heap_top: sha256:81791179ed6d16e014cc944d4c3193d1f124392d3a3691bf3aac93fb2423ebd3
+  missing_symbols: []
+  content_hash: sha256:0d36d97cc64136b5d97afed8b1e0036b0e91fdba3381fafcac8c97ea3f978104
+- path: os/StarryOS/kernel/src/config/aarch64.rs
+  symbols:
+  - USER_HEAP_BASE
+  - USER_HEAP_SIZE
+  - USER_HEAP_SIZE_MAX
+  scope: symbols
+  file_hash: sha256:774155d8f1f08322a6707b4d09bcf2a68f5e882a65a7d72ff85b710d6834f201
+  symbol_hashes:
+    USER_HEAP_BASE: sha256:3ff8ee7d59885899912f42f724f3ab4aff6b34eda021d151e63c73e755caba3a
+    USER_HEAP_SIZE: sha256:e150df3dfceba2739ace567435f441463c73cae24c07bd13311a3028286047c0
+    USER_HEAP_SIZE_MAX: sha256:0cb8ac49063245c704178c4fceaa4490ce7d5d0369d2dd4d54a9a6a85d5a76c5
+  missing_symbols: []
+  content_hash: sha256:27fb22b5143847b13f436852fae29eec4df662361abbed0dcf1c052edf34722d
+- path: os/StarryOS/kernel/src/config/loongarch64.rs
+  symbols:
+  - USER_HEAP_BASE
+  - USER_HEAP_SIZE
+  - USER_HEAP_SIZE_MAX
+  scope: symbols
+  file_hash: sha256:74d8dc131109414b9cf80d5f2c6a0bb225a3a8d45a23c97dd8d31e51352cc694
+  symbol_hashes:
+    USER_HEAP_BASE: sha256:3ff8ee7d59885899912f42f724f3ab4aff6b34eda021d151e63c73e755caba3a
+    USER_HEAP_SIZE: sha256:ffd1ad4365175a3bbcae5439e6ce7f26fbcc5b061b2850249a2287a252a68fda
+    USER_HEAP_SIZE_MAX: sha256:fde7d3be05b0a123ec2663c6de2ee373ad6ab79d0f93f381d0140a6c4a493ff3
+  missing_symbols: []
+  content_hash: sha256:451c35f9f88bab1994e49b6c0870759e07eec1536c4bd75ec6709bb53639e78a
+- path: os/StarryOS/kernel/src/config/x86_64.rs
+  symbols:
+  - USER_HEAP_BASE
+  - USER_HEAP_SIZE
+  - USER_HEAP_SIZE_MAX
+  scope: symbols
+  file_hash: sha256:5d2084f2ec16168c78b7fc3784faafb11a2738e52a4bd258068226ac55f0de88
+  symbol_hashes:
+    USER_HEAP_BASE: sha256:3ff8ee7d59885899912f42f724f3ab4aff6b34eda021d151e63c73e755caba3a
+    USER_HEAP_SIZE: sha256:e150df3dfceba2739ace567435f441463c73cae24c07bd13311a3028286047c0
+    USER_HEAP_SIZE_MAX: sha256:0cb8ac49063245c704178c4fceaa4490ce7d5d0369d2dd4d54a9a6a85d5a76c5
+  missing_symbols: []
+  content_hash: sha256:5520eed745a5d7a3f18da1bfc694111642821921d9476dfb16509b914da2262c
+- path: os/StarryOS/kernel/src/config/riscv64.rs
+  symbols:
+  - USER_HEAP_BASE
+  - USER_HEAP_SIZE
+  - USER_HEAP_SIZE_MAX
+  scope: symbols
+  file_hash: sha256:9b0ab32999b12ab2dbf7446a00545bf2a5c54d32f2c42c8382c0fac880443d58
+  symbol_hashes:
+    USER_HEAP_BASE: sha256:3ff8ee7d59885899912f42f724f3ab4aff6b34eda021d151e63c73e755caba3a
+    USER_HEAP_SIZE: sha256:e150df3dfceba2739ace567435f441463c73cae24c07bd13311a3028286047c0
+    USER_HEAP_SIZE_MAX: sha256:0cb8ac49063245c704178c4fceaa4490ce7d5d0369d2dd4d54a9a6a85d5a76c5
+  missing_symbols: []
+  content_hash: sha256:691d052a0f2d35b9d7b80c716b4f555fd17f01e7699433f163ceddad9623c334
+- path: os/StarryOS/kernel/src/syscall/mm/brk.rs
+  symbols:
+  - sys_brk
+  scope: symbols
+  file_hash: sha256:235d73dad5117170ec322a42e0afb92edc703c335955af67ab203be685da070e
+  symbol_hashes:
+    sys_brk: sha256:65291f8268e25c9a6f2f7a7b6c2e40a97217a6fe0c8973c124db5f97dae6f1de
+  missing_symbols: []
+  content_hash: sha256:adf14b11828ae345ae531b93973cfee0bd9dbcf652999b84120e0125d27cdd9c
+target_content_fingerprint: sha256:2e96f991cc37c7a91fa7295afdb2e6461b03f714b417f6714952c8e51262d4af
+generated_at_utc: '2026-07-15T04:13:20.108411Z'

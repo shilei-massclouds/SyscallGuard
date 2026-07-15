@@ -1,0 +1,79 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ACCESS_USER_POINTER
+title: access loads the pathname through checked user memory
+rule_refs:
+- LTP_075318C437B76E06
+- LTP_0799FC60BADD2B18
+- LTP_38FB918826669241
+- LTP_58416E6747519699
+applies_to_syscalls:
+- access
+path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+patterns:
+- label: pathname is loaded before resolution
+  regex: let path = path\.nullable\(\)\.map\(vm_load_path_string\)\.transpose\(\)\?;[\s\S]*?let file =
+    resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;
+upstream_dependencies:
+- id: LTP_075318C437B76E06
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:075318c437b76e067682a9c6aab95a64558daf471c20df7205f62a72b1fd82ee
+- id: LTP_0799FC60BADD2B18
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:0799fc60badd2b189b242a57ba5740cd832aa2477cbe8497f5b09324880ca7f4
+- id: LTP_38FB918826669241
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:38fb918826669241ebbe77827a90f4347f124cf6de78fd4f4b46b3495fb3ab2f
+- id: LTP_58416E6747519699
+  generated_at_utc: '2026-07-15T03:09:52.149069Z'
+  content_hash: sha256:58416e6747519699e7b507fc0ff7e8c00852ff81eaff2cf425bb2d4a84e4e6f3
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: components/starry-vm/src/alloc.rs
+  symbols:
+  - vm_load_until_nul
+  scope: symbols
+  file_hash: sha256:06b13f8c1700e024de6382919ddc0f8c2bf772798654a38d9e7f41c18ab2032e
+  symbol_hashes:
+    vm_load_until_nul: sha256:f65607e74fce137d86a282539ef80615a63582cf551668aa44115ed3b4e49767
+  missing_symbols: []
+  content_hash: sha256:8d542c4492f2dfe413baf6453ad0fd2edc7ac82a1ba69e9c16ca0f5a27bd691c
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_access
+  - sys_faccessat2
+  scope: symbols
+  file_hash: sha256:8c2b95c055a36e86b297489cffb8e9d0b4aee3d82941680f6abb9716f3fb2f8e
+  symbol_hashes:
+    sys_access: sha256:e53d5b954a3ef9ff58ed71b80472fb3f2b0ccaa44cb3004d725642a4a4689410
+    sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
+  missing_symbols: []
+  content_hash: sha256:a54fce312aa6a1f336b085bc3620f03cb300748c4b561a5eef4e55d55de13ed0
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols:
+  - resolve_at
+  scope: symbols
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes:
+    resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
+  missing_symbols: []
+  content_hash: sha256:b3dce20309fe9f480c0da78b10b6995550acae12ab1f7f9f348ac78ca0cebbe2
+- path: os/StarryOS/kernel/src/mm/access.rs
+  symbols:
+  - vm_load_path_string
+  - vm_load_string
+  scope: symbols
+  file_hash: sha256:4c4fd8a5e5fdf74824fba2666041a10ff4daf9a0214bf6ddeabe8c9e67fc60a6
+  symbol_hashes:
+    vm_load_path_string: sha256:95f8b4926ce8e625750404ccab6b5faf51ebf398553aac30035185c0d56642f4
+    vm_load_string: sha256:cee098cc352143ede741ebb982ba6d15f7eac71b6667871500b4a5ac4d42bb2e
+  missing_symbols: []
+  content_hash: sha256:f6fdd2214052ea5f56fef51f35d895763600c89e1aba847f54432d0346f2d3d4
+target_content_fingerprint: sha256:9656db276a91429ff9cea497234c7b8a8a91a2ef194d3e8ea040e4318c99a37a
+generated_at_utc: '2026-07-15T04:13:20.108411Z'
