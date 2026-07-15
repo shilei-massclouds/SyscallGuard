@@ -9,8 +9,10 @@ Before prepare, derive the single branch recorded by the selected findings' sour
 confirm it. The branch must already be checked out and clean; the tool never creates or switches it.
 
 Prepare writes `/tmp/syscallguard-fix/<run-id>/preparation.yaml`, pins all selected finding versions, and collects
-all evidence-bearing check reports from their occurrences. Merge the complete regression scope of every source
-report by entity ID. Finalize revalidates the pinned findings, source reports, entities, branch, and snapshot,
+all evidence-bearing check reports from their occurrences that match the confirmed branch and current snapshot.
+Older occurrences remain immutable provenance but do not contribute another branch's regression scope. Merge the
+complete regression scope of every selected source report by entity ID. Finalize revalidates the pinned findings,
+source reports, entities, branch, and snapshot,
 reapplies every unique test patch once, applies the combined `implementation-fix.patch`, and runs the merged static
 and dynamic set directly on the negotiated branch. It commits that same branch only after regression succeeds. If
 prepare finds nothing open, return success without a preparation directory, formal run, branch modification, or

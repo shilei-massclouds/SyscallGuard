@@ -730,6 +730,16 @@ class MappingTests(FlowTestCase):
         self.assertEqual(first["execution_scope"]["static_checks"], ["CHECK_ONE"])
         self.assertEqual(first["rule_syscalls"], {"RULE_ONE": ["alpha"]})
 
+        target_descriptor = load_mapping(descriptor)
+        target_descriptor["workflow_note"] = "branch negotiation metadata only"
+        atomic_write_yaml(descriptor, target_descriptor)
+        run_mapping(
+            None, self.root, "mapping-descriptor-only", target_branch(self.root)
+        )
+        descriptor_only = load_mapping_report(self.root, "mapping-descriptor-only")
+        self.assertEqual(descriptor_only["counts"]["processed"], 0)
+        self.assertEqual(descriptor_only["target"]["branch"], target_branch(self.root))
+
         commit_file(repo, "unrelated.txt", "unrelated\n")
         run_mapping(None, self.root, "mapping-unrelated", target_branch(self.root))
         unrelated = load_mapping_report(self.root, "mapping-unrelated")
@@ -1011,6 +1021,54 @@ class CheckTests(FlowTestCase):
         self.assertEqual(carried["finding_ids"], first["finding_ids"])
         self.assertEqual(carried["carried_finding_ids"], first["finding_ids"])
         self.assertEqual(carried["counts"]["findings"], 1)
+        self.assertEqual(carried["counts"]["carried_findings"], 1)
+
+    def test_same_snapshot_legacy_finding_is_revalidated_on_negotiated_branch(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-legacy-evidence")
+        legacy = load_check_report(self.root, "check-legacy-evidence")
+        finding_id = legacy["finding_ids"][0]
+        legacy.pop("content_hash", None)
+        legacy["target"] = dict(legacy["target"])
+        legacy["target"].pop("branch")
+        legacy["content_hash"] = version_content_hash(legacy)
+        atomic_write_text(
+            self.root / "runs/check-legacy-evidence/report.md",
+            markdown_report(legacy),
+        )
+
+        run_mapping(
+            None, self.root, "mapping-branch-migration", target_branch(self.root)
+        )
+        run_check(
+            "mapping-branch-migration", self.root, "check-branch-migration"
+        )
+        migrated = load_check_report(self.root, "check-branch-migration")
+        self.assertEqual(migrated["finding_ids"], [finding_id])
+        self.assertEqual(
+            migrated["revalidation_scope"]["static_checks"], ["CHECK_ONE"]
+        )
+        finding = load_mapping(
+            self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+        )
+        self.assertEqual(
+            finding["occurrences"][-1]["check_report_id"],
+            "check-branch-migration",
+        )
+        preparation = prepare_fix(self.root, "fix-branch-migration")
+        self.assertEqual(
+            preparation["source_check_report_ids"], ["check-branch-migration"]
+        )
+
+        run_mapping(
+            None, self.root, "mapping-after-migration", target_branch(self.root)
+        )
+        run_check("mapping-after-migration", self.root, "check-after-migration")
+        carried = load_check_report(self.root, "check-after-migration")
+        self.assertEqual(carried["revalidation_scope"]["static_checks"], [])
         self.assertEqual(carried["counts"]["carried_findings"], 1)
 
     def test_old_snapshot_failure_is_superseded_by_current_finding(self) -> None:

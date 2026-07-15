@@ -6,6 +6,10 @@ static/dynamic source of an open older-snapshot finding to a revalidation scope.
 `patch_file` from the resulting effective scope once on the clean, currently checked-out branch recorded in
 `mapping_report.target.branch`.
 
+A same-snapshot open finding whose occurrence reports do not record that negotiated branch is also revalidated.
+If it fails again, append a current-branch occurrence; this migrates historical evidence without inventing a new
+finding identity.
+
 Use the report's complete `rule_syscalls` relation to assign every failed rule to syscalls. An explicit check
 `applies_to_syscalls` may narrow that ownership but may not introduce a syscall absent from the report.
 

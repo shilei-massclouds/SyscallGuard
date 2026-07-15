@@ -1,6 +1,6 @@
 ---
 name: map-starry-checks
-description: Negotiate a user-created dedicated Starry branch, then incrementally map new or invalidated general syscall rules to that branch. Use when the user invokes `$映射规则`/`$map-starry-checks`, optionally with `syscalls=<comma-separated-names>`. Never create or switch the branch for the user, and do not modify, build, or execute Starry.
+description: Negotiate a user-created dedicated Starry branch, then incrementally map new or invalidated general syscall rules to that branch. Use when the user invokes `$映射规则`/`$map-starry-checks`, optionally with a comma-separated syscall name filter. Never create or switch the branch for the user, and do not modify, build, or execute Starry.
 ---
 
 # 映射规则

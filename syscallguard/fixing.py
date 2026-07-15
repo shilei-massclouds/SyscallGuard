@@ -84,26 +84,47 @@ def _failed_regression(
     recorder.flush()
 
 
-def _finding_report_ids(findings: dict[str, dict[str, Any]]) -> list[str]:
+def _finding_report_ids(
+    root: Path,
+    findings: dict[str, dict[str, Any]],
+    branch: str,
+    snapshot: str,
+) -> list[str]:
     report_ids: set[str] = set()
     for finding_id, finding in findings.items():
         occurrences = finding.get("occurrences", [])
         if not isinstance(occurrences, list):
             raise SyscallGuardError(f"finding {finding_id} occurrences must be a list")
+        matched_current_branch = False
         for occurrence in occurrences:
             if not isinstance(occurrence, dict):
                 continue
             report_id = occurrence.get("check_report_id")
             evidence_kind = occurrence.get("evidence_kind")
             source_id = occurrence.get("source_id")
-            if (
+            if not (
                 isinstance(report_id, str)
                 and evidence_kind in {"static", "dynamic"}
                 and isinstance(source_id, str)
             ):
+                continue
+            try:
+                report = load_check_report(root, report_id)
+            except SyscallGuardError:
+                continue
+            target = report.get("target", {})
+            if (
+                target.get("branch") == branch
+                and target.get("snapshot_hash") == snapshot
+            ):
                 report_ids.add(report_id)
-    if findings and not report_ids:
-        raise SyscallGuardError("selected findings contain no evidence-bearing check reports")
+                matched_current_branch = True
+        if not matched_current_branch:
+            raise SyscallGuardError(
+                f"finding {finding_id} target branch or snapshot differs from the "
+                f"current Starry branch: no evidence-bearing check report for "
+                f"branch {branch!r}; rerun mapping and checking"
+            )
     return sorted(report_ids)
 
 
@@ -221,16 +242,12 @@ def prepare_fix(
             "selected_finding_ids": [],
         }
 
-    source_ids = _finding_report_ids(findings)
+    source_ids = _finding_report_ids(root, findings, branch, snapshot)
     reports = {report_id: load_check_report(root, report_id) for report_id in source_ids}
     for report_id, report in reports.items():
         report_target = report.get("target", {})
         report_snapshot = report_target.get("snapshot_hash")
         report_branch = report_target.get("branch")
-        if not isinstance(report_branch, str) or not report_branch:
-            raise SyscallGuardError(
-                f"check report {report_id} predates negotiated Starry branches; rerun mapping and checking"
-            )
         if report_snapshot != snapshot or report_branch != branch:
             raise SyscallGuardError(
                 f"check report {report_id} target branch or snapshot differs from the current Starry branch"

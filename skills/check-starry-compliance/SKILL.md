@@ -24,6 +24,7 @@ description: After confirming the mapping-negotiated Starry branch with the user
 
 - Reject stale mappings when any recorded entity dependency or the current Starry content snapshot differs.
 - Use the mapping report's `execution_scope` as the base. Add original static/dynamic sources for open findings from older snapshots as the revalidation scope, and record base, revalidation, and effective scopes separately.
+- Also revalidate a same-snapshot open finding when all of its occurrences predate the negotiated branch workflow or belong to another branch, so a new current-branch occurrence can become authoritative for fixing.
 - Carry forward same-snapshot open findings outside the effective scope. A conclusive old-snapshot failure supersedes the old finding with a current-snapshot finding; all-pass marks it `no_longer_reproduces`; missing definitions or blockers leave it open under `needs_revalidation`.
 - Persist only `runs/check-*/report.md` plus the shared finding index/details. Do not create a check manifest, changeset, separate results file, or successful-run log directory.
 - Reuse an earlier completed check only when all versions, content snapshots, and current open finding selection are identical and no older-snapshot finding needs revalidation; record `reused_from` and do not add occurrences.

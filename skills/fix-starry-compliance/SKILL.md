@@ -24,7 +24,7 @@ description: After confirming the mapping-negotiated Starry branch with the user
 ## Boundaries
 
 - Select findings from the shared finding index, not from a latest check report. Include exactly all `status: confirmed`, `resolution: open` findings matching the current Starry content snapshot.
-- Collect every evidence-bearing check report from finding occurrences. Merge each report's complete static/dynamic/rule scope by ID and apply each unique dynamic test patch once.
+- Collect every evidence-bearing check report from finding occurrences that matches the confirmed branch and current snapshot. Preserve older occurrences as provenance, but do not merge another branch's regression scope. Merge current-branch report scopes by ID and apply each unique dynamic test patch once.
 - Refuse prepare/finalize when the evidence branch is missing, the current branch differs, the working tree is dirty before execution, or a selected finding, source check report, scoped entity, or Starry content snapshot changed.
 - Preserve the syscall ownership recorded by the mapping report; never reconstruct it from removed syscall specs or ingest reports.
 - Apply the scoped dynamic test patches before the implementation patch so tests are retained in a successful commit.

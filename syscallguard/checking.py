@@ -191,12 +191,35 @@ def _extend_revalidation_scope(
     entities: dict[str, dict[str, dict[str, Any]]],
     findings: dict[str, dict[str, Any]],
     current_snapshot: str,
+    current_branch: str,
 ) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
-    """Add executable sources for open findings from older target snapshots."""
+    """Add sources for old snapshots or findings lacking current-branch evidence."""
     added = {"rules": set(), "static_checks": set(), "dynamic_tests": set()}
     unresolved: dict[str, list[str]] = {}
     for finding_id, finding in findings.items():
-        if finding.get("target_snapshot_hash") == current_snapshot:
+        needs_revalidation = finding.get("target_snapshot_hash") != current_snapshot
+        if not needs_revalidation:
+            occurrences = finding.get("occurrences", [])
+            report_ids = {
+                item.get("check_report_id")
+                for item in occurrences
+                if isinstance(item, dict)
+                and isinstance(item.get("check_report_id"), str)
+            }
+            has_current_branch_evidence = False
+            load_errors: list[str] = []
+            for report_id in sorted(report_ids):
+                try:
+                    report = load_check_report(root, report_id)
+                except SyscallGuardError as exc:
+                    load_errors.append(str(exc))
+                    continue
+                if report.get("target", {}).get("branch") == current_branch:
+                    has_current_branch_evidence = True
+            needs_revalidation = not has_current_branch_evidence
+            if needs_revalidation and load_errors:
+                unresolved.setdefault(finding_id, []).extend(load_errors)
+        if not needs_revalidation:
             continue
         for evidence_kind, source_id in sorted(_finding_sources(finding)):
             section = "static_checks" if evidence_kind == "static" else "dynamic_tests"
@@ -1172,7 +1195,7 @@ def run_check(
         open_findings = _load_open_finding_index(root)
         entities = {kind: dict(rows) for kind, rows in base_entities.items()}
         revalidation_scope, unresolved_revalidation = _extend_revalidation_scope(
-            root, entities, open_findings, mapped_snapshot
+            root, entities, open_findings, mapped_snapshot, mapped_branch
         )
         hashes = {
             kind: {
@@ -1214,6 +1237,7 @@ def run_check(
             prior is not None
             and reused_versions is not None
             and not has_old_open
+            and prior.get("target", {}).get("branch") == mapped_branch
             and sorted(prior.get("finding_ids", [])) == current_open_ids
         ):
             metadata["status"] = prior["status"]

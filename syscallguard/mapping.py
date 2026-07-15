@@ -378,7 +378,6 @@ def _pending_reasons(
     root: Path,
     repository: Path,
     snapshot_hash: str,
-    descriptor_hash: str,
     repository_identity: str,
     rule_version: dict[str, str],
     row: Any,
@@ -389,8 +388,6 @@ def _pending_reasons(
         return ["rule_version_changed"]
     if row.get("repository_identity") != repository_identity:
         return ["target_repository_changed"]
-    if row.get("target_descriptor_hash") != descriptor_hash:
-        return ["target_descriptor_changed"]
     status = row.get("status")
     if status not in REPORT_STATUSES:
         return ["invalid_rule_status"]
@@ -557,7 +554,6 @@ def prepare_mapping(
             root,
             repository,
             snapshot_hash,
-            descriptor_hash,
             repo_identity,
             versions[rule_id],
             prior_rows.get(rule_id),
