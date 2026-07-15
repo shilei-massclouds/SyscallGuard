@@ -527,8 +527,14 @@ def prepare_mapping(
     syscalls: str | None = None,
     root: Path | None = None,
     requested_run_id: str | None = None,
+    branch: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
+    if not isinstance(branch, str) or not branch.strip():
+        raise SyscallGuardError(
+            "mapping requires the user-created Starry branch name"
+        )
+    branch = branch.strip()
     requested_syscalls = resolve_syscalls(syscalls)
     rules, versions, rule_syscalls, syscall_rules, rule_index_hash = _rule_library(root)
     if requested_syscalls is not None:
@@ -538,8 +544,8 @@ def prepare_mapping(
                 "requested syscalls do not exist in the rule library: " + ", ".join(unknown)
             )
     descriptor_path = root / TARGET_DESCRIPTOR
-    descriptor, repository, revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
-        descriptor_path
+    descriptor, repository, current_branch, repo_identity, snapshot_hash = ensure_target_workspace(
+        descriptor_path, branch
     )
     descriptor_hash = entity_hash(descriptor_path)
     prior, _reports = scan_mapping_reports(root)
@@ -573,7 +579,13 @@ def prepare_mapping(
     run_id = normalize_run_id(
         requested_run_id
         or new_run_id(
-            "mapping", {"syscalls": requested_syscalls, "snapshot": snapshot_hash, "at": utc_now()}
+            "mapping",
+            {
+                "syscalls": requested_syscalls,
+                "branch": current_branch,
+                "snapshot": snapshot_hash,
+                "at": utc_now(),
+            },
         )
     )
     report_directory = root / "runs" / run_id
@@ -588,8 +600,7 @@ def prepare_mapping(
             "target_id": "starry",
             "repository": str(repository),
             "repository_identity": repo_identity,
-            "revision": revision_ref,
-            "worktree_root": str(descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")),
+            "branch": current_branch,
             "descriptor_hash": descriptor_hash,
             "snapshot_hash": snapshot_hash,
         }
@@ -815,6 +826,7 @@ def _report_text(metadata: dict[str, Any]) -> str:
         "",
         "## 本轮结论",
         "",
+        f"- 协商 Starry 分支：`{metadata['target']['branch']}`",
         f"- 本轮产生静态检查：{counts['static_checks']}",
         f"- 本轮产生动态测试：{counts['dynamic_tests']}",
         f"- 全局剩余规则：{counts['remaining']}（pending {counts['pending']}、"
@@ -939,18 +951,18 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
             raise SyscallGuardError("latest mapping report changed after mapping preparation")
 
         descriptor_path = root / TARGET_DESCRIPTOR
-        descriptor, repository, revision_ref, repo_identity, snapshot_hash = ensure_target_workspace(
-            descriptor_path
-        )
         target = preparation.get("target")
+        if not isinstance(target, dict) or not isinstance(target.get("branch"), str):
+            raise SyscallGuardError("mapping preparation has no negotiated Starry branch")
+        descriptor, repository, current_branch, repo_identity, snapshot_hash = ensure_target_workspace(
+            descriptor_path, target["branch"]
+        )
         if not isinstance(target, dict) or (
             target.get("repository") != str(repository)
             or target.get("repository_identity") != repo_identity
-            or target.get("revision") != revision_ref
+            or target.get("branch") != current_branch
             or target.get("descriptor_hash") != entity_hash(descriptor_path)
             or target.get("snapshot_hash") != snapshot_hash
-            or target.get("worktree_root")
-            != str(descriptor.get("worktree_root", "/tmp/syscallguard-worktrees"))
         ):
             raise SyscallGuardError("Starry target content changed after mapping preparation")
 
@@ -1191,14 +1203,16 @@ def run_mapping(
     syscalls: str | None = None,
     root: Path | None = None,
     requested_run_id: str | None = None,
+    branch: str | None = None,
 ) -> str:
-    run_id = prepare_mapping(syscalls, root, requested_run_id)
+    run_id = prepare_mapping(syscalls, root, requested_run_id, branch)
     return finalize_mapping(run_id, root)
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="增量生成 Starry 规则映射")
     parser.add_argument("--syscalls", help="逗号分隔的 syscall 名称")
+    parser.add_argument("--branch", help="用户创建并已切换到的 Starry 专用分支")
     parser.add_argument(
         "--phase",
         choices=("prepare", "finalize", "auto"),
@@ -1227,7 +1241,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         elif args.phase == "auto":
-            run_id = run_mapping(args.syscalls, args.root, requested)
+            run_id = run_mapping(args.syscalls, args.root, requested, args.branch)
             report = load_mapping_report(args.root.resolve(), run_id)
             counts = report["counts"]
             print(f"报告 ID：{run_id}")
@@ -1237,12 +1251,13 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         else:
-            run_id = prepare_mapping(args.syscalls, args.root, requested)
+            run_id = prepare_mapping(args.syscalls, args.root, requested, args.branch)
             workspace = _workspace(run_id)
             preparation = load_mapping(workspace / "preparation.yaml")
             print(f"运行 ID：{run_id}")
             print(f"待分析实体：{workspace / 'staged'}")
             print(f"准备文件：{workspace / 'preparation.yaml'}")
+            print(f"协商分支：{preparation['target']['branch']}")
             print(f"固定内容快照：{preparation['target']['snapshot_hash']}")
     except SyscallGuardError as exc:
         print(f"错误：{exc}", file=sys.stderr)

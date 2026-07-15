@@ -1,4 +1,4 @@
 interface:
   display_name: "$修复缺口"
-  short_description: "自动修复当前 Starry 的全部已确认缺口"
-  default_prompt: "Use $修复缺口 (compatible alias: $fix-starry-compliance) with no arguments to repair every open confirmed finding for the current Starry snapshot."
+  short_description: "确认协商分支并自动修复全部缺口"
+  default_prompt: "Use $修复缺口 (compatible alias: $fix-starry-compliance) with no arguments, confirm the negotiated Starry branch with me, then repair every open confirmed finding on that branch."

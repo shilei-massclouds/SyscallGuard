@@ -1,4 +1,4 @@
 interface:
   display_name: "$合规检查"
-  short_description: "隔离执行 Starry 合规检查"
-  default_prompt: "Use $合规检查 (compatible alias: $check-starry-compliance) from=<mapping-report-id> to run isolated static and dynamic checks."
+  short_description: "确认协商分支并执行 Starry 合规检查"
+  default_prompt: "Use $合规检查 (compatible alias: $check-starry-compliance) from=<mapping-report-id>, confirm its negotiated Starry branch with me, then run static and dynamic checks on that branch."

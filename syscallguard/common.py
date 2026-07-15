@@ -512,8 +512,10 @@ def repository_snapshot_hash(repo: Path) -> str:
     return "sha256:" + digest.hexdigest()
 
 
-def ensure_target_workspace(path: Path) -> tuple[dict[str, Any], Path, str, str, str]:
-    """Resolve the fixed Starry checkout without exposing a Git commit ID."""
+def ensure_target_workspace(
+    path: Path, expected_branch: str | None = None
+) -> tuple[dict[str, Any], Path, str, str, str]:
+    """Resolve a clean user-managed Starry branch without exposing a commit ID."""
     descriptor = load_mapping(path)
     if descriptor.get("target_id") != "starry":
         raise SyscallGuardError(f"target descriptor must set target_id: starry: {path}")
@@ -523,22 +525,24 @@ def ensure_target_workspace(path: Path) -> tuple[dict[str, Any], Path, str, str,
     repository = Path(raw_repo).expanduser().resolve()
     if not repository.is_dir():
         raise SyscallGuardError(f"repository does not exist: {repository}")
-    revision = descriptor.get("revision", "HEAD")
-    if not isinstance(revision, str) or not revision:
-        raise SyscallGuardError(f"target descriptor revision must be a string: {path}")
-    if re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}", revision):
+    branch = git_output(repository, ["branch", "--show-current"])
+    if not branch:
         raise SyscallGuardError(
-            "target descriptor must use a symbolic ref; Git commit IDs are not allowed"
+            "Starry must be checked out on the user-managed mapping branch; detached HEAD is not allowed"
         )
-    dirty = git(repository, ["status", "--porcelain", "--untracked-files=no"]).stdout.strip()
+    if expected_branch is not None and branch != expected_branch:
+        raise SyscallGuardError(
+            f"Starry branch changed: expected {expected_branch!r}, current {branch!r}"
+        )
+    dirty = git(repository, ["status", "--porcelain", "--untracked-files=all"]).stdout.strip()
     if dirty:
         raise SyscallGuardError(
-            "Starry tracked files have uncommitted changes; mapping requires a stable read-only checkout"
+            f"Starry branch {branch!r} is not clean; mapping, checking, and fixing require a clean dedicated branch"
         )
     return (
         descriptor,
         repository,
-        revision,
+        branch,
         repository_identity(repository),
         repository_snapshot_hash(repository),
     )

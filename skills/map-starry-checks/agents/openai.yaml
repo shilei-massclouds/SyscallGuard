@@ -1,4 +1,4 @@
 interface:
   display_name: "$映射规则"
-  short_description: "增量映射规则到 Starry 检查与测试"
-  default_prompt: "Use $map-starry-checks with optional syscalls=<name1,name2> to incrementally map general rules to the fixed Starry target."
+  short_description: "协商 Starry 分支并增量映射规则"
+  default_prompt: "Use $映射规则 (compatible alias: $map-starry-checks), ask me to create and name a dedicated Starry branch, then map rules on that branch."

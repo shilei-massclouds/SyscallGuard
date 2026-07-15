@@ -335,17 +335,23 @@ def validate_mapping_reports(
         if not isinstance(value.get("rule_index_hash"), str):
             errors.append(f"mapping report {report_id} has no rule_index_hash")
         target = value.get("target")
-        if not isinstance(target, dict) or not all(
-            isinstance(target.get(key), str)
-            for key in (
-                "target_id",
-                "repository",
-                "repository_identity",
-                "revision",
-                "worktree_root",
-                "descriptor_hash",
-                "snapshot_hash",
-            )
+        common_target = (
+            "target_id",
+            "repository",
+            "repository_identity",
+            "descriptor_hash",
+            "snapshot_hash",
+        )
+        branch_target = isinstance(target, dict) and isinstance(
+            target.get("branch"), str
+        )
+        legacy_target = isinstance(target, dict) and all(
+            isinstance(target.get(key), str) for key in ("revision", "worktree_root")
+        )
+        if (
+            not isinstance(target, dict)
+            or not all(isinstance(target.get(key), str) for key in common_target)
+            or not (branch_target or legacy_target)
         ):
             errors.append(f"mapping report {report_id} has invalid target metadata")
         scope = value.get("execution_scope")
@@ -480,6 +486,10 @@ def validate_check_reports(
         target = value.get("target")
         if not isinstance(target, dict) or not isinstance(target.get("snapshot_hash"), str):
             errors.append(f"check report {report_id} has invalid target metadata")
+        elif isinstance(parent_id, str) and parent_id in mapping_reports:
+            parent_branch = mapping_reports[parent_id].get("target", {}).get("branch")
+            if parent_branch is not None and target.get("branch") != parent_branch:
+                errors.append(f"check report {report_id} target branch mismatch")
         scope = value.get("execution_scope")
         versions = value.get("entity_versions")
         if not isinstance(scope, dict) or not all(
@@ -793,6 +803,17 @@ def validate_sources(errors: list[str]) -> None:
     ids = [row.get("id") for row in recognizers if isinstance(row, dict)]
     if not ids or len(ids) != len(set(ids)):
         errors.append("LTP recognizers need unique stable ids")
+    target = load(ROOT / "targets/starry/target.yaml", errors)
+    if (
+        not isinstance(target, dict)
+        or target.get("target_id") != "starry"
+        or not isinstance(target.get("repository"), str)
+    ):
+        errors.append("Starry target descriptor must define target_id and repository")
+    elif {"revision", "worktree_root"}.intersection(target):
+        errors.append(
+            "Starry target descriptor must not pin revision or worktree_root; mapping negotiates a user branch"
+        )
 
 
 def validate_no_persisted_commit_ids(errors: list[str]) -> None:
@@ -827,6 +848,10 @@ def validate_no_persisted_commit_ids(errors: list[str]) -> None:
             value = load(path, errors)
             visit(value, str(path.relative_to(ROOT)))
     for path in (ROOT / "runs").glob("*/report.md"):
+        # Fix runs keep their machine state in manifest.yaml; report.md is a
+        # deliberately human-only summary without YAML metadata.
+        if (path.parent / "manifest.yaml").is_file():
+            continue
         value = frontmatter(path, errors)
         if isinstance(value, dict):
             visit(value, str(path.relative_to(ROOT)))

@@ -17,13 +17,16 @@ python3 tools/audit_ltp.py [--source <source>] [--syscalls <name1,name2,...>]
 - `ingest-syscall-specs`（中文显示名 `$提取规则`）：默认从 `ltp-local` 按名字典序分析前
   20 个待处理 syscall；`syscalls=` 可显式限定候选名单。稳定调用标识仍为
   `$ingest-syscall-specs`。
-- `map-starry-checks`（中文显示名 `$映射规则`）：直接读取通用规则库，按最新 mapping report 增量生成映射；
+- `map-starry-checks`（中文显示名 `$映射规则`）：先请用户在 Starry 创建、切换并告知一个干净的专用
+  分支，再读取通用规则库并按最新 mapping report 增量生成映射；工具不替用户创建或切换分支。
   `syscalls=` 只限制本轮处理范围，其他 pending 规则保留。
-- `check-starry-compliance`（中文显示名 `$合规检查`）：在隔离 worktree 注入测试并执行检查，
+- `check-starry-compliance`（中文显示名 `$合规检查`）：开始时请用户确认仍基于 mapping 协商分支，
+  在该分支临时注入测试并执行检查，完成后回滚测试注入，
   分离 finding 与环境 blocker，汇总当前快照全部 open finding，并在快照变化后自动重验历史 finding；
   稳定调用标识仍可作为兼容别名。
-- `fix-starry-compliance`（中文入口 `$修复缺口`）：无参数扫描当前快照全部 open confirmed finding，
-  合并其证据报告回归范围并一次修复；成功后只提交到隔离分支。英文名仍是兼容别名，旧 `from=`
+- `fix-starry-compliance`（中文入口 `$修复缺口`）：开始时确认同一协商分支，无参数扫描当前快照全部
+  open confirmed finding，合并其证据报告回归范围并一次修复；成功后直接提交到该分支。英文名仍是
+  兼容别名，旧 `from=`
   参数已删除。
 - `reset-syscallguard`：清空通用规则 YAML 和 ingest report 历史，使导入回到空白状态。
 - `audit_ltp.py`：只读运行旧 baseline、候选 extractor 和已发布 LTP 规则的三方全量审计；
@@ -50,15 +53,18 @@ authoritative 证据都能解析且至少形成一条规则时才发布候选规
 变化项，report 的 `pending_count` 保持为全局待处理数。
 
 成功 mapping 只写 `runs/mapping-*/report.md`、静态检查两级库和动态测试两级库。报告末尾元数据
-保存完整规则状态、`execution_scope`、规则库索引 hash、实体版本、`rule_syscalls` 和目标内容依赖。
+保存用户协商的 `target.branch`、完整规则状态、`execution_scope`、规则库索引 hash、实体版本、
+`rule_syscalls` 和目标内容依赖。
 成功 check 只写 `runs/check-*/report.md`、finding 一级索引和 finding 二级详情。中文正文逐项
 展示静态/动态结果及精简证据，末尾元数据保存基础、重验与实际 scope，以及当前快照全部 open
 finding 和 new/carried/revalidated/needs-revalidation 生命周期状态。check 不再生成 manifest、changeset、
-`results.yaml` 或成功运行日志；正常完成后删除 `/tmp/syscallguard-check/<id>`，blocker 或失败时保留。
+`results.yaml` 或成功运行日志；测试 patch 在发布报告前回滚。正常完成后删除
+`/tmp/syscallguard-check/<id>`，blocker 或失败时保留诊断。
 Fix prepare 从 finding 索引自动选取当前快照全部 open finding，并从 occurrences 收集所有证据报告；
 组合补丁暂存于 `/tmp/syscallguard-fix/<run-id>/implementation-fix.patch`。无 finding 时不创建正式 run。
 
-Fix run 继续使用 `runs/<run-id>/manifest.yaml`；新 manifest 以 `source_check_report_ids` 记录所有证据
+Fix run 继续使用 `runs/<run-id>/manifest.yaml`，直接修改并成功提交 mapping 协商分支；新 manifest
+以 `source_check_report_ids` 记录所有证据
 来源，读取器仍兼容历史 `from_run_id`。规则和下游实体使用
 `{id, generated_at_utc, content_hash}` 版本；消费者先比较时间戳，再比较 hash，从而发现漏改
 时间戳的人工编辑。Rule 的版本 hash 只覆盖 category 与 semantics，来源追溯变化不使下游失效。

@@ -1,5 +1,5 @@
 schema_name: syscallguard-run
-version: 7
+version: 8
 required:
   - schema_version
   - kind
@@ -24,3 +24,4 @@ optional:
   from_run_id: Historical compatibility field identifying one parent check report.
   entity_versions: Version snapshots keyed by entity type and ID.
   patch_version: Version of a generated implementation patch.
+  branch: User-negotiated Starry branch checked and fixed directly.

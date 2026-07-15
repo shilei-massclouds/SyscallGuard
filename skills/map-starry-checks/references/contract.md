@@ -7,6 +7,11 @@ $映射规则
 $映射规则 syscalls=mmap,close
 ```
 
+在任何 prepare 之前，先要求用户在目标 Starry 仓库自行创建并 checkout 一个专用分支，再明确回复
+分支名。Runner 的内部 prepare 接口必须收到 `--branch <name>`，验证当前 checkout 与名称一致且
+工作区干净。工具不得创建、切换或删除该分支。Mapping report 的 `target.branch` 固定这次协商结果，
+供 check 和 fix 全链路复用。
+
 规则库索引提供 rule ID、详情路径和 syscall 归属。最新成功
 `runs/mapping-*/report.md` 是唯一增量状态；没有历史报告的规则视为新增。报告元数据必须携带
 当前规则库全部规则，状态只能是 `covered`、`needs_review`、`unsupported` 或 `pending`。
@@ -17,7 +22,7 @@ $映射规则 syscalls=mmap,close
 无关目标内容变化保持跳过。`syscalls=` 只限制本轮处理范围，报告仍保留其他规则；全局剩余分别
 列出 pending、needs_review 和 unsupported。
 
-准备、目标只读分析和暂存只使用 `/tmp/syscallguard-map/<run-id>`。每条 selected rule 必须有一个
+准备、协商分支的只读分析和暂存只使用 `/tmp/syscallguard-map/<run-id>`。每条 selected rule 必须有一个
 暂存 rule result。`covered` 必须引用至少一个可执行静态检查或动态测试，并保存非空目标位置；
 `needs_review`/`unsupported` 不得引用编造的可执行项，且必须说明原因。
 

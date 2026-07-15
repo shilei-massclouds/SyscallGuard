@@ -16,6 +16,7 @@ from .common import (
     atomic_write_text,
     content_hash,
     dependency_mismatch,
+    ensure_target_workspace,
     entity_version,
     git,
     load_index,
@@ -109,6 +110,10 @@ def _current_input(
         {
             "entities": hashes,
             "target_snapshot_hash": target_snapshot_hash,
+            "target_branch": mapping_report.get("target", {}).get("branch"),
+            "repository_identity": mapping_report.get("target", {}).get(
+                "repository_identity"
+            ),
             "rule_syscalls": rule_syscalls,
         }
     )
@@ -302,31 +307,8 @@ def _prior_identical_check(root: Path, input_hash: str, current_report_id: str) 
     return candidates[0] if candidates else None
 
 
-def _mapping_target_descriptor(mapping_report: dict[str, Any]) -> dict[str, Any]:
-    target = mapping_report.get("target")
-    if not isinstance(target, dict) or target.get("target_id") != "starry":
-        raise SyscallGuardError("mapping report has no valid target metadata")
-    return target
-
-
-def _worktree_path(mapping_report: dict[str, Any], run_id: str) -> Path:
-    """Return the legacy/configured worktree location used by fix runs."""
-    descriptor = _mapping_target_descriptor(mapping_report)
-    raw_root = descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")
-    if not isinstance(raw_root, str) or not raw_root:
-        raise SyscallGuardError("target descriptor worktree_root must be a path")
-    return Path(raw_root).expanduser().resolve() / run_id
-
-
 def _check_workspace(report_id: str) -> Path:
     return TEMP_ROOT / normalize_run_id(report_id)
-
-
-def _create_worktree(repository: Path, revision_ref: str, worktree: Path) -> None:
-    if worktree.exists():
-        raise SyscallGuardError(f"worktree path already exists: {worktree}")
-    worktree.parent.mkdir(parents=True, exist_ok=True)
-    git(repository, ["worktree", "add", "--detach", str(worktree), revision_ref])
 
 
 def _artifact_path(root: Path, value: str) -> Path:
@@ -339,7 +321,7 @@ def _apply_test_patches(
     worktree: Path,
     tests: dict[str, dict[str, Any]],
     logs: Path,
-) -> tuple[set[str], list[dict[str, Any]]]:
+) -> tuple[set[str], list[dict[str, Any]], set[str]]:
     applied: set[str] = set()
     blocked_tests: set[str] = set()
     blockers: list[dict[str, Any]] = []
@@ -378,7 +360,35 @@ def _apply_test_patches(
             blocked_tests.update(test_ids)
         else:
             applied.add(patch_value)
-    return blocked_tests, blockers
+    return blocked_tests, blockers, applied
+
+
+def _revert_test_patches(
+    root: Path,
+    repository: Path,
+    applied: set[str],
+    logs: Path,
+) -> list[dict[str, Any]]:
+    blockers: list[dict[str, Any]] = []
+    for patch_value in sorted(applied, reverse=True):
+        patch = _artifact_path(root, patch_value)
+        log_path = logs / f"patch-revert-{slug(patch.name)}.log"
+        result = git(
+            repository,
+            ["apply", "--reverse", "--whitespace=nowarn", str(patch)],
+            check=False,
+        )
+        atomic_write_text(log_path, result.stdout + result.stderr)
+        if result.returncode != 0:
+            blockers.append(
+                {
+                    "kind": "test_cleanup",
+                    "entity_ids": [patch_value],
+                    "reason": "injected dynamic test patch could not be reverted",
+                    "diagnostic_log": str(log_path),
+                }
+            )
+    return blockers
 
 
 def _line_number(text: str, offset: int) -> int:
@@ -988,12 +998,7 @@ def _publish_report(
     transactional_write(files)
 
 
-def _cleanup_success(repository: Path, workspace: Path, worktree: Path | None) -> None:
-    if worktree is not None and worktree.exists():
-        result = git(repository, ["worktree", "remove", "--force", str(worktree)], check=False)
-        if result.returncode != 0:
-            shutil.rmtree(worktree, ignore_errors=True)
-            git(repository, ["worktree", "prune"], check=False)
+def _cleanup_success(workspace: Path) -> None:
     shutil.rmtree(workspace, ignore_errors=True)
     try:
         TEMP_ROOT.rmdir()
@@ -1132,15 +1137,28 @@ def run_check(
     if workspace.exists():
         raise SyscallGuardError(f"check workspace already exists: {workspace}")
     workspace.mkdir(parents=True)
-    worktree: Path | None = None
+    applied_test_patches: set[str] = set()
+    repository: Path | None = None
     try:
         target = mapping_report.get("target", {})
-        repository = Path(str(target.get("repository", ""))).expanduser().resolve()
-        revision_ref = str(_mapping_target_descriptor(mapping_report).get("revision", "HEAD"))
+        mapped_branch = target.get("branch") if isinstance(target, dict) else None
+        if not isinstance(mapped_branch, str) or not mapped_branch:
+            raise SyscallGuardError(
+                "mapping report predates negotiated Starry branches; rerun mapping"
+            )
+        _descriptor, repository, current_branch, repo_identity, current_snapshot = (
+            ensure_target_workspace(
+                root / "targets/starry/target.yaml", mapped_branch
+            )
+        )
         mapped_snapshot = str(target.get("snapshot_hash", ""))
-        if not repository.is_dir() or not mapped_snapshot:
+        if (
+            not mapped_snapshot
+            or target.get("repository") != str(repository)
+            or target.get("repository_identity") != repo_identity
+            or current_branch != mapped_branch
+        ):
             raise SyscallGuardError(f"mapping report {from_run_id} has invalid target metadata")
-        current_snapshot = repository_snapshot_hash(repository)
         base_entities, _base_hashes, _base_input_hash = _current_input(root, mapping_report)
         stale_reasons = _mapping_staleness(mapping_report, base_entities)
         if current_snapshot != mapped_snapshot or stale_reasons:
@@ -1168,6 +1186,8 @@ def run_check(
             {
                 "entities": hashes,
                 "target_snapshot_hash": mapped_snapshot,
+                "target_branch": mapped_branch,
+                "repository_identity": repo_identity,
                 "rule_syscalls": mapping_report.get("rule_syscalls", {}),
             }
         )
@@ -1221,7 +1241,7 @@ def run_check(
             )
             metadata["counts"]["reused"] = 1
             if metadata["blockers"]:
-                for key in ("diagnostic_directory", "worktree"):
+                for key in ("diagnostic_directory",):
                     if isinstance(prior.get(key), str):
                         metadata[key] = prior[key]
             _seal_metadata(metadata)
@@ -1233,17 +1253,13 @@ def run_check(
                 entities["dynamic_tests"],
                 {},
             )
-            _cleanup_success(repository, workspace, None)
+            _cleanup_success(workspace)
             return report_id
 
-        worktree = workspace / "worktree"
         logs = workspace / "logs"
         logs.mkdir(parents=True)
-        _create_worktree(repository, revision_ref, worktree)
-        if repository_snapshot_hash(worktree) != mapped_snapshot:
-            raise SyscallGuardError("isolated Starry worktree does not match the mapped content snapshot")
-        blocked_tests, blockers = _apply_test_patches(
-            root, worktree, entities["dynamic_tests"], logs
+        blocked_tests, blockers, applied_test_patches = _apply_test_patches(
+            root, repository, entities["dynamic_tests"], logs
         )
         for finding_id, reasons in sorted(unresolved_revalidation.items()):
             blockers.append(
@@ -1255,14 +1271,14 @@ def run_check(
             )
         static_results: list[dict[str, Any]] = []
         for check_id, definition in sorted(entities["static_checks"].items()):
-            result, blocker = _run_static_check(worktree, check_id, definition)
+            result, blocker = _run_static_check(repository, check_id, definition)
             static_results.append(result)
             if blocker:
                 blockers.append(blocker)
         dynamic_results: list[dict[str, Any]] = []
         for test_id, definition in sorted(entities["dynamic_tests"].items()):
             result, blocker = _run_dynamic_test(
-                worktree,
+                repository,
                 test_id,
                 definition,
                 logs / f"dynamic-{slug(test_id)}.log",
@@ -1271,6 +1287,21 @@ def run_check(
             dynamic_results.append(result)
             if blocker and content_hash(blocker) not in {content_hash(item) for item in blockers}:
                 blockers.append(blocker)
+        blockers.extend(
+            _revert_test_patches(
+                root, repository, applied_test_patches, logs
+            )
+        )
+        applied_test_patches.clear()
+        if repository_snapshot_hash(repository) != mapped_snapshot:
+            blockers.append(
+                {
+                    "kind": "workspace_cleanup",
+                    "entity_ids": [],
+                    "reason": "Starry branch changed during compliance checking",
+                    "diagnostic_log": str(logs),
+                }
+            )
         metadata["generated_at_utc"] = utc_now()
         generated_at = metadata["generated_at_utc"]
         rule_syscalls = mapping_report.get("rule_syscalls", {})
@@ -1314,7 +1345,6 @@ def run_check(
         )
         if blockers:
             metadata["diagnostic_directory"] = str(workspace)
-            metadata["worktree"] = str(worktree)
         _seal_metadata(metadata)
         _publish_report(
             root,
@@ -1325,9 +1355,16 @@ def run_check(
             findings,
         )
         if not blockers:
-            _cleanup_success(repository, workspace, worktree)
+            _cleanup_success(workspace)
         return report_id
     except BaseException as exc:
+        if repository is not None and applied_test_patches:
+            try:
+                logs = workspace / "logs"
+                logs.mkdir(parents=True, exist_ok=True)
+                _revert_test_patches(root, repository, applied_test_patches, logs)
+            except BaseException:
+                pass
         _mark_failure(workspace, exc)
         if isinstance(exc, SyscallGuardError):
             raise

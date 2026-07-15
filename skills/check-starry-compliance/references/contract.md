@@ -3,7 +3,8 @@
 Start with static-check and dynamic-test IDs from the mapping report's `execution_scope`, then load their current
 two-level details and recompute hashes. Load the finding index before execution. Add every resolvable original
 static/dynamic source of an open older-snapshot finding to a revalidation scope. Apply each unique dynamic
-`patch_file` from the resulting effective scope once in a detached worktree matching the target snapshot.
+`patch_file` from the resulting effective scope once on the clean, currently checked-out branch recorded in
+`mapping_report.target.branch`.
 
 Use the report's complete `rule_syscalls` relation to assign every failed rule to syscalls. An explicit check
 `applies_to_syscalls` may narrow that ownership but may not introduce a syscall absent from the report.
@@ -23,10 +24,14 @@ pattern's match state and location. Finding occurrences embed this stable eviden
 logs. Store confirmed gaps at `targets/starry/findings/<id>.yaml`, keyed by syscall, rule ID, and target content
 snapshot. Never convert a blocker into a finding.
 
+Before running, ask the user to confirm the recorded branch, then verify its name, repository identity, clean state,
+and mapped content snapshot. Revert all injected test patches after execution and verify the original snapshot is
+restored. A cleanup failure is a blocker and must never be hidden.
+
 Publish finding details, the finding index, and the report in one rollback-capable transaction, with the report
-last. A blocker produces `completed_with_blockers` and retains `/tmp/syscallguard-check/<id>` plus its worktree.
+last. A blocker produces `completed_with_blockers` and retains `/tmp/syscallguard-check/<id>` diagnostics.
 Unexpected execution or publication failure produces no formal report or finding update and retains that
-temporary diagnostic site. A blocker-free completion removes all temporary logs and its isolated worktree.
+temporary diagnostic site. A blocker-free completion removes all temporary logs.
 
 For an open finding on the current snapshot that the effective scope does not conclusively cover, carry it into
 the report unchanged. For an open older-snapshot finding, rerun all resolvable original sources. Any missing source,

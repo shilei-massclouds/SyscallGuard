@@ -8,7 +8,6 @@ from typing import Any
 
 from .checking import (
     _apply_test_patches,
-    _create_worktree,
     _current_versions,
     _finding_index,
     _load_entities,
@@ -35,7 +34,6 @@ from .common import (
     new_run_id,
     normalize_run_id,
     repo_root,
-    repository_snapshot_hash,
     slug,
     transactional_write,
     utc_now,
@@ -48,23 +46,28 @@ FIX_TEMP_ROOT = Path(os.environ.get("SYSCALLGUARD_FIX_TEMP_ROOT", "/tmp/syscallg
 PREPARATION_KIND = "syscallguard_fix_preparation"
 
 
-def _report(recorder: RunRecorder) -> None:
-    counts = recorder.manifest.get("counts", {})
+def _report_text(manifest: dict[str, Any]) -> str:
+    counts = manifest.get("counts", {})
     lines = [
         "# Starry Compliance Fix",
         "",
-        f"Run: `{recorder.run_id}`",
-        f"Status: `{recorder.manifest['status']}`",
-        f"Worktree: `{recorder.manifest.get('worktree', '')}`",
-        f"Branch: `{recorder.manifest.get('branch', '')}`",
+        f"Run: `{manifest.get('run_id', '')}`",
+        f"Status: `{manifest['status']}`",
+        f"Branch: `{manifest.get('branch', '')}`",
         "",
-        f"- Source check reports: {len(recorder.manifest.get('source_check_report_ids', []))}",
+        f"- Source check reports: {len(manifest.get('source_check_report_ids', []))}",
         f"- Confirmed findings selected: {counts.get('selected_findings', 0)}",
         f"- Static regression failures: {counts.get('static_failures', 0)}",
         f"- Dynamic regression failures: {counts.get('dynamic_failures', 0)}",
         f"- Regression blockers: {counts.get('blockers', 0)}",
     ]
-    atomic_write_text(recorder.directory / "report.md", "\n".join(lines) + "\n")
+    return "\n".join(lines) + "\n"
+
+
+def _report(recorder: RunRecorder) -> None:
+    atomic_write_text(
+        recorder.directory / "report.md", _report_text(recorder.manifest)
+    )
 
 
 def _failed_regression(
@@ -202,7 +205,7 @@ def prepare_fix(
 ) -> dict[str, Any]:
     """Freeze every open finding for the current snapshot without creating a fix run."""
     root = (root or repo_root()).resolve()
-    descriptor, repository, revision, repository_identity, snapshot = ensure_target_workspace(
+    _descriptor, repository, branch, repository_identity, snapshot = ensure_target_workspace(
         root / "targets/starry/target.yaml"
     )
     open_findings = _load_open_finding_index(root)
@@ -221,10 +224,16 @@ def prepare_fix(
     source_ids = _finding_report_ids(findings)
     reports = {report_id: load_check_report(root, report_id) for report_id in source_ids}
     for report_id, report in reports.items():
-        report_snapshot = report.get("target", {}).get("snapshot_hash")
-        if report_snapshot != snapshot:
+        report_target = report.get("target", {})
+        report_snapshot = report_target.get("snapshot_hash")
+        report_branch = report_target.get("branch")
+        if not isinstance(report_branch, str) or not report_branch:
             raise SyscallGuardError(
-                f"check report {report_id} target snapshot differs from selected findings"
+                f"check report {report_id} predates negotiated Starry branches; rerun mapping and checking"
+            )
+        if report_snapshot != snapshot or report_branch != branch:
+            raise SyscallGuardError(
+                f"check report {report_id} target branch or snapshot differs from the current Starry branch"
             )
     scope = _merge_report_scope(reports)
     entities = _load_regression_entities(root, scope)
@@ -245,8 +254,8 @@ def prepare_fix(
         "target_id": "starry",
         "repository": str(repository),
         "repository_identity": repository_identity,
-        "revision": revision,
-        "worktree_root": str(descriptor.get("worktree_root", "/tmp/syscallguard-worktrees")),
+        "descriptor_hash": file_hash(root / "targets/starry/target.yaml"),
+        "branch": branch,
         "snapshot_hash": snapshot,
     }
     preparation = {
@@ -286,11 +295,22 @@ def _finalize_inputs(
 ]:
     reasons: list[str] = []
     target = preparation.get("target", {})
-    repository = Path(str(target.get("repository", ""))).expanduser().resolve()
+    expected_branch = target.get("branch") if isinstance(target, dict) else None
+    if not isinstance(expected_branch, str) or not expected_branch:
+        raise SyscallGuardError("fix preparation has no negotiated Starry branch")
+    descriptor_path = root / "targets/starry/target.yaml"
+    _descriptor, repository, branch, repository_identity, current_snapshot = (
+        ensure_target_workspace(descriptor_path, expected_branch)
+    )
     snapshot = str(target.get("snapshot_hash", ""))
-    if not repository.is_dir():
-        reasons.append(f"target repository no longer exists: {repository}")
-    elif repository_snapshot_hash(repository) != snapshot:
+    if (
+        target.get("repository") != str(repository)
+        or target.get("repository_identity") != repository_identity
+        or target.get("descriptor_hash") != file_hash(descriptor_path)
+        or branch != expected_branch
+    ):
+        reasons.append("Starry branch identity changed after fix preparation")
+    if current_snapshot != snapshot:
         reasons.append("Starry content changed after fix preparation")
 
     current_open = _load_open_finding_index(root)
@@ -432,6 +452,9 @@ def _finalize_fix(
             "target": preparation["target"],
         }
     )
+    # Persist provenance before mutating the negotiated Starry branch so even
+    # an environmental failure leaves a valid, attributable formal run.
+    recorder.flush()
     if stale_reasons:
         recorder.manifest["counts"] = {
             "selected_findings": 0,
@@ -456,15 +479,9 @@ def _finalize_fix(
     target = preparation["target"]
     repository = Path(str(target["repository"])).resolve()
     checked_snapshot = str(target["snapshot_hash"])
-    revision = str(target["revision"])
-    worktree_root = Path(str(target["worktree_root"])).expanduser().resolve()
-    worktree = worktree_root / run_id
-    _create_worktree(repository, revision, worktree)
-    if repository_snapshot_hash(worktree) != checked_snapshot:
-        raise SyscallGuardError(
-            "isolated Starry worktree does not match the prepared content snapshot"
-        )
-    recorder.manifest["worktree"] = str(worktree)
+    branch = str(target["branch"])
+    recorder.manifest["branch"] = branch
+    recorder.flush()
     logs = recorder.directory / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     saved_patch = recorder.directory / "implementation.patch"
@@ -475,11 +492,11 @@ def _finalize_fix(
         "content_hash": file_hash(saved_patch),
     }
 
-    blocked_tests, blockers = _apply_test_patches(
-        root, worktree, entities["dynamic_tests"], logs
+    blocked_tests, blockers, _applied_test_patches = _apply_test_patches(
+        root, repository, entities["dynamic_tests"], logs
     )
     apply_result = git(
-        worktree, ["apply", "--whitespace=nowarn", str(saved_patch)], check=False
+        repository, ["apply", "--whitespace=nowarn", str(saved_patch)], check=False
     )
     atomic_write_text(
         logs / "implementation-patch-apply.log",
@@ -502,14 +519,14 @@ def _finalize_fix(
 
     static_results: list[dict[str, Any]] = []
     for check_id, definition in sorted(entities["static_checks"].items()):
-        result, blocker = _run_static_check(worktree, check_id, definition)
+        result, blocker = _run_static_check(repository, check_id, definition)
         static_results.append(result)
         if blocker:
             blockers.append(blocker)
     dynamic_results: list[dict[str, Any]] = []
     for test_id, definition in sorted(entities["dynamic_tests"].items()):
         result, blocker = _run_dynamic_test(
-            worktree,
+            repository,
             test_id,
             definition,
             logs / f"dynamic-{slug(test_id)}.log",
@@ -565,14 +582,12 @@ def _finalize_fix(
         )
         return run_id
 
-    git(worktree, ["add", "-A"])
-    if not git_output(worktree, ["status", "--short"]):
+    git(repository, ["add", "-A"])
+    if not git_output(repository, ["status", "--short"]):
         _failed_regression(recorder, "patch produced no committable changes", [])
         return run_id
-    branch = f"syscallguard/{run_id}"
-    git(worktree, ["switch", "-c", branch])
     commit_result = git(
-        worktree,
+        repository,
         [
             "-c",
             "user.name=SyscallGuard",
@@ -595,8 +610,6 @@ def _finalize_fix(
             recorder, "regression passed but commit creation failed", []
         )
         return run_id
-    recorder.manifest["branch"] = branch
-
     fix_generated_at = utc_now()
     check_versions = [
         recorder.manifest["entity_versions"]["check_reports"][report_id]
@@ -703,6 +716,9 @@ def finalize_fix(
                         manifest["completed_at_utc"] = utc_now()
                         manifest["error"] = f"{type(exc).__name__}: {exc}"
                         atomic_write_yaml(manifest_path, manifest)
+                        atomic_write_text(
+                            manifest_path.parent / "report.md", _report_text(manifest)
+                        )
                 except BaseException:
                     pass
         if isinstance(exc, SyscallGuardError):
@@ -746,8 +762,6 @@ def main(argv: list[str] | None = None) -> int:
             print(f"run_id: {run_id}")
             print(f"status: {manifest['status']}")
             print(f"result: {path}")
-            if manifest.get("worktree"):
-                print(f"worktree: {manifest['worktree']}")
             if manifest.get("branch"):
                 print(f"branch: {manifest['branch']}")
             print(

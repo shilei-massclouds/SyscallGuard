@@ -23,7 +23,7 @@ entities:
     storage: runs/mapping-*/report.md trailing YAML metadata
     required: [report_id, status, generated_at_utc, rule_index_hash, target, counts, execution_scope, rule_syscalls, rules, entity_versions, remaining]
     rule_status_values: [covered, needs_review, unsupported, pending]
-    notes: rules contains the complete current rule library; execution_scope contains only this report's executable outputs.
+    notes: target.branch records the user-created dedicated Starry branch; rules contains the complete current rule library; execution_scope contains only this report's executable outputs.
   static_check_index:
     kind: syscallguard_starry_static_check_index
     storage: targets/starry/static-checks.yaml
