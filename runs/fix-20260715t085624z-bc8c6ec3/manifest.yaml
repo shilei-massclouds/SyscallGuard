@@ -1,0 +1,23 @@
+schema_version: 1
+kind: syscallguard_run
+run_id: fix-20260715t085624z-bc8c6ec3
+stage: fix
+status: failed
+created_at_utc: '2026-07-15T08:58:21.017933Z'
+completed_at_utc: '2026-07-15T08:58:21.109191Z'
+invocation:
+  patch: /tmp/syscallguard-fix/fix-20260715t085624z-bc8c6ec3/implementation-fix.patch
+entities:
+  findings:
+  - finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  - finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+  fixes: []
+entity_hashes: {}
+outputs: {}
+counts: {}
+blockers: []
+error: 'SyscallGuardError: git worktree add --detach /tmp/syscallguard-worktrees/fix-20260715t085624z-bc8c6ec3
+  HEAD failed in /home/cloud/gitLinux/tgoskits: fatal: could not create directory of ''.git/worktrees/fix-20260715t085624z-bc8c6ec3'':
+  Read-only file system'
+source_check_report_ids:
+- check-20260715t065305z-3b1566ec
