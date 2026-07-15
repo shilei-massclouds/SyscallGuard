@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -28,8 +29,15 @@ from syscallguard.common import (
     read_frontmatter,
     slug,
     update_index,
+    version_content_hash,
 )
-from syscallguard.fixing import FIX_TEMP_ROOT, run_fix
+from syscallguard.fixing import (
+    FIX_TEMP_ROOT,
+    build_parser as build_fix_parser,
+    finalize_fix,
+    prepare_fix,
+    run_fix,
+)
 from syscallguard.ingest import (
     build_parser as build_ingest_parser,
     resolve_count,
@@ -156,7 +164,14 @@ class FlowTestCase(unittest.TestCase):
             "check-publish-failure",
         ):
             shutil.rmtree(CHECK_TEMP_ROOT / report_id, ignore_errors=True)
-        shutil.rmtree(FIX_TEMP_ROOT / "check-finding", ignore_errors=True)
+        for workspace in FIX_TEMP_ROOT.glob("*"):
+            preparation = workspace / "preparation.yaml"
+            try:
+                value = load_mapping(preparation)
+            except SyscallGuardError:
+                continue
+            if value.get("root") == str(self.root.resolve()):
+                shutil.rmtree(workspace, ignore_errors=True)
         self.temp.cleanup()
 
     def update_executable_index(
@@ -941,6 +956,103 @@ class CheckTests(FlowTestCase):
         self.assertEqual(second["reused_from"], "check-reuse-first")
         self.assertEqual(len(load_mapping(finding_path)["occurrences"]), occurrence_count)
 
+    def test_same_snapshot_open_finding_is_carried_by_empty_mapping_scope(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-gap")
+        first = load_check_report(self.root, "check-gap")
+        self.assertEqual(len(first["finding_ids"]), 1)
+
+        run_mapping(None, self.root, "mapping-empty")
+        empty_mapping = load_mapping_report(self.root, "mapping-empty")
+        self.assertEqual(empty_mapping["execution_scope"]["static_checks"], [])
+        run_check("mapping-empty", self.root, "check-carried")
+        carried = load_check_report(self.root, "check-carried")
+        self.assertEqual(carried["finding_ids"], first["finding_ids"])
+        self.assertEqual(carried["carried_finding_ids"], first["finding_ids"])
+        self.assertEqual(carried["counts"]["findings"], 1)
+        self.assertEqual(carried["counts"]["carried_findings"], 1)
+
+    def test_old_snapshot_failure_is_superseded_by_current_finding(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-old-gap")
+        old_id = load_check_report(self.root, "check-old-gap")["finding_ids"][0]
+
+        commit_file(repo, "code.txt", "still bad\n")
+        run_mapping(None, self.root, "mapping-new-snapshot")
+        run_check("mapping-new-snapshot", self.root, "check-revalidated-fail")
+        current = load_check_report(self.root, "check-revalidated-fail")
+        self.assertEqual(len(current["finding_ids"]), 1)
+        self.assertNotEqual(current["finding_ids"][0], old_id)
+        self.assertIn(old_id, current["revalidated_finding_ids"])
+        old = load_mapping(
+            self.root / "targets/starry/findings" / f"{slug(old_id)}.yaml"
+        )
+        self.assertEqual(old["resolution"], "superseded")
+        self.assertEqual(old["superseded_by"], current["finding_ids"][0])
+        index = load_mapping(self.root / "targets/starry/findings/index.yaml")
+        row = next(item for item in index["entities"] if item["id"] == old_id)
+        self.assertEqual(row["generated_at_utc"], old["generated_at_utc"])
+        self.assertEqual(row["content_hash"], version_content_hash(old))
+
+    def test_old_snapshot_pass_is_marked_no_longer_reproduces(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-old-failing")
+        old_id = load_check_report(self.root, "check-old-failing")["finding_ids"][0]
+
+        commit_file(repo, "code.txt", "good\n")
+        run_mapping(None, self.root, "mapping-fixed-snapshot")
+        run_check("mapping-fixed-snapshot", self.root, "check-revalidated-pass")
+        current = load_check_report(self.root, "check-revalidated-pass")
+        self.assertEqual(current["finding_ids"], [])
+        self.assertIn(old_id, current["revalidated_finding_ids"])
+        old = load_mapping(
+            self.root / "targets/starry/findings" / f"{slug(old_id)}.yaml"
+        )
+        self.assertEqual(old["resolution"], "no_longer_reproduces")
+        index = load_mapping(self.root / "targets/starry/findings/index.yaml")
+        row = next(item for item in index["entities"] if item["id"] == old_id)
+        self.assertEqual(row["generated_at_utc"], old["generated_at_utc"])
+        self.assertEqual(row["content_hash"], version_content_hash(old))
+
+    def test_old_snapshot_blocker_remains_open_and_needs_revalidation(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("bad")
+        self.add_dynamic_test("DYNAMIC_FAIL", ["/bin/false"])
+        repo, descriptor, _commit = self.make_target("bad\n")
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-dynamic-old")
+        old_id = load_check_report(self.root, "check-dynamic-old")["finding_ids"][0]
+
+        commit_file(repo, "code.txt", "different snapshot\n")
+        dynamic_path = self.root / "targets/starry/dynamic-tests/dynamic-fail.yaml"
+        dynamic = load_mapping(dynamic_path)
+        dynamic["command"] = [
+            "/bin/sh",
+            "-c",
+            "echo 'No space left on device' >&2; exit 1",
+        ]
+        dynamic["generated_at_utc"] = "2026-02-01T00:00:00.000000Z"
+        atomic_write_yaml(dynamic_path, dynamic)
+        run_mapping(None, self.root, "mapping-blocked-snapshot")
+        run_check("mapping-blocked-snapshot", self.root, "check-revalidated-blocked")
+        current = load_check_report(self.root, "check-revalidated-blocked")
+        self.assertEqual(current["status"], "completed_with_blockers")
+        self.assertIn(old_id, current["needs_revalidation_finding_ids"])
+        self.assertNotIn(old_id, current["finding_ids"])
+        old = load_mapping(
+            self.root / "targets/starry/findings" / f"{slug(old_id)}.yaml"
+        )
+        self.assertEqual(old["resolution"], "open")
+
     def test_reliable_dynamic_failure_keeps_only_eight_kib_tail(self) -> None:
         self.prepare_spec_run()
         self.add_static_check("bad")
@@ -1081,17 +1193,85 @@ new file mode 100644
         self.assertEqual(check_report["counts"]["dynamic_pass"], 1)
         return repo, base_commit
 
+    def add_second_rule_and_checks(self) -> None:
+        rule = {
+            "schema_version": 1,
+            "kind": "syscallguard_rule",
+            "rule_id": "RULE_TWO",
+            "category": "fixture",
+            "semantics": {
+                "preconditions": [],
+                "action": {"operation": "read second code rule"},
+                "expected_result": "good",
+                "errno": [],
+            },
+            "semantic_hash": "",
+            "generated_at_utc": "2026-01-02T00:00:00.000000Z",
+            "sources": [],
+        }
+        rule["semantic_hash"] = content_hash(
+            {"category": rule["category"], "semantics": rule["semantics"]}
+        )
+        atomic_write_yaml(self.root / "library/rules/rule-two.yaml", rule)
+        index = load_mapping(self.root / "library/syscalls.yaml")
+        index["syscalls"]["beta"] = [
+            {"rule_id": "RULE_TWO", "path": "library/rules/rule-two.yaml"}
+        ]
+        atomic_write_yaml(self.root / "library/syscalls.yaml", index)
+
+        check = {
+            "schema_version": 1,
+            "kind": "syscallguard_starry_static_check",
+            "check_id": "CHECK_TWO",
+            "rule_refs": ["RULE_TWO"],
+            "applies_to_syscalls": ["beta"],
+            "path": "code.txt",
+            "patterns": [{"label": "expected", "regex": "good"}],
+        }
+        check_path = self.root / "targets/starry/static-checks/check-two.yaml"
+        atomic_write_yaml(check_path, check)
+        self.update_executable_index(
+            "static-checks",
+            "syscallguard_starry_static_check_index",
+            "check_id",
+            "CHECK_TWO",
+            check_path,
+            ["RULE_TWO"],
+            ["beta"],
+        )
+        self.add_dynamic_test(
+            "DYNAMIC_TWO",
+            ["/bin/true"],
+            "targets/starry/dynamic-tests/assets/test.patch",
+        )
+        dynamic_path = self.root / "targets/starry/dynamic-tests/dynamic-two.yaml"
+        dynamic = load_mapping(dynamic_path)
+        dynamic["rule_refs"] = ["RULE_TWO"]
+        dynamic["applies_to_syscalls"] = ["beta"]
+        atomic_write_yaml(dynamic_path, dynamic)
+        self.update_executable_index(
+            "dynamic-tests",
+            "syscallguard_starry_dynamic_test_index",
+            "test_id",
+            "DYNAMIC_TWO",
+            dynamic_path,
+            ["RULE_TWO"],
+            ["beta"],
+        )
+
     def test_success_commits_fix_and_injected_test_without_touching_original_branch(self) -> None:
         repo, base_commit = self.prepare_failed_check()
-        patch = FIX_TEMP_ROOT / "check-finding/implementation-fix.patch"
+        patch = self.root / "fix-input/success.patch"
         patch.parent.mkdir(parents=True, exist_ok=True)
         patch.write_text(self.FIX_PATCH, encoding="utf-8")
-        run_fix("check-finding", None, self.root, "fix-success")
+        run_fix(patch, self.root, "fix-success")
         manifest = load_mapping(self.root / "runs/fix-success/manifest.yaml")
         self.assertEqual(manifest["status"], "completed")
         self.assertEqual(manifest["branch"], "syscallguard/fix-success")
         self.assertEqual(command(["git", "rev-parse", "HEAD"], repo), base_commit)
         self.assertNotIn("commit", manifest)
+        self.assertNotIn("from_run_id", manifest)
+        self.assertEqual(manifest["source_check_report_ids"], ["check-finding"])
         self.assertEqual(
             {item.name for item in (self.root / "runs/check-finding").iterdir()},
             {"report.md"},
@@ -1105,7 +1285,7 @@ new file mode 100644
         patch = self.root / "fix-input/ineffective.patch"
         patch.parent.mkdir(parents=True)
         patch.write_text(self.INEFFECTIVE_PATCH, encoding="utf-8")
-        run_fix("check-finding", patch, self.root, "fix-failed")
+        run_fix(patch, self.root, "fix-failed")
         manifest = load_mapping(self.root / "runs/fix-failed/manifest.yaml")
         self.assertEqual(manifest["status"], "failed")
         self.assertTrue(Path(manifest["worktree"]).is_dir())
@@ -1119,10 +1299,135 @@ new file mode 100644
         finding = load_mapping(path)
         finding["manual_note"] = "edited without generation update"
         atomic_write_yaml(path, finding)
-        run_fix("check-finding", None, self.root, "fix-stale-finding")
-        manifest = load_mapping(self.root / "runs/fix-stale-finding/manifest.yaml")
+        with self.assertRaisesRegex(SyscallGuardError, "finding index version is stale"):
+            prepare_fix(self.root, "fix-stale-finding")
+        self.assertFalse((self.root / "runs/fix-stale-finding").exists())
+
+    def test_no_open_findings_creates_no_run_or_worktree(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("bad")
+        _repo, descriptor, _commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-clean")
+        result = prepare_fix(self.root, "fix-empty")
+        self.assertEqual(result["status"], "no_open_findings")
+        self.assertFalse((self.root / "runs/fix-empty").exists())
+        self.assertFalse((self.root / "worktrees/fix-empty").exists())
+        self.assertFalse((FIX_TEMP_ROOT / "fix-empty").exists())
+
+    def test_prepare_uses_index_when_newest_legacy_report_has_no_findings(self) -> None:
+        self.prepare_failed_check()
+        older = load_check_report(self.root, "check-finding")
+        newest = dict(older)
+        newest.pop("content_hash", None)
+        newest["report_id"] = "check-newest-empty"
+        newest["generated_at_utc"] = "2026-12-31T23:59:59.000000Z"
+        newest["finding_ids"] = []
+        newest["finding_versions"] = {}
+        newest["counts"] = dict(newest["counts"])
+        newest["counts"]["findings"] = 0
+        newest["content_hash"] = version_content_hash(newest)
+        atomic_write_text(
+            self.root / "runs/check-newest-empty/report.md",
+            markdown_report(newest),
+        )
+
+        preparation = prepare_fix(self.root, "fix-index-discovery")
+        self.assertEqual(preparation["status"], "prepared")
+        self.assertEqual(len(preparation["selected_finding_ids"]), 1)
+        self.assertEqual(
+            preparation["source_check_report_ids"], ["check-finding"]
+        )
+
+    def test_cli_has_no_from_parameter_and_supports_internal_finalize(self) -> None:
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            build_fix_parser().parse_args(["--from", "check-old"])
+        parsed = build_fix_parser().parse_args([])
+        self.assertIsNone(parsed.finalize)
+        self.assertEqual(
+            build_fix_parser().parse_args(["--finalize", "fix-prepared"]).finalize,
+            "fix-prepared",
+        )
+
+    def test_finalize_revalidates_prepared_finding_version(self) -> None:
+        _repo, _base_commit = self.prepare_failed_check()
+        preparation = prepare_fix(self.root, "fix-prepared-stale")
+        Path(preparation["implementation_patch"]).write_text(
+            self.FIX_PATCH, encoding="utf-8"
+        )
+        finding_id = preparation["selected_finding_ids"][0]
+        path = self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+        finding = load_mapping(path)
+        finding["generated_at_utc"] = "2026-12-31T00:00:00.000000Z"
+        atomic_write_yaml(path, finding)
+        index = load_mapping(self.root / "targets/starry/findings/index.yaml")
+        row = next(item for item in index["entities"] if item["id"] == finding_id)
+        row["generated_at_utc"] = finding["generated_at_utc"]
+        row["content_hash"] = version_content_hash(finding)
+        atomic_write_yaml(self.root / "targets/starry/findings/index.yaml", index)
+        finalize_fix("fix-prepared-stale", self.root)
+        manifest = load_mapping(self.root / "runs/fix-prepared-stale/manifest.yaml")
         self.assertEqual(manifest["status"], "completed_with_blockers")
-        self.assertEqual(manifest["blockers"][0]["kind"], "stale_check")
+        self.assertEqual(manifest["blockers"][0]["kind"], "stale_preparation")
+
+    def test_repairs_all_findings_from_multiple_reports_with_merged_scope(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        test_patch = self.root / "targets/starry/dynamic-tests/assets/test.patch"
+        test_patch.parent.mkdir(parents=True, exist_ok=True)
+        test_patch.write_text(self.TEST_PATCH, encoding="utf-8")
+        self.add_dynamic_test(
+            "DYNAMIC_ONE",
+            ["/bin/true"],
+            "targets/starry/dynamic-tests/assets/test.patch",
+        )
+        repo, descriptor, base_commit = self.make_target()
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-first-source")
+        first_ids = load_check_report(self.root, "check-first-source")["finding_ids"]
+        self.assertEqual(len(first_ids), 1)
+
+        self.add_second_rule_and_checks()
+        run_mapping(None, self.root, "mapping-second-source")
+        run_check("mapping-second-source", self.root, "check-second-source")
+        second = load_check_report(self.root, "check-second-source")
+        self.assertEqual(len(second["finding_ids"]), 2)
+
+        patch = self.root / "fix-input/combined.patch"
+        patch.parent.mkdir(parents=True, exist_ok=True)
+        patch.write_text(self.FIX_PATCH, encoding="utf-8")
+        run_fix(patch, self.root, "fix-combined")
+        manifest = load_mapping(self.root / "runs/fix-combined/manifest.yaml")
+        self.assertEqual(manifest["status"], "completed")
+        self.assertEqual(manifest["counts"]["selected_findings"], 2)
+        self.assertEqual(
+            manifest["source_check_report_ids"],
+            ["check-first-source", "check-second-source"],
+        )
+        self.assertEqual(
+            set(manifest["regression_scope"]["static_checks"]),
+            {"CHECK_ONE", "CHECK_TWO"},
+        )
+        self.assertEqual(
+            set(manifest["regression_scope"]["dynamic_tests"]),
+            {"DYNAMIC_ONE", "DYNAMIC_TWO"},
+        )
+        self.assertEqual(command(["git", "rev-parse", "HEAD"], repo), base_commit)
+        self.assertEqual(
+            command(
+                ["git", "show", f"{manifest['branch']}:test-marker.txt"], repo
+            ),
+            "test retained",
+        )
+        for finding_id in second["finding_ids"]:
+            finding = load_mapping(
+                self.root / "targets/starry/findings" / f"{slug(finding_id)}.yaml"
+            )
+            self.assertEqual(finding["resolution"], "fixed")
+            index = load_mapping(self.root / "targets/starry/findings/index.yaml")
+            row = next(item for item in index["entities"] if item["id"] == finding_id)
+            self.assertEqual(row["generated_at_utc"], finding["generated_at_utc"])
+            self.assertEqual(row["content_hash"], version_content_hash(finding))
 
 
 class ResetTests(unittest.TestCase):
@@ -1155,9 +1460,9 @@ class RepositoryMappingScopeTests(unittest.TestCase):
         all_rules = {
             row["rule_id"] for refs in index.values() for row in refs
         }
-        self.assertEqual(len(all_rules), 12)
+        self.assertEqual(len(all_rules), 386)
         self.assertEqual(len({row["rule_id"] for row in index["mmap"]}), 9)
-        self.assertEqual(len({row["rule_id"] for row in index["close"]}), 3)
+        self.assertEqual(len({row["rule_id"] for row in index["close"]}), 5)
 
 
 if __name__ == "__main__":

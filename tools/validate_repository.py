@@ -141,6 +141,11 @@ def validate_skills(errors: list[str]) -> None:
             or agent.get("interface", {}).get("display_name") != "$合规检查"
         ):
             errors.append("check-starry-compliance display name must be $合规检查")
+        if name == "fix-starry-compliance" and (
+            not isinstance(agent, dict)
+            or agent.get("interface", {}).get("display_name") != "$修复缺口"
+        ):
+            errors.append("fix-starry-compliance display name must be $修复缺口")
         if not (directory / "scripts/run.py").is_file():
             errors.append(f"missing runner: skills/{name}/scripts/run.py")
 
@@ -408,15 +413,31 @@ def validate_runs(
             errors.append(f"repository contains unfinished run: {run_id}")
         if not (path.parent / "changeset.yaml").is_file():
             errors.append(f"run has no changeset: {run_id}")
-        if not isinstance(value.get("from_run_id"), str):
-            errors.append(f"run {run_id} has no from_run_id")
+        source_ids = value.get("source_check_report_ids")
+        legacy_parent = value.get("from_run_id")
+        if not (
+            isinstance(source_ids, list)
+            and source_ids
+            and all(isinstance(item, str) for item in source_ids)
+        ) and not isinstance(legacy_parent, str):
+            errors.append(
+                f"run {run_id} has neither source_check_report_ids nor historical from_run_id"
+            )
         runs[run_id] = value
     for run_id, value in runs.items():
         stage = value.get("stage")
         if stage == "fix":
-            parent_id = str(value.get("from_run_id"))
-            if parent_id not in check_reports:
-                errors.append(f"fix run {run_id} has no check report parent")
+            raw_sources = value.get("source_check_report_ids")
+            parent_ids = (
+                raw_sources
+                if isinstance(raw_sources, list) and raw_sources
+                else [value.get("from_run_id")]
+            )
+            for parent_id in parent_ids:
+                if not isinstance(parent_id, str) or parent_id not in check_reports:
+                    errors.append(
+                        f"fix run {run_id} has no check report parent {parent_id!r}"
+                    )
     return runs
 
 
@@ -466,6 +487,40 @@ def validate_check_reports(
             for key in ("rules", "static_checks", "dynamic_tests")
         ):
             errors.append(f"check report {report_id} has invalid execution scope")
+        lifecycle_fields = {
+            "new_findings": "new_finding_ids",
+            "carried_findings": "carried_finding_ids",
+            "revalidated_findings": "revalidated_finding_ids",
+            "needs_revalidation": "needs_revalidation_finding_ids",
+        }
+        if any(field in value for field in lifecycle_fields.values()):
+            for count_key, field in lifecycle_fields.items():
+                ids = value.get(field)
+                if not isinstance(ids, list) or not all(
+                    isinstance(item, str) for item in ids
+                ):
+                    errors.append(f"check report {report_id} has invalid {field}")
+                elif isinstance(value.get("counts"), dict) and value["counts"].get(
+                    count_key
+                ) != len(ids):
+                    errors.append(
+                        f"check report {report_id} count mismatch for {count_key}"
+                    )
+            for field in (
+                "base_execution_scope",
+                "revalidation_scope",
+                "effective_execution_scope",
+            ):
+                extra_scope = value.get(field)
+                if not isinstance(extra_scope, dict) or not all(
+                    isinstance(extra_scope.get(key), list)
+                    for key in ("rules", "static_checks", "dynamic_tests")
+                ):
+                    errors.append(f"check report {report_id} has invalid {field}")
+            if value.get("effective_execution_scope") != scope:
+                errors.append(
+                    f"check report {report_id} effective execution scope mismatch"
+                )
         if not isinstance(versions, dict) or not all(
             isinstance(versions.get(key), dict)
             for key in ("rules", "static_checks", "dynamic_tests")
@@ -585,6 +640,13 @@ def validate_finding_evidence(
     for entity_id, entity in entities.items():
         if entity.get("kind") != "syscallguard_starry_finding":
             continue
+        if entity.get("resolution") not in {
+            "open",
+            "fixed",
+            "superseded",
+            "no_longer_reproduces",
+        }:
+            errors.append(f"finding {entity_id} has invalid resolution")
         occurrences = entity.get("occurrences")
         if not isinstance(occurrences, list):
             errors.append(f"finding {entity_id} occurrences is not a list")

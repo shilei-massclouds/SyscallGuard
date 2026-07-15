@@ -1,5 +1,5 @@
 schema_name: syscallguard-shared-entities
-version: 7
+version: 8
 entities:
   syscall_index:
     kind: syscallguard_syscall_index
@@ -48,9 +48,12 @@ entities:
     kind: syscallguard_starry_finding
     required: [finding_id, syscall, rule_id, target_snapshot_hash, status, resolution, occurrences, generated_at_utc, upstream_dependencies]
     status_values: [confirmed]
+    resolution_values: [open, fixed, superseded, no_longer_reproduces]
+    optional: [superseded_by, fix_ref, fixed_by_run]
   fix:
     kind: syscallguard_starry_fix
     required: [fix_id, finding_refs, patch, starry_branch, regression, status, generated_at_utc, upstream_dependencies]
+    optional: [source_check_report_ids]
 dependency_version:
   required: [id, generated_at_utc, content_hash]
   validation: Compare generated_at_utc first, then content_hash; reject either mismatch as stale.

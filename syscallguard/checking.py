@@ -123,6 +123,128 @@ def _current_versions(
     }
 
 
+def _scope_for_entities(
+    entities: dict[str, dict[str, dict[str, Any]]]
+) -> dict[str, list[str]]:
+    return {kind: sorted(rows) for kind, rows in entities.items()}
+
+
+def _load_open_finding_index(root: Path) -> dict[str, dict[str, Any]]:
+    """Load every open confirmed finding named by the shared index."""
+    index = load_index(
+        root / "targets/starry/findings/index.yaml",
+        "syscallguard_starry_finding_index",
+    )
+    findings: dict[str, dict[str, Any]] = {}
+    for row in index["entities"]:
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+            raise SyscallGuardError("finding index contains an invalid entry")
+        finding_id = row["id"]
+        raw_path = row.get(
+            "path", f"targets/starry/findings/{slug(finding_id)}.yaml"
+        )
+        if not isinstance(raw_path, str):
+            raise SyscallGuardError(f"finding index path is invalid for {finding_id}")
+        path = root / safe_relative_path(raw_path)
+        finding = load_mapping(path)
+        if (
+            finding.get("kind") != "syscallguard_starry_finding"
+            or finding.get("finding_id") != finding_id
+        ):
+            raise SyscallGuardError(f"invalid finding entity: {path}")
+        recorded_generation = row.get("generated_at_utc")
+        recorded_hash = row.get("content_hash")
+        if (
+            recorded_generation != finding.get("generated_at_utc")
+            or recorded_hash != version_content_hash(finding)
+        ):
+            raise SyscallGuardError(
+                f"finding index version is stale for {finding_id}"
+            )
+        if finding.get("status") == "confirmed" and finding.get("resolution") == "open":
+            findings[finding_id] = finding
+    return findings
+
+
+def _finding_sources(finding: dict[str, Any]) -> set[tuple[str, str]]:
+    sources: set[tuple[str, str]] = set()
+    occurrences = finding.get("occurrences", [])
+    if not isinstance(occurrences, list):
+        return sources
+    for occurrence in occurrences:
+        if not isinstance(occurrence, dict):
+            continue
+        kind = occurrence.get("evidence_kind")
+        source_id = occurrence.get("source_id")
+        if kind in {"static", "dynamic"} and isinstance(source_id, str):
+            sources.add((kind, source_id))
+    return sources
+
+
+def _extend_revalidation_scope(
+    root: Path,
+    entities: dict[str, dict[str, dict[str, Any]]],
+    findings: dict[str, dict[str, Any]],
+    current_snapshot: str,
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+    """Add executable sources for open findings from older target snapshots."""
+    added = {"rules": set(), "static_checks": set(), "dynamic_tests": set()}
+    unresolved: dict[str, list[str]] = {}
+    for finding_id, finding in findings.items():
+        if finding.get("target_snapshot_hash") == current_snapshot:
+            continue
+        for evidence_kind, source_id in sorted(_finding_sources(finding)):
+            section = "static_checks" if evidence_kind == "static" else "dynamic_tests"
+            directory = (
+                "targets/starry/static-checks"
+                if evidence_kind == "static"
+                else "targets/starry/dynamic-tests"
+            )
+            id_field = "check_id" if evidence_kind == "static" else "test_id"
+            expected_kind = (
+                "syscallguard_starry_static_check"
+                if evidence_kind == "static"
+                else "syscallguard_starry_dynamic_test"
+            )
+            if source_id not in entities[section]:
+                try:
+                    loaded, _hashes = _load_entities(
+                        root, [source_id], directory, id_field, expected_kind
+                    )
+                    entity_version(source_id, loaded[source_id])
+                except SyscallGuardError as exc:
+                    unresolved.setdefault(finding_id, []).append(str(exc))
+                    continue
+                entities[section][source_id] = loaded[source_id]
+                added[section].add(source_id)
+            definition = entities[section][source_id]
+            refs = definition.get("rule_refs", [])
+            if not isinstance(refs, list):
+                refs = []
+            for raw_rule_id in refs:
+                rule_id = str(raw_rule_id)
+                if rule_id in entities["rules"]:
+                    continue
+                try:
+                    loaded, _hashes = _load_entities(
+                        root,
+                        [rule_id],
+                        "library/rules",
+                        "rule_id",
+                        "syscallguard_rule",
+                    )
+                    entity_version(rule_id, loaded[rule_id])
+                except SyscallGuardError as exc:
+                    unresolved.setdefault(finding_id, []).append(str(exc))
+                    continue
+                entities["rules"][rule_id] = loaded[rule_id]
+                added["rules"].add(rule_id)
+    return (
+        {kind: sorted(ids) for kind, ids in added.items()},
+        {finding_id: sorted(set(reasons)) for finding_id, reasons in unresolved.items()},
+    )
+
+
 def _mapping_staleness(
     mapping_report: dict[str, Any], entities: dict[str, dict[str, dict[str, Any]]]
 ) -> list[str]:
@@ -571,7 +693,7 @@ def _finding_entities(
                     "rule_id": rule_id,
                     "target_snapshot_hash": target_snapshot_hash,
                     "status": "confirmed",
-                    "resolution": existing.get("resolution", "open"),
+                    "resolution": "open",
                     "occurrences": occurrences,
                     "generated_at_utc": generated_at
                     if changed or not existing.get("generated_at_utc")
@@ -602,8 +724,9 @@ def _counts(
     dynamic_results: list[dict[str, Any]],
     findings: dict[str, Any],
     blockers: list[dict[str, Any]],
+    lifecycle: dict[str, list[str]] | None = None,
 ) -> dict[str, int]:
-    return {
+    result = {
         "static_pass": sum(row.get("result") == "pass" for row in static_results),
         "static_fail": sum(row.get("result") == "fail" for row in static_results),
         "static_error": sum(row.get("result") == "error" for row in static_results),
@@ -614,6 +737,9 @@ def _counts(
         "findings": len(findings),
         "blockers": len(blockers),
     }
+    for key, ids in (lifecycle or {}).items():
+        result[key] = len(ids)
+    return result
 
 
 def _finding_index(
@@ -674,6 +800,7 @@ def _report_text(
         f"- 静态检查：pass {counts['static_pass']}、fail {counts['static_fail']}、error {counts['static_error']}",
         f"- 动态测试：pass {counts['dynamic_pass']}、fail {counts['dynamic_fail']}、skipped {counts['dynamic_skipped']}、not_run {counts['dynamic_not_run']}",
         f"- confirmed finding：{counts['findings']}",
+        f"- 新增：{counts.get('new_findings', 0)}、carry forward：{counts.get('carried_findings', 0)}、已重验：{counts.get('revalidated_findings', 0)}、待重验：{counts.get('needs_revalidation', 0)}",
         f"- 环境或执行 blocker：{counts['blockers']}（不视为实现缺口）",
         "",
         "## 静态检查",
@@ -787,11 +914,18 @@ def _base_metadata(
         "input_hash": input_hash,
         "entity_hashes": hashes,
         "entity_versions": versions,
-        "execution_scope": {
+        "base_execution_scope": {
             key: sorted(values)
             for key, values in mapping_report.get("execution_scope", {}).items()
             if key in {"rules", "static_checks", "dynamic_tests"}
         },
+        "revalidation_scope": {
+            "rules": [],
+            "static_checks": [],
+            "dynamic_tests": [],
+        },
+        "effective_execution_scope": {},
+        "execution_scope": {},
         "rule_syscalls": mapping_report.get("rule_syscalls", {}),
         "static": [],
         "dynamic": [],
@@ -799,6 +933,10 @@ def _base_metadata(
         "blockers": [],
         "finding_ids": [],
         "finding_versions": {},
+        "new_finding_ids": [],
+        "carried_finding_ids": [],
+        "revalidated_finding_ids": [],
+        "needs_revalidation_finding_ids": [],
     }
 
 
@@ -883,6 +1021,100 @@ def _validate_reused_findings(root: Path, prior: dict[str, Any]) -> dict[str, di
     return current
 
 
+def _source_results(
+    static_results: list[dict[str, Any]], dynamic_results: list[dict[str, Any]]
+) -> dict[tuple[str, str], str]:
+    result: dict[tuple[str, str], str] = {}
+    for row in static_results:
+        result[("static", str(row.get("check_id", "")))] = str(row.get("result", "error"))
+    for row in dynamic_results:
+        result[("dynamic", str(row.get("test_id", "")))] = str(row.get("result", "not_run"))
+    return result
+
+
+def _updated_resolution(
+    finding: dict[str, Any], resolution: str, generated_at: str, **extra: Any
+) -> dict[str, Any]:
+    updated = dict(finding)
+    updated["resolution"] = resolution
+    updated["generated_at_utc"] = generated_at
+    for key in ("superseded_by", "fix_ref", "fixed_by_run"):
+        if key not in extra:
+            updated.pop(key, None)
+    updated.update(extra)
+    return updated
+
+
+def _aggregate_findings(
+    current_snapshot: str,
+    open_findings: dict[str, dict[str, Any]],
+    generated_findings: dict[str, dict[str, Any]],
+    static_results: list[dict[str, Any]],
+    dynamic_results: list[dict[str, Any]],
+    unresolved: dict[str, list[str]],
+    generated_at: str,
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], dict[str, list[str]]]:
+    """Apply finding lifecycle transitions and return all current open findings."""
+    results = _source_results(static_results, dynamic_results)
+    published = dict(generated_findings)
+    current_open = dict(generated_findings)
+    lifecycle = {
+        "new_findings": sorted(set(generated_findings) - set(open_findings)),
+        "carried_findings": [],
+        "revalidated_findings": [],
+        "needs_revalidation": [],
+    }
+    suffix = current_snapshot.removeprefix("sha256:")[:12]
+    for finding_id, finding in open_findings.items():
+        sources = _finding_sources(finding)
+        source_states = [results.get(source) for source in sorted(sources)]
+        missing = not sources or any(state is None for state in source_states)
+        inconclusive = any(state not in {"pass", "fail"} for state in source_states if state)
+        old_snapshot = finding.get("target_snapshot_hash") != current_snapshot
+        if finding_id in unresolved or missing or inconclusive:
+            if old_snapshot:
+                lifecycle["needs_revalidation"].append(finding_id)
+            else:
+                lifecycle["carried_findings"].append(finding_id)
+                lifecycle["needs_revalidation"].append(finding_id)
+                current_open.setdefault(finding_id, finding)
+            continue
+        failed = any(state == "fail" for state in source_states)
+        if not old_snapshot:
+            lifecycle["revalidated_findings"].append(finding_id)
+            if failed:
+                current_open.setdefault(finding_id, generated_findings.get(finding_id, finding))
+            else:
+                published[finding_id] = _updated_resolution(
+                    finding, "no_longer_reproduces", generated_at
+                )
+                current_open.pop(finding_id, None)
+            continue
+        lifecycle["revalidated_findings"].append(finding_id)
+        if not failed:
+            published[finding_id] = _updated_resolution(
+                finding, "no_longer_reproduces", generated_at
+            )
+            continue
+        replacement_id = (
+            f"finding-{slug(str(finding.get('syscall', 'unmapped-syscall')))}-"
+            f"{slug(str(finding.get('rule_id', 'unmapped-rule')))}-{suffix}"
+        )
+        if replacement_id not in generated_findings:
+            lifecycle["revalidated_findings"].remove(finding_id)
+            lifecycle["needs_revalidation"].append(finding_id)
+            continue
+        published[finding_id] = _updated_resolution(
+            finding,
+            "superseded",
+            generated_at,
+            superseded_by=replacement_id,
+        )
+    for key in lifecycle:
+        lifecycle[key] = sorted(set(lifecycle[key]))
+    return published, current_open, lifecycle
+
+
 def run_check(
     from_run_id: str,
     root: Path | None = None,
@@ -909,9 +1141,8 @@ def run_check(
         if not repository.is_dir() or not mapped_snapshot:
             raise SyscallGuardError(f"mapping report {from_run_id} has invalid target metadata")
         current_snapshot = repository_snapshot_hash(repository)
-        entities, hashes, input_hash = _current_input(root, mapping_report)
-        versions = _current_versions(entities)
-        stale_reasons = _mapping_staleness(mapping_report, entities)
+        base_entities, _base_hashes, _base_input_hash = _current_input(root, mapping_report)
+        stale_reasons = _mapping_staleness(mapping_report, base_entities)
         if current_snapshot != mapped_snapshot or stale_reasons:
             raise SyscallGuardError(
                 "stale mapping; run map-starry-checks again: "
@@ -920,13 +1151,51 @@ def run_check(
                     + stale_reasons
                 )
             )
+        open_findings = _load_open_finding_index(root)
+        entities = {kind: dict(rows) for kind, rows in base_entities.items()}
+        revalidation_scope, unresolved_revalidation = _extend_revalidation_scope(
+            root, entities, open_findings, mapped_snapshot
+        )
+        hashes = {
+            kind: {
+                entity_id: version_content_hash(entity)
+                for entity_id, entity in rows.items()
+            }
+            for kind, rows in entities.items()
+        }
+        versions = _current_versions(entities)
+        input_hash = content_hash(
+            {
+                "entities": hashes,
+                "target_snapshot_hash": mapped_snapshot,
+                "rule_syscalls": mapping_report.get("rule_syscalls", {}),
+            }
+        )
         metadata = _base_metadata(
             report_id, from_run_id, mapping_report, input_hash, hashes, versions
         )
+        effective_scope = _scope_for_entities(entities)
+        metadata["revalidation_scope"] = revalidation_scope
+        metadata["effective_execution_scope"] = effective_scope
+        metadata["execution_scope"] = effective_scope
 
         prior = _prior_identical_check(root, input_hash, report_id)
         reused_versions = _validate_reused_findings(root, prior) if prior else None
-        if prior is not None and reused_versions is not None:
+        current_open_ids = sorted(
+            finding_id
+            for finding_id, finding in open_findings.items()
+            if finding.get("target_snapshot_hash") == mapped_snapshot
+        )
+        has_old_open = any(
+            finding.get("target_snapshot_hash") != mapped_snapshot
+            for finding in open_findings.values()
+        )
+        if (
+            prior is not None
+            and reused_versions is not None
+            and not has_old_open
+            and sorted(prior.get("finding_ids", [])) == current_open_ids
+        ):
             metadata["status"] = prior["status"]
             metadata["reused_from"] = prior["report_id"]
             metadata["static"] = prior.get("static", [])
@@ -934,11 +1203,21 @@ def run_check(
             metadata["blockers"] = prior.get("blockers", [])
             metadata["finding_ids"] = prior.get("finding_ids", [])
             metadata["finding_versions"] = reused_versions
+            metadata["new_finding_ids"] = []
+            metadata["carried_finding_ids"] = current_open_ids
+            metadata["revalidated_finding_ids"] = []
+            metadata["needs_revalidation_finding_ids"] = []
             metadata["counts"] = _counts(
                 metadata["static"],
                 metadata["dynamic"],
                 {key: None for key in metadata["finding_ids"]},
                 metadata["blockers"],
+                {
+                    "new_findings": [],
+                    "carried_findings": current_open_ids,
+                    "revalidated_findings": [],
+                    "needs_revalidation": [],
+                },
             )
             metadata["counts"]["reused"] = 1
             if metadata["blockers"]:
@@ -966,14 +1245,22 @@ def run_check(
         blocked_tests, blockers = _apply_test_patches(
             root, worktree, entities["dynamic_tests"], logs
         )
+        for finding_id, reasons in sorted(unresolved_revalidation.items()):
+            blockers.append(
+                {
+                    "kind": "revalidation_definition",
+                    "entity_ids": [finding_id],
+                    "reason": "; ".join(reasons),
+                }
+            )
         static_results: list[dict[str, Any]] = []
-        for check_id, definition in entities["static_checks"].items():
+        for check_id, definition in sorted(entities["static_checks"].items()):
             result, blocker = _run_static_check(worktree, check_id, definition)
             static_results.append(result)
             if blocker:
                 blockers.append(blocker)
         dynamic_results: list[dict[str, Any]] = []
-        for test_id, definition in entities["dynamic_tests"].items():
+        for test_id, definition in sorted(entities["dynamic_tests"].items()):
             result, blocker = _run_dynamic_test(
                 worktree,
                 test_id,
@@ -987,7 +1274,7 @@ def run_check(
         metadata["generated_at_utc"] = utc_now()
         generated_at = metadata["generated_at_utc"]
         rule_syscalls = mapping_report.get("rule_syscalls", {})
-        findings, result_findings = _finding_entities(
+        generated_findings, result_findings = _finding_entities(
             root,
             report_id,
             mapped_snapshot,
@@ -1000,16 +1287,31 @@ def run_check(
             generated_at,
         )
         _annotate_findings(static_results, dynamic_results, result_findings)
+        findings, current_open, lifecycle = _aggregate_findings(
+            mapped_snapshot,
+            open_findings,
+            generated_findings,
+            static_results,
+            dynamic_results,
+            unresolved_revalidation,
+            generated_at,
+        )
         metadata["status"] = "completed_with_blockers" if blockers else "completed"
         metadata["static"] = static_results
         metadata["dynamic"] = dynamic_results
         metadata["blockers"] = blockers
-        metadata["finding_ids"] = sorted(findings)
+        metadata["finding_ids"] = sorted(current_open)
         metadata["finding_versions"] = {
             finding_id: entity_version(finding_id, finding)
-            for finding_id, finding in findings.items()
+            for finding_id, finding in current_open.items()
         }
-        metadata["counts"] = _counts(static_results, dynamic_results, findings, blockers)
+        metadata["new_finding_ids"] = lifecycle["new_findings"]
+        metadata["carried_finding_ids"] = lifecycle["carried_findings"]
+        metadata["revalidated_finding_ids"] = lifecycle["revalidated_findings"]
+        metadata["needs_revalidation_finding_ids"] = lifecycle["needs_revalidation"]
+        metadata["counts"] = _counts(
+            static_results, dynamic_results, current_open, blockers, lifecycle
+        )
         if blockers:
             metadata["diagnostic_directory"] = str(workspace)
             metadata["worktree"] = str(worktree)

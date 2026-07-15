@@ -30,3 +30,10 @@ optional:
   reused_from: Prior check report whose unchanged results were reused.
   diagnostic_directory: Retained temporary directory for blockers.
   worktree: Retained isolated worktree for blockers.
+  base_execution_scope: Scope supplied by the mapping report.
+  revalidation_scope: Additional entities used to revalidate older-snapshot findings.
+  effective_execution_scope: Actual merged execution scope.
+  new_finding_ids: Open current-snapshot findings first created by this report.
+  carried_finding_ids: Open current-snapshot findings retained without conclusive execution.
+  revalidated_finding_ids: Older or current findings conclusively transitioned by this report.
+  needs_revalidation_finding_ids: Open findings that could not be conclusively revalidated.

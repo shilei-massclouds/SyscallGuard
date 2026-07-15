@@ -1,5 +1,5 @@
 schema_name: syscallguard-run
-version: 6
+version: 7
 required:
   - schema_version
   - kind
@@ -18,8 +18,9 @@ required:
 stage_values: [fix]
 status_values: [running, completed, completed_with_blockers, failed, superseded]
 upstream_stage:
-  fix: check_report
+  fix: check_reports
 optional:
-  from_run_id: Required for fix runs and identifies the parent check report.
+  source_check_report_ids: Required for new fix runs and identifies every evidence-bearing check report.
+  from_run_id: Historical compatibility field identifying one parent check report.
   entity_versions: Version snapshots keyed by entity type and ID.
   patch_version: Version of a generated implementation patch.

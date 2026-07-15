@@ -40,20 +40,27 @@
 
 `targets/starry/static-checks.yaml` 与 `targets/starry/dynamic-tests.yaml` 是按 syscall 分组的一级索引；
 同名目录保存一个实体一个 YAML 的二级详情。动态测试的独立源码或 patch 位于其 `assets/` 子目录。
-Mapping 的 `execution_scope` 只记录本轮产出的检查和测试；check 只执行该范围，并使用报告的完整
-`rule_syscalls` 生成 finding 归属。
+Mapping 的 `execution_scope` 只记录本轮产出的检查和测试；check 将其作为 base scope，并使用报告的
+完整 `rule_syscalls` 生成 finding 归属。若 finding 索引中有旧 Starry 快照的 open finding，check 自动
+将其原始静态/动态来源加入 revalidation scope；报告同时记录 base、revalidation 和 effective scope。
 
 `runs/check-*/report.md` 是 check 的唯一运行结果。中文正文逐项列出 ID、类型、syscall、通用规则、
 `pass`/`fail`/`skipped`/`not_run`/`error`、原因和精简证据；末尾
 `syscallguard_check_report` 元数据保存父 mapping report、目标快照、输入实体版本、执行范围、完整
-静态/动态结果、计数、blocker 和 finding 版本。正常完成目录中只有 `report.md`，执行临时区固定为
+静态/动态结果、计数、blocker，以及检查结束时当前快照全部 open confirmed finding 版本。报告另列
+new、carried、revalidated、needs-revalidation ID 和计数。同快照未覆盖 finding 直接 carry；旧快照
+重验失败会被当前 finding supersede，全部通过标记 `no_longer_reproduces`，缺失实体或 blocker 保持
+open 且进入 needs-revalidation。正常完成目录中只有 `report.md`，执行临时区固定为
 `/tmp/syscallguard-check/<id>`。环境 blocker 不生成 finding，并使报告状态为
 `completed_with_blockers`、临时区保留；无 blocker 时删除临时日志和 worktree。报告、finding 详情和
 一级索引在同一事务中发布，报告最后落盘。
 
-Fix manifest 的 `from_run_id` 指向 check report；Fix 直接读取其机器元数据和 finding 版本。默认实现
-补丁位于 `/tmp/syscallguard-fix/<check-report-id>/implementation-fix.patch`，check report 目录不接收
-任何下游产物。
+Fix 无参数 prepare 扫描 finding 索引，选择当前 Starry 内容快照下全部 open confirmed finding，并从
+occurrences 收集全部 evidence-bearing check report。各报告完整回归 scope 按实体 ID 合并；重复动态
+patch 只应用一次。prepare 固定依赖版本并输出
+`/tmp/syscallguard-fix/<run-id>/implementation-fix.patch`；finalize 重新校验后才创建正式 fix run、隔离
+worktree、分支和提交。新 manifest 用 `source_check_report_ids` 记录全部证据来源，读取器兼容历史
+`from_run_id`。当前快照没有 open finding 时成功返回，且不创建上述产物。
 
 所有依赖先比较 `generated_at_utc`，再比较 `content_hash`；任一不同即 stale。第二次 hash 比较
 保证人工编辑即使漏更新时间也会被拒绝。

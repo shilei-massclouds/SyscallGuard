@@ -380,7 +380,7 @@ class RunRecorder:
             "blockers": [],
             "error": None,
         }
-        if stage in {"check", "fix"}:
+        if stage in {"check", "fix"} and from_run_id is not None:
             self.manifest["from_run_id"] = from_run_id
         self.changeset: dict[str, Any] = {
             "schema_version": SCHEMA_VERSION,
