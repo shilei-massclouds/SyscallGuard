@@ -134,8 +134,8 @@ def _scope_for_entities(
     return {kind: sorted(rows) for kind, rows in entities.items()}
 
 
-def _load_open_finding_index(root: Path) -> dict[str, dict[str, Any]]:
-    """Load every open confirmed finding named by the shared index."""
+def _load_confirmed_finding_index(root: Path) -> dict[str, dict[str, Any]]:
+    """Load every confirmed finding named by the shared index."""
     index = load_index(
         root / "targets/starry/findings/index.yaml",
         "syscallguard_starry_finding_index",
@@ -166,9 +166,30 @@ def _load_open_finding_index(root: Path) -> dict[str, dict[str, Any]]:
             raise SyscallGuardError(
                 f"finding index version is stale for {finding_id}"
             )
-        if finding.get("status") == "confirmed" and finding.get("resolution") == "open":
+        if finding.get("status") == "confirmed":
             findings[finding_id] = finding
     return findings
+
+
+def _load_open_finding_index(root: Path) -> dict[str, dict[str, Any]]:
+    """Load every open confirmed finding named by the shared index."""
+    return {
+        finding_id: finding
+        for finding_id, finding in _load_confirmed_finding_index(root).items()
+        if finding.get("resolution") == "open"
+    }
+
+
+def _load_historical_fixed_findings(
+    root: Path, current_snapshot: str
+) -> dict[str, dict[str, Any]]:
+    """Load fixed findings whose evidence should guard a different snapshot."""
+    return {
+        finding_id: finding
+        for finding_id, finding in _load_confirmed_finding_index(root).items()
+        if finding.get("resolution") == "fixed"
+        and finding.get("target_snapshot_hash") != current_snapshot
+    }
 
 
 def _finding_sources(finding: dict[str, Any]) -> set[tuple[str, str]]:
@@ -1193,9 +1214,21 @@ def run_check(
                 )
             )
         open_findings = _load_open_finding_index(root)
+        historical_fixed_findings = _load_historical_fixed_findings(
+            root, mapped_snapshot
+        )
         entities = {kind: dict(rows) for kind, rows in base_entities.items()}
         revalidation_scope, unresolved_revalidation = _extend_revalidation_scope(
             root, entities, open_findings, mapped_snapshot, mapped_branch
+        )
+        historical_regression_scope, unresolved_historical_regressions = (
+            _extend_revalidation_scope(
+                root,
+                entities,
+                historical_fixed_findings,
+                mapped_snapshot,
+                mapped_branch,
+            )
         )
         hashes = {
             kind: {
@@ -1219,6 +1252,8 @@ def run_check(
         )
         effective_scope = _scope_for_entities(entities)
         metadata["revalidation_scope"] = revalidation_scope
+        metadata["historical_regression_scope"] = historical_regression_scope
+        metadata["historical_regression_unresolved"] = unresolved_historical_regressions
         metadata["effective_execution_scope"] = effective_scope
         metadata["execution_scope"] = effective_scope
 

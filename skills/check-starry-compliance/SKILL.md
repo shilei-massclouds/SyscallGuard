@@ -17,7 +17,7 @@ description: After confirming the mapping-negotiated Starry branch with the user
    ```
 
 5. Confirmation authorizes temporary test-patch injection on that branch, static checks, builds, QEMU, and bound dynamic tests. Do not request another authorization. Revert injected test patches before publishing the report.
-6. Inspect the Chinese report and its trailing `syscallguard_check_report` metadata. Keep build, disk, toolchain, QEMU, rootfs, test-injection, and cleanup failures as blockers. Publish only evidence-backed rule failures as findings.
+6. Inspect the Chinese report and its trailing `syscallguard_check_report` metadata. Keep build, disk, toolchain, QEMU, rootfs, test-injection, and cleanup failures as blockers. Publish only evidence-backed rule failures as findings. Treat fixed findings from another content snapshot only as historical regression seeds: keep them unchanged and create a current-snapshot finding only when their source fails again.
 7. Report the confirmed branch, pass/fail/skipped/not-run/error counts, blockers, the complete current-snapshot open finding IDs, new/carried/revalidated/needs-revalidation IDs, retained diagnostic path when present, and the report path.
 
 ## Boundaries

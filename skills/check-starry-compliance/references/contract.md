@@ -6,6 +6,11 @@ static/dynamic source of an open older-snapshot finding to a revalidation scope.
 `patch_file` from the resulting effective scope once on the clean, currently checked-out branch recorded in
 `mapping_report.target.branch`.
 
+Also add every resolvable original source of a confirmed fixed finding from another content snapshot to a
+historical regression scope. Execute those sources as fresh evidence for the current snapshot: a failure creates a
+new current-snapshot finding, while the fixed historical finding remains unchanged and is never reopened or reused.
+Missing historical regression definitions are recorded diagnostically but do not turn a fixed finding into a blocker.
+
 A same-snapshot open finding whose occurrence reports do not record that negotiated branch is also revalidated.
 If it fails again, append a current-branch occurrence; this migrates historical evidence without inventing a new
 finding identity.

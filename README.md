@@ -22,7 +22,8 @@ python3 tools/audit_ltp.py [--source <source>] [--syscalls <name1,name2,...>]
   `syscalls=` 只限制本轮处理范围，其他 pending 规则保留。
 - `check-starry-compliance`（中文显示名 `$合规检查`）：开始时请用户确认仍基于 mapping 协商分支，
   在该分支临时注入测试并执行检查，完成后回滚测试注入，
-  分离 finding 与环境 blocker，汇总当前快照全部 open finding，并在快照变化后自动重验历史 finding；
+  分离 finding 与环境 blocker，汇总当前快照全部 open finding，并在快照变化后自动重验 open finding；
+  其他快照已 fixed 的 finding 仅作为历史回归种子，失败时创建当前快照 finding 而不重开旧实体；
   稳定调用标识仍可作为兼容别名。
 - `fix-starry-compliance`（中文入口 `$修复缺口`）：开始时确认同一协商分支，无参数扫描当前快照全部
   open confirmed finding，合并其证据报告回归范围并一次修复；成功后直接提交到该分支。英文名仍是
@@ -56,7 +57,7 @@ authoritative 证据都能解析且至少形成一条规则时才发布候选规
 保存用户协商的 `target.branch`、完整规则状态、`execution_scope`、规则库索引 hash、实体版本、
 `rule_syscalls` 和目标内容依赖。
 成功 check 只写 `runs/check-*/report.md`、finding 一级索引和 finding 二级详情。中文正文逐项
-展示静态/动态结果及精简证据，末尾元数据保存基础、重验与实际 scope，以及当前快照全部 open
+展示静态/动态结果及精简证据，末尾元数据保存基础、重验、历史回归与实际 scope，以及当前快照全部 open
 finding 和 new/carried/revalidated/needs-revalidation 生命周期状态。check 不再生成 manifest、changeset、
 `results.yaml` 或成功运行日志；测试 patch 在发布报告前回滚。正常完成后删除
 `/tmp/syscallguard-check/<id>`，blocker 或失败时保留诊断。

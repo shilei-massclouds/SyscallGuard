@@ -1098,6 +1098,52 @@ class CheckTests(FlowTestCase):
         self.assertEqual(row["generated_at_utc"], old["generated_at_utc"])
         self.assertEqual(row["content_hash"], version_content_hash(old))
 
+    def test_fixed_old_snapshot_is_a_regression_seed_without_reopening_history(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        repo, descriptor, _commit = self.make_target("bad\n")
+        self.map_fixture(descriptor)
+        run_check("mapping-fixture", self.root, "check-fixed-history-source")
+        old_id = load_check_report(
+            self.root, "check-fixed-history-source"
+        )["finding_ids"][0]
+        old_path = self.root / "targets/starry/findings" / f"{slug(old_id)}.yaml"
+        old = load_mapping(old_path)
+        old["resolution"] = "fixed"
+        old["generated_at_utc"] = "2026-02-01T00:00:00.000000Z"
+        old["fix_ref"] = "fixture-fix"
+        old["fixed_by_run"] = "fixture-fix-run"
+        atomic_write_yaml(old_path, old)
+        index_path = self.root / "targets/starry/findings/index.yaml"
+        index = load_mapping(index_path)
+        row = next(item for item in index["entities"] if item["id"] == old_id)
+        row["resolution"] = "fixed"
+        row["generated_at_utc"] = old["generated_at_utc"]
+        row["content_hash"] = version_content_hash(old)
+        atomic_write_yaml(index_path, index)
+
+        commit_file(repo, "unrelated.txt", "new snapshot\n")
+        run_mapping(
+            None, self.root, "mapping-fixed-history-regression", target_branch(self.root)
+        )
+        mapping = load_mapping_report(self.root, "mapping-fixed-history-regression")
+        self.assertEqual(mapping["execution_scope"]["static_checks"], [])
+
+        run_check(
+            "mapping-fixed-history-regression",
+            self.root,
+            "check-fixed-history-regression",
+        )
+        current = load_check_report(self.root, "check-fixed-history-regression")
+        self.assertEqual(
+            current["historical_regression_scope"]["static_checks"], ["CHECK_ONE"]
+        )
+        self.assertEqual(current["revalidation_scope"]["static_checks"], [])
+        self.assertEqual(len(current["finding_ids"]), 1)
+        self.assertNotEqual(current["finding_ids"][0], old_id)
+        self.assertEqual(current["revalidated_finding_ids"], [])
+        self.assertEqual(load_mapping(old_path)["resolution"], "fixed")
+
     def test_old_snapshot_pass_is_marked_no_longer_reproduces(self) -> None:
         self.prepare_spec_run()
         self.add_static_check("good")

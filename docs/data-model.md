@@ -43,7 +43,9 @@ checkout 一个干净的专用分支，再将名称明确交给工具；报告 `
 同名目录保存一个实体一个 YAML 的二级详情。动态测试的独立源码或 patch 位于其 `assets/` 子目录。
 Mapping 的 `execution_scope` 只记录本轮产出的检查和测试；check 将其作为 base scope，并使用报告的
 完整 `rule_syscalls` 生成 finding 归属。若 finding 索引中有旧 Starry 快照的 open finding，check 自动
-将其原始静态/动态来源加入 revalidation scope；报告同时记录 base、revalidation 和 effective scope。
+将其原始静态/动态来源加入 revalidation scope；其他快照已 fixed 的 finding 将原始来源加入
+historical regression scope。历史回归失败只创建当前快照的新 finding，旧实体保持 fixed，不被重开、
+supersede 或复用。报告同时记录 base、revalidation、historical regression 和 effective scope。
 
 `runs/check-*/report.md` 是 check 的唯一运行结果。中文正文逐项列出 ID、类型、syscall、通用规则、
 `pass`/`fail`/`skipped`/`not_run`/`error`、原因和精简证据；末尾
