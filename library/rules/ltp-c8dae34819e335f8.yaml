@@ -1,0 +1,31 @@
+# 合规检查：条件：PATH_TOO_LONG；检查：调用 access(longpathname, R_OK)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C8DAE34819E335F8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - longpathname
+    - R_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:c8dae34819e335f88d2bad8650e2067ec51e8a1c6d21ef37198241a9af5a56f2
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access04.c
+  line: 66
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:bccd5b82a0f931294b3ccfe9f727c641c4fd575588e33aeea6a7da8e1182c3e7
+  case: access04_66_2

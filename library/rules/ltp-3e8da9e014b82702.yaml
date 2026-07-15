@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 alarm(10)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3E8DA9E014B82702
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: alarm
+    arguments:
+    - '10'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:3e8da9e014b8270237da29d11e36cb3568c2b222d672973a5503c5d451873729
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/alarm/alarm05.c
+  line: 26
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:c8a06ceab0c9d718a3775176f02f2b5a442a31a681e5d671c7b77146ccb7e42a
+  case: alarm05_26_raw

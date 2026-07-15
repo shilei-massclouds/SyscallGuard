@@ -1,0 +1,33 @@
+# 合规检查：条件：文件描述符无效；检查：调用 cachestat(fd, cs_range, cs, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_00F2A9EA8833DA1D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: cachestat
+    arguments:
+    - fd
+    - cs_range
+    - cs
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:00f2a9ea8833da1da8949ee468fb47004f99f1116ae6cda9ea3ba127e264058a
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat03.c
+  line: 47
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a64b48a50df72f6694e757feae2e300dca56c869cfe56f74040f2951024365c1
+  case: cachestat03_47_3

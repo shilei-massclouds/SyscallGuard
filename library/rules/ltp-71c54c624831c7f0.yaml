@@ -1,0 +1,30 @@
+# 合规检查：条件：PATH_TOO_LONG；检查：调用 chroot(longname_dir)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_71C54C624831C7F0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - longname_dir
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:71c54c624831c7f01c5ac8d48046dc370b784af8dc2099633843d4269593e9f7
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot03.c
+  line: 52
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:aa7c887cb0f990a797845f5bdcef1d507e23f5ee7d8a09b24a565f80e66c806f
+  case: chroot03_52_0

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 cacheflush(addr, getpagesize(), CACHE_DESC(DCACHE))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D579FCFC71E6EB6A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: cacheflush
+    arguments:
+    - addr
+    - getpagesize()
+    - CACHE_DESC(DCACHE)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:d579fcfc71e6eb6a79a4aefff0c4df8ba201988162fee4b24255c4c001c1302b
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cacheflush/cacheflush01.c
+  line: 48
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:52420568f4c9d4f8d096e34ab97e416309ee644fae7020daf33053b0e6576a55
+  case: cacheflush01_48_1

@@ -1,0 +1,39 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 access((void *)-1, W_OK)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_38FB918826669241
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - (void *)-1
+    - W_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:38fb918826669241ebbe77827a90f4347f124cf6de78fd4f4b46b3495fb3ab2f
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access03.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:c92db4bbc0f18a7ef139ea54f877283ecccb9e9480f16822b1e745a1ee723563
+  case: access03_35_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access03.c
+  line: 44
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9883627473d3c7cc7156516282339831a91f483f2c31ac5969b68ba5c8105ecd
+  case: access03_44_2

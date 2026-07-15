@@ -1,0 +1,30 @@
+# 合规检查：条件：SYMLINK_LOOP；检查：调用 chroot(loop_dir)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_99DF5C34778032E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - SYMLINK_LOOP
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - loop_dir
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:99df5c34778032e1483871676a4cbb8fc57a3bbfcd2fd0c74f90f83147e1a5f8
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot03.c
+  line: 52
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:aa7c887cb0f990a797845f5bdcef1d507e23f5ee7d8a09b24a565f80e66c806f
+  case: chroot03_52_4

@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 alarm(UINT_MAX/4)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_76A9B6CF388A8609
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: alarm
+    arguments:
+    - UINT_MAX/4
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:76a9b6cf388a8609eeb2a9e479fa27419ade916ce166ad5c0e8255aa5f4497d5
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/alarm/alarm02.c
+  line: 34
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:9e7d933c24342a9dbe113e0b9d8ef968c0ddc203bcd56f54ad946ea5452e8192
+  case: alarm02_34_2

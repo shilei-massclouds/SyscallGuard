@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 chroot(path)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_50F858A3CBF95EED
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:50f858a3cbf95eeddf59e035a757996bbd15f7d42379f5ea72330ceb0f3e6190
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot01.c
+  line: 21
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:dad37d6dc759f7f3bb4c08d0c5877fac51333a44943a5de3a7d8a2e4df634b03
+  case: chroot01_21_raw

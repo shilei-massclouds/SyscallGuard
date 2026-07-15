@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capset(1 - 1 ? header : bad_addr, 1 - 2 ? data : bad_addr)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E06D53042C10C99E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - '1 - 1 ? header : bad_addr'
+    - '1 - 2 ? data : bad_addr'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:e06d53042c10c99e7bdc61242d4ac56e1aace8c13e3442e875e2574ca74e60d3
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset02.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6c56e307407eb054f680be7573f133d1fb4cf142a2707a972a16d537085ac668
+  case: capset02_65_0

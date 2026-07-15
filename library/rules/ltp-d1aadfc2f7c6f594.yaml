@@ -1,0 +1,38 @@
+# 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D1AADFC2F7C6F594
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - header
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:d1aadfc2f7c6f594928cbc9032ee1cc614ab7493537d5f16041f8e5885973b3b
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset03.c
+  line: 30
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3d3b76878b3b60878c4485d3494462020e6ce08ae3ff5fe0252e35e5ec79b8b0
+  case: capset03_30_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset04.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:dbce9df78febf8fbe3c9c14b4374c1f227f1c96fee15dd2916ab315fcec855b3
+  case: capset04_35_raw

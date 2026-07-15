@@ -1,0 +1,31 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, R_OK|W_OK)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8B1A2084BCF096F1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - FNAME_W
+    - R_OK|W_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:8b1a2084bcf096f1404d2038c5488359f3de9a3382f8f36d18f1967ea461aad1
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 240
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:b834c6ba29606e4d86f81d1e1c42ecf8c44e6d2f0a79123666c291cf56ecb614
+  case: access01_240_23

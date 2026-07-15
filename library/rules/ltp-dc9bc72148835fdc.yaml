@@ -1,0 +1,38 @@
+# 合规检查：条件：无额外前置条件；检查：调用 capget(0 - 1 ? header : NULL, 0 - 2 ? data : bad_data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DC9BC72148835FDC
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - '0 - 1 ? header : NULL'
+    - '0 - 2 ? data : bad_data'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dc9bc72148835fdcfc9cca3b1db4ce73b4cae94f45535d8bc89f01eb527400b0
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capget/capget02.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1f27b6ac333719cbd71791526b051658d4c63cd7f971cacbf8049885a52512f2
+  case: capget02_57_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capget/capget02.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1f27b6ac333719cbd71791526b051658d4c63cd7f971cacbf8049885a52512f2
+  case: capget02_57_3

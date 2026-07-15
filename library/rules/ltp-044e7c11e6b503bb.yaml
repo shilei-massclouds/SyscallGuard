@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 access(SNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_044E7C11E6B503BB
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - SNAME_W
+    - W_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:044e7c11e6b503bb657c1f5d568942154575515e5bd090cfb272ebd5b2953217
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2831bab9389bdd03f3e4f864361a021821c088da4ee15c573123237c43f4d84f
+  case: access02_58_6

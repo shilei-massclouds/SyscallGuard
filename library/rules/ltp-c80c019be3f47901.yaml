@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 alarm(1)；预期：{'kind': 'return_value', 'return': '9'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C80C019BE3F47901
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: alarm
+    arguments:
+    - '1'
+  expected_result:
+    kind: return_value
+    return: '9'
+  errno: []
+semantic_hash: sha256:c80c019be3f47901f55816308f54ee6e895f5df8a818ce4d61e002ce96470fdd
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/alarm/alarm05.c
+  line: 28
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:5fbefc67766a4adca6a1d1f3e6b8617ac4eddfb4edb39ee8f260d374b9fe77b9
+  case: alarm05_28_raw

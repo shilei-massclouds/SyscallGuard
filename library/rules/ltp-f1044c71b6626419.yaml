@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 accept(fd->fd, (void*)&addr, &size)；预期：返回 -1，errno 为 exp_errno。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F1044C71B6626419
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - fd->fd
+    - (void*)&addr
+    - '&size'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: exp_errno
+  errno:
+  - exp_errno
+semantic_hash: sha256:f1044c71b66264190afeea58604122162821df88724d0f3a9e5b63ac98a3ea48
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/accept/accept03.c
+  line: 46
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:10f3cd88aebd34ba2e33319a0a47edf627bf1620e64b5141e35c6e7537ba3f1b
+  case: accept03_46_raw

@@ -1,6 +1,980 @@
 schema_version: 1
 kind: syscallguard_syscall_index
 syscalls:
+  abort: []
+  accept:
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(socket_fd, (struct sockaddr *)3, &sizeof(fsin1))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_277FD467E5F1BF1C
+    path: library/rules/ltp-277fd467e5f1bf1c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(socket_fd, (struct sockaddr *)&fsin1, &1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_472AAA35C7382B26
+    path: library/rules/ltp-472aaa35c7382b26.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(udp_fd, (struct sockaddr *)&fsin1, &sizeof(fsin1))；预期：返回 -1，errno 为 EOPNOTSUPP。
+  - rule_id: LTP_80C6DB0ACB2A5510
+    path: library/rules/ltp-80c6db0acb2a5510.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(socket_fd, (struct sockaddr *)&fsin1, &sizeof(fsin1))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_9CA9C6B61C3317A3
+    path: library/rules/ltp-9ca9c6b61c3317a3.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(server_sockfd, (struct sockaddr *)client_addr, &addr_len)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_B90CB73F36B70C6F
+    path: library/rules/ltp-b90cb73f36b70c6f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(invalid_socketfd, (struct sockaddr *)&fsin1, &sizeof(fsin1))；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_E13B9C2C9645B841
+    path: library/rules/ltp-e13b9c2c9645b841.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 accept(fd->fd, (void*)&addr, &size)；预期：返回 -1，errno 为 exp_errno。
+  - rule_id: LTP_F1044C71B6626419
+    path: library/rules/ltp-f1044c71b6626419.yaml
+  accept4: []
+  access:
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0180982614AA9F7D
+    path: library/rules/ltp-0180982614aa9f7d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0290063892A53510
+    path: library/rules/ltp-0290063892a53510.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_030858A5FFCCEFF4
+    path: library/rules/ltp-030858a5ffcceff4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_035E62E6D1787773
+    path: library/rules/ltp-035e62e6d1787773.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_036EDA2B8D36CF03
+    path: library/rules/ltp-036eda2b8d36cf03.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_037E6F334D0E0D16
+    path: library/rules/ltp-037e6f334d0e0d16.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0431E3529AA0FEE8
+    path: library/rules/ltp-0431e3529aa0fee8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(SNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_044E7C11E6B503BB
+    path: library/rules/ltp-044e7c11e6b503bb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_060B6037DEF1D43C
+    path: library/rules/ltp-060b6037def1d43c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_06725D44DFF06F7E
+    path: library/rules/ltp-06725d44dff06f7e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(SNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_06891E2E299CF48E
+    path: library/rules/ltp-06891e2e299cf48e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_06A0C295D8E7FAFA
+    path: library/rules/ltp-06a0c295d8e7fafa.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_06AC9297E35AAE7A
+    path: library/rules/ltp-06ac9297e35aae7a.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 access((void *)-1, R_OK)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_075318C437B76E06
+    path: library/rules/ltp-075318c437b76e06.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 access((void *)-1, X_OK)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_0799FC60BADD2B18
+    path: library/rules/ltp-0799fc60badd2b18.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0A62800536904C02
+    path: library/rules/ltp-0a62800536904c02.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0AAFA34BA77A0D25
+    path: library/rules/ltp-0aafa34ba77a0d25.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_0B45FC33068D334C
+    path: library/rules/ltp-0b45fc33068d334c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0BB235F712E819CE
+    path: library/rules/ltp-0bb235f712e819ce.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0D1782EAAC26DEB4
+    path: library/rules/ltp-0d1782eaac26deb4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_0E9AF2C058AF8126
+    path: library/rules/ltp-0e9af2c058af8126.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_0F901C62092CC7B8
+    path: library/rules/ltp-0f901c62092cc7b8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_10A684C1C2D2DE0F
+    path: library/rules/ltp-10a684c1c2d2de0f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_10FE1313FBAB5F92
+    path: library/rules/ltp-10fe1313fbab5f92.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_1402459B5FF9BF23
+    path: library/rules/ltp-1402459b5ff9bf23.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_1465554B09CE14F0
+    path: library/rules/ltp-1465554b09ce14f0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_148623FDAF4E478D
+    path: library/rules/ltp-148623fdaf4e478d.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, R_OK|W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_153B296FA599E0CE
+    path: library/rules/ltp-153b296fa599e0ce.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_17ACF3BE969B64EE
+    path: library/rules/ltp-17acf3be969b64ee.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK|W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_17CB4ED7A76BD283
+    path: library/rules/ltp-17cb4ed7a76bd283.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_1870C0046E9555AF
+    path: library/rules/ltp-1870c0046e9555af.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_18A450CE49F8867B
+    path: library/rules/ltp-18a450ce49f8867b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_198D9555A8BED013
+    path: library/rules/ltp-198d9555a8bed013.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_1BD36AE285B4F3E2
+    path: library/rules/ltp-1bd36ae285b4f3e2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_1C462AC54A29FF35
+    path: library/rules/ltp-1c462ac54a29ff35.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_1CDCF5FE9ED1BE5D
+    path: library/rules/ltp-1cdcf5fe9ed1be5d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_1D39F97D759F0E57
+    path: library/rules/ltp-1d39f97d759f0e57.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_1DF2B28499E4D7B3
+    path: library/rules/ltp-1df2b28499e4d7b3.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_212269CECE600FD8
+    path: library/rules/ltp-212269cece600fd8.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_21A007DF738F1E73
+    path: library/rules/ltp-21a007df738f1e73.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_21C4957F9EFE94D3
+    path: library/rules/ltp-21c4957f9efe94d3.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_220D1227D307AD3C
+    path: library/rules/ltp-220d1227d307ad3c.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_2221F954D01EB2BB
+    path: library/rules/ltp-2221f954d01eb2bb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_25639C9C5750C487
+    path: library/rules/ltp-25639c9c5750c487.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_26AC646B9D18C353
+    path: library/rules/ltp-26ac646b9d18c353.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_27C7E91095DB9DF8
+    path: library/rules/ltp-27c7e91095db9df8.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_2900BC64740A3E44
+    path: library/rules/ltp-2900bc64740a3e44.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_298AB67F0CFA519C
+    path: library/rules/ltp-298ab67f0cfa519c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_2B4171DD8FBD982A
+    path: library/rules/ltp-2b4171dd8fbd982a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2D0BAECAE4F61432
+    path: library/rules/ltp-2d0baecae4f61432.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_2E5D530A61E60934
+    path: library/rules/ltp-2e5d530a61e60934.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 access(fname2, R_OK)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_2F99FA84C445363C
+    path: library/rules/ltp-2f99fa84c445363c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2FA43CD942AE7AD6
+    path: library/rules/ltp-2fa43cd942ae7ad6.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2FE8FAD800DE41F6
+    path: library/rules/ltp-2fe8fad800de41f6.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_3472CD1A0F8A2B4A
+    path: library/rules/ltp-3472cd1a0f8a2b4a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_347761CBCF52D194
+    path: library/rules/ltp-347761cbcf52d194.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_34CFEAD03DB6A3CA
+    path: library/rules/ltp-34cfead03db6a3ca.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_35CAEE10A613E109
+    path: library/rules/ltp-35caee10a613e109.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_3636C4768C196B52
+    path: library/rules/ltp-3636c4768c196b52.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_368D8689810796B2
+    path: library/rules/ltp-368d8689810796b2.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 access((void *)-1, W_OK)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_38FB918826669241
+    path: library/rules/ltp-38fb918826669241.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_3900F4E562AE09D1
+    path: library/rules/ltp-3900f4e562ae09d1.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_3916A669595B3568
+    path: library/rules/ltp-3916a669595b3568.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_3AD3865603ADDC8E
+    path: library/rules/ltp-3ad3865603addc8e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_3C2853617B38EEE7
+    path: library/rules/ltp-3c2853617b38eee7.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_3D4ECD22BC433164
+    path: library/rules/ltp-3d4ecd22bc433164.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_3D8D38C9123CD051
+    path: library/rules/ltp-3d8d38c9123cd051.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_3DE23AB4FE2FFC67
+    path: library/rules/ltp-3de23ab4fe2ffc67.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_3E526A0A23B5EF6D
+    path: library/rules/ltp-3e526a0a23b5ef6d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_3F81436312777EF4
+    path: library/rules/ltp-3f81436312777ef4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_401D471D37C85820
+    path: library/rules/ltp-401d471d37c85820.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 access(empty_fname, W_OK)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_4661BBF1B3CD3A1E
+    path: library/rules/ltp-4661bbf1b3cd3a1e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_46DE8D9AD1674F26
+    path: library/rules/ltp-46de8d9ad1674f26.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, W_OK|X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_479924116854D92B
+    path: library/rules/ltp-479924116854d92b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_48753F73ACA755FB
+    path: library/rules/ltp-48753f73aca755fb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4881657CFE57C7E9
+    path: library/rules/ltp-4881657cfe57c7e9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_492D25A0F1055F72
+    path: library/rules/ltp-492d25a0f1055f72.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_4948E12FB8F9FA49
+    path: library/rules/ltp-4948e12fb8f9fa49.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK|W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_49700CDA955B66D8
+    path: library/rules/ltp-49700cda955b66d8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_49A36559B96D24AF
+    path: library/rules/ltp-49a36559b96d24af.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4B6E9B98E2E5103D
+    path: library/rules/ltp-4b6e9b98e2e5103d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4CFAFCE7FCA2BF99
+    path: library/rules/ltp-4cfafce7fca2bf99.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4ECB786BFA071AAC
+    path: library/rules/ltp-4ecb786bfa071aac.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_50A86D4D5411356E
+    path: library/rules/ltp-50a86d4d5411356e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_52C209105EE62171
+    path: library/rules/ltp-52c209105ee62171.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_5570480E7920BD0E
+    path: library/rules/ltp-5570480e7920bd0e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_563FB650864E0DC6
+    path: library/rules/ltp-563fb650864e0dc6.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 access((void *)-1, F_OK)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_58416E6747519699
+    path: library/rules/ltp-58416e6747519699.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_58F1512157A0052D
+    path: library/rules/ltp-58f1512157a0052d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_5A315335586D4227
+    path: library/rules/ltp-5a315335586d4227.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_5C5CDC165410C08C
+    path: library/rules/ltp-5c5cdc165410c08c.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_5CC44E5D1A6B6485
+    path: library/rules/ltp-5cc44e5d1a6b6485.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_5D7971086B2ABAE5
+    path: library/rules/ltp-5d7971086b2abae5.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_5EC31E34822684C4
+    path: library/rules/ltp-5ec31e34822684c4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_606B7E40B6BD82EA
+    path: library/rules/ltp-606b7e40b6bd82ea.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_613A5E121B4B6E68
+    path: library/rules/ltp-613a5e121b4b6e68.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_6156A09A2E506F76
+    path: library/rules/ltp-6156a09a2e506f76.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_6169F41023E00C34
+    path: library/rules/ltp-6169f41023e00c34.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_636590E5A017B28D
+    path: library/rules/ltp-636590e5a017b28d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_64227C746913D03D
+    path: library/rules/ltp-64227c746913d03d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_64A4E5DC71A633A2
+    path: library/rules/ltp-64a4e5dc71a633a2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_65281FBEE0BF6103
+    path: library/rules/ltp-65281fbee0bf6103.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6580B4D3FA1A86F3
+    path: library/rules/ltp-6580b4d3fa1a86f3.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_679436EC7A4E218A
+    path: library/rules/ltp-679436ec7a4e218a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_F, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_67BF94A4ACD303C4
+    path: library/rules/ltp-67bf94a4acd303c4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK|W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_68745D21F4EC2FF5
+    path: library/rules/ltp-68745d21f4ec2ff5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_68E1B26815D97B79
+    path: library/rules/ltp-68e1b26815d97b79.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_69077B093E81B570
+    path: library/rules/ltp-69077b093e81b570.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_690A651C3A60FC1E
+    path: library/rules/ltp-690a651c3a60fc1e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_69E094D1DBFF3796
+    path: library/rules/ltp-69e094d1dbff3796.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6A1A431A08A3F450
+    path: library/rules/ltp-6a1a431a08a3f450.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6B1746F6BB2266CA
+    path: library/rules/ltp-6b1746f6bb2266ca.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6B8B5453E8B4E6DE
+    path: library/rules/ltp-6b8b5453e8b4e6de.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_6C11BBB4AABA6E7C
+    path: library/rules/ltp-6c11bbb4aaba6e7c.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_6C55A3E760DF75DB
+    path: library/rules/ltp-6c55a3e760df75db.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6CE9FC3BCA164B5D
+    path: library/rules/ltp-6ce9fc3bca164b5d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_6D584CE6CF9B8A06
+    path: library/rules/ltp-6d584ce6cf9b8a06.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_6EF7ECD2A8470CEA
+    path: library/rules/ltp-6ef7ecd2a8470cea.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(SNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_711D5693356A79F2
+    path: library/rules/ltp-711d5693356a79f2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(SNAME_F, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_73DF50509BCC128B
+    path: library/rules/ltp-73df50509bcc128b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_74819A9DC2B5CB06
+    path: library/rules/ltp-74819a9dc2b5cb06.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_752C9A802CF96B8B
+    path: library/rules/ltp-752c9a802cf96b8b.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_78EEEBE648781151
+    path: library/rules/ltp-78eeebe648781151.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_7963C3DF373596FE
+    path: library/rules/ltp-7963c3df373596fe.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_79C7516DECB19092
+    path: library/rules/ltp-79c7516decb19092.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, R_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_7A02B34D5FB8BBC3
+    path: library/rules/ltp-7a02b34d5fb8bbc3.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_7B539E14354153DC
+    path: library/rules/ltp-7b539e14354153dc.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_7BE2877017694C52
+    path: library/rules/ltp-7be2877017694c52.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_7C06A3394E786948
+    path: library/rules/ltp-7c06a3394e786948.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_7CE7876CE69F200F
+    path: library/rules/ltp-7ce7876ce69f200f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_7DD493976CBC9A31
+    path: library/rules/ltp-7dd493976cbc9a31.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_7F5487EEB79017AD
+    path: library/rules/ltp-7f5487eeb79017ad.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_7F54F9DFF7E0FB61
+    path: library/rules/ltp-7f54f9dff7e0fb61.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_8059D9227293D592
+    path: library/rules/ltp-8059d9227293d592.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_807E2072E5694684
+    path: library/rules/ltp-807e2072e5694684.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_818BA624CA9E4040
+    path: library/rules/ltp-818ba624ca9e4040.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_820495EA1D1F15DA
+    path: library/rules/ltp-820495ea1d1f15da.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_82ABB8FBFA06D356
+    path: library/rules/ltp-82abb8fbfa06d356.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(mnt_point, W_OK)；预期：返回 -1，errno 为 EROFS。
+  - rule_id: LTP_82E0F55AEC3D382F
+    path: library/rules/ltp-82e0f55aec3d382f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_830E17210B1FB7AB
+    path: library/rules/ltp-830e17210b1fb7ab.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_833C5D5CF3C32C2A
+    path: library/rules/ltp-833c5d5cf3c32c2a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_839EC7BC904E42D5
+    path: library/rules/ltp-839ec7bc904e42d5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_843BDD20FF921FC3
+    path: library/rules/ltp-843bdd20ff921fc3.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_84E4CC971DD16EC2
+    path: library/rules/ltp-84e4cc971dd16ec2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_853D34D061DDE8F8
+    path: library/rules/ltp-853d34d061dde8f8.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_853F4B8346648EB9
+    path: library/rules/ltp-853f4b8346648eb9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_857DC6AD01A88D79
+    path: library/rules/ltp-857dc6ad01a88d79.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, R_OK|W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_87478A6C3AC7DC60
+    path: library/rules/ltp-87478a6c3ac7dc60.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_884775F9076E54AB
+    path: library/rules/ltp-884775f9076e54ab.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_885F3BA721198C07
+    path: library/rules/ltp-885f3ba721198c07.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_88F6F279E33633DE
+    path: library/rules/ltp-88f6f279e33633de.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_8AC11633EA3D83E0
+    path: library/rules/ltp-8ac11633ea3d83e0.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, R_OK|W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_8B1A2084BCF096F1
+    path: library/rules/ltp-8b1a2084bcf096f1.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_8B3FBDFD0453EF40
+    path: library/rules/ltp-8b3fbdfd0453ef40.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 access(sname1, R_OK)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_8BB576EB2E1E6B23
+    path: library/rules/ltp-8bb576eb2e1e6b23.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_8C508A50371B6444
+    path: library/rules/ltp-8c508a50371b6444.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_8CB51F0A9F8FDEA1
+    path: library/rules/ltp-8cb51f0a9f8fdea1.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_8D3BFFA98E2561BA
+    path: library/rules/ltp-8d3bffa98e2561ba.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, R_OK|W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_8D54825D4B298C7C
+    path: library/rules/ltp-8d54825d4b298c7c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_8E7F1BE3D7D7823B
+    path: library/rules/ltp-8e7f1be3d7d7823b.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 access(fname1, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_8F29388433422812
+    path: library/rules/ltp-8f29388433422812.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_8FF73194288F8473
+    path: library/rules/ltp-8ff73194288f8473.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_906135780505447D
+    path: library/rules/ltp-906135780505447d.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_911B97B972658989
+    path: library/rules/ltp-911b97b972658989.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_919ABCA2598F53B5
+    path: library/rules/ltp-919abca2598f53b5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_921D4802D7690C64
+    path: library/rules/ltp-921d4802d7690c64.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_9260E923CF8AA018
+    path: library/rules/ltp-9260e923cf8aa018.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_929B120944D8F805
+    path: library/rules/ltp-929b120944d8f805.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_93949494FBAD3568
+    path: library/rules/ltp-93949494fbad3568.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_94E36E221125BFAF
+    path: library/rules/ltp-94e36e221125bfaf.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_955ECE70D81CA226
+    path: library/rules/ltp-955ece70d81ca226.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_96021AFB69E847F9
+    path: library/rules/ltp-96021afb69e847f9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_969C39F409BFD7AA
+    path: library/rules/ltp-969c39f409bfd7aa.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_96D205FACA0DD8DB
+    path: library/rules/ltp-96d205faca0dd8db.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_96F07DC5DDC8E018
+    path: library/rules/ltp-96f07dc5ddc8e018.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_97C442AC56780374
+    path: library/rules/ltp-97c442ac56780374.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_9866FB6F1F726CA0
+    path: library/rules/ltp-9866fb6f1f726ca0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_986F211E7D45CAD7
+    path: library/rules/ltp-986f211e7d45cad7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_9A723EA0B1F0D1BE
+    path: library/rules/ltp-9a723ea0b1f0d1be.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_9C9D222A34799D55
+    path: library/rules/ltp-9c9d222a34799d55.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_9CDCD3C4BA6C2702
+    path: library/rules/ltp-9cdcd3c4ba6c2702.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK|W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_A17272D4FE0F040B
+    path: library/rules/ltp-a17272d4fe0f040b.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_A1DEE046C0A10B18
+    path: library/rules/ltp-a1dee046c0a10b18.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_A30F7687D403407B
+    path: library/rules/ltp-a30f7687d403407b.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, R_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_A4060315D2E047EE
+    path: library/rules/ltp-a4060315d2e047ee.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_A4733D4B2FEBE9A4
+    path: library/rules/ltp-a4733d4b2febe9a4.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_A500A46C4B998E74
+    path: library/rules/ltp-a500a46c4b998e74.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_A6B94E8A2A4D8853
+    path: library/rules/ltp-a6b94e8a2a4d8853.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_A9544B59EB6712D9
+    path: library/rules/ltp-a9544b59eb6712d9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_A9596E932167B3EF
+    path: library/rules/ltp-a9596e932167b3ef.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_AB48F262BBB2CC93
+    path: library/rules/ltp-ab48f262bbb2cc93.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_AC0FB73B4EE420EC
+    path: library/rules/ltp-ac0fb73b4ee420ec.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_AD81218450587FA8
+    path: library/rules/ltp-ad81218450587fa8.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_ADD30BEEC40E661F
+    path: library/rules/ltp-add30beec40e661f.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_B1D822DF0057B4E0
+    path: library/rules/ltp-b1d822df0057b4e0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B200AFD97E91C2CC
+    path: library/rules/ltp-b200afd97e91c2cc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B53406D510ED4981
+    path: library/rules/ltp-b53406d510ed4981.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK|W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B6DAF13EF3143EBF
+    path: library/rules/ltp-b6daf13ef3143ebf.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B9908D4015443661
+    path: library/rules/ltp-b9908d4015443661.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B9CDD41A0DC2AFCC
+    path: library/rules/ltp-b9cdd41a0dc2afcc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_BA10984A4B0DE2C6
+    path: library/rules/ltp-ba10984a4b0de2c6.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_BC662075E3BAE807
+    path: library/rules/ltp-bc662075e3bae807.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_BE2E778739EF01D5
+    path: library/rules/ltp-be2e778739ef01d5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C0577C0D678214DA
+    path: library/rules/ltp-c0577c0d678214da.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_C071A7FFF929A2A5
+    path: library/rules/ltp-c071a7fff929a2a5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C0AA45BC29F98A0E
+    path: library/rules/ltp-c0aa45bc29f98a0e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_R"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_C1C67435FC56D878
+    path: library/rules/ltp-c1c67435fc56d878.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_C5FE18F9550B31BA
+    path: library/rules/ltp-c5fe18f9550b31ba.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_WX"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_C6A719982BDE9CE4
+    path: library/rules/ltp-c6a719982bde9ce4.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_C6E67CB1FD2B1F64
+    path: library/rules/ltp-c6e67cb1fd2b1f64.yaml
+  # 合规检查：条件：PATH_TOO_LONG；检查：调用 access(longpathname, R_OK)；预期：返回 -1，errno 为 ENAMETOOLONG。
+  - rule_id: LTP_C8DAE34819E335F8
+    path: library/rules/ltp-c8dae34819e335f8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C994B56A41A71C1A
+    path: library/rules/ltp-c994b56a41a71c1a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK|W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_CA45A33676AD236D
+    path: library/rules/ltp-ca45a33676ad236d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_CA80C3F10B65226D
+    path: library/rules/ltp-ca80c3f10b65226d.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_CB31E19EE807FFDB
+    path: library/rules/ltp-cb31e19ee807ffdb.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_CCDB1776DAA2C318
+    path: library/rules/ltp-ccdb1776daa2c318.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_CDCDC1B9E63D58C3
+    path: library/rules/ltp-cdcdc1b9e63d58c3.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_R, R_OK|W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_CE45382D3DE75F8F
+    path: library/rules/ltp-ce45382d3de75f8f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_CEBAD6AB3C82795E
+    path: library/rules/ltp-cebad6ab3c82795e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, R_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_D1F469715ECC4195
+    path: library/rules/ltp-d1f469715ecc4195.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D2D67AB5E38A7000
+    path: library/rules/ltp-d2d67ab5e38a7000.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_D2F4BCF2263C56F5
+    path: library/rules/ltp-d2f4bcf2263c56f5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_D412A09DEDC43045
+    path: library/rules/ltp-d412a09dedc43045.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_D4D8A0FEAA2F6B09
+    path: library/rules/ltp-d4d8a0feaa2f6b09.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_W"/"FNAME_W, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_D653D15777B77A1F
+    path: library/rules/ltp-d653d15777b77a1f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D6A52FD61BF01578
+    path: library/rules/ltp-d6a52fd61bf01578.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_D72526C4E4301D60
+    path: library/rules/ltp-d72526c4e4301d60.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_D76652434EC85091
+    path: library/rules/ltp-d76652434ec85091.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, R_OK|W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_D8B58CA743EBE711
+    path: library/rules/ltp-d8b58ca743ebe711.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_R, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_DA10E351BC730D85
+    path: library/rules/ltp-da10e351bc730d85.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK|W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_DAA03BAD070DB1D6
+    path: library/rules/ltp-daa03bad070db1d6.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_DAA1F16D8A298E83
+    path: library/rules/ltp-daa1f16d8a298e83.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_R, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_DCB33BB29D296843
+    path: library/rules/ltp-dcb33bb29d296843.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_DD9A41090E3D5A17
+    path: library/rules/ltp-dd9a41090e3d5a17.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_DF1C4714B16B760E
+    path: library/rules/ltp-df1c4714b16b760e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E0B177A8B6FE4225
+    path: library/rules/ltp-e0b177a8b6fe4225.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E0ED96B80FC3B6C9
+    path: library/rules/ltp-e0ed96b80fc3b6c9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E28B5BB57A450438
+    path: library/rules/ltp-e28b5bb57a450438.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E2C3B68EDF07A753
+    path: library/rules/ltp-e2c3b68edf07a753.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_X"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_E34945E3DE91022F
+    path: library/rules/ltp-e34945e3de91022f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E3A3CF8B98E460BC
+    path: library/rules/ltp-e3a3cf8b98e460bc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_E41DD7230DA067DD
+    path: library/rules/ltp-e41dd7230da067dd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_X, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E46539F2D47BA5EC
+    path: library/rules/ltp-e46539f2d47ba5ec.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_WX"/"FNAME_W, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E4D1B76D80905462
+    path: library/rules/ltp-e4d1b76d80905462.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_W, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E560C027210BF20A
+    path: library/rules/ltp-e560c027210bf20a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_X"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_E5791B389C67677E
+    path: library/rules/ltp-e5791b389c67677e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_X, X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_E5E50FB7BDD033D9
+    path: library/rules/ltp-e5e50fb7bdd033d9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_EB00EA74B30E438E
+    path: library/rules/ltp-eb00ea74b30e438e.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RW"/"FNAME_X, F_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_EB425D988F2F7604
+    path: library/rules/ltp-eb425d988f2f7604.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_EBF0020C32AD44C8
+    path: library/rules/ltp-ebf0020c32ad44c8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_EC19C6410BBE0467
+    path: library/rules/ltp-ec19c6410bbe0467.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_ED36488372A175F5
+    path: library/rules/ltp-ed36488372a175f5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_X, R_OK|W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_ED3F2AE7E59E6F12
+    path: library/rules/ltp-ed3f2ae7e59e6f12.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_W, R_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_EE1518958A8F7CC1
+    path: library/rules/ltp-ee1518958a8f7cc1.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(DNAME_RX"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_EF5C1F365208AD31
+    path: library/rules/ltp-ef5c1f365208ad31.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_W, X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F202F3C3B02DEA0E
+    path: library/rules/ltp-f202f3c3b02dea0e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|W_OK|X_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F3200B697F38DD16
+    path: library/rules/ltp-f3200b697f38dd16.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F3418C5C403B91FC
+    path: library/rules/ltp-f3418c5c403b91fc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, R_OK|W_OK|X_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_F43EC0D01CCFD25A
+    path: library/rules/ltp-f43ec0d01ccfd25a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_RWX, W_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F6BB86F5DCC2FAC8
+    path: library/rules/ltp-f6bb86f5dcc2fac8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F70FC66A56FBD769
+    path: library/rules/ltp-f70fc66a56fbd769.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_F7998813C90A7A08
+    path: library/rules/ltp-f7998813c90a7a08.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_R"/"FNAME_X, F_OK)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F8CDD57D76C8FA6C
+    path: library/rules/ltp-f8cdd57d76c8fa6c.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 access(FNAME_W, R_OK|W_OK|X_OK)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_F9BF08369A08E5ED
+    path: library/rules/ltp-f9bf08369a08e5ed.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_X, R_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_FC5B16AB3C53A744
+    path: library/rules/ltp-fc5b16ab3c53a744.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_W"/"FNAME_R, F_OK)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_FCA376B46A9873B0
+    path: library/rules/ltp-fca376b46a9873b0.yaml
+  acct: []
+  add_key: []
+  adjtimex: []
+  alarm:
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(1)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_1A9481FAD460FBF7
+    path: library/rules/ltp-1a9481fad460fbf7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(10)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_3E8DA9E014B82702
+    path: library/rules/ltp-3e8da9e014b82702.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：{'kind': 'return_value', 'return': 'UINT_MAX/4'}。
+  - rule_id: LTP_6449E4A1D20C01D3
+    path: library/rules/ltp-6449e4a1d20c01d3.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(UINT_MAX/2)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_65B70356F06E31F8
+    path: library/rules/ltp-65b70356f06e31f8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(UINT_MAX/4)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_76A9B6CF388A8609
+    path: library/rules/ltp-76a9b6cf388a8609.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：{'kind': 'return_value', 'return': '1'}。
+  - rule_id: LTP_82621B02FCA09F40
+    path: library/rules/ltp-82621b02fca09f40.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(2)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_98EC66149EE68933
+    path: library/rules/ltp-98ec66149ee68933.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(100)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B7A341967DF2BD69
+    path: library/rules/ltp-b7a341967df2bd69.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(INT_MAX)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C785774773FB7524
+    path: library/rules/ltp-c785774773fb7524.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：{'kind': 'return_value', 'return': 'INT_MAX'}。
+  - rule_id: LTP_C7B73F4D5B87736A
+    path: library/rules/ltp-c7b73f4d5b87736a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(1)；预期：{'kind': 'return_value', 'return': '9'}。
+  - rule_id: LTP_C80C019BE3F47901
+    path: library/rules/ltp-c80c019be3f47901.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：{'kind': 'return_value', 'return': 'UINT_MAX/2'}。
+  - rule_id: LTP_CD2150BE4FE81F31
+    path: library/rules/ltp-cd2150be4fe81f31.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：{'kind': 'return_value', 'return': '100'}。
+  - rule_id: LTP_D1B6112551D45B31
+    path: library/rules/ltp-d1b6112551d45b31.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 alarm(0)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D4B433A3696803A8
+    path: library/rules/ltp-d4b433a3696803a8.yaml
+  arch_prctl: []
+  bind: []
+  bpf: []
+  brk:
+  # 合规检查：条件：无额外前置条件；检查：调用 brk(new_brk)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_7A74A699442CEB99
+    path: library/rules/ltp-7a74a699442ceb99.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 brk(addr)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_E3E59B16A96A60BC
+    path: library/rules/ltp-e3e59b16a96a60bc.yaml
+  cacheflush:
+  # 合规检查：条件：无额外前置条件；检查：调用 cacheflush(addr, getpagesize(), CACHE_DESC(ICACHE))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_8AD8032754BC8842
+    path: library/rules/ltp-8ad8032754bc8842.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 cacheflush(addr, getpagesize(), CACHE_DESC(BCACHE))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C218D3CB0AD80D90
+    path: library/rules/ltp-c218d3cb0ad80d90.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 cacheflush(addr, getpagesize(), CACHE_DESC(DCACHE))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D579FCFC71E6EB6A
+    path: library/rules/ltp-d579fcfc71e6eb6a.yaml
+  cachestat:
+  # 合规检查：条件：文件描述符无效；检查：调用 cachestat(fd, cs_range, cs, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_00F2A9EA8833DA1D
+    path: library/rules/ltp-00f2a9ea8833da1d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 cachestat(fd, cs_range, cs, 0)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_1325C077A1CDE514
+    path: library/rules/ltp-1325c077a1cde514.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 cachestat(invalid_fd, cs_range, cs, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_34EC9FB9C9551214
+    path: library/rules/ltp-34ec9fb9c9551214.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 cachestat(fd, cs_range_null, cs, 0)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_7FD6142E0E88CF17
+    path: library/rules/ltp-7fd6142e0e88cf17.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 cachestat(fd, cs_range, cs_null, 0)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_89C9E8458EC38C11
+    path: library/rules/ltp-89c9e8458ec38c11.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 cachestat(fd_hugepage, cs_range, cs, 0)；预期：返回 -1，errno 为 EOPNOTSUPP。
+  - rule_id: LTP_BA9A8FE901467960
+    path: library/rules/ltp-ba9a8fe901467960.yaml
+  capget:
+  # 合规检查：条件：无额外前置条件；检查：调用 capget(hdr, data)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_208C833FF12217F5
+    path: library/rules/ltp-208c833ff12217f5.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capget(2 - 1 ? header : NULL, 2 - 2 ? data : bad_data)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_5F1D35ACCEFD4971
+    path: library/rules/ltp-5f1d35accefd4971.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capget(1 - 1 ? header : NULL, 1 - 2 ? data : bad_data)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_827CE5CB448A411B
+    path: library/rules/ltp-827ce5cb448a411b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 capget(0 - 1 ? header : NULL, 0 - 2 ? data : bad_data)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_CED2FCC737A99D40
+    path: library/rules/ltp-ced2fcc737a99d40.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 capget(0 - 1 ? header : NULL, 0 - 2 ? data : bad_data)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_DC9BC72148835FDC
+    path: library/rules/ltp-dc9bc72148835fdc.yaml
+  capset:
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capset(0 - 1 ? header : bad_addr, 0 - 2 ? data : bad_addr)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_461340ED83E7043D
+    path: library/rules/ltp-461340ed83e7043d.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capset(2 - 1 ? header : bad_addr, 2 - 2 ? data : bad_addr)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_6D86AFD541A61388
+    path: library/rules/ltp-6d86afd541a61388.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capset(0 - 1 ? header : bad_addr, 0 - 2 ? data : bad_addr)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_7DEDC53AC33C891F
+    path: library/rules/ltp-7dedc53ac33c891f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_A00E343F4A556B3D
+    path: library/rules/ltp-a00e343f4a556b3d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_D1AADFC2F7C6F594
+    path: library/rules/ltp-d1aadfc2f7c6f594.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capset(1 - 1 ? header : bad_addr, 1 - 2 ? data : bad_addr)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_E06D53042C10C99E
+    path: library/rules/ltp-e06d53042c10c99e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_EC23768761E40E9F
+    path: library/rules/ltp-ec23768761e40e9f.yaml
+  chdir: []
+  chmod: []
+  chown: []
+  chroot:
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 chroot(file_name)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_245CD61DAA19DC98
+    path: library/rules/ltp-245cd61daa19dc98.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 chroot(path)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_50F858A3CBF95EED
+    path: library/rules/ltp-50f858a3cbf95eed.yaml
+  # 合规检查：条件：PATH_TOO_LONG；检查：调用 chroot(longname_dir)；预期：返回 -1，errno 为 ENAMETOOLONG。
+  - rule_id: LTP_71C54C624831C7F0
+    path: library/rules/ltp-71c54c624831c7f0.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 chroot(loop_dir)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_99DF5C34778032E1
+    path: library/rules/ltp-99df5c34778032e1.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 chroot(TEST_TMPDIR)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_D0E32E5D27E643A9
+    path: library/rules/ltp-d0e32e5d27e643a9.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 chroot(bad_ptr)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_EBD54180D0CAB16B
+    path: library/rules/ltp-ebd54180d0cab16b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 chroot(path)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_EE7A979F212D6C0C
+    path: library/rules/ltp-ee7a979f212d6c0c.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 chroot(nonexistent_dir)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_FF9C0F9669A39525
+    path: library/rules/ltp-ff9c0f9669a39525.yaml
   close:
   # 合规检查：条件：文件描述符已经关闭；检查：调用 close(fd_closed)；预期：返回 -1，errno 为 EBADF。
   - rule_id: LTP_09B39E9C9254ECB2

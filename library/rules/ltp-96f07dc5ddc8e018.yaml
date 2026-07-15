@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RX"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_96F07DC5DDC8E018
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - DNAME_RX"/"FNAME_R
+    - W_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: '0'
+  errno:
+  - '0'
+semantic_hash: sha256:96f07dc5ddc8e018a3a3a8044b0bf164f2d608e7ae0b79cced18aa24b0729285
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 240
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:b834c6ba29606e4d86f81d1e1c42ecf8c44e6d2f0a79123666c291cf56ecb614
+  case: access01_240_78

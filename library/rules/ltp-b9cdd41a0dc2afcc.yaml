@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 access(DNAME_RW"/"FNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B9CDD41A0DC2AFCC
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - DNAME_RW"/"FNAME_R
+    - R_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:b9cdd41a0dc2afcc67185697f8300fffda120b752a387b2b4bebce66b8e3556e
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 243
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:4e6b2ee6c625779b7be6d3ac407874b4395274618e8d1570ffaaeec3a8cfae67
+  case: access01_243_127
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 243
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:4e6b2ee6c625779b7be6d3ac407874b4395274618e8d1570ffaaeec3a8cfae67
+  case: access01_243_67

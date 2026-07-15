@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 access(FNAME_F, F_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_67BF94A4ACD303C4
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - FNAME_F
+    - F_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:67bf94a4acd303c4bf5ee873c38bf51c6656dd4b572784d258639f552e8c49d3
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2831bab9389bdd03f3e4f864361a021821c088da4ee15c573123237c43f4d84f
+  case: access02_58_0

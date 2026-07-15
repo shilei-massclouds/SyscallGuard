@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EC23768761E40E9F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - header
+    - data
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:ec23768761e40e9f99140715f9e6147dcc348f9f7bbdc7731948b1afb6d29d51
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset01.c
+  line: 45
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:d1617603d810e67548a3663edbd716d7a5cdb609c0f118f4ea681ec4e2e90de8
+  case: capset01_45_raw

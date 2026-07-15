@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 cachestat(fd_hugepage, cs_range, cs, 0)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BA9A8FE901467960
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: cachestat
+    arguments:
+    - fd_hugepage
+    - cs_range
+    - cs
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:ba9a8fe9014679607013f8aa7b560aec873309bb14116b916767925e8499f776
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat03.c
+  line: 47
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a64b48a50df72f6694e757feae2e300dca56c869cfe56f74040f2951024365c1
+  case: cachestat03_47_4

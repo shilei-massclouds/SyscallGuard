@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 capset(header, data)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A00E343F4A556B3D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - header
+    - data
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:a00e343f4a556b3d95ff7c9596db5dad52a7bcce09ee6424a48853bc04d5c4af
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset02.c
+  line: 85
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:48a8df8b51cae3d9fb92c2bbce4fd45ce5af4a74815eaefe58438664fb387780
+  case: capset02_85_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capset/capset03.c
+  line: 41
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f4a74685bb0e415db019bf081766c5f1ea9b017ac93e1e06f893b1792b9299ca
+  case: capset03_41_raw

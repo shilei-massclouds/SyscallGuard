@@ -1,0 +1,30 @@
+# 合规检查：条件：NONEXISTENT_PATH；检查：调用 chroot(nonexistent_dir)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FF9C0F9669A39525
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - nonexistent_dir
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:ff9c0f9669a39525986267a75a9b66e6249d23f8939029c388c3f8f1c9ec1472
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot03.c
+  line: 52
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:aa7c887cb0f990a797845f5bdcef1d507e23f5ee7d8a09b24a565f80e66c806f
+  case: chroot03_52_2

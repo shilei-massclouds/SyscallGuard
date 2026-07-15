@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 accept(socket_fd, (struct sockaddr *)&fsin1, &1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_472AAA35C7382B26
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - socket_fd
+    - (struct sockaddr *)&fsin1
+    - '&1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:472aaa35c7382b2636fefb76370c46d334f3c77cb0f9a4d38ae943f787a3b503
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/accept/accept01.c
+  line: 91
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:fe4cf73c123d562efd79cd38f2253314e8c4ba3e8e7bd1e5d32e4d2071519064
+  case: accept01_91_2

@@ -1,0 +1,30 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 chroot(TEST_TMPDIR)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D0E32E5D27E643A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - TEST_TMPDIR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d0e32e5d27e643a92fca4116aaeefb86ce87cdcc1e5fd0d511ff4dbdc52401cb
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot04.c
+  line: 25
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:21e56229bace62ab126a4b33077dedcef99a7f82d86552ab7dd0682efc1cc697
+  case: chroot04_25_raw

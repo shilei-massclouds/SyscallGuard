@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 capget(1 - 1 ? header : NULL, 1 - 2 ? data : bad_data)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_827CE5CB448A411B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - '1 - 1 ? header : NULL'
+    - '1 - 2 ? data : bad_data'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:827ce5cb448a411bcd82f3a89e9c733eb11fa4d44a8f563ff1658dac81bd73a4
+generated_at_utc: '2026-07-15T03:09:52.149069Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capget/capget02.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1f27b6ac333719cbd71791526b051658d4c63cd7f971cacbf8049885a52512f2
+  case: capget02_57_0
