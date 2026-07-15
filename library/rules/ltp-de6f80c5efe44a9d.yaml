@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup2(ofd, nfd)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DE6F80C5EFE44A9D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup2
+    arguments:
+    - ofd
+    - nfd
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:de6f80c5efe44a9d734af297a70d5597f890b2b038ec752e159caefc2425e0fc
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup202.c
+  line: 84
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:235955f246f3baab6699b6be81a176b833b696f282f22d0ceebcfbe5bee42b3b
+  case: dup202_84_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup207.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a161a94338f75695611ad35e9ba5cbfcf2d197399d3ed33ef8282f8c4afb292c
+  case: dup207_57_raw

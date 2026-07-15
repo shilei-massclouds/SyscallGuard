@@ -1,7 +1,7 @@
-# 合规检查：条件：文件描述符有效且处于打开状态；检查：调用 close(tc[i].get_fd())；预期：调用成功，返回 SUCCESS。
+# 合规检查：条件：无额外前置条件；检查：调用 close(get_fd_pipe())；预期：调用成功，返回 SUCCESS。
 schema_version: 1
 kind: syscallguard_rule
-rule_id: LTP_5CB803B873F78BA0
+rule_id: LTP_2BDE60C0E64B4DC8
 category: syscall_behavior
 semantics:
   preconditions: []
@@ -9,13 +9,13 @@ semantics:
     operation: invoke_syscall
     syscall: close
     arguments:
-    - tc[i].get_fd()
+    - get_fd_pipe()
   expected_result:
     kind: success
     return: SUCCESS
   errno: []
-semantic_hash: sha256:5cb803b873f78ba0c0cafe0d4ab7a0e69be0d150de939bbf030e0c66f583d1c6
-generated_at_utc: '2026-07-14T13:35:02.567816Z'
+semantic_hash: sha256:2bde60c0e64b4dc8fc4b1e23c70973364d891d517c1f8020f709fabec59e6d0f
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
 sources:
 - source_id: ltp-local
   source_type: ltp
@@ -23,5 +23,5 @@ sources:
   file: testcases/kernel/syscalls/close/close01.c
   line: 46
   recognizer_id: ltp.tst-exp.pass
-  evidence_hash: sha256:8b793b6d92751f98caca0f8e0f965b6df301511214742dadffa83aafbc0acd75
-  case: close01_46_raw
+  evidence_hash: sha256:d32a4257b7171c467420c548a6efca1e7b2325cb6b321f491b4cd6651b183f24
+  case: close01_46_1

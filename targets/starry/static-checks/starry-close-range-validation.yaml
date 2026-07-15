@@ -1,0 +1,45 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_CLOSE_RANGE_VALIDATION
+title: close_range rejects reversed finite ranges and unknown flags
+rule_refs:
+- LTP_31D9D767D6888DDA
+- LTP_CBF4B6C8A1458A28
+- LTP_F1DC44813DCA6A05
+applies_to_syscalls:
+- close_range
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: reversed ranges are invalid
+  regex: pub fn sys_close_range\([\s\S]*?if first < 0 \|\| last < first \{[\s\S]*?return Err\(AxError::InvalidInput\);
+- label: unknown close_range flags are invalid
+  regex: pub fn sys_close_range\([\s\S]*?CloseRangeFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?
+upstream_dependencies:
+- id: LTP_31D9D767D6888DDA
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:31d9d767d6888ddaf3c03f24abe0bc874e9932a546e4cdd283ecad199e6bcc1a
+- id: LTP_CBF4B6C8A1458A28
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:cbf4b6c8a1458a2885c6c847b47ca93098a06580fc5fdfc3a1e483b9dab01ac4
+- id: LTP_F1DC44813DCA6A05
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:f1dc44813dca6a05d2fb0697718f8ed1da8d8b033d2c49bd0124284321f6ffd4
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_close_range
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    sys_close_range: sha256:e68528d8b11d0548e507e400ce5f87b9bf34a40925a7555ed5f4fdc1dc0401dd
+  missing_symbols: []
+  content_hash: sha256:96ad9feab61e5fb894ff86d66094ae434a78667fb37dcab1a161b3fd3a28c566
+target_content_fingerprint: sha256:cce0462a0f72ea729f3f2abb2e53afe98c3d9d2bc686c742efef6b10569096b9
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

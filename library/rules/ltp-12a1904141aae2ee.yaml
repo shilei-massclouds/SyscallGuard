@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup2(fd0, fd1)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_12A1904141AAE2EE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup2
+    arguments:
+    - fd0
+    - fd1
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:12a1904141aae2eec702c330f293e0672a34cc4240c6b0ae35b481a3244fa4e5
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup203.c
+  line: 56
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c3fd3cec697010db814ba0c3dabbb5929ee1481332617a5857fe128d4aafaabe
+  case: dup203_56_raw

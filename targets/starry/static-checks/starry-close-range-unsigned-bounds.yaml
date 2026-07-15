@@ -1,0 +1,30 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+title: close_range preserves the unsigned Linux first and last arguments
+rule_refs:
+- LTP_425E5A3502541DE8
+applies_to_syscalls:
+- close_range
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: first and last use unsigned 32-bit syscall semantics
+  regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+- label: the maximum unsigned range is accepted and capped to open descriptors
+  regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: LTP_425E5A3502541DE8
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:425e5a3502541de863d8b8e88eafb95db2f8d8e1f9cb88a32d8b3124950395b2
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_close_range
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    sys_close_range: sha256:e68528d8b11d0548e507e400ce5f87b9bf34a40925a7555ed5f4fdc1dc0401dd
+  missing_symbols: []
+  content_hash: sha256:96ad9feab61e5fb894ff86d66094ae434a78667fb37dcab1a161b3fd3a28c566
+target_content_fingerprint: sha256:f873ae6feb76d55bcb9f9b70e686216ba5f1d52663263bf472b6faa2ab5ecb86
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

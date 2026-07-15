@@ -1,0 +1,78 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_COPY_FILE_RANGE_CORE
+title: copy_file_range validates flags, descriptor kinds, append output, and overlap
+rule_refs:
+- LTP_09370275EF5F3065
+- LTP_6A2F1D2BB0EE8C22
+- LTP_7E1612F09CACE33D
+- LTP_AE3908C408304451
+- LTP_B87A71DE5DE1260E
+- LTP_BAE8F852378DD9F4
+- LTP_C16D549555A00E55
+- LTP_CC9037A76978B569
+- LTP_E2196C3F0F58862B
+applies_to_syscalls:
+- copy_file_range
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: nonzero flags are invalid
+  regex: pub fn sys_copy_file_range\([\s\S]*?if flags != 0 \{[\s\S]*?Err\(AxError::InvalidInput\)
+- label: fd conversion preserves EBADF and EISDIR while rejecting other non-files
+  regex: pub fn sys_copy_file_range\([\s\S]*?let remap = \|e\| match e \{[\s\S]*?AxError::BadFileDescriptor
+    \| AxError::IsADirectory => e,[\s\S]*?_ => AxError::InvalidInput[\s\S]*?File::from_fd\(fd_in\)\.map_err\(remap\)\?;[\s\S]*?File::from_fd\(fd_out\)\.map_err\(remap\)\?;
+- label: directories and other non-regular nodes receive the required errors
+  regex: meta_in\.node_type == NodeType::Directory \|\| meta_out\.node_type == NodeType::Directory[\s\S]*?Err\(AxError::IsADirectory\)[\s\S]*?meta_in\.node_type
+    != NodeType::RegularFile \|\| meta_out\.node_type != NodeType::RegularFile[\s\S]*?Err\(AxError::InvalidInput\)
+- label: append-mode output is rejected as EBADF
+  regex: file_out\.inner\(\)\.access\(FileFlags::APPEND\)\.is_ok\(\)[\s\S]*?Err\(AxError::BadFileDescriptor\)
+- label: overlapping ranges in one inode are rejected as EINVAL
+  regex: meta_in\.device == meta_out\.device && meta_in\.inode == meta_out\.inode[\s\S]*?if in_end >=
+    pos_out && pos_in <= out_end \{[\s\S]*?Err\(AxError::InvalidInput\)
+upstream_dependencies:
+- id: LTP_09370275EF5F3065
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:09370275ef5f3065d6f3ea10b7288a1ce0668fd80cc67a7d32a6f3b3069149f6
+- id: LTP_6A2F1D2BB0EE8C22
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:6a2f1d2bb0ee8c22d0970af42c645ba4f74a3cfe1a4748f4c47934666e135cfc
+- id: LTP_7E1612F09CACE33D
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:7e1612f09cace33d1e08ea245c28317ff95a538558b1d15dc9cd9e6c8dd2eb09
+- id: LTP_AE3908C408304451
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:ae3908c40830445120c2543a341389434b0eb8a4703f9666a62f96c38d9265e6
+- id: LTP_B87A71DE5DE1260E
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:b87a71de5de1260eeff71a5a683d9dea4fdc6e019dc8875ec98549865ba352ad
+- id: LTP_BAE8F852378DD9F4
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:bae8f852378dd9f45a95e9fa5f5d957ef4f6efa3a462803119cc93500569bac0
+- id: LTP_C16D549555A00E55
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:c16d549555a00e55b3199db30fcc866aeac70c8911afbcc47053c09ffa2a5b85
+- id: LTP_CC9037A76978B569
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:cc9037a76978b569fcf3e91e91771dc63c6a8cf1479d9f5c6e079b8ef0e91e4f
+- id: LTP_E2196C3F0F58862B
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:e2196c3f0f58862b9dfeb182337b8bdf6ab3964ad73867128bb0853431dc7dbe
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_copy_file_range
+  scope: symbols
+  file_hash: sha256:1e7b87318df96762492a4a7866d155538ef9e03f9231ee35c513161c705b1ab3
+  symbol_hashes:
+    sys_copy_file_range: sha256:0bf45fc95653833e9f8492ac962a8ebb5609ce71169a1135863918078290685b
+  missing_symbols: []
+  content_hash: sha256:9a146deace9e9b40b34b1911ef8463685941f261dccc54cceae8a06a2df9b5e2
+target_content_fingerprint: sha256:996839f5b378f8c2b23aaf357f1adde8256d3bef077cae6239c6d92214371ecb
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

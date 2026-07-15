@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup2(fd[i], nfd[i])；预期：{'kind': 'return_value', 'return': 'nfd[i]'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B7F51635806E7E59
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup2
+    arguments:
+    - fd[i]
+    - nfd[i]
+  expected_result:
+    kind: return_value
+    return: nfd[i]
+  errno: []
+semantic_hash: sha256:b7f51635806e7e596b7f6a1baf152d74ca1d365a9bdfc6d3f34984ac1908632d
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup204.c
+  line: 36
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:f81f37d1dafae6f93a820343e0bfdba14c7ac676fc2867f016a59ec03af378e5
+  case: dup204_36_raw

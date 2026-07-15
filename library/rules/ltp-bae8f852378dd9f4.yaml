@@ -1,0 +1,34 @@
+# 合规检查：条件：无额外前置条件；检查：调用 copy_file_range(fd_src, 0, fd_pipe[0], &dst, CONTSIZE, 0)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BAE8F852378DD9F4
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_src
+    - '0'
+    - fd_pipe[0]
+    - '&dst'
+    - CONTSIZE
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bae8f852378dd9f45a95e9fa5f5d957ef4f6efa3a462803119cc93500569bac0
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+  line: 135
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:291e40024318968eaa3bcdc093ba300397e2ec0ed7d820bbeb811448b977c845
+  case: copy_file_range02_135_11

@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup2(maxfd, goodfd)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BDA36F61423EEB3E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup2
+    arguments:
+    - maxfd
+    - goodfd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:bda36f61423eeb3e616d764edd458663817800e2f3db3adfae687bd17f6c2764
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup201.c
+  line: 45
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:00a6ae81e985f312e0dfa6bf133f3381eaf7400f617be47cb3d72b82010dad54
+  case: dup201_45_1

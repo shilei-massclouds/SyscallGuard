@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup3(1, 4, O_CLOEXEC)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1726C16756E9651C
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - '1'
+    - '4'
+    - O_CLOEXEC
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:1726c16756e9651c8be282bf1cdf5c30a283e32aa200934084e3c42a2aee9ff9
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup3/dup3_01.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:184d531b5eebeac2850788d2bad5321cdfaff0c34395610aa64b8530f3535c0c
+  case: dup3_01_41_1

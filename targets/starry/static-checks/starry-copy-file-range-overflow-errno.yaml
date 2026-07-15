@@ -1,0 +1,28 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+title: copy_file_range reports EOVERFLOW when len cannot fit the signed return type
+rule_refs:
+- LTP_74BB3F96CBA52D02
+applies_to_syscalls:
+- copy_file_range
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: oversized len returns Linux EOVERFLOW rather than EINVAL
+  regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+upstream_dependencies:
+- id: LTP_74BB3F96CBA52D02
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:74bb3f96cba52d02850ad3c5e54c87acf278ce51290c99d5ae29da583be9ba38
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_copy_file_range
+  scope: symbols
+  file_hash: sha256:1e7b87318df96762492a4a7866d155538ef9e03f9231ee35c513161c705b1ab3
+  symbol_hashes:
+    sys_copy_file_range: sha256:0bf45fc95653833e9f8492ac962a8ebb5609ce71169a1135863918078290685b
+  missing_symbols: []
+  content_hash: sha256:9a146deace9e9b40b34b1911ef8463685941f261dccc54cceae8a06a2df9b5e2
+target_content_fingerprint: sha256:69ee18813a0e9836372593b2e7b95266a30b1870e87faad71359c40e6ce8df03
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

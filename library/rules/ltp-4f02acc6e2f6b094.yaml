@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup2(fildes[ifile - 1], ifile)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4F02ACC6E2F6B094
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup2
+    arguments:
+    - fildes[ifile - 1]
+    - ifile
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:4f02acc6e2f6b094f06413684c004106e4c18d8f654cbb8b231de56e60aba90c
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup205.c
+  line: 42
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:32b2d16c748a4731ef2f71997f8ad43ae88fc6eebcb4179f5bb7ed02c5c4854f
+  case: dup205_42_raw

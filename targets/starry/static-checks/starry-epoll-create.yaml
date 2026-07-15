@@ -1,0 +1,50 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_EPOLL_CREATE
+title: legacy epoll_create validates size and creates a descriptor
+rule_refs:
+- LTP_2D1E25BD679B3494
+- LTP_37F2ED2BA3175CC3
+- LTP_E7435E0CBCA319E1
+applies_to_syscalls:
+- epoll_create
+path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+patterns:
+- label: nonpositive legacy sizes are invalid
+  regex: 'pub fn sys_epoll_create\(size: i32\)[\s\S]*?if size <= 0 \{[\s\S]*?Err\(AxError::InvalidInput\)'
+- label: positive legacy sizes create an epoll descriptor without flags
+  regex: 'pub fn sys_epoll_create\(size: i32\)[\s\S]*?sys_epoll_create1\(0\)'
+- label: epoll_create1 allocates and returns a file descriptor
+  regex: pub fn sys_epoll_create1\([\s\S]*?Epoll::new\(\)[\s\S]*?\.add_to_fd_table\([\s\S]*?\.map\(\|fd\|
+    fd as isize\)
+upstream_dependencies:
+- id: LTP_2D1E25BD679B3494
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:2d1e25bd679b349425ebcfa9dd820bb8bc4de40949cd671adc32204c68864bbc
+- id: LTP_37F2ED2BA3175CC3
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:37f2ed2ba3175cc394b1338888db3f207e809f7e36f789587873dc7921e85edd
+- id: LTP_E7435E0CBCA319E1
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:e7435e0cbca319e18c1459e2f9187003681d326f400fc6d00b47df912010faef
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_create
+  - sys_epoll_create1
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_create: sha256:e304d9af962de72d0c494a0d1e65c9b0d6bb775b6c4ef932bcd80d4f093d26bb
+    sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
+  missing_symbols: []
+  content_hash: sha256:0ad60a780900236db787a7407dc15621008e9ce86d621b6753c82b2a5fc211e2
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:c93b20e2c1dc81823cab0ba0a58c128beca63ae418a6c425d719b847445bf387
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

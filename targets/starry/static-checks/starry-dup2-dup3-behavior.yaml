@@ -1,0 +1,89 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_DUP2_DUP3_BEHAVIOR
+title: dup2 and dup3 validate descriptors, flags, equality, and replacement
+rule_refs:
+- LTP_098AFE0E8E10B0EF
+- LTP_1726C16756E9651C
+- LTP_37C625BD7D7C5F1D
+- LTP_3A7B17AF231D4158
+- LTP_4F02ACC6E2F6B094
+- LTP_75D52C5E9C93B6D7
+- LTP_9B3646398697EA64
+- LTP_9F560A103CB6F910
+- LTP_B7F51635806E7E59
+- LTP_BDA36F61423EEB3E
+- LTP_D296A517F138A0C0
+- LTP_EE8E695CF61D6D8A
+applies_to_syscalls:
+- dup2
+- dup3
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: dup2 same-fd validates the descriptor and otherwise delegates to dup3
+  regex: 'pub fn sys_dup2\(old_fd: c_int, new_fd: c_int\)[\s\S]*?if old_fd == new_fd \{[\s\S]*?get_file_like\(new_fd\)\?;[\s\S]*?return
+    Ok\(new_fd as _\);[\s\S]*?sys_dup3\(old_fd, new_fd, 0\)'
+- label: dup3 rejects unknown flags and equal descriptors
+  regex: pub fn sys_dup3\([\s\S]*?Dup3Flags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;[\s\S]*?if
+    old_fd == new_fd \{[\s\S]*?Err\(AxError::InvalidInput\)
+- label: dup3 validates the old fd, replaces the target, and returns it
+  regex: pub fn sys_dup3\([\s\S]*?\.get\(old_fd as _\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)\?;[\s\S]*?fd_table\.remove\(new_fd
+    as _\)[\s\S]*?\.add_at\(new_fd as _, f\)[\s\S]*?Ok\(new_fd as _\)
+upstream_dependencies:
+- id: LTP_098AFE0E8E10B0EF
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:098afe0e8e10b0efa6872ee3d2ece3674b519943b59189a2758d8ab31b06ab26
+- id: LTP_1726C16756E9651C
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:1726c16756e9651c8be282bf1cdf5c30a283e32aa200934084e3c42a2aee9ff9
+- id: LTP_37C625BD7D7C5F1D
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:37c625bd7d7c5f1db42b7cacc49b4964844f0c2f977ad1a74c3960da0d662932
+- id: LTP_3A7B17AF231D4158
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:3a7b17af231d4158b2c4508e92a25435b89a569164e6dfdabc216b48e1afec9f
+- id: LTP_4F02ACC6E2F6B094
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:4f02acc6e2f6b094f06413684c004106e4c18d8f654cbb8b231de56e60aba90c
+- id: LTP_75D52C5E9C93B6D7
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:75d52c5e9c93b6d7989e3392a132ca3a319f4419c2f678533dc80d000c4891cd
+- id: LTP_9B3646398697EA64
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:9b3646398697ea6481b4201006e677123cd226bb81910f45b6fa558aaa810832
+- id: LTP_9F560A103CB6F910
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:9f560a103cb6f910cc2b8fb141c7de076accd6a913e920715328e9facdfb18db
+- id: LTP_B7F51635806E7E59
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:b7f51635806e7e596b7f6a1baf152d74ca1d365a9bdfc6d3f34984ac1908632d
+- id: LTP_BDA36F61423EEB3E
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:bda36f61423eeb3e616d764edd458663817800e2f3db3adfae687bd17f6c2764
+- id: LTP_D296A517F138A0C0
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:d296a517f138a0c09a3c71729b93607cfff1709b21125573bc2ad30b48302584
+- id: LTP_EE8E695CF61D6D8A
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:ee8e695cf61d6d8aa981eb6e30bf3a8a53c8e8a4ad435ff362bbd78971d17088
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_dup2
+  - sys_dup3
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    sys_dup2: sha256:9dcd640b2bdfbc58cae2e8ae6d95a49c870ac6a57c4782238887d0ce8f559b08
+    sys_dup3: sha256:9ec01ebcc542db43499ac212ae0a8528529b5cefd22aee7b073419f171739378
+  missing_symbols: []
+  content_hash: sha256:bc2dc63b7d7dc97ff7e0642fd6ec4d4e0072b9ca445a70dd1d690e041a47fd27
+target_content_fingerprint: sha256:e774770908c3e6215bc56dcce2fe7473b334c90ba4f06400e8c2ec2afe2eba22
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

@@ -1,18 +1,16 @@
 schema_version: 1
 kind: syscallguard_starry_static_check
-check_id: STARRY_CLOSE_SYSCALL
-title: sys_close propagates close result and returns zero
+check_id: STARRY_CLOSE_BAD_FD_ERRNO
+title: close BadFileDescriptor errors map to EBADF
 rule_refs:
 - LTP_09B39E9C9254ECB2
 - LTP_0CD17E662AFD2956
 applies_to_syscalls:
 - close
-path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+path: components/axerrno/src/lib.rs
 patterns:
-- label: sys_close calls close_file_like and propagates errors
-  regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;'
-- label: successful close returns zero
-  regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;[\s\S]*?Ok\(0\)'
+- label: BadFileDescriptor maps to EBADF
+  regex: BadFileDescriptor => EBADF
 upstream_dependencies:
 - id: LTP_09B39E9C9254ECB2
   generated_at_utc: '2026-07-14T13:35:02.567816Z'

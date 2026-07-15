@@ -1,0 +1,30 @@
+# 合规检查：条件：文件描述符无效；检查：调用 epoll_create(-1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_37F2ED2BA3175CC3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: epoll_create
+    arguments:
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:37f2ed2ba3175cc394b1338888db3f207e809f7e36f789587873dc7921e85edd
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_create/epoll_create02.c
+  line: 30
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:dae94f7d3c0d2eb85beeac8b6eb000eb9b1f70107da99f7a4b9500430595c22e
+  case: epoll_create02_30_1

@@ -1,4 +1,22 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-15T05:15:53.793290Z'
-entities: []
+updated_at_utc: '2026-07-15T08:04:23.538146Z'
+entities:
+- id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
+  path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
+  syscall: close_range
+  rule_id: LTP_425E5A3502541DE8
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
+  status: confirmed
+  resolution: open
+  generated_at_utc: '2026-07-15T06:53:06.785885Z'
+  content_hash: sha256:89268da49e1db71aedc695f99d930bd7fd766a4d292084985f5cc9419655c018
+- id: finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327
+  path: targets/starry/findings/finding-copy-file-range-ltp-74bb3f96cba52d02-041c7ef6f327.yaml
+  syscall: copy_file_range
+  rule_id: LTP_74BB3F96CBA52D02
+  target_snapshot_hash: sha256:041c7ef6f3270ebaea6287f256ec78436ee9cddfac2d41c116066b2fd890067f
+  status: confirmed
+  resolution: open
+  generated_at_utc: '2026-07-15T06:53:06.785885Z'
+  content_hash: sha256:5891762040a38bcc1fa6a49f3fac4f8762684e8fc7b2b49156c52f12fe4eb050

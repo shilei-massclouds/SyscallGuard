@@ -1,0 +1,45 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND2_CLOSE_SYSCALL
+title: sys_close propagates descriptor lookup errors and returns zero on success
+rule_refs:
+- LTP_2BDE60C0E64B4DC8
+- LTP_BF2428964ADD116F
+- LTP_E520E500AB3AE851
+applies_to_syscalls:
+- close
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: sys_close invokes the fd-table close helper and returns zero
+  regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;[\s\S]*?Ok\(0\)'
+upstream_dependencies:
+- id: LTP_2BDE60C0E64B4DC8
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:2bde60c0e64b4dc8fc4b1e23c70973364d891d517c1f8020f709fabec59e6d0f
+- id: LTP_BF2428964ADD116F
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:bf2428964add116f793723626820cf1b363a819d6e38ba6d31d9832e4ab1b2c0
+- id: LTP_E520E500AB3AE851
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:e520e500ab3ae8512756eb4a69fdef5de2701520040c400ce896ec773f4ab472
+target_dependencies:
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - close_file_like
+  scope: symbols
+  file_hash: sha256:6155028f03d0acfe42f410b0b3e553b6a32411988d08a78e6ee03e09fa80e716
+  symbol_hashes:
+    close_file_like: sha256:4d1f8d29801b3d463bb4413e8325214d7af8f86f0cae7ada5006dd90e18be8e8
+  missing_symbols: []
+  content_hash: sha256:58a89ea09d3782630014814fc50f8c47c237503228195d53faf41af2f40d4026
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_close
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    sys_close: sha256:e7aca9df1278d812347be922bb2ca7b5be5fff1cf995a42300adc9a77de496ba
+  missing_symbols: []
+  content_hash: sha256:83f68616aa28981b6d088330cf93b948e1e4c0eb2a3029552811f0b4b8789a12
+target_content_fingerprint: sha256:1f9479c31c656079eb33bc482998193451e88e6c3ce03416f49fe6c5d772635b
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

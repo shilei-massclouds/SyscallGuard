@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup(oldfd)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A774FC10727E8ED2
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - oldfd
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:a774fc10727e8ed282a01bc787e12bd54a0d81a756fc45037304c5906dadb2ff
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup/dup07.c
+  line: 34
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:08d1ca74b6ce1ddf3ed2be3bc25717307d9a1adf6c1fe6ae3c9811377575c41d
+  case: dup07_34_raw

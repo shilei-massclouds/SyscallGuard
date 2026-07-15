@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup3(old_fd, new_fd, INVALID_FLAG)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9B3646398697EA64
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - old_fd
+    - new_fd
+    - INVALID_FLAG
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9b3646398697ea6481b4201006e677123cd226bb81910f45b6fa558aaa810832
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup3/dup3_02.c
+  line: 39
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6438647d8df2842c3f355cc80c802746b2d4e04eb7d7e552f353c1e6fdac4239
+  case: dup3_02_39_2

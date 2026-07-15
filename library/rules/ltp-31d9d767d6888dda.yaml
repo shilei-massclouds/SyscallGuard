@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 close_range(fd, fd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_31D9D767D6888DDA
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: close_range
+    arguments:
+    - fd
+    - fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:31d9d767d6888ddaf3c03f24abe0bc874e9932a546e4cdd283ecad199e6bcc1a
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/close_range/close_range02.c
+  line: 25
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:5355b904fc4480a387d2721e3a4fb43aa2e15adcd24c372f738da90b9891aed3
+  case: close_range02_25_raw

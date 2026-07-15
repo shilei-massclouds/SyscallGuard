@@ -1,0 +1,75 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_DUP_BEHAVIOR
+title: dup validates the old descriptor and allocates a non-CLOEXEC duplicate
+rule_refs:
+- LTP_0EBD1214FC6BB6D5
+- LTP_311F7A773994720E
+- LTP_511185D6DE2A63A0
+- LTP_594FA5B54CA204E5
+- LTP_84DBE108A850E845
+- LTP_A774FC10727E8ED2
+- LTP_ED2BA909DF79625A
+applies_to_syscalls:
+- dup
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: dup_fd looks up the old descriptor and returns a newly allocated descriptor
+  regex: 'fn dup_fd\(old_fd: c_int, cloexec: bool\)[\s\S]*?get_file_like\(old_fd\)\?;[\s\S]*?add_file_like\(f,
+    cloexec\)\?;[\s\S]*?Ok\(new_fd as _\)'
+- label: sys_dup requests a non-CLOEXEC duplicate
+  regex: 'pub fn sys_dup\(old_fd: c_int\)[\s\S]*?dup_fd\(old_fd, false\)'
+upstream_dependencies:
+- id: LTP_0EBD1214FC6BB6D5
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:0ebd1214fc6bb6d5e224e50177509f565c7be9ba6ad0d4842779e564b71dedbb
+- id: LTP_311F7A773994720E
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:311f7a773994720e7cac8cd3d2b12c6938f7c13b7a4eff6dbcfe843e466448ac
+- id: LTP_511185D6DE2A63A0
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:511185d6de2a63a045d2f5f65babdf4c25b4066ece863b9f121419045563d4c9
+- id: LTP_594FA5B54CA204E5
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:594fa5b54ca204e5062358a745af4921e86e002d54071b19f1650a69d2d468f7
+- id: LTP_84DBE108A850E845
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:84dbe108a850e845bf4a3cfc65c984525f06a85bcf44e616283b5ef4e16bb451
+- id: LTP_A774FC10727E8ED2
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:a774fc10727e8ed282a01bc787e12bd54a0d81a756fc45037304c5906dadb2ff
+- id: LTP_ED2BA909DF79625A
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:ed2ba909df79625a7857c363efc0303c51fef469ee87970e6b322004f28779a5
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - add_file_like
+  - get_file_like
+  scope: symbols
+  file_hash: sha256:6155028f03d0acfe42f410b0b3e553b6a32411988d08a78e6ee03e09fa80e716
+  symbol_hashes:
+    add_file_like: sha256:b5cf9dea5d6bd10b0f15fdb84c2c98a676cb28fecdfa13cc8c9b458d2ef0cc18
+    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
+  missing_symbols: []
+  content_hash: sha256:accae0bd44f82207f244b85e252120122e3b3901e4993ca1e9d0d58d21c015cf
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - dup_fd
+  - sys_dup
+  scope: symbols
+  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  symbol_hashes:
+    dup_fd: sha256:eaec9c14d0e633561d5e7dab7814d80af12077a8ac49269599fbb20d08c1608e
+    sys_dup: sha256:5e9bb21b22d3d2d0a1ac3ef1e283fe060fb06087f994c793ba135cc476cf133c
+  missing_symbols: []
+  content_hash: sha256:d0701994de39f5838c32092d701b853fb90fb05609a6e509f2562b12fac6b7b9
+target_content_fingerprint: sha256:7d8a4b9bff3083183cf2abf1cc085307c076562dfbca0dfe0d57304705000860
+generated_at_utc: '2026-07-15T05:39:36.212938Z'

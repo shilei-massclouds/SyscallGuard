@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 dup(1500)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_511185D6DE2A63A0
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - '1500'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:511185d6de2a63a045d2f5f65babdf4c25b4066ece863b9f121419045563d4c9
+generated_at_utc: '2026-07-15T05:26:39.098440Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup/dup02.c
+  line: 27
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:04f9902f3c7c9a239a35da869dbb4c3a7e9a4c0fc9dec2ab08ccd43caaad2d45
+  case: dup02_27_1

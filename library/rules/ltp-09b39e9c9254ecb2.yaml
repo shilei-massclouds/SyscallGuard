@@ -25,5 +25,5 @@ sources:
   file: testcases/kernel/syscalls/close/close02.c
   line: 35
   recognizer_id: ltp.tst-exp.fail
-  evidence_hash: sha256:3d84de2300c5662db2d210426bfc7f550d5632edfef012738e5fd1263a86b25a
+  evidence_hash: sha256:ca06bbc53eefb436eb820838ed9c11d4c60dad02286a1ca034807cb7b06e8dc1
   case: close02_35_1
