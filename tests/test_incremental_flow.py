@@ -703,6 +703,68 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
+    def test_shared_check_selection_is_closed_before_staging(self) -> None:
+        self.prepare_spec_run()
+        rule_two = load_mapping(self.root / "library/rules/rule-one.yaml")
+        rule_two["rule_id"] = "RULE_TWO"
+        rule_two["generated_at_utc"] = "2026-01-02T00:00:00.000000Z"
+        atomic_write_yaml(self.root / "library/rules/rule-two.yaml", rule_two)
+        index = load_mapping(self.root / "library/syscalls.yaml")
+        index["syscalls"]["beta"] = [
+            {"rule_id": "RULE_TWO", "path": "library/rules/rule-two.yaml"}
+        ]
+        atomic_write_yaml(self.root / "library/syscalls.yaml", index)
+
+        shared = {
+            "schema_version": 1,
+            "kind": "syscallguard_starry_static_check",
+            "check_id": "CHECK_SHARED",
+            "rule_refs": ["RULE_ONE", "RULE_TWO"],
+            "applies_to_syscalls": ["alpha", "beta"],
+            "path": "code.txt",
+            "patterns": [{"label": "expected", "regex": "good"}],
+        }
+        shared_path = self.root / "targets/starry/static-checks/check-shared.yaml"
+        atomic_write_yaml(shared_path, shared)
+        self.update_executable_index(
+            "static-checks",
+            "syscallguard_starry_static_check_index",
+            "check_id",
+            "CHECK_SHARED",
+            shared_path,
+            ["RULE_ONE", "RULE_TWO"],
+            ["alpha", "beta"],
+        )
+        _repo, _descriptor, _snapshot = self.make_target("good\n")
+        run_mapping(None, self.root, "mapping-shared-first", target_branch(self.root))
+
+        rule_one_path = self.root / "library/rules/rule-one.yaml"
+        rule_one = load_mapping(rule_one_path)
+        rule_one["semantics"]["expected_result"] = "still good"
+        rule_one["semantic_hash"] = content_hash(
+            {"category": rule_one["category"], "semantics": rule_one["semantics"]}
+        )
+        rule_one["generated_at_utc"] = "2026-01-03T00:00:00.000000Z"
+        atomic_write_yaml(rule_one_path, rule_one)
+
+        run_id = prepare_mapping(
+            None, self.root, "mapping-shared-update", target_branch(self.root)
+        )
+        preparation = load_mapping(TEMP_ROOT / run_id / "preparation.yaml")
+        self.assertEqual(
+            preparation["selected_rule_ids"], ["RULE_ONE", "RULE_TWO"]
+        )
+        self.assertEqual(
+            preparation["pending_reasons"]["RULE_TWO"],
+            ["shared_entity_dependency:CHECK_SHARED"],
+        )
+        finalize_mapping(run_id, self.root)
+        updated = load_mapping_report(self.root, run_id)
+        self.assertEqual(updated["counts"]["processed"], 2)
+        self.assertEqual(
+            updated["rules"]["RULE_TWO"]["static_check_refs"], ["CHECK_SHARED"]
+        )
+
     def test_only_report_and_two_level_libraries_are_persisted(self) -> None:
         self.prepare_spec_run()
         _repo, _descriptor, _snapshot = self.make_target("good\n")

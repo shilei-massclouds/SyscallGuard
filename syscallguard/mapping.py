@@ -438,6 +438,47 @@ def _matching_entities(
     }
 
 
+def _expand_shared_entity_selection(
+    root: Path,
+    selected: set[str],
+    known_rules: set[str],
+    pending_reasons: dict[str, list[str]],
+) -> set[str]:
+    """Close a mapping selection over shared executable entities.
+
+    A static check or dynamic test is versioned as one atomic entity.  If one
+    of its rules must be remapped, every other rule referenced by that entity
+    must participate in the same publication.  Otherwise the staged entity
+    either contains references outside the selected set or would have to drop
+    still-valid ownership from the published two-level library.
+    """
+
+    indexed = {section: _load_indexed_entities(root, section) for section in INDEX_SPECS}
+    expanded = set(selected)
+    changed = True
+    while changed:
+        changed = False
+        for entities in indexed.values():
+            for entity_id, entity in entities.items():
+                refs = entity.get("rule_refs", [])
+                if not isinstance(refs, list) or not all(isinstance(item, str) for item in refs):
+                    raise SyscallGuardError(f"executable {entity_id} has invalid rule_refs")
+                if not expanded.intersection(refs):
+                    continue
+                unknown = sorted(set(refs) - known_rules)
+                if unknown:
+                    raise SyscallGuardError(
+                        f"executable {entity_id} references unknown rules: {', '.join(unknown)}"
+                    )
+                for rule_id in sorted(set(refs) - expanded):
+                    expanded.add(rule_id)
+                    reason = f"shared_entity_dependency:{entity_id}"
+                    if reason not in pending_reasons[rule_id]:
+                        pending_reasons[rule_id].append(reason)
+                    changed = True
+    return expanded
+
+
 def _result_locations(
     checks: dict[str, dict[str, Any]], tests: dict[str, dict[str, Any]]
 ) -> list[dict[str, Any]]:
@@ -570,7 +611,14 @@ def prepare_mapping(
             for rule_id in syscall_rules.get(syscall, [])
         }
     )
-    selected = sorted(scope.intersection(pending))
+    selected_set = _expand_shared_entity_selection(
+        root,
+        scope.intersection(pending),
+        set(rules),
+        pending_reasons,
+    )
+    selected = sorted(selected_set)
+    pending = sorted(rule_id for rule_id, reasons in pending_reasons.items() if reasons)
     skipped = sorted(scope - set(selected))
     run_id = normalize_run_id(
         requested_run_id
