@@ -1,0 +1,32 @@
+# 合规检查：条件：文件描述符无效；检查：调用 signalfd(fd_einval2, mask, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2C867F470A477D29
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: signalfd
+    arguments:
+    - fd_einval2
+    - mask
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2c867f470a477d292a4a2d40ee43a337e4f77bb80811d916445beb2036cebbb8
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/signalfd/signalfd02.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:52e3d7cb35fbfd463307d6ecd1d0ce5dbde8c36a4b3e67d775351284b9822f0a
+  case: signalfd02_57_2

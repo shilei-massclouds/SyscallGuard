@@ -1,0 +1,35 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 sendto(sockfd, NULL, 1, 0, (struct sockaddr *) &sa, sizeof(sa))；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0069B2BDFC11BD6E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - 'NULL'
+    - '1'
+    - '0'
+    - (struct sockaddr *) &sa
+    - sizeof(sa)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:0069b2bdfc11bd6e25b830e73c792acbb1ca4c4d9d9f22e922ab8f29f7983555
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendto/sendto02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a7ad0d63c091c6c53b5a02fe3ca145eca007e2ad02bcebdeeb4dc602a51c0dac
+  case: sendto02_57_raw

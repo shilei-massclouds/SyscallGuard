@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rt_sigprocmask(SIG_UNBLOCK, &set, &oset, SIGSETSIZE)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_423E92D9328C2A39
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigprocmask
+    arguments:
+    - SIG_UNBLOCK
+    - '&set'
+    - '&oset'
+    - SIGSETSIZE
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:423e92d9328c2a39012f36f1101818dcc226c890746fe3e26c17d4cb2ed59755
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+  line: 140
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9f8998e09688bf0042627b2ff00d0506ef8d78145b08e1d454bf9419603c3beb
+  case: rt_sigprocmask01_140_raw

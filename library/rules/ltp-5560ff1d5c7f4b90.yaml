@@ -1,0 +1,26 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sgetmask()；预期：{'kind': 'return_value', 'return': 'sig'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5560FF1D5C7F4B90
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sgetmask
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: sig
+  errno: []
+semantic_hash: sha256:5560ff1d5c7f4b90cb6b9dc6ff446e034fb3abbf9e5ac3543fee5a34d3262e03
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sgetmask/sgetmask01.c
+  line: 132
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:7ce48205989e2e09b6276ba455e951750b85dab4dea77d29fe806e6b6b8b04a5
+  case: sgetmask01_132_raw

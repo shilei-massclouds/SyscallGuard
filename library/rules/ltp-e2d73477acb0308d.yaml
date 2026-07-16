@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 setegid(ltpuser->pw_gid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E2D73477ACB0308D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: setegid
+    arguments:
+    - ltpuser->pw_gid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e2d73477acb0308d9f9cc9c5d2d299a9a73f441fef7801f412caf88c3da755f4
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setegid/setegid02.c
+  line: 27
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0646df30bb0da954909491e261967ee7ffd149ba2709d5b51896f72369c05638
+  case: setegid02_27_raw

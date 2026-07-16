@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, &offset, 24)；预期：{'kind': 'return_value', 'return': '26'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D3E85F64C28BBC4F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - '&offset'
+    - '24'
+  expected_result:
+    kind: return_value
+    return: '26'
+  errno: []
+semantic_hash: sha256:d3e85f64c28bbc4f02b8deb565d047299f024721f0c2e4f7b170f41e7e6de456
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile02.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:621186c40f1ecb8e6ed3dd50b97d2d15e17c9d3f2ce42b6206d43714bd8afcd9
+  case: sendfile02_61_1

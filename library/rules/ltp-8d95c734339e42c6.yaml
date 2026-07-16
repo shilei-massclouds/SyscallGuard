@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 settimeofday(&{0, -1}, NULL)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8D95C734339E42C6
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: settimeofday
+    arguments:
+    - '&{0, -1}'
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8d95c734339e42c65ba85fe78da08c9953487da889827d64fb4f956599e7f22e
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/settimeofday/settimeofday02.c
+  line: 33
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1bcacd4912c1b784e30e3af41dbd0133a0428ce70f64044bec631683c314cca4
+  case: settimeofday02_33_1

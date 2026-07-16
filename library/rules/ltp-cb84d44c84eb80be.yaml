@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, NULL, 1)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CB84D44C84EB80BE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - 'NULL'
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:cb84d44c84eb80be136424feb6740835fa42027615d2c8f3ec0c9280a34df9ba
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile07.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0433105d7383264eb8d403fe14e80ea6b2262fec4d094c295b178850a67ec5da
+  case: sendfile07_57_raw

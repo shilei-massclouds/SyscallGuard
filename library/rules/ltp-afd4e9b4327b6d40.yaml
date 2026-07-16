@@ -1,0 +1,35 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 sendto(s, buf, sizeof(buf), 0, (const struct sockaddr *)&sin1, sizeof(sin1))；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_AFD4E9B4327B6D40
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - s
+    - buf
+    - sizeof(buf)
+    - '0'
+    - (const struct sockaddr *)&sin1
+    - sizeof(sin1)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:afd4e9b4327b6d408fbe3b3f82dba779d5e8ad6364e77dca4a508b6d2e962f22
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendto/sendto01.c
+  line: 318
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8747202fa2d1cd0d4bc18ad85ef6101d917c62ac6153f486314a25f94c36eef4
+  case: sendto01_318_0

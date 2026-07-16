@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rt_sigprocmask(SIG_BLOCK, &s, &set, 1)；预期：返回 0，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FE57D3FF371E3DDC
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigprocmask
+    arguments:
+    - SIG_BLOCK
+    - '&s'
+    - '&set'
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fe57d3ff371e3ddc787f08c7b217aa06e930c2084b9fae14db0bb298c5492326
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
+  line: 107
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:473ab8d12e8eeec13437bc8ffd2b362d664ecb0bf5c3c5dabb319d53c1d48bfb
+  case: rt_sigprocmask02_107_0

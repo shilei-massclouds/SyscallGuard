@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, NULL, sb.st_size)；预期：{'kind': 'return_value', 'return': 'st_size'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A49B95E01ADFC6F8
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - 'NULL'
+    - sb.st_size
+  expected_result:
+    kind: return_value
+    return: st_size
+  errno: []
+semantic_hash: sha256:a49b95e01adfc6f8a2365988a715f341e4f31172445c6e2e557162d64117bd31
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile06.c
+  line: 46
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:73b5921e79acd78445d77bb417e474435e0e777273e2bdeb20f2742f2ebfdeed
+  case: sendfile06_46_raw

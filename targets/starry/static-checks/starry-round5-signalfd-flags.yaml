@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SIGNALFD_FLAGS
+title: signalfd rejects unknown creation flags
+rule_refs:
+- LTP_2C867F470A477D29
+applies_to_syscalls:
+- signalfd
+path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+patterns:
+- label: unknown flag bits are invalid input
+  regex: let flags = SignalfdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+upstream_dependencies:
+- id: LTP_2C867F470A477D29
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:2c867f470a477d292a4a2d40ee43a337e4f77bb80811d916445beb2036cebbb8
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+  symbols:
+  - sys_signalfd4
+  scope: symbols
+  file_hash: sha256:b8be77d26bb765cf8415302a9d5321d62fc33f96f7856d55f9e69da5a5fdb958
+  symbol_hashes:
+    sys_signalfd4: sha256:a1b657073cb4f06d67f0b2547aaa6076b15d22cb1e996826a2b6c1de54c13b3e
+  missing_symbols: []
+  content_hash: sha256:2d56785a4dad13d6cd43a828445bab1ad743b3da95f22f6a35ea98653ba805f6
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:6afa0972a0f9f45c1bfb2d717b98844137a0bc301bb79745bef7174f3a68f93c
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

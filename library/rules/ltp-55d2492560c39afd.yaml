@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sigsuspend(&signalset)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_55D2492560C39AFD
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sigsuspend
+    arguments:
+    - '&signalset'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:55d2492560c39afdae0198b58071de3dce1131484ca2d56f9b815ee38a7bb70b
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sigsuspend/sigsuspend01.c
+  line: 41
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:efbd09ae1c44ca843b60c1ee794db9a30c89d0ffa188c27939d414431d72c167
+  case: sigsuspend01_41_raw

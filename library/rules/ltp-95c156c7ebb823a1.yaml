@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sched_getattr(pid, NULL, sizeof(struct sched_attr), 0)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_95C156C7EBB823A1
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - 'NULL'
+    - sizeof(struct sched_attr)
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:95c156c7ebb823a10c3fe81923e23e536edfbbbb7a0e66cf090e81c6a1f36075
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
+  line: 43
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:12a8c41817ffe9016c901df882052fa0700ba78230d002d04cb811c86e6b09dd
+  case: sched_getattr02_43_1

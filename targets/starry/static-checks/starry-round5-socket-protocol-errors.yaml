@@ -1,0 +1,50 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+title: socket validates Internet domain protocols and unsupported domains
+rule_refs:
+- LTP_6B29B31CE99466E6
+- LTP_A4A662687B98D33F
+- LTP_AF8D38878ED1A9DA
+- LTP_DD2E1A555B603C7B
+- LTP_E316C28E36E136DA
+applies_to_syscalls:
+- socket
+path: os/StarryOS/kernel/src/syscall/net/socket.rs
+patterns:
+- label: TCP sockets reject non-TCP protocols
+  regex: \(AF_INET \| AF_INET6, SOCK_STREAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_TCP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+- label: UDP sockets reject non-UDP protocols
+  regex: \(AF_INET \| AF_INET6, SOCK_DGRAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_UDP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+- label: raw IPv4 sockets reject unsupported protocols
+  regex: \(AF_INET, SOCK_RAW\) => \{[\s\S]*?proto != IPPROTO_ICMP as u32[\s\S]*?LinuxError::EPROTONOSUPPORT
+- label: unknown domains return EAFNOSUPPORT
+  regex: _ => \{\s*return Err\(AxError::from\(LinuxError::EAFNOSUPPORT\)\);\s*\}
+upstream_dependencies:
+- id: LTP_6B29B31CE99466E6
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:6b29b31ce99466e6682913919c0fad006475b094d59fadcc43c1ec6f4e9d1630
+- id: LTP_A4A662687B98D33F
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:a4a662687b98d33f933b37774536af580d8b9e44d1bc317c426dd2c4a68a7a1e
+- id: LTP_AF8D38878ED1A9DA
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:af8d38878ed1a9da8bcca89799d36f633a0776307b92fe435d004f9b6cb1b444
+- id: LTP_DD2E1A555B603C7B
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:dd2e1a555b603c7b2ea7b60867a7cbf5b07e84f866b5a4cd8d83f27a24028065
+- id: LTP_E316C28E36E136DA
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:e316c28e36e136da592847ed1389e06538d4842d55259bc0bd80dbb61b78d10e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols:
+  - sys_socket
+  scope: symbols
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes:
+    sys_socket: sha256:91fb573aa9a607625c4e561e5d88aef05004e04924cabdd1daabbff94343cc2e
+  missing_symbols: []
+  content_hash: sha256:021fa706590e385e97a11066c2446f832f74697a23552eaf0e6e26deebcc8ee1
+target_content_fingerprint: sha256:8d9de7dead77a5883314a957ae42fe3a3e3a49cde14aec81072abad473ced18c
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

@@ -1,0 +1,38 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, &offset, ONE_GB)；预期：{'kind': 'return_value', 'return': 'ONE_GB'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4A5C15DAE55BBD2E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - '&offset'
+    - ONE_GB
+  expected_result:
+    kind: return_value
+    return: ONE_GB
+  errno: []
+semantic_hash: sha256:4a5c15dae55bbd2eefee551f4f8a1aeb562814c3948307a6108a17601802ccec
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile09.c
+  line: 66
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d8267ab8400c87d7ee5a9b51662a10b9449c4960e8766c0726f5add74fb0ccb8
+  case: sendfile09_66_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile09.c
+  line: 66
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d8267ab8400c87d7ee5a9b51662a10b9449c4960e8766c0726f5add74fb0ccb8
+  case: sendfile09_66_1

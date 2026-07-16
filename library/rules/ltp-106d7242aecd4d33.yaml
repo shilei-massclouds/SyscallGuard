@@ -1,0 +1,26 @@
+# 合规检查：条件：无额外前置条件；检查：调用 setpgrp()；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_106D7242AECD4D33
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: setpgrp
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:106d7242aecd4d330817399d402a2a3d75e2c7483206907303868fb4137c77a0
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpgrp/setpgrp01.c
+  line: 65
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b51d772a977b93db4e09858a35d234158e52402d61aab55d4314909859db136b
+  case: setpgrp01_65_raw

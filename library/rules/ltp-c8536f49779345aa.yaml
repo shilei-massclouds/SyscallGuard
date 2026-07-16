@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 sendfile(out_fd, in_fd, protected_buffer, 1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C8536F49779345AA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - protected_buffer
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c8536f49779345aaca6b3672cea8de30e836aafaabcd8bfdeb6c149dff8a6810
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile04.c
+  line: 60
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6148f2377b23a48067e79f79477bc38171b92865a45b526bb170ab96ba16b73a
+  case: sendfile04_60_raw

@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 request_key(type, "desc", "callout_info", KEY_SPEC_SESSION_KEYRING)；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E7E64809057630A5
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - '"desc"'
+    - '"callout_info"'
+    - KEY_SPEC_SESSION_KEYRING
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:e7e64809057630a5cb2808273353195d84b39053a3820fa0f0052201057061af
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key03.c
+  line: 117
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:06460b70646f14109ab9a535ca3b9182e352a27affb2d040df4906242c06f313
+  case: request_key03_117_raw

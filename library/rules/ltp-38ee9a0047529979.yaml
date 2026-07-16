@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, NULL, strlen(TEST_MSG_IN))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_38EE9A0047529979
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - 'NULL'
+    - strlen(TEST_MSG_IN)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:38ee9a0047529979d02f062dd145279eb4070d2dfc0c8b9e1797b7888e2ab631
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile08.c
+  line: 32
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:7bf00a82ef790c0fa71a39c0f5b6fe6795a865b46d708d02a9ce1e017d6275d3
+  case: sendfile08_32_raw

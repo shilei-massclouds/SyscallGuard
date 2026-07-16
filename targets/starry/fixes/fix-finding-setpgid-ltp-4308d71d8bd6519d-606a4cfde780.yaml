@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+finding_refs:
+- finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+source_check_report_ids:
+- check-20260716t052607z-5bf44fc0
+patch: runs/fix-20260716t052901z-daf3c1fa/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-syscalls-compliance-1
+regression: runs/fix-20260716t052901z-daf3c1fa/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-16T05:29:55.408016Z'
+upstream_dependencies:
+- id: finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+  generated_at_utc: '2026-07-16T05:26:11.833939Z'
+  content_hash: sha256:66cf2c49e765b1febaa7df1c71e1edc35fde740837d306d06c2c2859f86f509e
+- id: check-20260716t052607z-5bf44fc0
+  generated_at_utc: '2026-07-16T05:26:11.833939Z'
+  content_hash: sha256:8c1364655b031bbb7fedf1013bd2502754b6ef539102e70eae23f9118e897b70
+- id: implementation.patch
+  generated_at_utc: '2026-07-16T05:29:55.189570Z'
+  content_hash: sha256:35ba9fd3a065f224330bd654b1e2dea4b006d6667a851b74cf45b2525f802dc5
+- id: fix-20260716t052901z-daf3c1fa
+  generated_at_utc: '2026-07-16T05:29:55.213909Z'
+  content_hash: sha256:7f3c6087ae541df48f2acd8d28f91b50bfe351be7e8feb1d1562129521f45cb5

@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+title: sendmsg validates the message header user pointer before use
+rule_refs:
+- LTP_A2098D60C40310A2
+applies_to_syscalls:
+- sendmsg
+path: os/StarryOS/kernel/src/syscall/net/io.rs
+patterns:
+- label: message header uses checked user access
+  regex: pub fn sys_sendmsg\([\s\S]*?let msg = msg\.get_as_ref\(\)\?;
+upstream_dependencies:
+- id: LTP_A2098D60C40310A2
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:a2098d60c40310a201cf1ee9258fa49ff832fae788c0f99896d048e0cd323d61
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/io.rs
+  symbols:
+  - sys_sendmsg
+  scope: symbols
+  file_hash: sha256:7beaa618cfbc8dcdce1eaf3e9c6b650ace1a2337a67e5f8e4596ab4cdfd0b93f
+  symbol_hashes:
+    sys_sendmsg: sha256:2fdb20599fd1b74ef5bf3a6fb602f358272952051d0287c80199b7ebaf2d33d8
+  missing_symbols: []
+  content_hash: sha256:1a199471690d1a5acacd3c907207e3290f5bd528d099bb548ffa81693cd06954
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:84337fe786facb5bb7653d67b4a22ca1762c20bfadedf4fd992fd6ae72eeffe1
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

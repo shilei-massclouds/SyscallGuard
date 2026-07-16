@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+title: sched_setaffinity rejects an empty effective CPU mask
+rule_refs:
+- LTP_585CC852338F38EE
+applies_to_syscalls:
+- sched_setaffinity
+path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+patterns:
+- label: empty mask returns invalid input
+  regex: pub fn sys_sched_setaffinity\([\s\S]*?if cpu_mask\.is_empty\(\) \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_585CC852338F38EE
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:585cc852338f38eedc86755b62d33a8eb443200486dd86bb3f79a4a4df80981c
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols:
+  - sys_sched_setaffinity
+  scope: symbols
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes:
+    sys_sched_setaffinity: sha256:e9899d614d94853082cbb04fb2eb1e22920e03ad52e902167908acae6de0e28e
+  missing_symbols: []
+  content_hash: sha256:91b2a09a35b3d9214c0904797d0795e942c2469d8ef3b33c5812494ce339ceac
+target_content_fingerprint: sha256:d804d9de26d79ad91d076a3e2744d9cbe17fb106d1afda17e794d501481e83d3
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

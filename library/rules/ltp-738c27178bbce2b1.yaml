@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 set_tid_address(&newtid)；预期：{'kind': 'return_value', 'return': 'getpid()'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_738C27178BBCE2B1
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: set_tid_address
+    arguments:
+    - '&newtid'
+  expected_result:
+    kind: return_value
+    return: getpid()
+  errno: []
+semantic_hash: sha256:738c27178bbce2b1ddcb5104e95afd1dc31d020e311d844a7a3106165d4567cd
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/set_tid_address/set_tid_address01.c
+  line: 17
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:08bbf6fcc628f35844e1ee9c19d6d4164394105cd3471d6c9f1c9745cd44db5f
+  case: set_tid_address01_17_raw

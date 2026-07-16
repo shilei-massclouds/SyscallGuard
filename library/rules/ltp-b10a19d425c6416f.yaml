@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sched_setattr(pid, &attr, 0)；预期：返回 0，errno 为 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B10A19D425C6416F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - '&attr'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: '0'
+  errno:
+  - '0'
+semantic_hash: sha256:b10a19d425c6416f8bdd6cc2e2868bd2c4347d36d6f7a576702c96c6cfd97b02
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+  line: 88
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b42299f8b0e13a28938b275b8cb7e58ca3a05cd1f1274cd1bca47076cc7193fa
+  case: sched_setattr01_88_0

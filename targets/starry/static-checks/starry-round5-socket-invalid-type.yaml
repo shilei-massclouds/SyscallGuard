@@ -1,0 +1,36 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+title: socket rejects an invalid Internet socket type with EINVAL
+rule_refs:
+- LTP_971DB17D32C51561
+applies_to_syscalls:
+- socket
+path: os/StarryOS/kernel/src/syscall/net/socket.rs
+patterns:
+- label: unsupported type in a supported domain is invalid input
+  regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK, _\)
+    \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn sys_bind
+upstream_dependencies:
+- id: LTP_971DB17D32C51561
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:971db17d32c515614f0af38045463319bd4bfb3a661a4ae9e4486c0404c75ead
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols:
+  - sys_socket
+  scope: symbols
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes:
+    sys_socket: sha256:91fb573aa9a607625c4e561e5d88aef05004e04924cabdd1daabbff94343cc2e
+  missing_symbols: []
+  content_hash: sha256:021fa706590e385e97a11066c2446f832f74697a23552eaf0e6e26deebcc8ee1
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:8d286b19c846cd60e7cc03f2c01e32c81f364826fd9a869bde6ae79f441cd8b9
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

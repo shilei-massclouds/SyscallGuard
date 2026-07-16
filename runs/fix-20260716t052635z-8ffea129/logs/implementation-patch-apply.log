@@ -1,0 +1,3 @@
+warning: unable to unlink 'os/StarryOS/kernel/src/syscall/net/socket.rs': Read-only file system
+warning: unable to unlink 'os/StarryOS/kernel/src/syscall/task/job.rs': Read-only file system
+error: unable to write file 'os/StarryOS/kernel/src/syscall/net/socket.rs' mode 100644: Read-only file system

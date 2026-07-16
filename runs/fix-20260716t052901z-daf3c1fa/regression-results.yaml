@@ -1,0 +1,350 @@
+schema_version: 1
+kind: syscallguard_fix_regression
+run_id: fix-20260716t052901z-daf3c1fa
+generated_at_utc: '2026-07-16T05:29:55.213909Z'
+upstream_dependencies:
+- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:6d8ffe193808bde740053a61419adcf0e7c090388b2f5fea0475696c5b402070
+- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:39ebc0849b8fede86d9689ed1dba7fda23315b83937a447b328ffd1a94bdfb34
+- id: STARRY_EPOLL_NESTED_LOOP
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:d1db97954ea66c6632d4d74191ef0d91751bbbcfee42883a78137bbdaac22e58
+- id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  generated_at_utc: '2026-07-16T04:30:54.819863Z'
+  content_hash: sha256:81ef9eef26bc66571e89435a216d883211029dd798c2e5ce97752ec71f012cf4
+- id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  generated_at_utc: '2026-07-16T04:30:54.819863Z'
+  content_hash: sha256:2e938148c5bb7288d8d9971f38b67963abae7401d6ccd7d1c25d575321dee90f
+- id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  generated_at_utc: '2026-07-16T04:30:54.819863Z'
+  content_hash: sha256:529b6e4f913c327e42930f608d34b14a971a4d23f7b25f9e82dec7def42e6d27
+- id: STARRY_ROUND5_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:da770a5400fe32b31dae3fdc5a48aa221b331983d32fd2b3bb87a450e423aa95
+- id: STARRY_ROUND5_ROBUST_LIST
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:49c225ff275ba796295228b813bfbfe761cc508a01a9b971464fcf7affc91426
+- id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:1286cf448c7276b238ae0d54ccd93eabfa18ca945139d46a4eb97a11c766d9df
+- id: STARRY_ROUND5_SCHED_SETAFFINITY_USER_MASK
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:c8f75a8cb1b1ad6abff2190bf03499956e9f2f2533b82a8435763319939f5659
+- id: STARRY_ROUND5_SCHED_YIELD
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:f1d5abc2d7ecb7e7c1cb8a3d6f071fc74d40239a7364a6d9b7f78bdf77eaf6e4
+- id: STARRY_ROUND5_SENDFILE_IN_FD
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:b7aac3850568921e4f59c7882d1498dc68d0db6a6efa16737d53f12e56e26938
+- id: STARRY_ROUND5_SENDFILE_OFFSET_POINTER
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:cb5f336256c5a1d3e9babebe6f1b2af1e4be40787db147ad64c4047e345dac7a
+- id: STARRY_ROUND5_SENDFILE_OUT_FD
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:69c98a26ff6fd6f0534a6eddc1c977a5f60ce20b9c9efaccb4a00b65c48faef6
+- id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:50e22d19350bd1144627e433bc10ea63c290fec1cf9187cadb3e9d874ef596ab
+- id: STARRY_ROUND5_SETPGID_NEGATIVE
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:e89391ce26bf073a42d5a1dd59186e745d8579fc6655083d4206d06e7db12831
+- id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:0a117a8add6bdbeef860acccf720e9feb130a9d62257944831d44bc590e383b5
+- id: STARRY_ROUND5_SIGNALFD_FLAGS
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:464e7ac32d448e68093c3a53cd0a9d95c5bd76754fab1fa566201454f5210a7d
+- id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:e01440a0647bad98aa25dce14810b77d35d1943ba53d2e0a9cfced0afb63e543
+- id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+  generated_at_utc: '2026-07-16T05:25:46.137226Z'
+  content_hash: sha256:ef888f38f5caad5a56c28b14fd6bf934e317b3ea18fe9b83949eb0126368fad3
+target_snapshot_hash: sha256:606a4cfde780311cc5edcdcc833c7cbf520a190360791a132ff9da6d231772b8
+static:
+- check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  rule_refs:
+  - LTP_425E5A3502541DE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: first and last use unsigned 32-bit syscall semantics
+    regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+    matched: true
+    line: 489
+  - label: the maximum unsigned range is accepted and capped to open descriptors
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 489
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  rule_refs:
+  - LTP_74BB3F96CBA52D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+    regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+    matched: true
+    line: 773
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_NESTED_LOOP
+  rule_refs:
+  - LTP_66C670178B06E9F3
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll.rs
+  patterns:
+  - label: add detects whether a nested epoll reaches the destination instance
+    regex: pub fn add\([\s\S]*?downcast_arc::<Epoll>\(\)[\s\S]*?reaches_epoll\([\s\S]*?AxError::FilesystemLoop
+    matched: true
+    line: 501
+  reason: all required patterns matched
+- check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  rule_refs:
+  - LTP_DA65D6C7A0E4ABBC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: finit_module names and inspects its flags argument
+    regex: 'pub fn sys_finit_module\(module_fd: i32, param_ptr: \*const u8, flags: u32\)'
+    matched: true
+    line: 46
+  - label: unsupported nonzero flags return InvalidInput
+    regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 46
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  rule_refs:
+  - LTP_6C14DE68E3C0CC24
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: handler accepts both timeval and timezone pointers
+    regex: 'pub fn sys_gettimeofday\(ts: \*mut timeval, tz: \*mut Timezone\)'
+    matched: true
+    line: 43
+  - label: non-null timezone output uses checked VM access
+    regex: tz\.nullable\(\)[\s\S]*?tz\.vm_write\(Timezone::default\(\)\)\?;
+    matched: true
+    line: 47
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  rule_refs:
+  - LTP_D246498B20D9CB2C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: init_module checks CAP_SYS_MODULE
+    regex: pub fn sys_init_module\([\s\S]*?if !current\(\)\.as_thread\(\)\.cred\(\)\.has_cap_sys_module\(\)
+    matched: true
+    line: 22
+  - label: permission failure precedes user-buffer access
+    regex: pub fn sys_init_module\([\s\S]*?has_cap_sys_module\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);[\s\S]*?VmBytes::new
+    matched: true
+    line: 22
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_2C867F470A477D29
+  - LTP_39B1E5C574F2D3DC
+  - LTP_40024D6BE4C6AECC
+  - LTP_4308D71D8BD6519D
+  - LTP_44DC5382746D773D
+  - LTP_585CC852338F38EE
+  - LTP_7BC885B5878C95B6
+  - LTP_971DB17D32C51561
+  - LTP_A2098D60C40310A2
+  - LTP_C8536F49779345AA
+  - LTP_D7C638B9DFF7DBC3
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad addresses translate to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors translate to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid inputs translate to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_ROBUST_LIST
+  rule_refs:
+  - LTP_40024D6BE4C6AECC
+  - LTP_E0470C189C2D1DE3
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sync/futex.rs
+  patterns:
+  - label: wrong robust-list size is invalid
+    regex: pub fn sys_set_robust_list\([\s\S]*?if size != size_of::<robust_list_head>\(\) \{\s*return
+      Err\(AxError::InvalidInput\);
+    matched: true
+    line: 324
+  - label: valid robust-list head is stored before success
+    regex: current\(\)\.as_thread\(\)\.set_robust_list_head\(head\.addr\(\)\);\s*Ok\(0\)
+    matched: true
+    line: 328
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+  rule_refs:
+  - LTP_585CC852338F38EE
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: empty mask returns invalid input
+    regex: pub fn sys_sched_setaffinity\([\s\S]*?if cpu_mask\.is_empty\(\) \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 141
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SCHED_SETAFFINITY_USER_MASK
+  rule_refs:
+  - LTP_D7C638B9DFF7DBC3
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: user mask is loaded through vm_load
+    regex: pub fn sys_sched_setaffinity\([\s\S]*?let user_mask = vm_load\(user_mask, size\)\?;
+    matched: true
+    line: 141
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SCHED_YIELD
+  rule_refs:
+  - LTP_A9BC7EBC1784A722
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: sched_yield yields once and returns zero
+    regex: pub fn sys_sched_yield\(\) -> AxResult<isize> \{\s*ax_task::yield_now\(\);\s*Ok\(0\)\s*\}
+    matched: true
+    line: 30
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDFILE_IN_FD
+  rule_refs:
+  - LTP_39B1E5C574F2D3DC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: direct input descriptor uses File lookup
+    regex: pub fn sys_sendfile\([\s\S]*?let _in_file = File::from_fd\(in_fd\)\?;
+    matched: true
+    line: 741
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDFILE_OFFSET_POINTER
+  rule_refs:
+  - LTP_C8536F49779345AA
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: offset is read with vm_read
+    regex: pub fn sys_sendfile\([\s\S]*?if !offset\.is_null\(\) \{\s*let pos = offset\.vm_read\(\)\?;
+    matched: true
+    line: 741
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDFILE_OUT_FD
+  rule_refs:
+  - LTP_7BC885B5878C95B6
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: output descriptor is looked up first
+    regex: pub fn sys_sendfile\([\s\S]*?let out_file = get_file_like\(out_fd\)\?;
+    matched: true
+    line: 741
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+  rule_refs:
+  - LTP_A2098D60C40310A2
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/io.rs
+  patterns:
+  - label: message header uses checked user access
+    regex: pub fn sys_sendmsg\([\s\S]*?let msg = msg\.get_as_ref\(\)\?;
+    matched: true
+    line: 137
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SETPGID_NEGATIVE
+  rule_refs:
+  - LTP_4308D71D8BD6519D
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/job.rs
+  patterns:
+  - label: setpgid preserves signed syscall arguments
+    regex: 'pub fn sys_setpgid\(pid: i32, pgid: i32\) -> AxResult<isize>'
+    matched: true
+    line: 40
+  - label: negative pid or pgid is rejected with invalid input
+    regex: pub fn sys_setpgid\([\s\S]*?if pid < 0 \|\| pgid < 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 40
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+  rule_refs:
+  - LTP_44DC5382746D773D
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: unknown which value is invalid input
+    regex: pub fn sys_setpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+    matched: true
+    line: 270
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SIGNALFD_FLAGS
+  rule_refs:
+  - LTP_2C867F470A477D29
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+  patterns:
+  - label: unknown flag bits are invalid input
+    regex: let flags = SignalfdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+    matched: true
+    line: 48
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  rule_refs:
+  - LTP_971DB17D32C51561
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: unsupported type in a supported domain is invalid input
+    regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK, _\)
+      \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn sys_bind
+    matched: true
+    line: 35
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+  rule_refs:
+  - LTP_6B29B31CE99466E6
+  - LTP_A4A662687B98D33F
+  - LTP_AF8D38878ED1A9DA
+  - LTP_DD2E1A555B603C7B
+  - LTP_E316C28E36E136DA
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: TCP sockets reject non-TCP protocols
+    regex: \(AF_INET \| AF_INET6, SOCK_STREAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_TCP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 63
+  - label: UDP sockets reject non-UDP protocols
+    regex: \(AF_INET \| AF_INET6, SOCK_DGRAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_UDP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 69
+  - label: raw IPv4 sockets reject unsupported protocols
+    regex: \(AF_INET, SOCK_RAW\) => \{[\s\S]*?proto != IPPROTO_ICMP as u32[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 94
+  - label: unknown domains return EAFNOSUPPORT
+    regex: _ => \{\s*return Err\(AxError::from\(LinuxError::EAFNOSUPPORT\)\);\s*\}
+    matched: true
+    line: 107
+  reason: all required patterns matched
+dynamic: []
+blockers: []

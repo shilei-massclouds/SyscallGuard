@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 request_key("user", "desc", "callout_info", 0)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1BDC4A832DB89410
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - '"user"'
+    - '"desc"'
+    - '"callout_info"'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:1bdc4a832db89410164e6f7da6fcd6ddc57cede4911699439f09a8694f934668
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key04.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1195f25ecf0203494f9707be9371c85fbf3a0465064136eeb7278607029af9e4
+  case: request_key04_53_raw

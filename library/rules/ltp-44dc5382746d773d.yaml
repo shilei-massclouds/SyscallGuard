@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 setpriority(INVAL_FLAG, 0, NEW_PRIO)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_44DC5382746D773D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: setpriority
+    arguments:
+    - INVAL_FLAG
+    - '0'
+    - NEW_PRIO
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:44dc5382746d773d253ddf7ccb3ede2e242b978ebfb3e0756367ceb4d839956d
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpriority/setpriority02.c
+  line: 62
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2ab5f883553d28ad93acd6c87a4de54dc13f2c63ca536da5eedd838e3ebb5aba
+  case: setpriority02_62_0

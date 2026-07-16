@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 set_robust_list(&head, len)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E0470C189C2D1DE3
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: set_robust_list
+    arguments:
+    - '&head'
+    - len
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:e0470c189c2d1de37f10ab6be898fcfa26ff828dc89057c84d3ddaf504ab41bd
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/set_robust_list/set_robust_list01.c
+  line: 127
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8913c254406aed15f27c37fcca7eec6e4be86d48991a4bd201b7430514e88d85
+  case: set_robust_list01_127_raw

@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, out_fd, NULL, 1)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3C1DCCC4E6DCC76B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - out_fd
+    - 'NULL'
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:3c1dccc4e6dcc76b11d8fcb57b268cec7dcd10a5a6d9103e731d6d3ae93953d5
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile03.c
+  line: 51
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1efb40ef96b573603cb6cb2c3f475c8fabe69011dd4cfe9c5c801db1d76d3ed9
+  case: sendfile03_51_3

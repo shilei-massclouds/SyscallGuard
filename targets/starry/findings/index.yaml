@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-16T04:31:14.679162Z'
+updated_at_utc: '2026-07-16T05:29:55.408016Z'
 entities:
 - id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -74,3 +74,21 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-16T03:48:12.083545Z'
   content_hash: sha256:f723838d8222f9b5817421ca11fc90b5a88706de9b04e54b21696e4ae6a95cc3
+- id: finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+  path: targets/starry/findings/finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780.yaml
+  syscall: setpgid
+  rule_id: LTP_4308D71D8BD6519D
+  target_snapshot_hash: sha256:606a4cfde780311cc5edcdcc833c7cbf520a190360791a132ff9da6d231772b8
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-16T05:29:55.408016Z'
+  content_hash: sha256:d9ca742fe03104fd3d9091a40c809ec6dc91d2af01f3545b1859118f06b8d136
+- id: finding-socket-ltp-971db17d32c51561-606a4cfde780
+  path: targets/starry/findings/finding-socket-ltp-971db17d32c51561-606a4cfde780.yaml
+  syscall: socket
+  rule_id: LTP_971DB17D32C51561
+  target_snapshot_hash: sha256:606a4cfde780311cc5edcdcc833c7cbf520a190360791a132ff9da6d231772b8
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-16T05:29:55.408016Z'
+  content_hash: sha256:c12b9a2e48e1b1f07d79b510bcd819494d3f84f2dd0ce1c5ece0939ebea0376c

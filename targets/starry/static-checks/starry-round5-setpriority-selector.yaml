@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+title: setpriority rejects an unknown selector
+rule_refs:
+- LTP_44DC5382746D773D
+applies_to_syscalls:
+- setpriority
+path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+patterns:
+- label: unknown which value is invalid input
+  regex: pub fn sys_setpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+upstream_dependencies:
+- id: LTP_44DC5382746D773D
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:44dc5382746d773d253ddf7ccb3ede2e242b978ebfb3e0756367ceb4d839956d
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols:
+  - sys_setpriority
+  scope: symbols
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes:
+    sys_setpriority: sha256:e6535d205fae2e42b3798c304f1654ca39576862e5476cddb11569a84aea7012
+  missing_symbols: []
+  content_hash: sha256:b2d439c04549f3568e947c8af4e9a0a1a6d7cac2f4c2a011c0f2bd6945587566
+target_content_fingerprint: sha256:3ace081123326e47e2926384f8434ce0e3e7ee159d25173ed4325f330ddb858f
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

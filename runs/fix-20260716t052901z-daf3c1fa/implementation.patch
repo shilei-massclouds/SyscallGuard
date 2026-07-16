@@ -1,0 +1,29 @@
+diff --git a/os/StarryOS/kernel/src/syscall/net/socket.rs b/os/StarryOS/kernel/src/syscall/net/socket.rs
+--- a/os/StarryOS/kernel/src/syscall/net/socket.rs
++++ b/os/StarryOS/kernel/src/syscall/net/socket.rs
+@@ -101,6 +101,6 @@ pub fn sys_socket(domain: u32, raw_ty: u32, proto: u32) -> AxResult<isize> {
+         (AF_INET | AF_INET6, _) | (AF_UNIX, _) | (AF_NETLINK, _) | (AF_VSOCK, _) => {
+             warn!("Unsupported socket type: domain: {domain}, ty: {ty}");
+-            return Err(AxError::from(LinuxError::ESOCKTNOSUPPORT));
++            return Err(AxError::InvalidInput);
+         }
+         _ => {
+             return Err(AxError::from(LinuxError::EAFNOSUPPORT));
+diff --git a/os/StarryOS/kernel/src/syscall/task/job.rs b/os/StarryOS/kernel/src/syscall/task/job.rs
+--- a/os/StarryOS/kernel/src/syscall/task/job.rs
++++ b/os/StarryOS/kernel/src/syscall/task/job.rs
+@@ -37,7 +37,13 @@ pub fn sys_getpgrp() -> AxResult<isize> {
+     Ok(curr.as_thread().proc_data.proc.group().pgid() as _)
+ }
+ 
+-pub fn sys_setpgid(pid: Pid, pgid: Pid) -> AxResult<isize> {
++pub fn sys_setpgid(pid: i32, pgid: i32) -> AxResult<isize> {
++    if pid < 0 || pgid < 0 {
++        return Err(AxError::InvalidInput);
++    }
++    let pid = pid as Pid;
++    let pgid = pgid as Pid;
++
+     let proc = &get_process_data(pid)?.proc;
+ 
+     if pgid == 0 || pgid == proc.pid() {

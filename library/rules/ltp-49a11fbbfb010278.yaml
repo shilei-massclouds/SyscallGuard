@@ -1,0 +1,35 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 sendto(s, buf, sizeof(buf), MSG_OOB, (const struct sockaddr *)&sin1, sizeof(sin1))；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_49A11FBBFB010278
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - s
+    - buf
+    - sizeof(buf)
+    - MSG_OOB
+    - (const struct sockaddr *)&sin1
+    - sizeof(sin1)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:49a11fbbfb010278e64e9a4d6583740cbb77708f4951aab2c1f7236c5645bc80
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendto/sendto01.c
+  line: 318
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8747202fa2d1cd0d4bc18ad85ef6101d917c62ac6153f486314a25f94c36eef4
+  case: sendto01_318_9

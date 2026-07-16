@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sendfile(out_fd, in_fd, &offset, 1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5A68AEA67C7612A0
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - '&offset'
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5a68aea67c7612a0231bbe2a83dd7772f5c4f5d05a82e9025c971586d4e0c0c4
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile05.c
+  line: 39
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:dbfe329ba0f63c1d38c8b036f4a81d54d8acb779cd52f280a5c9f35e0a448f59
+  case: sendfile05_39_raw

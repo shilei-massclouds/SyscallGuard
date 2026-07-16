@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 setpgid(child_pid, getppid())；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DBEC3975C5440D23
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - child_pid
+    - getppid()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:dbec3975c5440d231088c615db5b4d22bfceecc1f084c5aa3eba17d4421abef7
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpgid/setpgid03.c
+  line: 43
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:b2afaa832a2803a56650a5cd3e6b7e362e903779ec5fb68dc1ff8c40e8e10310
+  case: setpgid03_43_raw

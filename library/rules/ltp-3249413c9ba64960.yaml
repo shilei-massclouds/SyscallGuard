@@ -1,0 +1,31 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 setpgid(child_pid, getppid())；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3249413C9BA64960
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - child_pid
+    - getppid()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:3249413c9ba6496026f8d40bc5b1a2770110b32c0938b4e9f01b499445eeb42b
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpgid/setpgid03.c
+  line: 56
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:27ce47719314ad70721393103edbe654fba5260efa6713f60ab649b72f209a15
+  case: setpgid03_56_raw

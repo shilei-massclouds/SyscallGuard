@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: '2026-07-16T04:30:54.819863Z'
+updated_at_utc: '2026-07-16T05:25:46.137226Z'
 syscalls:
   access:
   - check_id: STARRY_ACCESS_PATH_RESOLUTION
@@ -699,3 +699,104 @@ syscalls:
     rule_refs:
     - LTP_CA1E4549CF7692F9
     - LTP_D7936678BF685610
+  sched_setaffinity:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: &id014
+    - LTP_2C867F470A477D29
+    - LTP_39B1E5C574F2D3DC
+    - LTP_40024D6BE4C6AECC
+    - LTP_4308D71D8BD6519D
+    - LTP_44DC5382746D773D
+    - LTP_585CC852338F38EE
+    - LTP_7BC885B5878C95B6
+    - LTP_971DB17D32C51561
+    - LTP_A2098D60C40310A2
+    - LTP_C8536F49779345AA
+    - LTP_D7C638B9DFF7DBC3
+  - check_id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+    path: targets/starry/static-checks/starry-round5-sched-setaffinity-empty-mask.yaml
+    rule_refs:
+    - LTP_585CC852338F38EE
+  - check_id: STARRY_ROUND5_SCHED_SETAFFINITY_USER_MASK
+    path: targets/starry/static-checks/starry-round5-sched-setaffinity-user-mask.yaml
+    rule_refs:
+    - LTP_D7C638B9DFF7DBC3
+  sched_yield:
+  - check_id: STARRY_ROUND5_SCHED_YIELD
+    path: targets/starry/static-checks/starry-round5-sched-yield.yaml
+    rule_refs:
+    - LTP_A9BC7EBC1784A722
+  sendfile:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SENDFILE_IN_FD
+    path: targets/starry/static-checks/starry-round5-sendfile-in-fd.yaml
+    rule_refs:
+    - LTP_39B1E5C574F2D3DC
+  - check_id: STARRY_ROUND5_SENDFILE_OFFSET_POINTER
+    path: targets/starry/static-checks/starry-round5-sendfile-offset-pointer.yaml
+    rule_refs:
+    - LTP_C8536F49779345AA
+  - check_id: STARRY_ROUND5_SENDFILE_OUT_FD
+    path: targets/starry/static-checks/starry-round5-sendfile-out-fd.yaml
+    rule_refs:
+    - LTP_7BC885B5878C95B6
+  sendmsg:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+    path: targets/starry/static-checks/starry-round5-sendmsg-message-pointer.yaml
+    rule_refs:
+    - LTP_A2098D60C40310A2
+  set_robust_list:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_ROBUST_LIST
+    path: targets/starry/static-checks/starry-round5-robust-list.yaml
+    rule_refs:
+    - LTP_40024D6BE4C6AECC
+    - LTP_E0470C189C2D1DE3
+  setpgid:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SETPGID_NEGATIVE
+    path: targets/starry/static-checks/starry-round5-setpgid-negative.yaml
+    rule_refs:
+    - LTP_4308D71D8BD6519D
+  setpriority:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+    path: targets/starry/static-checks/starry-round5-setpriority-selector.yaml
+    rule_refs:
+    - LTP_44DC5382746D773D
+  signalfd:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SIGNALFD_FLAGS
+    path: targets/starry/static-checks/starry-round5-signalfd-flags.yaml
+    rule_refs:
+    - LTP_2C867F470A477D29
+  socket:
+  - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round5-errno-translation.yaml
+    rule_refs: *id014
+  - check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+    path: targets/starry/static-checks/starry-round5-socket-invalid-type.yaml
+    rule_refs:
+    - LTP_971DB17D32C51561
+  - check_id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+    path: targets/starry/static-checks/starry-round5-socket-protocol-errors.yaml
+    rule_refs:
+    - LTP_6B29B31CE99466E6
+    - LTP_A4A662687B98D33F
+    - LTP_AF8D38878ED1A9DA
+    - LTP_DD2E1A555B603C7B
+    - LTP_E316C28E36E136DA

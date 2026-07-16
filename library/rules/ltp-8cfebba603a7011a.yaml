@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 ssetmask(SIGUSR1)；预期：{'kind': 'return_value', 'return': 'SIGALRM'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8CFEBBA603A7011A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: ssetmask
+    arguments:
+    - SIGUSR1
+  expected_result:
+    kind: return_value
+    return: SIGALRM
+  errno: []
+semantic_hash: sha256:8cfebba603a7011a01a3c126347ebc10bd534f655fa7958e0c85220d8c5a21bc
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ssetmask/ssetmask01.c
+  line: 121
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:302ad8118d4aeeb7431287a0b2e054d78411b836f03d6568082b438513f8db5c
+  case: ssetmask01_121_raw

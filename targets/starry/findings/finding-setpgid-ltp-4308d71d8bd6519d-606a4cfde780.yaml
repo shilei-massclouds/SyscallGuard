@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+syscall: setpgid
+rule_id: LTP_4308D71D8BD6519D
+target_snapshot_hash: sha256:606a4cfde780311cc5edcdcc833c7cbf520a190360791a132ff9da6d231772b8
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t052607z-5bf44fc0
+  evidence_kind: static
+  source_id: STARRY_ROUND5_SETPGID_NEGATIVE
+  evidence:
+    check_id: STARRY_ROUND5_SETPGID_NEGATIVE
+    rule_refs:
+    - LTP_4308D71D8BD6519D
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/job.rs
+    patterns:
+    - label: setpgid preserves signed syscall arguments
+      regex: 'pub fn sys_setpgid\(pid: i32, pgid: i32\) -> AxResult<isize>'
+      matched: false
+      line: null
+    - label: negative pid or pgid is rejected with invalid input
+      regex: pub fn sys_setpgid\([\s\S]*?if pid < 0 \|\| pgid < 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T05:29:55.408016Z'
+upstream_dependencies:
+- id: fix-finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+  generated_at_utc: '2026-07-16T05:29:55.408016Z'
+  content_hash: sha256:2edb2320ab4c10bdc5e9052cb03112e1933e2a58a84818f35756a16685686181
+fix_ref: fix-finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
+fixed_by_run: fix-20260716t052901z-daf3c1fa

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 socket(PF_INET, SOCK_DGRAM, 6)；预期：返回 -1，errno 为 EPROTONOSUPPORT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6B29B31CE99466E6
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - PF_INET
+    - SOCK_DGRAM
+    - '6'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPROTONOSUPPORT
+  errno:
+  - EPROTONOSUPPORT
+semantic_hash: sha256:6b29b31ce99466e6682913919c0fad006475b094d59fadcc43c1ec6f4e9d1630
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/socket/socket01.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:0bf7b01524a14aa2c7c35f35bb336596ca7248ad64d44e4ab45844cc7bdddf82
+  case: socket01_53_6

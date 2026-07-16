@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 request_key("keyring", "ltp2", NULL, key2)；预期：返回 -1，errno 为 EKEYREVOKED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D90C4B47C5FF6BC9
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - '"keyring"'
+    - '"ltp2"'
+    - 'NULL'
+    - key2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREVOKED
+  errno:
+  - EKEYREVOKED
+semantic_hash: sha256:d90c4b47c5ff6bc9336f21630b9a7fe512c50b19eb293af3d78249f059b07624
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key02.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:07a8e1d8b542ec5b2cc2236a9b4df81b1238778287f4cd01dd068e509a391c2c
+  case: request_key02_41_1

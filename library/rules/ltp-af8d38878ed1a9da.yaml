@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 socket(0, SOCK_STREAM, 0)；预期：返回 -1，errno 为 EAFNOSUPPORT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_AF8D38878ED1A9DA
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - '0'
+    - SOCK_STREAM
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAFNOSUPPORT
+  errno:
+  - EAFNOSUPPORT
+semantic_hash: sha256:af8d38878ed1a9da8bcca89799d36f633a0776307b92fe435d004f9b6cb1b444
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/socket/socket01.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:0bf7b01524a14aa2c7c35f35bb336596ca7248ad64d44e4ab45844cc7bdddf82
+  case: socket01_53_0

@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 sched_setaffinity(self_pid, mask_size, fmask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D7C638B9DFF7DBC3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - self_pid
+    - mask_size
+    - fmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d7c638b9dff7dbc39fe5df57a4ae8b6951d7c05218ed89e15d0e3e15710f4a7c
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+  line: 69
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:80f096d5eed40d50fd406a0a78c6a3dc78f876c6d3452bc1ad984f9b8902a61e
+  case: sched_setaffinity01_69_0

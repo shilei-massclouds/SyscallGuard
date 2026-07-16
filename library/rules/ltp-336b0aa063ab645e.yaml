@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 setpriority(PRIO_USER, uid, new_prio)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_336B0AA063AB645E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: setpriority
+    arguments:
+    - PRIO_USER
+    - uid
+    - new_prio
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:336b0aa063ab645ef013dd364a649bdeae25361df4529da13641ca3743479708
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpriority/setpriority01.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a6b7db4e2bbb65bd8fd2c9728eedc00db611b48bb00a044f822cd5bb8868370f
+  case: setpriority01_53_2

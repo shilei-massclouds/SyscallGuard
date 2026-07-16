@@ -1,0 +1,28 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SCHED_YIELD
+title: sched_yield delegates to the scheduler and returns success
+rule_refs:
+- LTP_A9BC7EBC1784A722
+applies_to_syscalls:
+- sched_yield
+path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+patterns:
+- label: sched_yield yields once and returns zero
+  regex: pub fn sys_sched_yield\(\) -> AxResult<isize> \{\s*ax_task::yield_now\(\);\s*Ok\(0\)\s*\}
+upstream_dependencies:
+- id: LTP_A9BC7EBC1784A722
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:a9bc7ebc1784a72263646142685fb7ed3bb7aec45b58cfc208bd762f44d7c8fe
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols:
+  - sys_sched_yield
+  scope: symbols
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes:
+    sys_sched_yield: sha256:65655a58da49afb12fb0e8f67275e96dd9b9acd91f1784f76771e7bf96a40f82
+  missing_symbols: []
+  content_hash: sha256:e51427ee002f522aec4f60510bcd89875ec03136f4ec28734c9429b1bb05a90e
+target_content_fingerprint: sha256:66a773c03d182dc1ae1b71d40ef937ddc3fca3c6852c9bc89ff4005e455a0baa
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

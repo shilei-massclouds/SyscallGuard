@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND5_SENDFILE_OUT_FD
+title: sendfile validates the output descriptor before transfer
+rule_refs:
+- LTP_7BC885B5878C95B6
+applies_to_syscalls:
+- sendfile
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: output descriptor is looked up first
+  regex: pub fn sys_sendfile\([\s\S]*?let out_file = get_file_like\(out_fd\)\?;
+upstream_dependencies:
+- id: LTP_7BC885B5878C95B6
+  generated_at_utc: '2026-07-16T05:14:25.198516Z'
+  content_hash: sha256:7bc885b5878c95b621d9876c970257da2de585ab5e9771c1542ceed3b28f8ad0
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_sendfile
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_sendfile: sha256:e30bef400169fa733e84288c55e6a6a99d92858d9ac81a7f40015a214c641d05
+  missing_symbols: []
+  content_hash: sha256:74420f02c69cda8b9fafc880a31ce754b0c43beee7525de0b5b15dc704e4e138
+target_content_fingerprint: sha256:92bcc138625a7d39183f451aefbb9e7084ff60340305d98fe3ab95e33e949d16
+generated_at_utc: '2026-07-16T05:25:46.137226Z'

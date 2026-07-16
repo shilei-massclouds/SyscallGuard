@@ -1,0 +1,56 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 sendmsg(s, &msgdat, 0)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F2C1952707BEC602
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - s
+    - '&msgdat'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f2c1952707bec6025f0985bec64c541d14da594602cd195001a297936870ba96
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendmsg/sendmsg01.c
+  line: 386
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ce8407006c26f47f5ba8766f9d79015e39efa8db0a38530e5727cf45c9adff78
+  case: sendmsg01_386_14
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendmsg/sendmsg01.c
+  line: 386
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ce8407006c26f47f5ba8766f9d79015e39efa8db0a38530e5727cf45c9adff78
+  case: sendmsg01_386_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendmsg/sendmsg01.c
+  line: 386
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ce8407006c26f47f5ba8766f9d79015e39efa8db0a38530e5727cf45c9adff78
+  case: sendmsg01_386_6
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendmsg/sendmsg01.c
+  line: 386
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ce8407006c26f47f5ba8766f9d79015e39efa8db0a38530e5727cf45c9adff78
+  case: sendmsg01_386_9

@@ -1,0 +1,36 @@
+# 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 sendto(s, buf, sizeof(buf), 0, (const struct sockaddr *)&sin2, sizeof(sin2))；预期：返回 0，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2C2A7A0BCB72A2EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - s
+    - buf
+    - sizeof(buf)
+    - '0'
+    - (const struct sockaddr *)&sin2
+    - sizeof(sin2)
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2c2a7a0bcb72a2eb31062477392c15029a5e864eaa3f93750c800d0cde11a1af
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendto/sendto01.c
+  line: 318
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8747202fa2d1cd0d4bc18ad85ef6101d917c62ac6153f486314a25f94c36eef4
+  case: sendto01_318_3

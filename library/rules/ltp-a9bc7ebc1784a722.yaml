@@ -1,0 +1,26 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sched_yield()；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A9BC7EBC1784A722
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sched_yield
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:a9bc7ebc1784a72263646142685fb7ed3bb7aec45b58cfc208bd762f44d7c8fe
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_yield/sched_yield01.c
+  line: 69
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8d8b75971e88bc2b1562cc452a89c1077105faa56a3aa58fdaa1c6effaed5b60
+  case: sched_yield01_69_raw

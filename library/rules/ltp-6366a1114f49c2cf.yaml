@@ -1,0 +1,30 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 sigsuspend(invalid_mask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6366A1114F49C2CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: sigsuspend
+    arguments:
+    - invalid_mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:6366a1114f49c2cf8938432f60e282c5e56e90dcc063071b80f7a0e11280647e
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sigsuspend/sigsuspend02.c
+  line: 26
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a0c0c7dcc7fa21a1a029bb678a609cc2cf961f5f2377188830caa8999a81fa8a
+  case: sigsuspend02_26_raw

@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 sigaltstack(&sigstk, NULL)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_470EA842B2582537
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: sigaltstack
+    arguments:
+    - '&sigstk'
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:470ea842b2582537a448a45d2fc1e840076d342c0951e5694778d43c616c8b48
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sigaltstack/sigaltstack02.c
+  line: 42
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:45065f9e88bae36c317d93c575f7eb6ac1ad4bd5f7d39885f31e474cdf2ec6b4
+  case: sigaltstack02_42_1

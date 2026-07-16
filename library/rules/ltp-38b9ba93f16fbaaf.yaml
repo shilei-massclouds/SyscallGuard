@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 seccomp(SECCOMP_SET_MODE_FILTER, 0, &strict)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_38B9BA93F16FBAAF
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - SECCOMP_SET_MODE_FILTER
+    - '0'
+    - '&strict'
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:38b9ba93f16fbaaf7820e4e5581785efea25857debb9432d18f6e51e1276debd
+generated_at_utc: '2026-07-16T05:14:25.198516Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/seccomp/seccomp01.c
+  line: 174
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:abb34c3e11dceb897733887ac3282cb05eb19a61fb7bd45f9ad8122b7b3f4424
+  case: seccomp01_174_raw
