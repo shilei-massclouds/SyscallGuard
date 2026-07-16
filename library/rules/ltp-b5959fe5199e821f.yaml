@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 flock(badfd, LOCK_SH)；预期：返回 0，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B5959FE5199E821F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - badfd
+    - LOCK_SH
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b5959fe5199e821fd47d208a69762e899a29254a1871f10cc15dc2c9577af0bf
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock02.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:613b38457d6c2f3e3f54e5fb892c5326e90ff3436c38d348a78cf73320a3dcfb
+  case: flock02_48_0

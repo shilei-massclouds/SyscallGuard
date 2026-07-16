@@ -1,0 +1,30 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_043885E3B78D9010
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:043885e3b78d90106faa4a4cb2129667871c12a6e7ac92aa294dfc4ede78a34a
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchdir/fchdir03.c
+  line: 30
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d86a5d98cdc57190fac8ac58f716e93d5623496795138de3163d2b3f72f98ed3
+  case: fchdir03_30_raw

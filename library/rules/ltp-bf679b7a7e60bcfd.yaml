@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fpathconf(fd, _PC_VDISABLE)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BF679B7A7E60BCFD
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fpathconf
+    arguments:
+    - fd
+    - _PC_VDISABLE
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:bf679b7a7e60bcfde914d41ecd3496f023f92f23d56985eb98c01f4f04aa0476
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fpathconf/fpathconf01.c
+  line: 34
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:2a367b481de72987d375b264f9d1fab4f67d4982f5d8250331621a1de30a0a7c
+  case: fpathconf01_34_2

@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fchmod(fd, mode)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_470C0966080C93EF
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:470c0966080c93efafa4bcea1083f34ab24a3c68263c2f688031a830ea7b0032
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmod/fchmod01.c
+  line: 29
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:52e1c0d868f914bc579e98918fab5788064a6181c73ad90f08374c677f6292e8
+  case: fchmod01_29_raw

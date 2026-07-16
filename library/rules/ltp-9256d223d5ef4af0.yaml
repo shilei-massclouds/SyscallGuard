@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 flock(fd, LOCK_SH | LOCK_EX)；预期：返回 0，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9256D223D5EF4AF0
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - LOCK_SH | LOCK_EX
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9256d223d5ef4af074c553bc4cafca071fbbaf943e052838f225a07d0f9c735b
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock02.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:613b38457d6c2f3e3f54e5fb892c5326e90ff3436c38d348a78cf73320a3dcfb
+  case: flock02_48_2

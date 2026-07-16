@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fchdir(bad_fd)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CCC36F43E9463D3E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - bad_fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ccc36f43e9463d3e65e732efa9e9d62af421e5d01bac07a5d343fc88f368505c
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchdir/fchdir02.c
+  line: 17
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5c4df81bd3ea8174a876de2bcfd1f5ddd8664b3c95ffc669eb3282ea470ad1e0
+  case: fchdir02_17_raw

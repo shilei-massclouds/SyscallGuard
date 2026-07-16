@@ -33,13 +33,6 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols:
   - close_file_like
@@ -62,7 +55,7 @@ target_dependencies:
   symbols:
   - sys_close
   scope: symbols
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
   symbol_hashes:
     sys_close: sha256:e7aca9df1278d812347be922bb2ca7b5be5fff1cf995a42300adc9a77de496ba
   missing_symbols: []
@@ -76,5 +69,19 @@ target_dependencies:
     get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
   missing_symbols: []
   content_hash: sha256:a0ac4f88598370fae1b30592b26c7f4bc7ec59aaecd3083ab5a806fd86592985
-target_content_fingerprint: sha256:0aa925862fd57c33ac8588bb64caecc1e5c56950f2485a6e422d965ae162459a
-generated_at_utc: '2026-07-15T10:30:27.733209Z'
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:b00878b78bdd0b60cc15ad5627dfe7d96862f7dd53787c0869ec28e3f427efcd
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:bd827252df728b42d92d796615fe61d8f95c136dcaa581616d2ee188965d8ee1
+target_content_fingerprint: sha256:985343f99370d6497460d813e077d903c3e900218ce5ac10fc599ac49199b90b
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

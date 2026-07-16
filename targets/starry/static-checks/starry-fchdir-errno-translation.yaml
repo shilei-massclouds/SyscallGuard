@@ -1,0 +1,44 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_FCHDIR_ERRNO_TRANSLATION
+title: bad file descriptors translate to Linux EBADF
+rule_refs:
+- LTP_CCC36F43E9463D3E
+applies_to_syscalls:
+- fchdir
+path: components/axerrno/src/lib.rs
+patterns:
+- label: BadFileDescriptor maps to EBADF
+  regex: BadFileDescriptor\s*=>\s*EBADF
+upstream_dependencies:
+- id: LTP_CCC36F43E9463D3E
+  generated_at_utc: '2026-07-16T02:52:01.871423Z'
+  content_hash: sha256:ccc36f43e9463d3e65e732efa9e9d62af421e5d01bac07a5d343fc88f368505c
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_fchdir
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_fchdir: sha256:45a02aa22ab5d05610f86476702999487f170c9e47768c3441ccfbe588d2b4d5
+  missing_symbols: []
+  content_hash: sha256:712e6dabf0a0b1401667ef16f03ba9f82583b4b4bf807f3dc95a41695ead718d
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols:
+  - with_fs
+  scope: symbols
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes:
+    with_fs: sha256:25c05b1a7fa048a60a847f773bfca9333d04b9bdfa957714822a0bd22859a58f
+  missing_symbols: []
+  content_hash: sha256:b629ca54b2064ebf8312fc8a9f339be70549d7e467ef5edddc405be63ef578ef
+target_content_fingerprint: sha256:ac5ccb500b3e82e6d3e3622c32bb19f4bed7691e91297548c60bb8b29d8beb0b
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

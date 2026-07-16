@@ -1,0 +1,32 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 flistxattr(fd1, buf, 1)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F10E5286CF6CAC64
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd1
+    - buf
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:f10e5286cf6cac6482348f669c44ca60b5286950b010dbcad6f7e74c201e60a9
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flistxattr/flistxattr02.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f130e106ecdc4021a0b44f9d6b5aceec1daa77212c0413e00e7601f72bcfca26
+  case: flistxattr02_53_0

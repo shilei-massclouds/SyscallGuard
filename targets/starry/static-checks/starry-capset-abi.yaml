@@ -48,6 +48,13 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
 - path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:901fc111c7b58af132705a41cf8a75d89164f522f89135f794e08b76a1ec05e9
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:4bb9431f51daeb336ffa38c17720fe46901657368f0c334fc2a844ffe256c817
+- path: os/StarryOS/kernel/src/syscall/task/ctl.rs
   symbols:
   - data_to_mask
   - sys_capset
@@ -60,5 +67,5 @@ target_dependencies:
     validate_cap_header: sha256:f92b10dad6654ff4b7de228735357465447f4fc6010d9b0eb50afaae686cbf33
   missing_symbols: []
   content_hash: sha256:df372a3e9f4e00850aad57aaee664224ee6a290029e828efea476bb40d9b46a5
-target_content_fingerprint: sha256:b705803ea3d36930721072ab50c46e0b2b3d2752628334fc97331299fba26704
-generated_at_utc: '2026-07-15T04:13:20.108411Z'
+target_content_fingerprint: sha256:8004f9cb0e0ba13eb1965912eeefdf0a774c66f21ff835e5c4f69c2a7ade9a0c
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

@@ -1,0 +1,16 @@
+diff --git a/os/StarryOS/kernel/src/syscall/kmod.rs b/os/StarryOS/kernel/src/syscall/kmod.rs
+--- a/os/StarryOS/kernel/src/syscall/kmod.rs
++++ b/os/StarryOS/kernel/src/syscall/kmod.rs
+@@ -38,7 +38,11 @@ pub fn sys_init_module(module_ptr: *const u8, len: usize, param_ptr: *const u8)
+ 
+ /// `finit_module(2)` — load a module from an open fd rather than a user
+ /// buffer.
+-pub fn sys_finit_module(module_fd: i32, param_ptr: *const u8, _flags: u32) -> AxResult<isize> {
++pub fn sys_finit_module(module_fd: i32, param_ptr: *const u8, flags: u32) -> AxResult<isize> {
++    if flags != 0 {
++        return Err(AxError::InvalidInput);
++    }
++
+     let file = get_file_like(module_fd)?;
+     let fsize = file.stat()?.size as usize;
+ 

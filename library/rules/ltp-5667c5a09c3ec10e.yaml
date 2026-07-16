@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 finit_module(fd, NULL, 0)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5667C5A09C3EC10E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - 'NULL'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5667c5a09c3ec10e1110edd68f9f141863f54079ca6de1268981398eb63ccfdb
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/finit_module/finit_module02.c
+  line: 128
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:fac08f9548aa4af53e254a7553f6339232ce195a0e0aa164defa5c08f17d26a8
+  case: finit_module02_128_2

@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 flock(fd1, LOCK_EX | LOCK_NB)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FB047DBB72D78D19
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd1
+    - LOCK_EX | LOCK_NB
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:fb047dbb72d78d19892576b231423c9fb491732f808ead6728e4a8331ebe56b8
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock03.c
+  line: 68
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:29286b7df289c106f73cf14786398261ccdf5b216819003761cc58984213cfcb
+  case: flock03_68_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock06.c
+  line: 28
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fdddb18461cfa66f19393ff7e21be133dffbf69848534d7e399e5564552087cf
+  case: flock06_28_raw

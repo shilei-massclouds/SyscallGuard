@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fchmod(fd, PERMS)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B86CDF340A27A5B7
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - PERMS
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:b86cdf340a27a5b75852381d6eac2add8cf670304b1d54a76181f89f5d363e35
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmod/fchmod03.c
+  line: 29
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:7eac4b48994ea9daa35fc0bd8039906a9d02782357ec9cc612bff617f6ecfd5f
+  case: fchmod03_29_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmod/fchmod04.c
+  line: 29
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:548c0c63d46251a8af9fe8d6db082737e60223a361176b2597a9308425783648
+  case: fchmod04_29_raw

@@ -1,0 +1,32 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 flistxattr(fd2, buf, 20)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C37E693AB7AA5E28
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd2
+    - buf
+    - '20'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c37e693ab7aa5e28cf47747b1e55d478f6766dc3acf88af405f1087dd8759f9f
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flistxattr/flistxattr02.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f130e106ecdc4021a0b44f9d6b5aceec1daa77212c0413e00e7601f72bcfca26
+  case: flistxattr02_53_1

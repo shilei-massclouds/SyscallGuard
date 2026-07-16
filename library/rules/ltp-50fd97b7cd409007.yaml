@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 flock(fd, LOCK_EX)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_50FD97B7CD409007
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - LOCK_EX
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:50fd97b7cd409007415a42a5a18165fdaf2dc32f34e00c33b8c1abd820aa01f5
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock07.c
+  line: 50
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:155d6d73de879e2da40f8eaaa3cb04bd9e28759cb7cdb7739f8000e19cfe6c56
+  case: flock07_50_raw

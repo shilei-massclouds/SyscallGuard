@@ -1,0 +1,44 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+title: finit_module rejects unsupported nonzero flags with EINVAL
+rule_refs:
+- LTP_DA65D6C7A0E4ABBC
+applies_to_syscalls:
+- finit_module
+path: os/StarryOS/kernel/src/syscall/kmod.rs
+patterns:
+- label: finit_module names and inspects its flags argument
+  regex: 'pub fn sys_finit_module\(module_fd: i32, param_ptr: \*const u8, flags: u32\)'
+- label: unsupported nonzero flags return InvalidInput
+  regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+upstream_dependencies:
+- id: LTP_DA65D6C7A0E4ABBC
+  generated_at_utc: '2026-07-16T02:52:01.871423Z'
+  content_hash: sha256:da65d6c7a0e4abbc12ba61464384db59b2ccc9a4215469858de691a4c6deb562
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/mod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:0b28fde515d0a745a3d1ab7bfbc8325f676a966be3637553ff6845f92a44140e
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0f07384a7bcf8c66bc125dceda8aa78e51403cfcea87f3d9bf4f965851341039
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols:
+  - sys_finit_module
+  scope: symbols
+  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
+  symbol_hashes:
+    sys_finit_module: sha256:142c737cba186eec5d5ca84d736568514e9a04d65fc0a05d5d435928b1942526
+  missing_symbols: []
+  content_hash: sha256:9ab0133e24ce011a32314fa378c1f68bdaa45ecb1b0d6133fc0f7d84e8a89012
+target_content_fingerprint: sha256:6fcb689c51f91e0b8c77cd3160dc05eb806a5d292b469f393d8ccf980a6d6453
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

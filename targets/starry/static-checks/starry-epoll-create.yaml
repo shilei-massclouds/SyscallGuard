@@ -46,5 +46,12 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-target_content_fingerprint: sha256:c93b20e2c1dc81823cab0ba0a58c128beca63ae418a6c425d719b847445bf387
-generated_at_utc: '2026-07-15T05:39:36.212938Z'
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a60732eb5175233b5518e1422ce331dd8669df8088142bf094a347de319be78a
+target_content_fingerprint: sha256:c860dfa5e14ab15f48fd2989a303225b6b2703dc70172ea868e86f9cd5c75faa
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

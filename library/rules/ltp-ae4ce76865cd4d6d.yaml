@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 flock(fd, LOCK_NB | LOCK_EX)；预期：返回 0，errno 为 EWOULDBLOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_AE4CE76865CD4D6D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - LOCK_NB | LOCK_EX
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EWOULDBLOCK
+  errno:
+  - EWOULDBLOCK
+semantic_hash: sha256:ae4ce76865cd4d6d5dbefdd5c543b98c81eb7035f5e93a9b68eff25f70dccd68
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock02.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:613b38457d6c2f3e3f54e5fb892c5326e90ff3436c38d348a78cf73320a3dcfb
+  case: flock02_48_3

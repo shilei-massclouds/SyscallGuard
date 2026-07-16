@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 flistxattr(fd, buf, sizeof(buf))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_51E954C969CAFA58
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:51e954c969cafa58524d543aab5699c57b0b8fdc2401496ddc4128f667684e8e
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flistxattr/flistxattr01.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:5fe2350882fcc0af799b249c41f82ac178686506978deccd3087614cfd2fd7f1
+  case: flistxattr01_52_raw

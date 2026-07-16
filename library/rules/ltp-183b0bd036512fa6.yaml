@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 fchmodat(file_fd, bad_path, 0600, 0)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_183B0BD036512FA6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - file_fd
+    - bad_path
+    - '0600'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:183b0bd036512fa6ac5e4e495d4ef620f962c234ba0ef62006c2081693268db9
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmodat/fchmodat02.c
+  line: 55
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:8687283e6e348846380660ff11ba24fe205178310a0919c4ee0a25c99cc6d2da
+  case: fchmodat02_55_2

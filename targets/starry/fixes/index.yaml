@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_fix_index
-updated_at_utc: '2026-07-15T10:48:47.469083Z'
+updated_at_utc: '2026-07-16T03:19:45.343234Z'
 entities:
 - id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -37,3 +37,10 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-15T10:48:47.469083Z'
   content_hash: sha256:590e864f24d01619501d108a50f8ddb917d9a2dc2fb6f2cfc47403814463eb09
+- id: fix-finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+  path: targets/starry/fixes/fix-finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd.yaml
+  finding_refs:
+  - finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+  status: fixed
+  generated_at_utc: '2026-07-16T03:19:45.343234Z'
+  content_hash: sha256:63112bb21b01158482e6cefba178e04135beccb8c5b57931e320c9e916275f97

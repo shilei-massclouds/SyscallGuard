@@ -29,6 +29,15 @@ upstream_dependencies:
   generated_at_utc: '2026-07-15T10:14:12.969080Z'
   content_hash: sha256:ea5d1572b890f71ea1a55cdcad2c53e9061edc3234a5c30ab4af4952cba049ad
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  symbols:
+  - sys_execveat
+  scope: symbols
+  file_hash: sha256:41612e40819cf89f7d6c6dd9ccffd9dc8dee0857fb2d200bfdbade9ae036542d
+  symbol_hashes:
+    sys_execveat: sha256:d6d86dd90f2558edc739dc31bb45261901911a99ef93a17c8203ec6b138102b7
+  missing_symbols: []
+  content_hash: sha256:053f961d4ed11ae1471e01d9c395601d4516827c0e6271858bdbc775ef05f83a
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -36,6 +45,65 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_create1
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
+  missing_symbols: []
+  content_hash: sha256:8b1f3a635fd16e577f2008b648f0d0e423ee30f9fda039c2e1ed8a1aae3da884
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - get_file_like
+  scope: symbols
+  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
+  symbol_hashes:
+    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
+  missing_symbols: []
+  content_hash: sha256:a0ac4f88598370fae1b30592b26c7f4bc7ec59aaecd3083ab5a806fd86592985
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a60732eb5175233b5518e1422ce331dd8669df8088142bf094a347de319be78a
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols:
+  - resolve_at
+  scope: symbols
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes:
+    resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
+  missing_symbols: []
+  content_hash: sha256:b3dce20309fe9f480c0da78b10b6995550acae12ab1f7f9f348ac78ca0cebbe2
+- path: os/StarryOS/kernel/src/file/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:07f147156bd48060bf44b65297f8249c23b8cbef5bb8553d8258cc90e85cebef
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:b83456f5b805811b84c3479f1b93bd7552d9b41159cd0a01d562dbf612af90bb
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_faccessat2
+  scope: symbols
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes:
+    sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
+  missing_symbols: []
+  content_hash: sha256:b9d3889e8fbb42df5c189b100603b8ef0b4dc10a215e57e67299745e99c479bd
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_ctl
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_ctl: sha256:4d53badb6cc8f5feb9e41ebd62e2e9fe3a648ab4ac28bcc2a04ebc7b1130906d
+  missing_symbols: []
+  content_hash: sha256:e9206fdbe5cd3f024e28fc57d357f1aac641703de7ee34117da22b404e8bc53a
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
   - do_epoll_wait
@@ -47,5 +115,5 @@ target_dependencies:
     sys_epoll_wait: sha256:35cea4c0b882c6dfb79cbf625e90c08ec1fd9810bec449614cc8cca633ec5507
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
-target_content_fingerprint: sha256:afe014eed14af6e25e88f04ce764d9a557b9f610f250b6a46367e7f6aa18c558
-generated_at_utc: '2026-07-15T10:30:27.733209Z'
+target_content_fingerprint: sha256:0ed03800ed0829a4642b305aa30ee2be33cc1225f016e7ffb390dd61c3fd82a7
+generated_at_utc: '2026-07-16T03:17:56.282688Z'

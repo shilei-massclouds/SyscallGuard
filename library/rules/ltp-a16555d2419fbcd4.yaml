@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 finit_module(fd, "status=valid", 0)；预期：返回 -1，errno 为 EKEYREJECTED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A16555D2419FBCD4
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - '"status=valid"'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREJECTED
+  errno:
+  - EKEYREJECTED
+semantic_hash: sha256:a16555d2419fbcd4e5983b68f8c9c2c0650cb2f45963ba2b31a89cc4e6f9cab4
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/finit_module/finit_module01.c
+  line: 38
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:59baa69e2dfe06e209d6d10bc25c47d1f19a5205a731c64ef38bb8f5f71f0071
+  case: finit_module01_38_raw

@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: '2026-07-15T10:30:27.733209Z'
+updated_at_utc: '2026-07-16T03:17:56.282688Z'
 syscalls:
   access:
   - check_id: STARRY_ACCESS_PATH_RESOLUTION
@@ -91,7 +91,7 @@ syscalls:
     - LTP_0CD17E662AFD2956
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: &id007
+    rule_refs: &id008
     - LTP_09B39E9C9254ECB2
     - LTP_0CD17E662AFD2956
     - LTP_36C99C10CD38F8DB
@@ -345,10 +345,39 @@ syscalls:
     - LTP_4BCFF61005DC2E9A
     - LTP_4D51F55F25C6F2A3
     - LTP_6885CE6A54F7716E
+  fchdir:
+  - check_id: STARRY_FCHDIR_CORE
+    path: targets/starry/static-checks/starry-fchdir-core.yaml
+    rule_refs:
+    - LTP_17B7A9460939622A
+    - LTP_CCC36F43E9463D3E
+  - check_id: STARRY_FCHDIR_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-fchdir-errno-translation.yaml
+    rule_refs:
+    - LTP_CCC36F43E9463D3E
+  - check_id: STARRY_FCHDIR_FD_VALIDATION
+    path: targets/starry/static-checks/starry-fchdir-fd-validation.yaml
+    rule_refs:
+    - LTP_CCC36F43E9463D3E
+  fchmodat:
+  - check_id: STARRY_FCHMODAT_FLAG_VALIDATION
+    path: targets/starry/static-checks/starry-fchmodat-flag-validation.yaml
+    rule_refs: &id007
+    - LTP_628FD2848734A58A
+    - LTP_8BD2C43CB1EC6794
+  fchmodat2:
+  - check_id: STARRY_FCHMODAT_FLAG_VALIDATION
+    path: targets/starry/static-checks/starry-fchmodat-flag-validation.yaml
+    rule_refs: *id007
+  finit_module:
+  - check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+    path: targets/starry/static-checks/starry-finit-module-flag-validation.yaml
+    rule_refs:
+    - LTP_DA65D6C7A0E4ABBC
   mmap:
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: *id007
+    rule_refs: *id008
   - check_id: STARRY_MMAP_ACCESS
     path: targets/starry/static-checks/starry-mmap-access.yaml
     rule_refs:

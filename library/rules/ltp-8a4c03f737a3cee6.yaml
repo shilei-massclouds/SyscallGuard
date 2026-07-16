@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fchmodat(atcwd_fd, file_path, 0600, 0)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8A4C03F737A3CEE6
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - atcwd_fd
+    - file_path
+    - '0600'
+    - '0'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:8a4c03f737a3cee6ad7b10bfa667b15524ee46f96a3bfa1532a7b6e5276c0405
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmodat/fchmodat01.c
+  line: 47
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:5bc5678eed7f77502e69603fc6c918f2d0077ca7b3a74ca172b3011794c07775
+  case: fchmodat01_47_2

@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+syscall: finit_module
+rule_id: LTP_DA65D6C7A0E4ABBC
+target_snapshot_hash: sha256:840b33b63dfd4ed63ff8ec942312d9d8197fafed82d54b9ce5b568351c1312a0
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t031844z-4ae8ccb5
+  evidence_kind: static
+  source_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  evidence:
+    check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+    rule_refs:
+    - LTP_DA65D6C7A0E4ABBC
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/kmod.rs
+    patterns:
+    - label: finit_module names and inspects its flags argument
+      regex: 'pub fn sys_finit_module\(module_fd: i32, param_ptr: \*const u8, flags: u32\)'
+      matched: false
+      line: null
+    - label: unsupported nonzero flags return InvalidInput
+      regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T03:19:45.343234Z'
+upstream_dependencies:
+- id: fix-finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+  generated_at_utc: '2026-07-16T03:19:45.343234Z'
+  content_hash: sha256:63112bb21b01158482e6cefba178e04135beccb8c5b57931e320c9e916275f97
+fix_ref: fix-finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+fixed_by_run: fix-20260716t031910z-c6bb8d2f

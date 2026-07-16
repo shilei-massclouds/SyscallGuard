@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-15T10:48:47.469083Z'
+updated_at_utc: '2026-07-16T03:19:45.343234Z'
 entities:
 - id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -47,3 +47,12 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-15T10:48:47.469083Z'
   content_hash: sha256:edf2ba5cd58b90a109ebe7afc3961cdea8999a17aa656de09bf25c6759a1c6fd
+- id: finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd
+  path: targets/starry/findings/finding-finit-module-ltp-da65d6c7a0e4abbc-840b33b63dfd.yaml
+  syscall: finit_module
+  rule_id: LTP_DA65D6C7A0E4ABBC
+  target_snapshot_hash: sha256:840b33b63dfd4ed63ff8ec942312d9d8197fafed82d54b9ce5b568351c1312a0
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-16T03:19:45.343234Z'
+  content_hash: sha256:bf1dba8c9da3e8dc1ef24343684f472835906cf32fe64561a4caa3c555f3934d

@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fsconfig(fd, FSCONFIG_SET_PATH, "sync", NULL, aux_fdcwd)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1918D556CB808466
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - FSCONFIG_SET_PATH
+    - '"sync"'
+    - 'NULL'
+    - aux_fdcwd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1918d556cb80846648017e6916fd67d043842baf1aa0d6697b4f234582a22ba2
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fsconfig/fsconfig02.c
+  line: 73
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:85ca85b1f6f59aff1c4a6a4f0a674e00508207347a4f184bd62e177e7a14a470
+  case: fsconfig02_73_12

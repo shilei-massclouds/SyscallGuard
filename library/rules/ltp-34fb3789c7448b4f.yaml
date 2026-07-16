@@ -1,0 +1,33 @@
+# 合规检查：条件：NONEXISTENT_PATH；检查：调用 fchmodat2(fd, "doesnt_exist.txt", 0777, 0)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_34FB3789C7448B4F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat2
+    arguments:
+    - fd
+    - '"doesnt_exist.txt"'
+    - '0777'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:34fb3789c7448b4f6842c575aae7014ef1ef45bd2800832e3a63db32be802a90
+generated_at_utc: '2026-07-16T02:52:01.871423Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmodat2/fchmodat2_02.c
+  line: 39
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:10819e46274d98cea031bc94af7e0eb3ac95ac99f5a06ac22fb9bea1aae8e595
+  case: fchmodat2_02_39_1

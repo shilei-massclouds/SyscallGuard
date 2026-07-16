@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_FCHMODAT_FLAG_VALIDATION
+title: fchmodat rejects flags outside the supported mask with EINVAL
+rule_refs:
+- LTP_628FD2848734A58A
+- LTP_8BD2C43CB1EC6794
+applies_to_syscalls:
+- fchmodat
+- fchmodat2
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: supported fchmodat flags are explicitly bounded
+  regex: 'const FCHMODAT_VALID_FLAGS: u32 = AT_EMPTY_PATH \| AT_SYMLINK_NOFOLLOW;'
+- label: unknown fchmodat flags return InvalidInput
+  regex: if flags & !FCHMODAT_VALID_FLAGS != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+upstream_dependencies:
+- id: LTP_628FD2848734A58A
+  generated_at_utc: '2026-07-16T02:52:01.871423Z'
+  content_hash: sha256:628fd2848734a58abbf91bdc33d9a0296f8f88586fddb7c71f9030a4423d288d
+- id: LTP_8BD2C43CB1EC6794
+  generated_at_utc: '2026-07-16T02:52:01.871423Z'
+  content_hash: sha256:8bd2c43cb1ec6794ff35892efa1d2a2a3e07efe5ef83e9874cfdb79feae89704
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_fchmodat
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_fchmodat: sha256:fe8183ad4e35162715838bc8c7db99f33a79930436cbaccc77885c3aac567263
+  missing_symbols: []
+  content_hash: sha256:f113a0778c4c2faf467af0daf9b279b804aa5de33eaaf5c335dabf750aa7c7a1
+target_content_fingerprint: sha256:51802eb57e157b7f9f2eb8019cbb79fc6f1d46a0f0ef1aad8273fc5a99bb3e1a
+generated_at_utc: '2026-07-16T03:17:56.282688Z'
