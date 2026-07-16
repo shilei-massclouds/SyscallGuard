@@ -30,5 +30,5 @@ sources:
   file: testcases/kernel/syscalls/mmap/mmap08.c
   line: 28
   recognizer_id: ltp.tst-exp.fail
-  evidence_hash: sha256:de3e3f6cc10a2aab4f763a7f3fe6b7ccec8b79e398218b681df70c251d7b5e7e
+  evidence_hash: sha256:9811c98d48e4ab0296eaee65e16806c66b165d063057612e65ff7bba29d725c0
   case: mmap08_28_raw

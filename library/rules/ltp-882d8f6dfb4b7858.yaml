@@ -1,0 +1,32 @@
+# 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mprotect(NULL, 0, PROT_WRITE)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_882D8F6DFB4B7858
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PERMISSION_DENIED_STATE
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - 'NULL'
+    - '0'
+    - PROT_WRITE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:882d8f6dfb4b785838015eddcf67bb6ce2f2ec1921788aa8e74bc674f7215107
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect01.c
+  line: 101
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:567e9ad6d10565f7996d052e1220251373f0af10bc7a41532ab77daa87e22afc
+  case: mprotect01_101_2

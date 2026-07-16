@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_MUNMAP_ZERO_LENGTH
+title: munmap rejects a zero length
+rule_refs:
+- LTP_26AE3C69D80D35F8
+applies_to_syscalls:
+- munmap
+path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+patterns:
+- label: zero length returns InvalidInput
+  regex: pub fn sys_munmap\([\s\S]*?if length == 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_26AE3C69D80D35F8
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:26ae3c69d80d35f8cde32c3371db6ddce43877024723415f2c15a30f19a02756
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_munmap
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_munmap: sha256:03a1d3edcb080dc4de6a5d55c58fa255a0ee37475c00f006659348dc76e2ac4f
+  missing_symbols: []
+  content_hash: sha256:571e291850ec47a71777d0195a69a3c9a366cec357b38b77b810602bfe9b3c06
+target_content_fingerprint: sha256:a075653e4e61f0bb941386c94fe2919090fdc8394b5b9153213d1af1b21419b1
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

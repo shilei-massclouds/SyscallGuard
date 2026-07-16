@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mprotect(p, page_sz, PROT_EXEC)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5E2B9548D2D9F147
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - p
+    - page_sz
+    - PROT_EXEC
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:5e2b9548d2d9f147619752d1552f1f7a15ada28d2b0374da04d95b22245d2f49
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect04.c
+  line: 255
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:4762e4d9f944d385be89521018ad83461b1d33c10eafd180d6da587128f30b56
+  case: mprotect04_255_raw

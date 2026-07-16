@@ -1,0 +1,31 @@
+# 合规检查：条件：PATH_TOO_LONG；检查：调用 rename(TEMP_FILE, long_name)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_90CF6ADF43644434
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_FILE
+    - long_name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:90cf6adf4364443443b50c2e471ace344cbf7fb691454f205e9067cd8ae953f0
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename10.c
+  line: 37
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:785e20dac85583b9454c49d15667b385edcca12b594ff85101ba52fe9a3137e1
+  case: rename10_37_raw

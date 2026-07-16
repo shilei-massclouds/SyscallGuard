@@ -1,0 +1,32 @@
+# 合规检查：条件：SYMLINK_LOOP；检查：调用 mkdirat(dir_fd, test_dir, 0777)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EE540E689227BDBF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - SYMLINK_LOOP
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dir_fd
+    - test_dir
+    - '0777'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:ee540e689227bdbf55a518a7fa232132f9e5f953ba268867f1582581f9f6a497
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat02.c
+  line: 56
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e0b57afaa6bc7e0276ebafdbefb26013cc0e8ce3173de741942fb154e2540cb5
+  case: mkdirat02_56_2

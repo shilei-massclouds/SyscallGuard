@@ -1,0 +1,37 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_CURRENT)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0D59D1FBC322425B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mlockall
+    arguments:
+    - MCL_CURRENT
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:0d59d1fbc322425b979d21c81beabaf9dc6ea82f2c8b62edc90721824d4a34d7
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlockall/mlockall02.c
+  line: 123
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e9b120e08a71a819e53eed2424acc102cf83cf1296851f44e269c9b93254d5f0
+  case: mlockall02_123_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlockall/mlockall03.c
+  line: 146
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:0c648efd782b409ea267f6380890e9cd8f415d6cff76759586ae8c09f331e29e
+  case: mlockall03_146_1

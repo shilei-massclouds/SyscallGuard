@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 read(fd3, outside_buf, 1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D9A5AE03D93C5C6D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd3
+    - outside_buf
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d9a5ae03d93c5c6d41318874e7926906a3efc8a2b6384f8435b16250d2a777c4
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/read/read02.c
+  line: 70
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:643b25602e65205ecdf3562a4c28cdde252ea71a26c4cc5b11f20d5c9be0d6ca
+  case: read02_70_2

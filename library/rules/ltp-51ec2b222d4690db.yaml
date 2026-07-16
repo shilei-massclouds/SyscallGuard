@@ -1,0 +1,30 @@
+# 合规检查：条件：文件描述符无效；检查：调用 poll(infds, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_51EC2B222D4690DB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: poll
+    arguments:
+    - infds
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_value
+    return: '1'
+  errno: []
+semantic_hash: sha256:51ec2b222d4690db3a603a7cf06d13e15c576d7e70905c8fa444d2e069374c9e
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/poll/poll01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:d8572ac88fe8c30e794713eae4f8cfe5bc53f8bf694fd0491445a4e69f33f3ae
+  case: poll01_49_raw

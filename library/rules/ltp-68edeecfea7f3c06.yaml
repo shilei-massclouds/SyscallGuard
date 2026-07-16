@@ -1,0 +1,31 @@
+# 合规检查：条件：NONEXISTENT_PATH；检查：调用 realpath(".", NULL)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_68EDEECFEA7F3C06
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  action:
+    operation: invoke_syscall
+    syscall: realpath
+    arguments:
+    - '"."'
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:68edeecfea7f3c068d6a9caad14a0f6796ca59fd1b93364c94c20fa07352f431
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/realpath/realpath01.c
+  line: 33
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9bace61bedf7ef0a7e8a8204d1b262185e7a6e79e73f9757b4b26cf8e11ede07
+  case: realpath01_33_raw

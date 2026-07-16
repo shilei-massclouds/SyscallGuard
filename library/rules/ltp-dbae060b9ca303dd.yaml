@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd4[0], wr_iovec2, 1, 0, 0)；预期：返回 0，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DBAE060B9CA303DD
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd4[0]
+    - wr_iovec2
+    - '1'
+    - '0'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:dbae060b9ca303dd48f5f810981c7f860cb8d05e67dab04b96d3d30c4dd29aec
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3f0219732dee8a05bd47792a9bc127609644a2d81bdf62c0ddd05452597864ec
+  case: pwritev202_71_6

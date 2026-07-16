@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 migrate_pages(pid, max_node, old_nodes, new_nodes)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FE4A57F142065A14
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: migrate_pages
+    arguments:
+    - pid
+    - max_node
+    - old_nodes
+    - new_nodes
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:fe4a57f142065a14d886e22c222559644c54a37dfe7f971b7fe6ab3b59707f11
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+  line: 88
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f8a7cc7117f89520c22c831d5e3259963c184628af4f09ead7295227e8256d24
+  case: migrate_pages02_88_raw

@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_PIDFD_SIGNAL_FLAGS
+title: pidfd_send_signal rejects invalid flag masks
+rule_refs:
+- LTP_08F05BA6ED1CEE6A
+applies_to_syscalls:
+- pidfd_send_signal
+path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+patterns:
+- label: unknown flags return InvalidInput
+  regex: pub fn sys_pidfd_send_signal\([\s\S]*?PidFdSignalFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+upstream_dependencies:
+- id: LTP_08F05BA6ED1CEE6A
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:08f05ba6ed1cee6adc06e52236156d77d5c6dd5d4592642bd443aa47f5e425b7
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols:
+  - sys_pidfd_send_signal
+  scope: symbols
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes:
+    sys_pidfd_send_signal: sha256:bc9a9e931bd65f28537b669c670ec5c157495e2ae9991ae0f62401a923aa6684
+  missing_symbols: []
+  content_hash: sha256:bb601fa0799e5ab902980f147e287e46fc2e9017dca59ad0f947d2fc05bfd4a4
+target_content_fingerprint: sha256:f8f6c4226f2240399360fef9c6ff6affb10797ca2f553c98342ce7f4383dbad2
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

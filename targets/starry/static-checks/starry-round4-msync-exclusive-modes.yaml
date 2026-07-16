@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_MSYNC_EXCLUSIVE_MODES
+title: msync rejects simultaneous synchronous and asynchronous modes
+rule_refs:
+- LTP_D2E2A5F40B2313E5
+applies_to_syscalls:
+- msync
+path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+patterns:
+- label: MS_SYNC and MS_ASYNC together return InvalidInput
+  regex: if flags & MS_SYNC != 0 && flags & MS_ASYNC != 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_D2E2A5F40B2313E5
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d2e2a5f40b2313e5b9a3aa39a6922727d92fff4034821cbe122951d7c12aecce
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_msync
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_msync: sha256:ab18938bd55f2119dab9b1247db31736d230da8c1f9987cbc147f6bd972c7118
+  missing_symbols: []
+  content_hash: sha256:ae10de44da2463442d11615699da3fd4f185e716836b6b0b2c456243c8544428
+target_content_fingerprint: sha256:ade6b8293630eab77adc115200cb146b10435a968fe9ca4f889e94c07a8c1c09
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

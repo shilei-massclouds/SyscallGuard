@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(TEST_EROFS, TEST_NEW_EROFS)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1028A46194A35788
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEST_EROFS
+    - TEST_NEW_EROFS
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:1028a46194a357881abb36577857770560405dcd2cd7e491c8754f6cc409591c
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename11.c
+  line: 155
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fb1ab9170d5b1a0c21c95b4a27d2a6ad75c9374b8b13cf505e0d9fce049601dd
+  case: rename11_155_raw

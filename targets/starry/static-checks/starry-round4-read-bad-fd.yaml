@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_READ_BAD_FD
+title: read resolves the descriptor before entering backend I/O
+rule_refs:
+- LTP_0087F445CEB63414
+applies_to_syscalls:
+- read
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: read propagates descriptor lookup errors
+  regex: pub fn sys_read\([\s\S]*?get_file_like\(fd\)\?\.read
+upstream_dependencies:
+- id: LTP_0087F445CEB63414
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:0087f445ceb63414b632c05b271af9fee6f2b3c7167fbc43e208a7b0a485ca33
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_read
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_read: sha256:248a1fcd2e5eaf260506d66b1f46ac884414614bd542589db03fb57bbea5a90a
+  missing_symbols: []
+  content_hash: sha256:14671cd1f24497902593686bf496dd9432647a1540ee566c75e1b85a2fa875d6
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:3f0ef5aa96ab71cf08ea5394c2c0ef3f13a4c5e64829fdd3905b5e71253b04dc
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pause()；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9E2C65A6408DD9D3
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pause
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:9e2c65a6408dd9d3648c6177b7180dab2dd050cd61947ce94cb9d5624c71b7c8
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pause/pause01.c
+  line: 22
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:63cc31232d330d1ea38a23abae451c1f395a9dd4cfbc9ba5cf8e579623ed50da
+  case: pause01_22_raw

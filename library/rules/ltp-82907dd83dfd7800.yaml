@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, rd_iovec, 2, off, RWF_NOWAIT)；预期：返回 CHUNK_SZ + CHUNK_SZ/2，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_82907DD83DFD7800
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd
+    - rd_iovec
+    - '2'
+    - 'off'
+    - RWF_NOWAIT
+  expected_result:
+    kind: return_errno
+    return: CHUNK_SZ + CHUNK_SZ/2
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:82907dd83dfd780037d24929e3f15e6e024e9d57c71ecb132b6120d5db6cad9d
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv203.c
+  line: 118
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:94913f7ff6a981e61cddcf291d934b8eb5e6e37d3401bc1d545754540e3d4fe0
+  case: preadv203_118_raw

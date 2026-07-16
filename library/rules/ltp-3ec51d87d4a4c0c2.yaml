@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(TEMP_FILE, TEMP_DIR)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3EC51D87D4A4C0C2
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_FILE
+    - TEMP_DIR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:3ec51d87d4a4c0c26a7eed1d9bbc05efea28f9acb70d8a73380f4817bda9206e
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename05.c
+  line: 29
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e07815ee72f98b083b11d09090a6d6b8ab3db6a13c473a54d57ec7d780b318dc
+  case: rename05_29_raw

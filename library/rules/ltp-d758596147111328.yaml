@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(OLD_FILE_NAME, NEW_FILE_NAME)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D758596147111328
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - OLD_FILE_NAME
+    - NEW_FILE_NAME
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:d758596147111328ebe3885b920bfc4e4bd8b4c1a41820ae47ef48cceb8d1f5d
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename03.c
+  line: 35
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:08ab6c3573225fa09a21a0ef14eabeef22db651c69e950917f46110676cef689
+  case: rename03_35_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 msync(addr4, page_sz, MS_SYNC)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4A4F50B0E250249A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: msync
+    arguments:
+    - addr4
+    - page_sz
+    - MS_SYNC
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:4a4f50b0e250249a8b816ba0f63047e7f3db5c5e6ef96879b76a81f366c2a976
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/msync/msync03.c
+  line: 139
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ec4b4f800336be0fa40eed00d74a70fd04ed29b6a3492406e14a97e16742d40
+  case: msync03_139_5

@@ -1,0 +1,31 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd2, emptypath, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9B32E51680CE0BEE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd2
+    - emptypath
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:9b32e51680ce0beed95e9a27110440fa759b6bf385dc89dc29f6bb277fa18ba6
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat01.c
+  line: 55
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:b10c01de0a24cb073836c8c55d133880f29b6fb4fa09a9f869f9091b97a66bff
+  case: readlinkat01_55_5

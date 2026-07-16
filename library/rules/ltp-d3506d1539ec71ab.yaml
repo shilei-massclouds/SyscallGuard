@@ -1,0 +1,56 @@
+# 合规检查：条件：文件描述符无效；检查：调用 mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D3506D1539EC71AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - '-1'
+    - tmpdir
+    - '0'
+    - '&attr'
+    - sizeof(attr)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:d3506d1539ec71abedc6bf48e30ca4d4ab8c3c7970d6d0b5e33dfa724b2ab935
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+  line: 93
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2a214dcf7587b8b70ed5b3169a7edce023cc0d42ce88a0c45a0e47651ef33722
+  case: mount_setattr02_93_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+  line: 101
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:de44a23a308ce35ae59042ea6c8a2e244a862c7fb1b8750221cd2a8c29a3476a
+  case: mount_setattr02_101_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+  line: 105
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:c9fe934ce591bfd3be2b95d5bb0d9097756c10d076fea174fb91314b08ecc8af
+  case: mount_setattr02_105_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+  line: 117
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:a476c93f342ac78a0426a46f14ef8b52510dc4187eb4e8c787aab38840db223d
+  case: mount_setattr02_117_raw

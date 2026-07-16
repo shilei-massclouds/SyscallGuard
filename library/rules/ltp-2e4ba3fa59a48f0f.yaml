@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(OLD_DIR_NAME, NEW_DIR_NAME)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2E4BA3FA59A48F0F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - OLD_DIR_NAME
+    - NEW_DIR_NAME
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:2e4ba3fa59a48f0f0cea61bd78321a2e6ebd6268e549ba4156008daed72a9807
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename03.c
+  line: 38
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:9b1107f2a284a79ca4edca5642a5adc981c948df1dd4cd86b97893c6a4e4e600
+  case: rename03_38_raw

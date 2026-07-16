@@ -1,0 +1,32 @@
+# 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd, rd_iovec, 2, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B08ED7334608FAA8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd
+    - rd_iovec
+    - '2'
+    - '-1'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: CHUNK
+  errno: []
+semantic_hash: sha256:b08ed7334608faa8a0a302f3b70aa7a225162cacfce3494a9adbe55199971455
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv201.c
+  line: 62
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:eecdbcc10abee4748d2e447b3d00b3d793dcf6a9e6020977e4d1734845a73292
+  case: preadv201_62_4

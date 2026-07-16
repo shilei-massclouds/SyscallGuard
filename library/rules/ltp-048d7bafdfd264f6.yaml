@@ -1,0 +1,33 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd, TEST_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_048D7BAFDFD264F6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - TEST_FILE
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:048d7bafdfd264f6112847a5ad9b4ff775bca430be47fb61eabe14fd6b681175
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_1

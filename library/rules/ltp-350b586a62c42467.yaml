@@ -1,0 +1,34 @@
+# 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd1, rd_iovec2, 1, 1, -1)；预期：返回 0，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_350B586A62C42467
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd1
+    - rd_iovec2
+    - '1'
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:350b586a62c42467b8440fbed04bba2b2852ba65f0984a89ccdaec120364a7b2
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9dd730f16bb8b6def318124d81989f415d8b295695344f5dbdc18999986e85a2
+  case: preadv202_71_2

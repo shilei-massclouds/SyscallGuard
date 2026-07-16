@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mkdirat(fd_atcwd, relpath, 0600)；预期：返回 0，errno 为 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D2E5AAE97E0E50FE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - fd_atcwd
+    - relpath
+    - '0600'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: '0'
+  errno:
+  - '0'
+semantic_hash: sha256:d2e5aae97e0e50fe79434f31202187d87b98abed46a1f0496c419718d67fbdcd
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat01.c
+  line: 67
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1896af747353699e778da51e1c39135aa3cbdabc7f87ea859440f589725aa2d8
+  case: mkdirat01_67_2

@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 mprotect(addr, sizeof(buf), PROT_WRITE)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_ED3B9CFAEBD0EAB8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - addr
+    - sizeof(buf)
+    - PROT_WRITE
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:ed3b9cfaebd0eab8d94ca2f91ad7eb1048b44bc066478b951e5d3ce042a06f27
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect02.c
+  line: 118
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:de4b6866a12e1efecdceb97b3dcad70d480668c918037040e3f03ac2b05382a8
+  case: mprotect02_118_raw

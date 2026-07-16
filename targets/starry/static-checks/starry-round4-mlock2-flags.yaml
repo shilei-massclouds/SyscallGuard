@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_MLOCK2_FLAGS
+title: mlock2 rejects every flag outside MLOCK_ONFAULT
+rule_refs:
+- LTP_D9418F7424E86C28
+applies_to_syscalls:
+- mlock2
+path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+patterns:
+- label: unknown flags return InvalidInput
+  regex: pub fn sys_mlock2\([\s\S]*?if flags & !MLOCK_ONFAULT != 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_D9418F7424E86C28
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d9418f7424e86c28e525f8bafe039c85a9e938f4e9de0be59a528d86070e5a0e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_mlock2
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_mlock2: sha256:a3f606f481e0fbf029ba1e99fce90c14d55b26d7d42b8d5169e71f18e27a9396
+  missing_symbols: []
+  content_hash: sha256:0aa570bc23d2c42862c9ac1553e036fbea630c097639fc4af67d020aa6c7f346
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:ad0748ccb89633b75f9629194573e5aeb3b0247b80d95a5e4710d8d5328964d0
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

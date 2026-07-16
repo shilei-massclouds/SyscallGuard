@@ -1,0 +1,31 @@
+# 合规检查：条件：文件描述符无效；检查：调用 mq_notify(fd_invalid, &ev)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6263797E65C75794
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - fd_invalid
+    - '&ev'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:6263797e65c75794c63d6d6add4215a7f7947c6631298ef42d49c1c32064d691
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify01.c
+  line: 138
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:35fd1e828c585a295de5db861d20449fdcdd34b60e079aa0620206d2aa7a99c9
+  case: mq_notify01_138_3

@@ -1,0 +1,31 @@
+# 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 pathconf(fpath, 0)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1AD5BF710E8FB247
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NON_DIRECTORY_PATH_COMPONENT
+  action:
+    operation: invoke_syscall
+    syscall: pathconf
+    arguments:
+    - fpath
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:1ad5bf710e8fb24797000382f0a4327cb500ca42e3fe1056f1f4073e20d84590
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a8ca298ba98e8d8fc1d3559917b8109efed8e4fd325fe09ae6b5c74491fea1fe
+  case: pathconf02_58_0

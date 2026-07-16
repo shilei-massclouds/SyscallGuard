@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, 0)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_669BB2DCB1D95979
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - addr
+    - pgsz
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:669bb2dcb1d9597911edd90cebde9144a1cf89e03d489b5cb8395df002f490c1
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock202.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3a4e609a7e7ac38aa453ebd7567e0e15aad5c43f0ec70d1988c8e9ece71cec28
+  case: mlock202_63_1

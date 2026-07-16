@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd, wr_iovec, 1, CHUNK / 2, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3152706321BA354E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd
+    - wr_iovec
+    - '1'
+    - CHUNK / 2
+    - '0'
+  expected_result:
+    kind: return_value
+    return: CHUNK
+  errno: []
+semantic_hash: sha256:3152706321ba354ebe451193e5b49b178eb865d42e7a764ccbcbf58322acb645
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev201.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e2c545ed4e8833d88f9c5028e6d41d46fd8d917573fe783d311115a0078b0d32
+  case: pwritev201_61_2

@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, CORRECT_SIGNAL, &info, 99999)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_08F05BA6ED1CEE6A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - CORRECT_SIGNAL
+    - '&info'
+    - '99999'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:08f05ba6ed1cee6adc06e52236156d77d5c6dd5d4592642bd443aa47f5e425b7
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:30cee3741ae8623cee4dfc2b5d5560c02c01b29efec17d73bf1acf3a0e16c1e3
+  case: pidfd_send_signal02_53_0

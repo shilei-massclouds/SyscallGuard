@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 poll(&pfd, 1, 0)；预期：{'kind': 'return_value', 'return': '1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_403B654FD084895C
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: poll
+    arguments:
+    - '&pfd'
+    - '1'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '1'
+  errno: []
+semantic_hash: sha256:403b654fd084895c5395687cdccb4cf2c4e64520fe34862afc30db821c9b8850
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/poll/poll04.c
+  line: 24
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c800a13505e760b6881328a7ffd2c76e3aa0677df193c66c2d052e2040222a44
+  case: poll04_24_raw

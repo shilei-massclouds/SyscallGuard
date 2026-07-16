@@ -17,13 +17,6 @@ upstream_dependencies:
   generated_at_utc: '2026-07-16T02:52:01.871423Z'
   content_hash: sha256:da65d6c7a0e4abbc12ba61464384db59b2ccc9a4215469858de691a4c6deb562
 target_dependencies:
-- path: os/StarryOS/kernel/src/syscall/mod.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:0b28fde515d0a745a3d1ab7bfbc8325f676a966be3637553ff6845f92a44140e
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:0f07384a7bcf8c66bc125dceda8aa78e51403cfcea87f3d9bf4f965851341039
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -31,21 +24,28 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-- path: os/StarryOS/kernel/src/syscall/kmod.rs
+- path: os/StarryOS/kernel/src/syscall/mod.rs
   symbols: []
   scope: file
-  file_hash: sha256:3ba80ccd23c3328f7ed3613063c60711e0347c7fc8fac50604506963b3828367
+  file_hash: sha256:22af2a4f7e463d4867e9489dcdd8f37d67cdd1f2c101ab52dce33e094cae029c
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:c06c08b0713479ae6251e6bfbb8e67b6a60de70c93aea23a2c4ab7f977f6038b
+  content_hash: sha256:5c62bcf8e4f696da055ae4d63f934efaa3690e0ceef7d7f1ff5ffe5b33bc6794
 - path: os/StarryOS/kernel/src/syscall/kmod.rs
   symbols:
   - sys_finit_module
   scope: symbols
-  file_hash: sha256:3ba80ccd23c3328f7ed3613063c60711e0347c7fc8fac50604506963b3828367
+  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
   symbol_hashes:
     sys_finit_module: sha256:a04ce76044a3317f5cb0d90d139e54496710ddeef060a0a920ca326ac0ed8c12
   missing_symbols: []
   content_hash: sha256:d864130a8360b84bf9ca0327afcd40f6bb785c993ab2d8b1741751befff71516
-target_content_fingerprint: sha256:b1877a85ba55a54113f071cc0c413c0bedde414b31dc1056d5417eb325186837
-generated_at_utc: '2026-07-16T03:45:25.334454Z'
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:f7e1a336824e1784cff6ae1eca8bf56268455e96026a73116518bc941064b1f8
+target_content_fingerprint: sha256:dddab9259f4a481560437bcde8080c10a4263016fc50860dfbc019df44a2a122
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

@@ -1,0 +1,34 @@
+# 合规检查：条件：文件描述符无效、USER_BUFFER；检查：调用 readlinkat(fd_invalid, SYMLINK_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5B5079DEC75B53F5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - fd_invalid
+    - SYMLINK_FILE
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:5b5079dec75b53f5b85d6f4580d9be2b8c2590946a88e421b3d8e80018548cc4
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_4

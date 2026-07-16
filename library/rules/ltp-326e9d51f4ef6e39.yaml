@@ -1,0 +1,32 @@
+# 合规检查：条件：文件描述符无效；检查：调用 open_by_handle_at(-1, valid_fhp, O_RDWR)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_326E9D51F4EF6E39
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - '-1'
+    - valid_fhp
+    - O_RDWR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:326e9d51f4ef6e39b1d063ea2f0e2ed34d269d9faee56b8918631fb4f15bc741
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+  line: 78
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2323b0c8c76b130457901d472003c43518497dfd55d203b089d56a8ab29d4b3b
+  case: open_by_handle_at02_78_0

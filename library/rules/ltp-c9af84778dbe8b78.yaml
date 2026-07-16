@@ -1,0 +1,32 @@
+# 合规检查：条件：文件描述符无效；检查：调用 pidfd_getfd(pidfd, -1, 0)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C9AF84778DBE8B78
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - pidfd
+    - '-1'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c9af84778dbe8b78ce92292d9ed45fa8c9764d3d99363aa9d54d9766ef823e79
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+  line: 91
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f092aa5450c9d55b2404ba9a207b45af535881c508664b26d31c87eec5f02231
+  case: pidfd_getfd02_91_1

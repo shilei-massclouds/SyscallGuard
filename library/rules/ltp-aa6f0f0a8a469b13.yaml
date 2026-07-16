@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 readahead(fd[0], 0, getpagesize())；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_AA6F0F0A8A469B13
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: readahead
+    arguments:
+    - fd[0]
+    - '0'
+    - getpagesize()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:aa6f0f0a8a469b136667d815ec6ce470e15005441954ff0c744ff13bdd160eb9
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readahead/readahead01.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:86ce51d3d8dba90cc919a9dade4fdf85ab3498ad494e90a4cd2b3625fc519854
+  case: readahead01_41_raw

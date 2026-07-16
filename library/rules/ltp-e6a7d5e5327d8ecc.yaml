@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, targetfd, 0)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E6A7D5E5327D8ECC
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - pidfd
+    - targetfd
+    - '0'
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:e6a7d5e5327d8ecc3c071c1231bd4ab48a868a18cc19ced52ee1526bbb69b1ac
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd01.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:010d0b290619c2ffeed41036c3a478df9e154830a0dddbc015bc886d64f7049c
+  case: pidfd_getfd01_57_raw

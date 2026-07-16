@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, 1 * pgsz + 0, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FE9B97F71E485E58
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - addr
+    - 1 * pgsz + 0
+    - MLOCK_ONFAULT
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fe9b97f71e485e58e58463ef8149e4c813a19ba553ff0306a4e4c949ba87fb18
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock201.c
+  line: 103
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c9fa57339b06e07ada78db2b48c84110c0e09e8bd03798f963e4e8f8e11f69d0
+  case: mlock201_103_4

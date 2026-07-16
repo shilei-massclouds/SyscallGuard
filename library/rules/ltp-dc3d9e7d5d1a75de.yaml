@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd2, rd_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DC3D9E7D5D1A75DE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd2
+    - rd_iovec2
+    - '1'
+    - '0'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:dc3d9e7d5d1a75de583e19ecd659cac07cdf47b781870a8c5d95352ca974da9a
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9dd730f16bb8b6def318124d81989f415d8b295695344f5dbdc18999986e85a2
+  case: preadv202_71_5

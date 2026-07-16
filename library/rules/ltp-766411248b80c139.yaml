@@ -1,0 +1,33 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 recv(s, buf, sizeof(buf), MSG_ERRQUEUE)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_766411248B80C139
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: recv
+    arguments:
+    - s
+    - buf
+    - sizeof(buf)
+    - MSG_ERRQUEUE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:766411248b80c1392a1f3cfc05f91a3270232dc3c5dfa27efd46c2f916410ee9
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/recv/recv01.c
+  line: 117
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d1d99bc094d14c9c0ba8dfa5d94283f2a0d767009dd734e768e2e39ed6e31e54
+  case: recv01_117_4

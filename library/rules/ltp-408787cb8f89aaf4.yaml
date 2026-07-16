@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 move_mount(fsmfd, "", AT_FDCWD, MNTPOINT, tc->flags | MOVE_MOUNT_F_EMPTY_PATH)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_408787CB8F89AAF4
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - fsmfd
+    - '""'
+    - AT_FDCWD
+    - MNTPOINT
+    - tc->flags | MOVE_MOUNT_F_EMPTY_PATH
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:408787cb8f89aaf41e54f38d1c125af832cef3f22ca2583de291ff9aa4fb8254
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount01.c
+  line: 59
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:168c2058a2b18c535e3e3825d5544aa198f8f0a10117074f007a9a6763618b7c
+  case: move_mount01_59_raw

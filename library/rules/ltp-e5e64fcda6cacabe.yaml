@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(pid, PIDFD_NONBLOCK)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E5E64FCDA6CACABE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_open
+    arguments:
+    - pid
+    - PIDFD_NONBLOCK
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:e5e64fcda6cacabe1fd65c1e34fab6acaeaec7ce8b9d45ffc7f870920cdc4131
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:39f6d617f1879399441db7e84acde1c0ae3097ee3c9c6aad15938cb46d060b8a
+  case: pidfd_open04_35_raw

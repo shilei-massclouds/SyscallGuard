@@ -1,0 +1,51 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_VECTOR_IO_FLAGS
+title: preadv2 and pwritev2 reject unsupported RWF flags
+rule_refs:
+- LTP_1AACAC53BAF23BA9
+- LTP_D1D51B0412DFB097
+applies_to_syscalls:
+- preadv2
+- pwritev2
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: nonzero RWF flags return OperationNotSupported
+  regex: 'fn validate_rwf_flags\(flags: u32\)[\s\S]*?if flags != 0 \{\s*return Err\(AxError::OperationNotSupported\);'
+- label: both vector I/O paths validate flags before operating
+  regex: pub fn sys_preadv2\([\s\S]*?validate_rwf_flags\(flags\)\?;[\s\S]*?pub fn sys_pwritev2\([\s\S]*?validate_rwf_flags\(flags\)\?;
+upstream_dependencies:
+- id: LTP_1AACAC53BAF23BA9
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:1aacac53baf23ba9aec716bf031354593948226151154448887698bf2a5dde0d
+- id: LTP_D1D51B0412DFB097
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d1d51b0412dfb0975fb7f3bb446e6bc756f86afb371de00a2f2b917b455c2951
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_preadv2
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_preadv2: sha256:f21fff44faea6eeccc08788dd94f2f3b0ed6bd6fc35179b713432911b6bfde8e
+  missing_symbols: []
+  content_hash: sha256:4fe6317f85ece5c03fc657896843d21128abe1ae34cfe4ba1d8d867d148ddbd3
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pwritev2
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pwritev2: sha256:156a5476394e36e08c67318b1fafcbbcddc7ab6ee40d1fb82bbfbb7f6b03ea4d
+  missing_symbols: []
+  content_hash: sha256:9314550b8bb84f339eda65d0b543d92ca384d65d4f0b7e50e5faaf942c362738
+target_content_fingerprint: sha256:3e247545feabab0c047a77e4bbbaddd1e37deb0754e20bdd1601a047146257c5
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(my_pid, 1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3743BC827FB4F981
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_open
+    arguments:
+    - my_pid
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3743bc827fb4f9819137ea970af9f8219bfff5989b4fa99ce035c18fa3ca4937
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
+  line: 40
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:98f8516baed95b4b51db2a02ba242dbc5fac46e4437095b5593a5e4107de387e
+  case: pidfd_open02_40_2

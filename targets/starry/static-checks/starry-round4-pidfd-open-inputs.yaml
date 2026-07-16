@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_PIDFD_OPEN_INPUTS
+title: pidfd_open validates flags and positive process identifiers
+rule_refs:
+- LTP_1BB76939FF2A40B5
+- LTP_3743BC827FB4F981
+applies_to_syscalls:
+- pidfd_open
+path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+patterns:
+- label: unknown flags return InvalidInput
+  regex: let flags = PidFdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+- label: nonpositive pids return InvalidInput
+  regex: if \(pid as i32\) <= 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_1BB76939FF2A40B5
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:1bb76939ff2a40b56089c39f1e2e8db30af944a15e86e47a4e98a572bd8319ea
+- id: LTP_3743BC827FB4F981
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:3743bc827fb4f9819137ea970af9f8219bfff5989b4fa99ce035c18fa3ca4937
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols:
+  - sys_pidfd_open
+  scope: symbols
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes:
+    sys_pidfd_open: sha256:957506df258ed1c09d3fe06dc0b8fd5bc70105e7fc3f0768eda75603594f0e42
+  missing_symbols: []
+  content_hash: sha256:4f7ee99e54fb5eb78e51fede2b275c95a9a9d46b4c5ca52d0120a09c41968893
+target_content_fingerprint: sha256:33d48299214c93d1f04e201cdab4bf9c358073c44d8b5e893e0141254ed98fcf
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

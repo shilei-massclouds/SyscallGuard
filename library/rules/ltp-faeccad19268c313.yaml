@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, SIGNAL, uinfo, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FAECCAD19268C313
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - SIGNAL
+    - uinfo
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:faeccad19268c3134c5d17cf5d0015bfb99b0d899223bb31dbe525d0b5fb8def
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a4d9a0afad392e313ef7c0be3a29891a8419b0b3755f413246a3e9ff00031a72
+  case: pidfd_send_signal01_57_raw

@@ -1,0 +1,36 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mq_notify(m, &sev)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D297A923D4C5FEC7
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - m
+    - '&sev'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:d297a923d4c5fec7e28816290ffe7a5373b354ee7202be677b763d636248cc5e
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
+  line: 55
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:a26b88fe36e9f64e715108b696d133d00170cced7e39caf0f873e883e7c08edc
+  case: mq_notify03_55_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
+  line: 62
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:334ec539dfeeaf022bbe0c69ea905616bfabfd546575965aabbb94de9e07dc8f
+  case: mq_notify03_62_raw

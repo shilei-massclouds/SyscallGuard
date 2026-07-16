@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 nanosleep(&timereq, &timerem)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DDCD82CA2726175D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: nanosleep
+    arguments:
+    - '&timereq'
+    - '&timerem'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:ddcd82ca2726175d640fcb1ea60dd8a89639814178760365a308bd45dc95cd6a
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/nanosleep/nanosleep02.c
+  line: 42
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c4f2fffe3698bc4c5353edea4e15de6f0ea0d85f8eb4a0408244e0ba5ddd665f
+  case: nanosleep02_42_raw

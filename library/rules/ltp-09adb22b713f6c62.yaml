@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 munmap(maps[2] + page_sz, page_sz)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_09ADB22B713F6C62
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - maps[2] + page_sz
+    - page_sz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:09adb22b713f6c623de9c08591d5c38bec8c26355a4d903d89c0ae680c54026f
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/munmap/munmap04.c
+  line: 26
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:98c3805448a9ecddbea32a9a53d8f4e25134aa572d19e0e787c71bebed0f4885
+  case: munmap04_26_raw

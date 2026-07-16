@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_ASYNC_IO))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_50BD66A0A05AFE51
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pathconf
+    arguments:
+    - path
+    - NAME_DESC(_PC_ASYNC_IO)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:50bd66a0a05afe51acc9ddfe13d736361bd2685079416130d7ab91a9ecd81dfe
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf01.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c2be0d3985cc0012dc6630668625a1c5814094a361c6e2c8298282ee8716614a
+  case: pathconf01_48_10

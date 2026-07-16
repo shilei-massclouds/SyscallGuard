@@ -1,0 +1,40 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_OPENAT2_SIZE
+title: openat2 rejects a structure smaller than the base ABI
+rule_refs:
+- LTP_026CB4A1CA7CDC6B
+- LTP_D0800876342DE939
+applies_to_syscalls:
+- openat2
+path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+patterns:
+- label: undersized open_how returns InvalidInput
+  regex: pub fn sys_openat2\([\s\S]*?let base_size = size_of::<OpenHow>\(\);\s*if size < base_size \{\s*return
+    Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_026CB4A1CA7CDC6B
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:026cb4a1ca7cdc6bf1b2e94352fa72c86bda5fc328c6ed9ae8983b4696a2c0f8
+- id: LTP_D0800876342DE939
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d0800876342de9392e43300d2797ff5244107ca4127ddb02ed0ec08832b03e82
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_openat2
+  scope: symbols
+  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
+  symbol_hashes:
+    sys_openat2: sha256:859e66b5091f561db0184b5a5aa424ac99c479cfbe1cbfd97ad3d313c85c830e
+  missing_symbols: []
+  content_hash: sha256:6928b2a7276be211c01fecd6f09a715b22103d398bf8f2974f02d923fe502211
+target_content_fingerprint: sha256:2e7db51da38b64219205819457ef0bfe5cfc94fc509e6389b545897b3a979123
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

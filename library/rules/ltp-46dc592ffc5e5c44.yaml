@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mq_notify(m, NULL)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_46DC592FFC5E5C44
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - m
+    - 'NULL'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:46dc592ffc5e5c443fbb94593eeeddfa22359ea08d7152ab74b4af169993e924
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
+  line: 56
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:cfee57223be01b1e9b25f30282619f4dabda4189f822a8bf90ee88cbafc73024
+  case: mq_notify03_56_raw

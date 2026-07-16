@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mincore(NULL, 0, NULL)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4032B15A045CC9CD
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mincore
+    arguments:
+    - 'NULL'
+    - '0'
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4032b15a045cc9cdc2c9ae31e9e94f793be4b38c25dc93667ef610851e26c31d
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mincore/mincore01.c
+  line: 190
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:10caf405dfac82f8442c2d1b565e9738a82fd2b684d43a259ff2d0476cf4947f
+  case: mincore01_190_0

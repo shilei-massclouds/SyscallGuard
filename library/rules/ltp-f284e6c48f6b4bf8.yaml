@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 move_mount(invalid_fd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F284E6C48F6B4BF8
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - invalid_fd
+    - '""'
+    - AT_FDCWD
+    - MNTPOINT
+    - MOVE_MOUNT_F_EMPTY_PATH
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f284e6c48f6b4bf87c3e8ddb82d9ed93bfd66246c9595dba1befcd8427ff123b
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fbd24b9b8603684810eca402d178ad7c4fafcb08dbb8d7bed50ba500d4922c12
+  case: move_mount02_63_0

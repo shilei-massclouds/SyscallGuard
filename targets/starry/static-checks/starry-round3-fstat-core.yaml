@@ -28,6 +28,38 @@ upstream_dependencies:
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:a363671517c058b177b37c8394c48508feb8e3077c9818d779846e05afad7aa3
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols:
+  - sys_getpriority
+  scope: symbols
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes:
+    sys_getpriority: sha256:11e2d0fe33ed91195689cedacd6521d91c1c52237e6f6d308e595d3abcc75b59
+  missing_symbols: []
+  content_hash: sha256:13ec338677675e3f2bcae26081de8cc1d7eada21c2caee8fc5e29f0112d7bbd8
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:17d7a04e1a8a303c1b2023167d9b6092b11aafde6f56442bfa85ef971aade4b1
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_getcwd
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_getcwd: sha256:9c2e1ce153437668394cf37c2109645ae16ff80edbb88a018923b7a74e75f86c
+  missing_symbols: []
+  content_hash: sha256:18d71decf970e3fff40862c4c99b2d88d44caf9f050a70c78a6080e8d10e34f7
+- path: os/StarryOS/kernel/src/syscall/task/job.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a028bda9fb89a9dd7cb112542e74b72af633471c5eceedf0413ab87e9f3679fa
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:1e27b292d0f06406e3346e2449e4469f2535641cf869c494109da000e7d13c59
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -35,6 +67,42 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/task/ops.rs
+  symbols:
+  - get_process
+  scope: symbols
+  file_hash: sha256:8aa08b7cb8aa3b4510aa0faed156b31ad022ca51b58fc939ac56fbe60750dbcd
+  symbol_hashes:
+    get_process: sha256:04dca4065faef63b2b0b2ebf9421acdf5253598059be785ed827fa62b0b39472
+  missing_symbols: []
+  content_hash: sha256:62b5c8edecb138796194e5ba8ea2fcc4f5018b8656e51c378d85ca1dfd8c49ca
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols:
+  - sys_init_module
+  scope: symbols
+  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
+  symbol_hashes:
+    sys_init_module: sha256:14320e800da79349d19c6a90c3f9a43563b494cdc90c14fad3d9856bb440b202
+  missing_symbols: []
+  content_hash: sha256:696ac52a233eb1b299ebe8337f5b21d6e3058ab209d91da85b1e4f9eeb87041c
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols:
+  - sys_gettimeofday
+  scope: symbols
+  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
+  symbol_hashes:
+    sys_gettimeofday: sha256:5f9fbcb824746ae88197146532aea04901de4cfe3e923e9bf1f50f78d793aca9
+  missing_symbols: []
+  content_hash: sha256:7c1a54ec26d41b82f7be870fda63ffe8dd7d28673b320385e98810f4841f65a4
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_fstatfs
+  scope: symbols
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes:
+    sys_fstatfs: sha256:3080b27e5c79e6bc73887933563d07e20c0e877f0ea4d6a3f2324ca9e467ec56
+  missing_symbols: []
+  content_hash: sha256:cc32451750bc94aed00fbd0dcbf1766aa469554996342bf85138c05bfdf7a4ad
 - path: os/StarryOS/kernel/src/syscall/fs/stat.rs
   symbols:
   - sys_fstat
@@ -44,5 +112,14 @@ target_dependencies:
     sys_fstat: sha256:40ddaada164b353221610e56c2272597d1d231a317f2cab23c02992117aab097
   missing_symbols: []
   content_hash: sha256:d1ef21c63411cd05413bdfc07c69c6060e0f3cafb4481c70769a65c292145761
-target_content_fingerprint: sha256:205f7bb89f38b24edb1b063473dc66b544abd4894d16570ae35753b36f83d04e
-generated_at_utc: '2026-07-16T03:45:25.334454Z'
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_ftruncate
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_ftruncate: sha256:0548101d54dc340becc9a0e5c05a97fd7c17b8c404a8dd2ceac5cc06bc74f15f
+  missing_symbols: []
+  content_hash: sha256:f756bb906d6069259209ff3f5cbd15174b8d4fd2247525dd51e318b05a02ef54
+target_content_fingerprint: sha256:de094907777cdb702c4973922a6bc4de7b0a70703626a175abf12cfd0865bfee
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

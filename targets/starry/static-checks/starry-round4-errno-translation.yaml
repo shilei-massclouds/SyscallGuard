@@ -1,0 +1,259 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_ERRNO_TRANSLATION
+title: round-four validation errors translate to their Linux errno values
+rule_refs:
+- LTP_0087F445CEB63414
+- LTP_026CB4A1CA7CDC6B
+- LTP_08F05BA6ED1CEE6A
+- LTP_15EC9351D2422944
+- LTP_1AACAC53BAF23BA9
+- LTP_1BB76939FF2A40B5
+- LTP_26AE3C69D80D35F8
+- LTP_34A03F3861C10C4E
+- LTP_3743BC827FB4F981
+- LTP_3F60BBC08D86D573
+- LTP_5322AC28C2EB6C16
+- LTP_5A2FE2DE55DC96EB
+- LTP_CA1E4549CF7692F9
+- LTP_D0800876342DE939
+- LTP_D1D51B0412DFB097
+- LTP_D2E2A5F40B2313E5
+- LTP_D7936678BF685610
+- LTP_D9418F7424E86C28
+- LTP_EA7E63D027CD6941
+- LTP_EA90C626D9AA6C08
+applies_to_syscalls:
+- mincore
+- mlock2
+- msync
+- munmap
+- openat2
+- pidfd_getfd
+- pidfd_open
+- pidfd_send_signal
+- pread64
+- preadv2
+- pwrite64
+- pwritev2
+- read
+- readlinkat
+- rename
+path: components/axerrno/src/lib.rs
+patterns:
+- label: bad addresses translate to EFAULT
+  regex: BadAddress \| BadState => EFAULT
+- label: bad descriptors translate to EBADF
+  regex: BadFileDescriptor => EBADF
+- label: invalid inputs translate to EINVAL
+  regex: InvalidInput \| InvalidData => EINVAL
+- label: no memory translates to ENOMEM
+  regex: NoMemory => ENOMEM
+- label: unsupported operations translate to EOPNOTSUPP
+  regex: OperationNotSupported => EOPNOTSUPP
+upstream_dependencies:
+- id: LTP_0087F445CEB63414
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:0087f445ceb63414b632c05b271af9fee6f2b3c7167fbc43e208a7b0a485ca33
+- id: LTP_026CB4A1CA7CDC6B
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:026cb4a1ca7cdc6bf1b2e94352fa72c86bda5fc328c6ed9ae8983b4696a2c0f8
+- id: LTP_08F05BA6ED1CEE6A
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:08f05ba6ed1cee6adc06e52236156d77d5c6dd5d4592642bd443aa47f5e425b7
+- id: LTP_15EC9351D2422944
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:15ec9351d2422944369dc92172ad29f11be0eb44336ba22d88498fcc2032ca7e
+- id: LTP_1AACAC53BAF23BA9
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:1aacac53baf23ba9aec716bf031354593948226151154448887698bf2a5dde0d
+- id: LTP_1BB76939FF2A40B5
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:1bb76939ff2a40b56089c39f1e2e8db30af944a15e86e47a4e98a572bd8319ea
+- id: LTP_26AE3C69D80D35F8
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:26ae3c69d80d35f8cde32c3371db6ddce43877024723415f2c15a30f19a02756
+- id: LTP_34A03F3861C10C4E
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:34a03f3861c10c4e51661f2217847ff299153f412994a8fd329ec082652bba7d
+- id: LTP_3743BC827FB4F981
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:3743bc827fb4f9819137ea970af9f8219bfff5989b4fa99ce035c18fa3ca4937
+- id: LTP_3F60BBC08D86D573
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:3f60bbc08d86d5735c7e66550d7165b77386c0b9de2e3300bb3ccd48d5c0ee16
+- id: LTP_5322AC28C2EB6C16
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:5322ac28c2eb6c1633ef3aad4c16cc30f0be65c7bd19e5571d85d60bbf93ee8a
+- id: LTP_5A2FE2DE55DC96EB
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:5a2fe2de55dc96eb45cebfc1be8e012707df11d5a5feac11d1ac5dac9d94d99a
+- id: LTP_CA1E4549CF7692F9
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:ca1e4549cf7692f9b70c18cbdd4fda9142e71e6e53c36e657a6580b1aa45aac9
+- id: LTP_D0800876342DE939
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d0800876342de9392e43300d2797ff5244107ca4127ddb02ed0ec08832b03e82
+- id: LTP_D1D51B0412DFB097
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d1d51b0412dfb0975fb7f3bb446e6bc756f86afb371de00a2f2b917b455c2951
+- id: LTP_D2E2A5F40B2313E5
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d2e2a5f40b2313e5b9a3aa39a6922727d92fff4034821cbe122951d7c12aecce
+- id: LTP_D7936678BF685610
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d7936678bf685610bb9b7d85dbd99b3021702ffa47abcd925bb8bdd68493904f
+- id: LTP_D9418F7424E86C28
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d9418f7424e86c28e525f8bafe039c85a9e938f4e9de0be59a528d86070e5a0e
+- id: LTP_EA7E63D027CD6941
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:ea7e63d027cd6941db5f635805ab7fcdb3274ef77bf7291058741dd9da669775
+- id: LTP_EA90C626D9AA6C08
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:ea90c626d9aa6c082a3af19e015cee7a37eb943ced00e4fe6af33ec4f266ba04
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_mlock2
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_mlock2: sha256:a3f606f481e0fbf029ba1e99fce90c14d55b26d7d42b8d5169e71f18e27a9396
+  missing_symbols: []
+  content_hash: sha256:0aa570bc23d2c42862c9ac1553e036fbea630c097639fc4af67d020aa6c7f346
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_read
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_read: sha256:248a1fcd2e5eaf260506d66b1f46ac884414614bd542589db03fb57bbea5a90a
+  missing_symbols: []
+  content_hash: sha256:14671cd1f24497902593686bf496dd9432647a1540ee566c75e1b85a2fa875d6
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols:
+  - sys_pidfd_open
+  scope: symbols
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes:
+    sys_pidfd_open: sha256:957506df258ed1c09d3fe06dc0b8fd5bc70105e7fc3f0768eda75603594f0e42
+  missing_symbols: []
+  content_hash: sha256:4f7ee99e54fb5eb78e51fede2b275c95a9a9d46b4c5ca52d0120a09c41968893
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_preadv2
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_preadv2: sha256:f21fff44faea6eeccc08788dd94f2f3b0ed6bd6fc35179b713432911b6bfde8e
+  missing_symbols: []
+  content_hash: sha256:4fe6317f85ece5c03fc657896843d21128abe1ae34cfe4ba1d8d867d148ddbd3
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_munmap
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_munmap: sha256:03a1d3edcb080dc4de6a5d55c58fa255a0ee37475c00f006659348dc76e2ac4f
+  missing_symbols: []
+  content_hash: sha256:571e291850ec47a71777d0195a69a3c9a366cec357b38b77b810602bfe9b3c06
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_openat2
+  scope: symbols
+  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
+  symbol_hashes:
+    sys_openat2: sha256:859e66b5091f561db0184b5a5aa424ac99c479cfbe1cbfd97ad3d313c85c830e
+  missing_symbols: []
+  content_hash: sha256:6928b2a7276be211c01fecd6f09a715b22103d398bf8f2974f02d923fe502211
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_readlinkat
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_readlinkat: sha256:5a56af07996c861857226f7ab1f214a1189f84643ad3826e80e7507ab97c9757
+  missing_symbols: []
+  content_hash: sha256:84e8870d1d6efd6fe4995e002f9d53f12e3fb7a29c3c4f41d2ecf67f24b9d4a0
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pwritev2
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pwritev2: sha256:156a5476394e36e08c67318b1fafcbbcddc7ab6ee40d1fb82bbfbb7f6b03ea4d
+  missing_symbols: []
+  content_hash: sha256:9314550b8bb84f339eda65d0b543d92ca384d65d4f0b7e50e5faaf942c362738
+- path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  symbols:
+  - sys_msync
+  scope: symbols
+  file_hash: sha256:46b64128310aa0f1cb8ba267bb417b530edc25780b906e6e3c34ed393c1bff67
+  symbol_hashes:
+    sys_msync: sha256:ab18938bd55f2119dab9b1247db31736d230da8c1f9987cbc147f6bd972c7118
+  missing_symbols: []
+  content_hash: sha256:ae10de44da2463442d11615699da3fd4f185e716836b6b0b2c456243c8544428
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pwrite64
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pwrite64: sha256:716a15c31cabd0472fbbcd501f1d2c85030cad4a21b0f16aff308112f1a1e1fe
+  missing_symbols: []
+  content_hash: sha256:ae4da387b8ccc54ddd0c069b9feb2dee651766d24653079b284276ab1ee6d450
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pread64
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pread64: sha256:589e3852018f7a26a6a5ba8414766d616bcfb521644effd5a7087d7bd3adba48
+  missing_symbols: []
+  content_hash: sha256:b8b2d89817afeaf640ec2a0c99806045bed10ea870f446e493e7a78273c767d7
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols:
+  - sys_pidfd_send_signal
+  scope: symbols
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes:
+    sys_pidfd_send_signal: sha256:bc9a9e931bd65f28537b669c670ec5c157495e2ae9991ae0f62401a923aa6684
+  missing_symbols: []
+  content_hash: sha256:bb601fa0799e5ab902980f147e287e46fc2e9017dca59ad0f947d2fc05bfd4a4
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols:
+  - sys_pidfd_getfd
+  scope: symbols
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes:
+    sys_pidfd_getfd: sha256:c09f015f5a9ee2d001a71868b33bde4624d37dd0f832100d744ecd29cc9a56cf
+  missing_symbols: []
+  content_hash: sha256:cadce326e338d88c68096d1d642cb141ad391cd18aeb1797045732b8b151d056
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_renameat2
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_renameat2: sha256:7926d2111f5920bfe2f415a6b2279ad85ae5fc0dffa30b8b1926c5645e27b407
+  missing_symbols: []
+  content_hash: sha256:e33fb303425c0eb05f19beffa6a3e40a22921b93bf547f0777a9e14153bcdbc7
+- path: os/StarryOS/kernel/src/syscall/mm/mincore.rs
+  symbols:
+  - sys_mincore
+  scope: symbols
+  file_hash: sha256:7a1b868a46092bc01f6fccef49901b23df4ef240ea13d57ef09bc3d4871f803c
+  symbol_hashes:
+    sys_mincore: sha256:3a30dc23fa60423c8cdacf9a97c2de03216c72b634d909adcb09d80255580f26
+  missing_symbols: []
+  content_hash: sha256:fe8103396c405f9adb7f0939ec41a3102f016b311667cbcf81182a8739f7bad2
+target_content_fingerprint: sha256:a33eeac2ca6849eeac6b673b6214be940f05e209131077b8cba6af03ae111cc3
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

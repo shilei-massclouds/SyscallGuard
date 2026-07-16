@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 nanosleep(&t, NULL)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FAF274CF431E6421
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: nanosleep
+    arguments:
+    - '&t'
+    - 'NULL'
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:faf274cf431e6421308bcb9892f22171498b921ec7dc3d9e6eb6c3788ba473a8
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/nanosleep/nanosleep01.c
+  line: 21
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a599edd69db2553717bd43515056cff98347d31a8908b7434436552265669bcb
+  case: nanosleep01_21_raw

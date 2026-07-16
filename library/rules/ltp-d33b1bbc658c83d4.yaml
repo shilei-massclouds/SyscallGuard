@@ -1,0 +1,33 @@
+# 合规检查：条件：文件描述符无效；检查：调用 openat2(-1, TEST_FILE, myhow, sizeof(*how))；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D33B1BBC658C83D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - '-1'
+    - TEST_FILE
+    - myhow
+    - sizeof(*how)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:d33b1bbc658c83d40c4ecef3744f84c395f3e1911f394d3d19699a20afefc157
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat203.c
+  line: 58
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b805d4c729f23d9eb3e6a8f4a4b3b4f9b5ac48ee546243aa60a19e163cb958bc
+  case: openat203_58_0

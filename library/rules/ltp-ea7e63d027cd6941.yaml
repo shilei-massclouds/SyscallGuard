@@ -1,0 +1,39 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EA7E63D027CD6941
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - valid_pidfd
+    - '0'
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ea7e63d027cd6941db5f635805ab7fcdb3274ef77bf7291058741dd9da669775
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+  line: 73
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6648e583764c2d3d2afac1649d0f7e3852e2f7774f56ea8d409a8c38a8eeccde
+  case: pidfd_getfd02_73_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+  line: 96
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:8adf4d3ddddd8abb7db946d0697873f908c08da73350d85f7bc192bc635a6e89
+  case: pidfd_getfd02_96_2

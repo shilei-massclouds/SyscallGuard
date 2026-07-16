@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(elooppathname, TEST_NEW_ELOOP)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D98D789F4EBA6817
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - elooppathname
+    - TEST_NEW_ELOOP
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d98d789f4eba6817bf51c596411fe28898111d5abc5991f3446fb238394f2e11
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename11.c
+  line: 143
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8a347521b509aafd77c3b5a9a7ad13a7cdb17700204d59544cd213125c96c637
+  case: rename11_143_raw

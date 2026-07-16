@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D191923C5ACBADC1
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - addr
+    - pgsz
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d191923c5acbadc14d84fbe260fc84a0df7e72798b9ac94910aa717912750dea
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock203.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e1f3e7c37d9368048a8d3a4c00296b4fa92d8b36537f3fe951603db154ab45b3
+  case: mlock203_54_raw

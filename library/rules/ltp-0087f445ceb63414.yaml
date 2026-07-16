@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 read(badfd, bufaddr, 1)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0087F445CEB63414
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - badfd
+    - bufaddr
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:0087f445ceb63414b632c05b271af9fee6f2b3c7167fbc43e208a7b0a485ca33
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/read/read02.c
+  line: 70
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:643b25602e65205ecdf3562a4c28cdde252ea71a26c4cc5b11f20d5c9be0d6ca
+  case: read02_70_0

@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(TEMP_FILE1, TEMP_FILE2)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E1B6C6D1C8603A83
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_FILE1
+    - TEMP_FILE2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e1b6c6d1c8603a83f0afb4734f012a8767e65607f1005299836d382097b0b282
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename12.c
+  line: 44
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:20878cdeca5e18c685c2f504bee72df65751d496c98ded9fbdc50678980ce52f
+  case: rename12_44_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mprotect(NULL, 1024, PROT_READ)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FE37A7A30B8E2AFB
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - 'NULL'
+    - '1024'
+    - PROT_READ
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fe37a7a30b8e2afb25c4a40bc48724ccd3be8e7536ea5c626362b6e1a5289d18
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect01.c
+  line: 101
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:567e9ad6d10565f7996d052e1220251373f0af10bc7a41532ab77daa87e22afc
+  case: mprotect01_101_1

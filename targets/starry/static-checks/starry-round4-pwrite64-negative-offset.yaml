@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_PWRITE64_NEGATIVE_OFFSET
+title: pwrite64 rejects a negative offset before descriptor and buffer checks
+rule_refs:
+- LTP_15EC9351D2422944
+applies_to_syscalls:
+- pwrite64
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: negative offsets return InvalidInput first
+  regex: pub fn sys_pwrite64\([\s\S]*?if offset < 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_15EC9351D2422944
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:15ec9351d2422944369dc92172ad29f11be0eb44336ba22d88498fcc2032ca7e
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pwrite64
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pwrite64: sha256:716a15c31cabd0472fbbcd501f1d2c85030cad4a21b0f16aff308112f1a1e1fe
+  missing_symbols: []
+  content_hash: sha256:ae4da387b8ccc54ddd0c069b9feb2dee651766d24653079b284276ab1ee6d450
+target_content_fingerprint: sha256:d282e29e4df67a785d3a48ca35946246c6fa7d5263e39dd755a12d7cbebbd605
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

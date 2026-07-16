@@ -1,0 +1,33 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 pwrite64(pipe_fds[1], buf, BS, 0)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D5F414741594F6E3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: pwrite64
+    arguments:
+    - pipe_fds[1]
+    - buf
+    - BS
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:d5f414741594f6e346742580aef9bee1ebd3b8c7348b6f456c5f497db6780a78
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwrite/pwrite02.c
+  line: 71
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f7f21450155385f4e484eb2dabc81023fd09f6b24faf2424ec296127b9c5f7d8
+  case: pwrite02_71_0

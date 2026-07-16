@@ -2228,6 +2228,144 @@ syscalls:
   mbind: []
   membarrier: []
   memcmp: []
+  memcpy: []
+  memfd_create: []
+  memset: []
+  migrate_pages:
+  # 合规检查：条件：无额外前置条件；检查：调用 migrate_pages(pid, max_node, old_nodes, new_nodes)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_FE4A57F142065A14
+    path: library/rules/ltp-fe4a57f142065a14.yaml
+  mincore:
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 mincore(NULL, 0, NULL)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_34A03F3861C10C4E
+    path: library/rules/ltp-34a03f3861c10c4e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mincore(addr, size, vec)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_3A18518E9A9DDC47
+    path: library/rules/ltp-3a18518e9a9ddc47.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mincore(NULL, 0, NULL)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_4032B15A045CC9CD
+    path: library/rules/ltp-4032b15a045cc9cd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mincore(NULL, 0, NULL)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_A426BD8C5041DE5E
+    path: library/rules/ltp-a426bd8c5041de5e.yaml
+  mkdir: []
+  mkdirat:
+  # 合规检查：条件：无额外前置条件；检查：调用 mkdirat(dir_fd, abspath, 0600)；预期：返回 0，errno 为 0。
+  - rule_id: LTP_01E0E5231C9C3654
+    path: library/rules/ltp-01e0e5231c9c3654.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mkdirat(dir_fd, TEST_DIR, 0777)；预期：返回 -1，errno 为 EROFS。
+  - rule_id: LTP_6174E3690A05F1CA
+    path: library/rules/ltp-6174e3690a05f1ca.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 mkdirat(fd, relpath, 0600)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_9D233BC9DED7A8AA
+    path: library/rules/ltp-9d233bc9ded7a8aa.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 mkdirat(cur_fd, test_dir, 0777)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_B917BA457313E93D
+    path: library/rules/ltp-b917ba457313e93d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mkdirat(dir_fd, relpath, 0600)；预期：返回 0，errno 为 0。
+  - rule_id: LTP_BBBCFD7524CBB3CD
+    path: library/rules/ltp-bbbcfd7524cbb3cd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mkdirat(fd_atcwd, relpath, 0600)；预期：返回 0，errno 为 0。
+  - rule_id: LTP_D2E5AAE97E0E50FE
+    path: library/rules/ltp-d2e5aae97e0e50fe.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 mkdirat(dir_fd, test_dir, 0777)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_EE540E689227BDBF
+    path: library/rules/ltp-ee540e689227bdbf.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mkdirat(cur_fd, TEST_DIR, 0777)；预期：返回 -1，errno 为 EROFS。
+  - rule_id: LTP_F6DD03A9DC1C07D4
+    path: library/rules/ltp-f6dd03a9dc1c07d4.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mkdirat(fd_invalid, relpath, 0600)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_FE8AA14F6A64DF2D
+    path: library/rules/ltp-fe8aa14f6a64df2d.yaml
+  mknod: []
+  mknodat: []
+  mlock:
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, len)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_04FC167B4A1C57FB
+    path: library/rules/ltp-04fc167b4a1c57fb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, 1024)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_1C1877AB6CAE8906
+    path: library/rules/ltp-1c1877ab6cae8906.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 mlock(buf, file_len)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4ED7FF29685C11B0
+    path: library/rules/ltp-4ed7ff29685c11b0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, len)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_8C796FAE0FBF7688
+    path: library/rules/ltp-8c796fae0fbf7688.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, 1024 * 1024)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_C05360D699C55915
+    path: library/rules/ltp-c05360d699c55915.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, 1)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_F61B5384B4A60F55
+    path: library/rules/ltp-f61b5384b4a60f55.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock(addr, 1024 * 1024 * 10)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_FC50E16C03A7EED9
+    path: library/rules/ltp-fc50e16c03a7eed9.yaml
+  mlock2:
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, 2 * pgsz + 1, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_074981FFB7FA5DB7
+    path: library/rules/ltp-074981ffb7fa5db7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(unmapped_addr, pgsz, 0)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_16B8EA75C5016419
+    path: library/rules/ltp-16b8ea75c5016419.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, 0)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_2FDCA4DAED71F98B
+    path: library/rules/ltp-2fdca4daed71f98b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, PAGES * pgsz + 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_3471B46784E57E93
+    path: library/rules/ltp-3471b46784e57e93.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, 1 * pgsz + 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_592639F40E0FF63A
+    path: library/rules/ltp-592639f40e0ff63a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, 0)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_669BB2DCB1D95979
+    path: library/rules/ltp-669bb2dcb1d95979.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mlock2(addr, 2 * pgsz + -1, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_715AAC0BA45C0567
+    path: library/rules/ltp-715aac0ba45c0567.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, HPAGES * pgsz + 1, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_7C995D43920E57D0
+    path: library/rules/ltp-7c995d43920e57d0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_8731C07ADFDC57F6
+    path: library/rules/ltp-8731c07adfdc57f6.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mlock2(addr, HPAGES * pgsz + -1, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_9869F02C8AF1851D
+    path: library/rules/ltp-9869f02c8af1851d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, pgsz, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_D191923C5ACBADC1
+    path: library/rules/ltp-d191923c5acbadc1.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mlock2(addr, pgsz, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_D9418F7424E86C28
+    path: library/rules/ltp-d9418f7424e86c28.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, PAGES * pgsz + 0, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_F7AC6006DC3C06BB
+    path: library/rules/ltp-f7ac6006dc3c06bb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlock2(addr, 1 * pgsz + 0, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_FE9B97F71E485E58
+    path: library/rules/ltp-fe9b97f71e485e58.yaml
+  mlockall:
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_CURRENT | MCL_FUTURE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_06EAAEA7DDC8627E
+    path: library/rules/ltp-06eaaea7ddc8627e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_CURRENT)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_0D59D1FBC322425B
+    path: library/rules/ltp-0d59d1fbc322425b.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(~(MCL_CURRENT | MCL_FUTURE))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_154DEC6769244339
+    path: library/rules/ltp-154dec6769244339.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_CURRENT)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_6F89F9EF4C3D3857
+    path: library/rules/ltp-6f89f9ef4c3d3857.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_CURRENT)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_C054C1DCF56C7CDC
+    path: library/rules/ltp-c054c1dcf56c7cdc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_CD185859D6C012C8
+    path: library/rules/ltp-cd185859d6c012c8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mlockall(MCL_FUTURE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_D7FFD8EE209AB524
+    path: library/rules/ltp-d7ffd8ee209ab524.yaml
   mmap:
   # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE | MAP_PRIVATE, fd, 0)；预期：返回 -1，errno 为 EACCES。
   - rule_id: LTP_36C99C10CD38F8DB
@@ -2256,3 +2394,721 @@ syscalls:
   # 合规检查：条件：无额外前置条件；检查：调用 mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE, fd, 0)；预期：返回 -1，errno 为 EINVAL。
   - rule_id: LTP_FEACDC300C3E1DD7
     path: library/rules/ltp-feacdc300c3e1dd7.yaml
+  modify_ldt: []
+  mount: []
+  mount_setattr:
+  # 合规检查：条件：文件描述符无效；检查：调用 mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_5E8446D4A0B40C0E
+    path: library/rules/ltp-5e8446d4a0b40c0e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mount_setattr(otfd, "", AT_EMPTY_PATH, attr, sizeof(*attr))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_5F50BCA4675B4B03
+    path: library/rules/ltp-5f50bca4675b4b03.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mount_setattr(-1, slavedir, 0, &attr, sizeof(attr))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_A48CE326DC781ECE
+    path: library/rules/ltp-a48ce326dc781ece.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr))；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D3506D1539EC71AB
+    path: library/rules/ltp-d3506d1539ec71ab.yaml
+  move_mount:
+  # 合规检查：条件：无额外前置条件；检查：调用 move_mount(fsmfd, "", AT_FDCWD, MNTPOINT, 0x08)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_35AF6D3F6FC0EA61
+    path: library/rules/ltp-35af6d3f6fc0ea61.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 move_mount(fsmfd, "", AT_FDCWD, MNTPOINT, tc->flags | MOVE_MOUNT_F_EMPTY_PATH)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_408787CB8F89AAF4
+    path: library/rules/ltp-408787cb8f89aaf4.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 move_mount(fsmfd, "invalid", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_6C5B2B87F34E7887
+    path: library/rules/ltp-6c5b2b87f34e7887.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 move_mount(fda, "", fdb, "", MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_7E14411F2FC9D9CF
+    path: library/rules/ltp-7e14411f2fc9d9cf.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 move_mount(fsmfd, "", AT_FDCWD, "invalid", MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_93C53F01B8732C42
+    path: library/rules/ltp-93c53f01b8732c42.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 move_mount(fsmfd, "", -1, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_F1391DB634702128
+    path: library/rules/ltp-f1391db634702128.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 move_mount(invalid_fd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_F284E6C48F6B4BF8
+    path: library/rules/ltp-f284e6c48f6b4bf8.yaml
+  move_pages: []
+  mprotect:
+  # 合规检查：条件：USER_BUFFER；检查：调用 mprotect(addr, strlen(buf), PROT_READ)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_08E1FDAFE6D66846
+    path: library/rules/ltp-08e1fdafe6d66846.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mprotect(page_to_copy, page_sz, PROT_READ | PROT_EXEC)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_11852F99424BD7E5
+    path: library/rules/ltp-11852f99424bd7e5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mprotect(p, page_sz, PROT_EXEC)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_5E2B9548D2D9F147
+    path: library/rules/ltp-5e2b9548d2d9f147.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mprotect(addr, page_sz, PROT_NONE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_86E98E40777EA3FA
+    path: library/rules/ltp-86e98e40777ea3fa.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 mprotect(NULL, 0, PROT_WRITE)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_882D8F6DFB4B7858
+    path: library/rules/ltp-882d8f6dfb4b7858.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 mprotect(addr, sizeof(buf), PROT_WRITE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_ED3B9CFAEBD0EAB8
+    path: library/rules/ltp-ed3b9cfaebd0eab8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mprotect(NULL, 0, PROT_READ)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_FA4A7CD85E7F31FE
+    path: library/rules/ltp-fa4a7cd85e7f31fe.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mprotect(NULL, 1024, PROT_READ)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_FE37A7A30B8E2AFB
+    path: library/rules/ltp-fe37a7a30b8e2afb.yaml
+  mq_notify:
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(fd, &ev)；预期：返回 -1，errno 为 EBUSY。
+  - rule_id: LTP_11385EF43CBDA2E0
+    path: library/rules/ltp-11385ef43cbda2e0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(0, &({.sigev_notify = SIGEV_SIGNAL, .sigev_signo = _NSIG + 1}))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_462CE9A88054B448
+    path: library/rules/ltp-462ce9a88054b448.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(m, NULL)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_46DC592FFC5E5C44
+    path: library/rules/ltp-46dc592ffc5e5c44.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 mq_notify(fd_invalid, &ev)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_6263797E65C75794
+    path: library/rules/ltp-6263797e65c75794.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(0, &({.sigev_notify = -1}))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_828E39231372A771
+    path: library/rules/ltp-828e39231372a771.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(fd_maxint, &ev)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_947B3CCE7DA0998E
+    path: library/rules/ltp-947b3cce7da0998e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(fd, &ev)；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_A179D109B034EA29
+    path: library/rules/ltp-a179d109b034ea29.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(m, &sev)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D297A923D4C5FEC7
+    path: library/rules/ltp-d297a923d4c5fec7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 mq_notify(fd_root, &ev)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_E3B5C7908A7B12CC
+    path: library/rules/ltp-e3b5c7908a7b12cc.yaml
+  mq_open: []
+  mq_timedreceive: []
+  mq_timedsend: []
+  mq_unlink: []
+  mremap: []
+  mseal: []
+  msync:
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(mmaped_area, pagesize, MS_SYNC)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_033FAA6E22CDE433
+    path: library/rules/ltp-033faa6e22cde433.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr, page_sz, MS_ASYNC)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_2C37BF2D4F1059A2
+    path: library/rules/ltp-2c37bf2d4f1059a2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr, page_sz, MS_INVALIDATE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_40621A9DFAF6D232
+    path: library/rules/ltp-40621a9dfaf6d232.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr4, page_sz, MS_SYNC)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_4A4F50B0E250249A
+    path: library/rules/ltp-4a4f50b0e250249a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr3, page_sz, MS_SYNC)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_6DD85CE2E5952779
+    path: library/rules/ltp-6dd85ce2e5952779.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr1, page_sz, MS_INVALIDATE)；预期：返回 -1，errno 为 EBUSY。
+  - rule_id: LTP_D0A69D14ADE1718C
+    path: library/rules/ltp-d0a69d14ade1718c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr1, page_sz, MS_ASYNC | MS_SYNC)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_D2E2A5F40B2313E5
+    path: library/rules/ltp-d2e2a5f40b2313e5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr1, page_sz, INV_SYNC)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_EA90C626D9AA6C08
+    path: library/rules/ltp-ea90c626d9aa6c08.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 msync(addr2, page_sz, MS_SYNC)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_F318E892720C2991
+    path: library/rules/ltp-f318e892720c2991.yaml
+  munlock:
+  # 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, len)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_4AF75A49B2F7AAB5
+    path: library/rules/ltp-4af75a49b2f7aab5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, 1024 * 1024)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4D9D59CFB785EB0C
+    path: library/rules/ltp-4d9d59cfb785eb0c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, 1024 * 1024 * 10)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_59A85FEDCED7BE77
+    path: library/rules/ltp-59a85fedced7be77.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, 1024)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_AFDAD0AD4FE0E3FF
+    path: library/rules/ltp-afdad0ad4fe0e3ff.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, 1)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_B8A61982E829826E
+    path: library/rules/ltp-b8a61982e829826e.yaml
+  munlockall:
+  # 合规检查：条件：无额外前置条件；检查：调用 munlockall()；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_EB40C6ADD4390CB3
+    path: library/rules/ltp-eb40c6add4390cb3.yaml
+  munmap:
+  # 合规检查：条件：无额外前置条件；检查：调用 munmap(maps[2] + page_sz, page_sz)；预期：返回 -1，errno 为 ENOMEM。
+  - rule_id: LTP_09ADB22B713F6C62
+    path: library/rules/ltp-09adb22b713f6c62.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munmap(&map_addr, map_len_zero)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_26AE3C69D80D35F8
+    path: library/rules/ltp-26ae3c69d80d35f8.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munmap(&map_addr_out, map_len)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_D744D6C4A0C3E40C
+    path: library/rules/ltp-d744d6c4a0c3e40c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 munmap(&map_addr + 1, map_len)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_E20E7069E7FA34D5
+    path: library/rules/ltp-e20e7069e7fa34d5.yaml
+  name_to_handle_at: []
+  nanosleep:
+  # 合规检查：条件：无额外前置条件；检查：调用 nanosleep(&tcases[n], NULL)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_6C8CC973DA350505
+    path: library/rules/ltp-6c8cc973da350505.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 nanosleep(&timereq, &timerem)；预期：返回 -1，errno 为 EINTR。
+  - rule_id: LTP_DDCD82CA2726175D
+    path: library/rules/ltp-ddcd82ca2726175d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 nanosleep(&t, NULL)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_FAF274CF431E6421
+    path: library/rules/ltp-faf274cf431e6421.yaml
+  newuname: []
+  nftw: []
+  nice: []
+  open: []
+  open_by_handle_at:
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 open_by_handle_at(AT_FDCWD, invalid_fhp, O_RDWR)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_0B898E71738ECEB7
+    path: library/rules/ltp-0b898e71738eceb7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 open_by_handle_at(AT_FDCWD, valid_fhp, O_RDWR)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_1B65027CA2FD0026
+    path: library/rules/ltp-1b65027ca2fd0026.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 open_by_handle_at(-1, valid_fhp, O_RDWR)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_326E9D51F4EF6E39
+    path: library/rules/ltp-326e9d51f4ef6e39.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 open_by_handle_at(AT_FDCWD, zero_fhp, O_RDWR)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_3FF54C2EFF286EF7
+    path: library/rules/ltp-3ff54c2eff286ef7.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 open_by_handle_at(AT_FDCWD, link_fhp, O_RDWR)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_46649CE57B3EFB7F
+    path: library/rules/ltp-46649ce57b3efb7f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 open_by_handle_at(0, valid_fhp, O_RDWR)；预期：返回 -1，errno 为 ESTALE。
+  - rule_id: LTP_53F53970B961AB32
+    path: library/rules/ltp-53f53970b961ab32.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 open_by_handle_at(AT_FDCWD, high_fhp, O_RDWR)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_E9D60674E416A5DC
+    path: library/rules/ltp-e9d60674e416a5dc.yaml
+  open_tree: []
+  openat: []
+  openat2:
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, sizeof(*how) - 1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_026CB4A1CA7CDC6B
+    path: library/rules/ltp-026cb4a1ca7cdc6b.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 openat2(AT_FDCWD, "/proc/self/exe", how, sizeof(*how))；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_0F5654610A1780B6
+    path: library/rules/ltp-0f5654610a1780b6.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, FOO_SYMLINK, how, sizeof(*how))；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_15FCB1A16CBF7B34
+    path: library/rules/ltp-15fcb1a16cbf7b34.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, sizeof(*how) + 8)；预期：返回 -1，errno 为 E2BIG。
+  - rule_id: LTP_4101795C27681AB4
+    path: library/rules/ltp-4101795c27681ab4.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 openat2(AT_FDCWD, FOO_SYMLINK, how, sizeof(*how))；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_47B47DF38E582CE0
+    path: library/rules/ltp-47b47df38e582ce0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, sizeof(*how))；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_57933F1DF2F98C34
+    path: library/rules/ltp-57933f1df2f98c34.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 openat2(AT_FDCWD, "/proc/version", how, sizeof(*how))；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_69317571BC0A39EC
+    path: library/rules/ltp-69317571bc0a39ec.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, "/proc/version", how, sizeof(*how))；预期：返回 -1，errno 为 EXDEV。
+  - rule_id: LTP_7FEB3B276A8133AC
+    path: library/rules/ltp-7feb3b276a8133ac.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, "../foo", how, sizeof(*how))；预期：返回 -1，errno 为 EXDEV。
+  - rule_id: LTP_8405B02758433FBC
+    path: library/rules/ltp-8405b02758433fbc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, "/proc/self/exe", how, sizeof(*how))；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_845843CAB40A4F40
+    path: library/rules/ltp-845843cab40a4f40.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, sizeof(*how) + 1)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_B984D0FF91909634
+    path: library/rules/ltp-b984d0ff91909634.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_D0800876342DE939
+    path: library/rules/ltp-d0800876342de939.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 openat2(-1, TEST_FILE, myhow, sizeof(*how))；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_D33B1BBC658C83D4
+    path: library/rules/ltp-d33b1bbc658c83d4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, "/proc/version", how, sizeof(*how))；预期：返回 -1，errno 为 0。
+  - rule_id: LTP_E56EFFCF50E90E41
+    path: library/rules/ltp-e56effcf50e90e41.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 openat2(AT_FDCWD, NULL, myhow, sizeof(*how))；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_FD400AE357F2EBB3
+    path: library/rules/ltp-fd400ae357f2ebb3.yaml
+  pathconf:
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_REC_INCR_XFER_SIZE))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_16343E95C1C7EF47
+    path: library/rules/ltp-16343e95c1c7ef47.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_PRIO_IO))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_1661259678F899BC
+    path: library/rules/ltp-1661259678f899bc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_MAX_INPUT))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_1707E748EA729431
+    path: library/rules/ltp-1707e748ea729431.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_MAX_CANON))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_1893FF0C4930806E
+    path: library/rules/ltp-1893ff0c4930806e.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 pathconf(fpath, 0)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_1AD5BF710E8FB247
+    path: library/rules/ltp-1ad5bf710e8fb247.yaml
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 pathconf(emptypath, 0)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_33D0A33AC4655F3E
+    path: library/rules/ltp-33d0a33ac4655f3e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_ASYNC_IO))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_50BD66A0A05AFE51
+    path: library/rules/ltp-50bd66a0a05afe51.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_REC_MIN_XFER_SIZE))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_532E8E5A98C0A22D
+    path: library/rules/ltp-532e8e5a98c0a22d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_NAME_MAX))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_621EC309C3A75722
+    path: library/rules/ltp-621ec309c3a75722.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_FILESIZEBITS))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_779183F85F2C1278
+    path: library/rules/ltp-779183f85f2c1278.yaml
+  # 合规检查：条件：PATH_TOO_LONG；检查：调用 pathconf(long_path, 0)；预期：返回 -1，errno 为 ENAMETOOLONG。
+  - rule_id: LTP_7A84C55AF45835C2
+    path: library/rules/ltp-7a84c55af45835c2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_REC_XFER_ALIGN))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_7C67E10CB5F35EA2
+    path: library/rules/ltp-7c67e10cb5f35ea2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_PIPE_BUF))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_7FDF0704C50C872E
+    path: library/rules/ltp-7fdf0704c50c872e.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_SYNC_IO))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_81F076122348B68A
+    path: library/rules/ltp-81f076122348b68a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_NO_TRUNC))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_913EC5DF431DC6C2
+    path: library/rules/ltp-913ec5df431dc6c2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_REC_MAX_XFER_SIZE))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_9445A602B4F98B83
+    path: library/rules/ltp-9445a602b4f98b83.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_VDISABLE))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_BF31641F04151F3C
+    path: library/rules/ltp-bf31641f04151f3c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_PATH_MAX))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_C87041F4B4B5A930
+    path: library/rules/ltp-c87041f4b4b5a930.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 pathconf(abs_path, 0)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_D30F83EC0B5B2E08
+    path: library/rules/ltp-d30f83ec0b5b2e08.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pathconf(abs_path, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_D331AAEAED1F6297
+    path: library/rules/ltp-d331aaeaed1f6297.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_LINK_MAX))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_DD64353E8E427275
+    path: library/rules/ltp-dd64353e8e427275.yaml
+  # 合规检查：条件：SYMLINK_LOOP；检查：调用 pathconf(testeloop, 0)；预期：返回 -1，errno 为 ELOOP。
+  - rule_id: LTP_EC19279F1BC5A623
+    path: library/rules/ltp-ec19279f1bc5a623.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pathconf(path, NAME_DESC(_PC_CHOWN_RESTRICTED))；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_FEDE14E9D4DE9A9D
+    path: library/rules/ltp-fede14e9d4de9a9d.yaml
+  pause:
+  # 合规检查：条件：无额外前置条件；检查：调用 pause()；预期：返回 -1，errno 为 EINTR。
+  - rule_id: LTP_9E2C65A6408DD9D3
+    path: library/rules/ltp-9e2c65a6408dd9d3.yaml
+  perf_event_open: []
+  personality: []
+  pidfd_getfd:
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, 0, 0)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_0134FE6EEF60CBCD
+    path: library/rules/ltp-0134fe6eef60cbcd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(invalid_pidfd, 0, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_12EAE2F32232CC05
+    path: library/rules/ltp-12eae2f32232cc05.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 0)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_249EC7CDE9C4682F
+    path: library/rules/ltp-249ec7cde9c4682f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_254E7D0C8662B3BB
+    path: library/rules/ltp-254e7d0c8662b3bb.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 0)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_43A681D8FCD1B740
+    path: library/rules/ltp-43a681d8fcd1b740.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, 0, 1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_5322AC28C2EB6C16
+    path: library/rules/ltp-5322ac28c2eb6c16.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, 0, 0)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_595C676EF473E6BD
+    path: library/rules/ltp-595c676ef473e6bd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, 0, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_77FED5FE42B62868
+    path: library/rules/ltp-77fed5fe42b62868.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(*NULL, 0, 0)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_85106060CC8B99CF
+    path: library/rules/ltp-85106060cc8b99cf.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pidfd_getfd(valid_pidfd, -1, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_94654CBF1E34C32B
+    path: library/rules/ltp-94654cbf1e34c32b.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pidfd_getfd(pidfd, -1, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_C9AF84778DBE8B78
+    path: library/rules/ltp-c9af84778dbe8b78.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(pidfd, targetfd, 0)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+  - rule_id: LTP_E6A7D5E5327D8ECC
+    path: library/rules/ltp-e6a7d5e5327d8ecc.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_EA7E63D027CD6941
+    path: library/rules/ltp-ea7e63d027cd6941.yaml
+  pidfd_open:
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(pid, 0)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+  - rule_id: LTP_0311772B70C94C38
+    path: library/rules/ltp-0311772b70c94c38.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(getpid(), PIDFD_NONBLOCK)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_0EEADAF9E605632C
+    path: library/rules/ltp-0eeadaf9e605632c.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(expired_pid, 0)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_18E65E41E98D9E97
+    path: library/rules/ltp-18e65e41e98d9e97.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(invalid_pid, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_1BB76939FF2A40B5
+    path: library/rules/ltp-1bb76939ff2a40b5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(my_pid, 1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_3743BC827FB4F981
+    path: library/rules/ltp-3743bc827fb4f981.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(getpid(), 0)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+  - rule_id: LTP_7CD01664A3589136
+    path: library/rules/ltp-7cd01664a3589136.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_open(pid, PIDFD_NONBLOCK)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+  - rule_id: LTP_E5E64FCDA6CACABE
+    path: library/rules/ltp-e5e64fcda6cacabe.yaml
+  pidfd_send_signal:
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, SIGUSR1, NULL, 0)；预期：返回 -1，errno 为 ESRCH。
+  - rule_id: LTP_08C4F07A07C4C3F7
+    path: library/rules/ltp-08c4f07a07c4c3f7.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, CORRECT_SIGNAL, &info, 99999)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_08F05BA6ED1CEE6A
+    path: library/rules/ltp-08f05ba6ed1cee6a.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, DIFFERENT_SIGNAL, &info, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_0F9F906AC57F0B46
+    path: library/rules/ltp-0f9f906ac57f0b46.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(init_pidfd, CORRECT_SIGNAL, &info, 0)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_B7606EDCC1F1031F
+    path: library/rules/ltp-b7606edcc1f1031f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(pidfd, SIGNAL, uinfo, 0)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_FAECCAD19268C313
+    path: library/rules/ltp-faeccad19268c313.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pidfd_send_signal(dummyfd, CORRECT_SIGNAL, &info, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_FE471F5051750B9C
+    path: library/rules/ltp-fe471f5051750b9c.yaml
+  pipe: []
+  pipe2: []
+  pivot_root: []
+  pkeys: []
+  poll:
+  # 合规检查：条件：无额外前置条件；检查：调用 poll(pfds, 1, sleep_ms)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_018C7E7A08833780
+    path: library/rules/ltp-018c7e7a08833780.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 poll(&pfd, 1, 0)；预期：{'kind': 'return_value', 'return': '1'}。
+  - rule_id: LTP_403B654FD084895C
+    path: library/rules/ltp-403b654fd084895c.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 poll(infds, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+  - rule_id: LTP_51EC2B222D4690DB
+    path: library/rules/ltp-51ec2b222d4690db.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 poll(&pfd, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+  - rule_id: LTP_58266C6AA844BBBD
+    path: library/rules/ltp-58266c6aa844bbbd.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 poll(outfds, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+  - rule_id: LTP_D87AF1C2D0AF66D2
+    path: library/rules/ltp-d87af1c2d0af66d2.yaml
+  ppoll: []
+  prctl: []
+  pread64:
+  # 合规检查：条件：文件描述符无效、USER_BUFFER；检查：调用 pread64(fd, &buf, K1, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_3F60BBC08D86D573
+    path: library/rules/ltp-3f60bbc08d86d573.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 pread64(pipe_fd[0], &buf, K1, 0)；预期：返回 -1，errno 为 ESPIPE。
+  - rule_id: LTP_4BDFA76AA51D745B
+    path: library/rules/ltp-4bdfa76aa51d745b.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 pread64(dir_fd, &buf, K1, 0)；预期：返回 -1，errno 为 EISDIR。
+  - rule_id: LTP_9CEE24911B622031
+    path: library/rules/ltp-9cee24911b622031.yaml
+  preadv: []
+  preadv2:
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, iovec, 1, 0, RWF_NOWAIT)；预期：返回 -1，errno 为 EOPNOTSUPP。
+  - rule_id: LTP_1AACAC53BAF23BA9
+    path: library/rules/ltp-1aacac53baf23ba9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd1, rd_iovec1, 1, 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_2A28494F77E0B173
+    path: library/rules/ltp-2a28494f77e0b173.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd1, rd_iovec2, 1, 1, -1)；预期：返回 0，errno 为 EOPNOTSUPP。
+  - rule_id: LTP_350B586A62C42467
+    path: library/rules/ltp-350b586a62c42467.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd4, rd_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EISDIR。
+  - rule_id: LTP_3EB53CD0B1672EE5
+    path: library/rules/ltp-3eb53cd0b1672ee5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd5[0], rd_iovec2, 1, 0, 0)；预期：返回 0，errno 为 ESPIPE。
+  - rule_id: LTP_679924706FAFC4A5
+    path: library/rules/ltp-679924706fafc4a5.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, rd_iovec, 2, off, RWF_NOWAIT)；预期：返回 CHUNK_SZ + CHUNK_SZ/2，errno 为 EAGAIN。
+  - rule_id: LTP_82907DD83DFD7800
+    path: library/rules/ltp-82907dd83dfd7800.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, rd_iovec, 1, CHUNK*3 / 2, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK / 2'}。
+  - rule_id: LTP_93F2091ECF31C3E0
+    path: library/rules/ltp-93f2091ecf31c3e0.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd1, rd_iovec2, -1, 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_A4E6C06F187B9504
+    path: library/rules/ltp-a4e6c06f187b9504.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd3, rd_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EBADF。
+  - rule_id: LTP_AF0FA27496E3610E
+    path: library/rules/ltp-af0fa27496e3610e.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd, rd_iovec, 2, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_B08ED7334608FAA8
+    path: library/rules/ltp-b08ed7334608faa8.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 preadv2(fd, rd_iovec, 1, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_B6DD7EB9951128C1
+    path: library/rules/ltp-b6dd7eb9951128c1.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd2, rd_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EBADF。
+  - rule_id: LTP_DC3D9E7D5D1A75DE
+    path: library/rules/ltp-dc3d9e7d5d1a75de.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, rd_iovec, 1, 0, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_E2360C045F1BCE8E
+    path: library/rules/ltp-e2360c045f1bce8e.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 preadv2(fd1, rd_iovec3, 1, 0, 0)；预期：返回 0，errno 为 EFAULT。
+  - rule_id: LTP_F6456DE083F145B0
+    path: library/rules/ltp-f6456de083f145b0.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, rd_iovec, 2, 0, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_FB3B521CE41A299A
+    path: library/rules/ltp-fb3b521ce41a299a.yaml
+  process_madvise: []
+  profil: []
+  pselect: []
+  ptrace: []
+  pwrite64:
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 pwrite64(fd, NULL, BS, 0)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_0AE3E0188FBE5839
+    path: library/rules/ltp-0ae3e0188fbe5839.yaml
+  # 合规检查：条件：文件描述符无效、USER_BUFFER；检查：调用 pwrite64(fd, buf, BS, -1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_15EC9351D2422944
+    path: library/rules/ltp-15ec9351d2422944.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwrite64(fd, NULL, 0, 0)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_4E45B0701D5BD8A7
+    path: library/rules/ltp-4e45b0701d5bd8a7.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 pwrite64(inv_fd, buf, BS, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_80B2CAF4B298BEE6
+    path: library/rules/ltp-80b2caf4b298bee6.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 pwrite64(fd_ro, buf, BS, 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_D4E6A74BAB2E8722
+    path: library/rules/ltp-d4e6a74bab2e8722.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 pwrite64(pipe_fds[1], buf, BS, 0)；预期：返回 -1，errno 为 ESPIPE。
+  - rule_id: LTP_D5F414741594F6E3
+    path: library/rules/ltp-d5f414741594f6e3.yaml
+  pwritev: []
+  pwritev2:
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd1, wr_iovec1, 1, 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_1F2328B410A3010D
+    path: library/rules/ltp-1f2328b410a3010d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd, wr_iovec, 2, 0, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_296D3DD5B2B27A84
+    path: library/rules/ltp-296d3dd5b2b27a84.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd, wr_iovec, 1, CHUNK / 2, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_3152706321BA354E
+    path: library/rules/ltp-3152706321ba354e.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pwritev2(fd, wr_iovec, 1, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_56694FAD66174814
+    path: library/rules/ltp-56694fad66174814.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pwritev2(fd, wr_iovec, 2, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_74C13DA111D6D9BD
+    path: library/rules/ltp-74c13da111d6d9bd.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd2, wr_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EBADF。
+  - rule_id: LTP_78A991C666EEFF75
+    path: library/rules/ltp-78a991c666eeff75.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd3, wr_iovec2, 1, 0, 0)；预期：返回 0，errno 为 EBADF。
+  - rule_id: LTP_7C0B488884F6689C
+    path: library/rules/ltp-7c0b488884f6689c.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 pwritev2(fd1, wr_iovec3, 1, 0, 0)；预期：返回 0，errno 为 EFAULT。
+  - rule_id: LTP_9A3244C4CEBE8674
+    path: library/rules/ltp-9a3244c4cebe8674.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd, wr_iovec, 1, 0, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+  - rule_id: LTP_B06B0397728F35C3
+    path: library/rules/ltp-b06b0397728f35c3.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pwritev2(fd1, wr_iovec2, 1, 1, -1)；预期：返回 0，errno 为 EOPNOTSUPP。
+  - rule_id: LTP_D1D51B0412DFB097
+    path: library/rules/ltp-d1d51b0412dfb097.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 pwritev2(fd4[0], wr_iovec2, 1, 0, 0)；预期：返回 0，errno 为 ESPIPE。
+  - rule_id: LTP_DBAE060B9CA303DD
+    path: library/rules/ltp-dbae060b9ca303dd.yaml
+  # 合规检查：条件：文件描述符无效；检查：调用 pwritev2(fd1, wr_iovec2, -1, 0, 0)；预期：返回 0，errno 为 EINVAL。
+  - rule_id: LTP_EF4053B74F85E11B
+    path: library/rules/ltp-ef4053b74f85e11b.yaml
+  quotactl: []
+  read:
+  # 合规检查：条件：无额外前置条件；检查：调用 read(badfd, bufaddr, 1)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_0087F445CEB63414
+    path: library/rules/ltp-0087f445ceb63414.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 read(fd, prbuf, BUFSIZ)；预期：{'kind': 'return_value', 'return': 'PALFA_LEN'}。
+  - rule_id: LTP_2C266C6067333086
+    path: library/rules/ltp-2c266c6067333086.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 read(fd2, bufaddr, 1)；预期：返回 -1，errno 为 EISDIR。
+  - rule_id: LTP_7F0FE233BE49C811
+    path: library/rules/ltp-7f0fe233be49c811.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 read(fd4, addr4, 1)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_9F30FD7002BC2EBA
+    path: library/rules/ltp-9f30fd7002bc2eba.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 read(rfd, &c, 1)；预期：返回 -1，errno 为 EAGAIN。
+  - rule_id: LTP_A5BD363654740DDE
+    path: library/rules/ltp-a5bd363654740dde.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 read(fd4, addr5, 4096)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_C8C667C37A069984
+    path: library/rules/ltp-c8c667c37a069984.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 read(fd3, outside_buf, 1)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_D9A5AE03D93C5C6D
+    path: library/rules/ltp-d9a5ae03d93c5c6d.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 read(fd, buf, SIZE)；预期：{'kind': 'return_value', 'return': '-1'}。
+  - rule_id: LTP_FB7C7C6EA4808026
+    path: library/rules/ltp-fb7c7c6ea4808026.yaml
+  readahead:
+  # 合规检查：条件：文件描述符无效；检查：调用 readahead(-1, 0, getpagesize())；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_0F35A2F3718D172D
+    path: library/rules/ltp-0f35a2f3718d172d.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 readahead(fd->fd, 0, getpagesize())；预期：返回 -1，errno 为 exp_errnos。
+  - rule_id: LTP_28410A5D4088E644
+    path: library/rules/ltp-28410a5d4088e644.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 readahead(fd[0], 0, getpagesize())；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_AA6F0F0A8A469B13
+    path: library/rules/ltp-aa6f0f0a8a469b13.yaml
+  readdir: []
+  readlink: []
+  readlinkat:
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd, TEST_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_048D7BAFDFD264F6
+    path: library/rules/ltp-048d7bafdfd264f6.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(fd_atcwd, abspath, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_1505AAD11D4091B7
+    path: library/rules/ltp-1505aad11d4091b7.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(fd_atcwd, testsymlink, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_209742037ADD09F1
+    path: library/rules/ltp-209742037add09f1.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT、USER_BUFFER；检查：调用 readlinkat(file_fd, SYMLINK_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_30AF82AD36872B80
+    path: library/rules/ltp-30af82ad36872b80.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd, testsymlink, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_55E78705E11C6E2D
+    path: library/rules/ltp-55e78705e11c6e2d.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd, SYMLINK_FILE, buf, 0)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_5A2FE2DE55DC96EB
+    path: library/rules/ltp-5a2fe2de55dc96eb.yaml
+  # 合规检查：条件：文件描述符无效、USER_BUFFER；检查：调用 readlinkat(fd_invalid, SYMLINK_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_5B5079DEC75B53F5
+    path: library/rules/ltp-5b5079dec75b53f5.yaml
+  # 合规检查：条件：NONEXISTENT_PATH、USER_BUFFER；检查：调用 readlinkat(dir_fd, "does_not_exists", buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_635254F85EA9B1B0
+    path: library/rules/ltp-635254f85ea9b1b0.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd, abspath, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_8B80C0CDA587165C
+    path: library/rules/ltp-8b80c0cda587165c.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT、USER_BUFFER；检查：调用 readlinkat(dir_fd, "test_file/test_file", buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_8F4CA997DDB954AF
+    path: library/rules/ltp-8f4ca997ddb954af.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(dir_fd2, emptypath, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_9B32E51680CE0BEE
+    path: library/rules/ltp-9b32e51680ce0bee.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 readlinkat(file_fd, abspath, buf, sizeof(buf))；预期：{'kind': 'positive_return', 'return': '>0'}。
+  - rule_id: LTP_AC5312B5BF09186C
+    path: library/rules/ltp-ac5312b5bf09186c.yaml
+  readv: []
+  realpath:
+  # 合规检查：条件：NONEXISTENT_PATH；检查：调用 realpath(".", NULL)；预期：返回 -1，errno 为 ENOENT。
+  - rule_id: LTP_68EDEECFEA7F3C06
+    path: library/rules/ltp-68edeecfea7f3c06.yaml
+  reboot: []
+  recv:
+  # 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 recv(s, (void *)-1, sizeof(buf), 0)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_66303F5A0EB2D470
+    path: library/rules/ltp-66303f5a0eb2d470.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recv(s, buf, sizeof(buf), MSG_ERRQUEUE)；预期：返回 -1，errno 为 EAGAIN。
+  - rule_id: LTP_766411248B80C139
+    path: library/rules/ltp-766411248b80c139.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recv(s, buf, sizeof(buf), 0)；预期：返回 -1，errno 为 ENOTSOCK。
+  - rule_id: LTP_7EB2D64ACBEF14A7
+    path: library/rules/ltp-7eb2d64acbef14a7.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recv(s, buf, sizeof(buf), 0)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_B34188BD305465CA
+    path: library/rules/ltp-b34188bd305465ca.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recv(s, buf, sizeof(buf), MSG_OOB)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_C7E8278CFEF81C98
+    path: library/rules/ltp-c7e8278cfef81c98.yaml
+  recvfrom:
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, (void *)buf, sizeof(buf), 0, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_2B9F3F4A853A14C6
+    path: library/rules/ltp-2b9f3f4a853a14c6.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 ENOTSOCK。
+  - rule_id: LTP_2FAD34B153D5914E
+    path: library/rules/ltp-2fad34b153d5914e.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, (void *)buf, sizeof(buf), MSG_OOB, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_8AC9E6F26C2E3CFE
+    path: library/rules/ltp-8ac9e6f26c2e3cfe.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, (void *)buf, sizeof(buf), 0, (struct sockaddr *)-1, &fromlen)；预期：返回 0，errno 为 ENOTSOCK。
+  - rule_id: LTP_A6B15E4F4EBDDB36
+    path: library/rules/ltp-a6b15e4f4ebddb36.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 recvfrom(s, (void *)-1, sizeof(buf), 0, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_D8E4FF36A3FE1F41
+    path: library/rules/ltp-d8e4ff36a3fe1f41.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, (void *)buf, sizeof(buf), MSG_ERRQUEUE, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EAGAIN。
+  - rule_id: LTP_DD647A49F00FCC45
+    path: library/rules/ltp-dd647a49f00fcc45.yaml
+  # 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EBADF。
+  - rule_id: LTP_F101CC6D9DF71519
+    path: library/rules/ltp-f101cc6d9df71519.yaml
+  recvmmsg: []
+  recvmsg: []
+  remap_file_pages: []
+  removexattr: []
+  rename:
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(TEST_EROFS, TEST_NEW_EROFS)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_1028A46194A35788
+    path: library/rules/ltp-1028a46194a35788.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(old_file_name, new_file_name)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2A0C51A9F627F9EE
+    path: library/rules/ltp-2a0c51a9f627f9ee.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(OLD_DIR_NAME, NEW_DIR_NAME)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2E4BA3FA59A48F0F
+    path: library/rules/ltp-2e4ba3fa59a48f0f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(old_dir_name, new_dir_name)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_2EBC825D5CF7EF0F
+    path: library/rules/ltp-2ebc825d5cf7ef0f.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(TEMP_FILE, TEMP_DIR)；预期：返回 -1，errno 为 EISDIR。
+  - rule_id: LTP_3EC51D87D4A4C0C2
+    path: library/rules/ltp-3ec51d87d4a4c0c2.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(TEMP_FILE1, TEMP_FILE1)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_43BC8A0B853CD8DB
+    path: library/rules/ltp-43bc8a0b853cd8db.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(DIR1, DIR2)；预期：返回 -1，errno 为 ENOTEMPTY。
+  - rule_id: LTP_54D221925C324829
+    path: library/rules/ltp-54d221925c324829.yaml
+  # 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT；检查：调用 rename(TEMP_DIR, TEMP_FILE)；预期：返回 -1，errno 为 ENOTDIR。
+  - rule_id: LTP_6821C2F644329FB4
+    path: library/rules/ltp-6821c2f644329fb4.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(DIR1, DIR2)；预期：返回 -1，errno 为 EINVAL。
+  - rule_id: LTP_9062D40054E147B9
+    path: library/rules/ltp-9062d40054e147b9.yaml
+  # 合规检查：条件：PATH_TOO_LONG；检查：调用 rename(TEMP_FILE, long_name)；预期：返回 -1，errno 为 ENAMETOOLONG。
+  - rule_id: LTP_90CF6ADF43644434
+    path: library/rules/ltp-90cf6adf43644434.yaml
+  # 合规检查：条件：PERMISSION_DENIED_STATE；检查：调用 rename(SRCFILE, DESTFILE)；预期：返回 -1，errno 为 EACCES。
+  - rule_id: LTP_9D13DF07435A4B33
+    path: library/rules/ltp-9d13df07435a4b33.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 rename(INVALID_PATH, TEMP_FILE)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_CA1E4549CF7692F9
+    path: library/rules/ltp-ca1e4549cf7692f9.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(TEST_EMLINK, TEST_NEW_EMLINK)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_D17799C1BB191952
+    path: library/rules/ltp-d17799c1bb191952.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(OLD_FILE_NAME, NEW_FILE_NAME)；预期：调用成功，返回 SUCCESS。
+  - rule_id: LTP_D758596147111328
+    path: library/rules/ltp-d758596147111328.yaml
+  # 合规检查：条件：BAD_USER_ADDRESS；检查：调用 rename(TEMP_FILE, INVALID_PATH)；预期：返回 -1，errno 为 EFAULT。
+  - rule_id: LTP_D7936678BF685610
+    path: library/rules/ltp-d7936678bf685610.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(elooppathname, TEST_NEW_ELOOP)；预期：{'kind': 'return_value', 'return': '0'}。
+  - rule_id: LTP_D98D789F4EBA6817
+    path: library/rules/ltp-d98d789f4eba6817.yaml
+  # 合规检查：条件：无额外前置条件；检查：调用 rename(TEMP_FILE1, TEMP_FILE2)；预期：返回 -1，errno 为 EPERM。
+  - rule_id: LTP_E1B6C6D1C8603A83
+    path: library/rules/ltp-e1b6c6d1c8603a83.yaml
+  # 合规检查：条件：PATH_TOO_LONG；检查：调用 rename(TEMP_FILE, long_path)；预期：返回 -1，errno 为 ENAMETOOLONG。
+  - rule_id: LTP_FEDD56BEBCE11F81
+    path: library/rules/ltp-fedd56bebce11f81.yaml

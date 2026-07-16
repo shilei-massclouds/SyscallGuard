@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 read(fd, buf, SIZE)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FB7C7C6EA4808026
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - buf
+    - SIZE
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:fb7c7c6ea4808026fb4235678c73bebaca4b4e60a2932fa5f90f282b6becf623
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/read/read01.c
+  line: 19
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:440d613aa5c834391b8c27bea8eb25bc7e2b9d781013692d6b8ecb57c4c35052
+  case: read01_19_raw

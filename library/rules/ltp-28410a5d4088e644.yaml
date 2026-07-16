@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 readahead(fd->fd, 0, getpagesize())；预期：返回 -1，errno 为 exp_errnos。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_28410A5D4088E644
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: readahead
+    arguments:
+    - fd->fd
+    - '0'
+    - getpagesize()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: exp_errnos
+  errno:
+  - exp_errnos
+semantic_hash: sha256:28410a5d4088e644ca9dadf8ba29badbad1d120a4e198eed790e45406a88b581
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readahead/readahead01.c
+  line: 62
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a67c8e90fa4a38c45a481d99348a8cc3584c3e21110fb5b022a50cb5c3af0830
+  case: readahead01_62_raw

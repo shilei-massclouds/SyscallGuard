@@ -1,0 +1,32 @@
+# 合规检查：条件：文件描述符无效；检查：调用 mlock2(addr, pgsz, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D9418F7424E86C28
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - addr
+    - pgsz
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d9418f7424e86c28e525f8bafe039c85a9e938f4e9de0be59a528d86070e5a0e
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock202.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3a4e609a7e7ac38aa453ebd7567e0e15aad5c43f0ec70d1988c8e9ece71cec28
+  case: mlock202_63_0

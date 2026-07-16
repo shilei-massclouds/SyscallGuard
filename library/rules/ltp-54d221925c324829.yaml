@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 rename(DIR1, DIR2)；预期：返回 -1，errno 为 ENOTEMPTY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_54D221925C324829
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - DIR1
+    - DIR2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTEMPTY
+  errno:
+  - ENOTEMPTY
+semantic_hash: sha256:54d221925c3248296c72ab5bab50eedc83600a21193fb45b57c50cd9847020f5
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename04.c
+  line: 31
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:dcf724c44636068939f6fe4c2d31313ae702044beea7f9a9ecb8154021967b9c
+  case: rename04_31_raw

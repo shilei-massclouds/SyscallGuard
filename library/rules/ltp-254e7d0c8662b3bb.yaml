@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 pidfd_getfd(valid_pidfd, 0, 0)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_254E7D0C8662B3BB
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - valid_pidfd
+    - '0'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:254e7d0c8662b3bb8a69de7f1fb9def8357ea30c2b37836ff66fae236ec13a89
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+  line: 73
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6648e583764c2d3d2afac1649d0f7e3852e2f7774f56ea8d409a8c38a8eeccde
+  case: pidfd_getfd02_73_0

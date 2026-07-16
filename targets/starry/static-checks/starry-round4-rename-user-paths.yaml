@@ -1,0 +1,40 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_RENAME_USER_PATHS
+title: rename loads both user path strings through checked VM access
+rule_refs:
+- LTP_CA1E4549CF7692F9
+- LTP_D7936678BF685610
+applies_to_syscalls:
+- rename
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: old and new paths use checked user string loads
+  regex: pub fn sys_renameat2\([\s\S]*?let old_path = vm_load_path_string\(old_path\)\?;\s*let new_path
+    = vm_load_path_string\(new_path\)\?;
+upstream_dependencies:
+- id: LTP_CA1E4549CF7692F9
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:ca1e4549cf7692f9b70c18cbdd4fda9142e71e6e53c36e657a6580b1aa45aac9
+- id: LTP_D7936678BF685610
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:d7936678bf685610bb9b7d85dbd99b3021702ffa47abcd925bb8bdd68493904f
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_renameat2
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_renameat2: sha256:7926d2111f5920bfe2f415a6b2279ad85ae5fc0dffa30b8b1926c5645e27b407
+  missing_symbols: []
+  content_hash: sha256:e33fb303425c0eb05f19beffa6a3e40a22921b93bf547f0777a9e14153bcdbc7
+target_content_fingerprint: sha256:2f89afc59f1333548aba2db39790ff62777ee227e365cb1cdc48a888d7014430
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

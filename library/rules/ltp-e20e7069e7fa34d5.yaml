@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 munmap(&map_addr + 1, map_len)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E20E7069E7FA34D5
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - '&map_addr + 1'
+    - map_len
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e20e7069e7fa34d525c29c0a916c6cecf3cd6aa52bde1c4fe108b0f2597b4a8b
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/munmap/munmap03.c
+  line: 40
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:89ada5aecd9479a7859c68843f763bab48b1394653c5aa6b8d22aebc9192081a
+  case: munmap03_40_2

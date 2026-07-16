@@ -1,0 +1,35 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 recvfrom(s, (void *)buf, sizeof(buf), MSG_OOB, (struct sockaddr *)&from, &fromlen)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8AC9E6F26C2E3CFE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: recvfrom
+    arguments:
+    - s
+    - (void *)buf
+    - sizeof(buf)
+    - MSG_OOB
+    - (struct sockaddr *)&from
+    - '&fromlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8ac9e6f26c2e3cfe517a34483ea598752d7cef858cb71afe6736d859575ab328
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/recvfrom/recvfrom01.c
+  line: 141
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8ddf4fbbac8b01b7f19bbfbe1d6bed3f0547b37316c01932da44c181b44ce204
+  case: recvfrom01_141_5

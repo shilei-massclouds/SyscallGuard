@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_READLINKAT_ZERO_SIZE
+title: readlinkat rejects a zero-sized result buffer
+rule_refs:
+- LTP_5A2FE2DE55DC96EB
+applies_to_syscalls:
+- readlinkat
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: zero size returns InvalidInput
+  regex: pub fn sys_readlinkat\([\s\S]*?if size == 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_5A2FE2DE55DC96EB
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:5a2fe2de55dc96eb45cebfc1be8e012707df11d5a5feac11d1ac5dac9d94d99a
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_readlinkat
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_readlinkat: sha256:5a56af07996c861857226f7ab1f214a1189f84643ad3826e80e7507ab97c9757
+  missing_symbols: []
+  content_hash: sha256:84e8870d1d6efd6fe4995e002f9d53f12e3fb7a29c3c4f41d2ecf67f24b9d4a0
+target_content_fingerprint: sha256:513aae7d958d2a9406f7f2b39e9597723e6b0444c1ca5ee906c7b93e1d5889f1
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

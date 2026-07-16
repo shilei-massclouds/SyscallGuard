@@ -1,0 +1,34 @@
+# 合规检查：条件：NONEXISTENT_PATH、USER_BUFFER；检查：调用 readlinkat(dir_fd, "does_not_exists", buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_635254F85EA9B1B0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - '"does_not_exists"'
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:635254f85ea9b1b025c4d03e7c5a0d8f83a73dcc8b38d3e2df7700d967612e72
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_5

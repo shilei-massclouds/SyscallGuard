@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND4_PREAD64_NEGATIVE_OFFSET
+title: pread64 rejects a negative offset before I/O
+rule_refs:
+- LTP_3F60BBC08D86D573
+applies_to_syscalls:
+- pread64
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: negative offsets return InvalidInput
+  regex: pub fn sys_pread64\([\s\S]*?if offset < 0 \{\s*return Err\(AxError::InvalidInput\);
+upstream_dependencies:
+- id: LTP_3F60BBC08D86D573
+  generated_at_utc: '2026-07-16T04:20:06.737209Z'
+  content_hash: sha256:3f60bbc08d86d5735c7e66550d7165b77386c0b9de2e3300bb3ccd48d5c0ee16
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_pread64
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_pread64: sha256:589e3852018f7a26a6a5ba8414766d616bcfb521644effd5a7087d7bd3adba48
+  missing_symbols: []
+  content_hash: sha256:b8b2d89817afeaf640ec2a0c99806045bed10ea870f446e493e7a78273c767d7
+target_content_fingerprint: sha256:1cc69bcffeca6fa558fae248abfaa613809ada050c4517c7207f831d578e956b
+generated_at_utc: '2026-07-16T04:30:54.819863Z'

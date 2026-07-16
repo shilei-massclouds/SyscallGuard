@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 openat2(AT_FDCWD, FOO_SYMLINK, how, sizeof(*how))；预期：返回 -1，errno 为 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_15FCB1A16CBF7B34
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - AT_FDCWD
+    - FOO_SYMLINK
+    - how
+    - sizeof(*how)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: '0'
+  errno:
+  - '0'
+semantic_hash: sha256:15fcb1a16cbf7b347720dcedffa25a4e7ee56bdb76f411197d0926e6bad01d56
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat202.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
+  case: openat202_54_2

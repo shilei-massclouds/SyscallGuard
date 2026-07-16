@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mq_notify(0, &({.sigev_notify = SIGEV_SIGNAL, .sigev_signo = _NSIG + 1}))；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_462CE9A88054B448
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - '0'
+    - '&({.sigev_notify = SIGEV_SIGNAL, .sigev_signo = _NSIG + 1})'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:462ce9a88054b4487bcd2143cecf9c86d81a7ea19657672dee1caba8b4f056fd
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify02.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e370cd32f4894c2008ddbdbda73983d8a68f2cf7416d815c9a32d0360ed5aa24
+  case: mq_notify02_28_1

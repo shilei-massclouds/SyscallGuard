@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mount_setattr(otfd, "", AT_EMPTY_PATH, attr, sizeof(*attr))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5F50BCA4675B4B03
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - otfd
+    - '""'
+    - AT_EMPTY_PATH
+    - attr
+    - sizeof(*attr)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:5f50bca4675b4b03967d3a238eaf7ad5f0142849042f56a4a65253061864f06a
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+  line: 102
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:79af94ca852b0827a8e09b875b93be7f0ba1a430e9868add8939819f44194cda
+  case: mount_setattr01_102_raw

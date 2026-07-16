@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, len)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4AF75A49B2F7AAB5
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: munlock
+    arguments:
+    - addr
+    - len
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:4af75a49b2f7aab5c5913fa4d5be036a7ac9113a218680fd7961b39eb6ecf1aa
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/munlock/munlock02.c
+  line: 23
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:fe1f7c1cd24796b0d790b9e824f426090c31a4684b00b5a0afb8307733b6aad5
+  case: munlock02_23_raw

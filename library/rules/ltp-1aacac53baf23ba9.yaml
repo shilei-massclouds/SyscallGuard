@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 preadv2(fd, iovec, 1, 0, RWF_NOWAIT)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1AACAC53BAF23BA9
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd
+    - iovec
+    - '1'
+    - '0'
+    - RWF_NOWAIT
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:1aacac53baf23ba9aec716bf031354593948226151154448887698bf2a5dde0d
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv203.c
+  line: 234
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d070a08696998b423638b4ce46eec889072c0e4723fdfadcf2e99fe7490c6c61
+  case: preadv203_234_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 mkdirat(dir_fd, TEST_DIR, 0777)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6174E3690A05F1CA
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dir_fd
+    - TEST_DIR
+    - '0777'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:6174e3690a05f1ca197873252a1e0d7555885e03bd2876ff2761725dd8cda77d
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat02.c
+  line: 56
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e0b57afaa6bc7e0276ebafdbefb26013cc0e8ce3173de741942fb154e2540cb5
+  case: mkdirat02_56_0

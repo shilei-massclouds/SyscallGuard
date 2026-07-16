@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 munlock(addr, 1024 * 1024)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4D9D59CFB785EB0C
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: munlock
+    arguments:
+    - addr
+    - 1024 * 1024
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:4d9d59cfb785eb0ca2116744b600929c1e2361794f35e6e09e558ebcf993fd60
+generated_at_utc: '2026-07-16T04:20:06.737209Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/munlock/munlock01.c
+  line: 33
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:87f4f028a280614d946fb478b45b5a47e49c4a3ca7bc3c6cbe5df5e1a710cfc1
+  case: munlock01_33_2
