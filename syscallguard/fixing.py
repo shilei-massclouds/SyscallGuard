@@ -90,12 +90,13 @@ def _finding_report_ids(
     branch: str,
     snapshot: str,
 ) -> list[str]:
-    report_ids: set[str] = set()
+    reports: dict[str, dict[str, Any]] = {}
+    finding_candidates: dict[str, set[str]] = {}
     for finding_id, finding in findings.items():
         occurrences = finding.get("occurrences", [])
         if not isinstance(occurrences, list):
             raise SyscallGuardError(f"finding {finding_id} occurrences must be a list")
-        matched_current_branch = False
+        candidates: set[str] = set()
         for occurrence in occurrences:
             if not isinstance(occurrence, dict):
                 continue
@@ -117,15 +118,33 @@ def _finding_report_ids(
                 target.get("branch") == branch
                 and target.get("snapshot_hash") == snapshot
             ):
-                report_ids.add(report_id)
-                matched_current_branch = True
-        if not matched_current_branch:
+                reports[report_id] = report
+                candidates.add(report_id)
+        if not candidates:
             raise SyscallGuardError(
                 f"finding {finding_id} target branch or snapshot differs from the "
                 f"current Starry branch: no evidence-bearing check report for "
                 f"branch {branch!r}; rerun mapping and checking"
             )
-    return sorted(report_ids)
+        finding_candidates[finding_id] = candidates
+
+    fresh_report_ids: set[str] = set()
+    for report_id, report in reports.items():
+        scope = _merge_report_scope({report_id: report})
+        entities = _load_regression_entities(root, scope)
+        if not _report_scope_mismatches({report_id: report}, entities):
+            fresh_report_ids.add(report_id)
+
+    selected_report_ids: set[str] = set()
+    for finding_id, candidates in finding_candidates.items():
+        fresh_candidates = candidates & fresh_report_ids
+        if not fresh_candidates:
+            raise SyscallGuardError(
+                f"finding {finding_id} has no fresh evidence-bearing check report "
+                f"for branch {branch!r}; rerun mapping and checking"
+            )
+        selected_report_ids.update(fresh_candidates)
+    return sorted(selected_report_ids)
 
 
 def _merge_report_scope(reports: dict[str, dict[str, Any]]) -> dict[str, list[str]]:

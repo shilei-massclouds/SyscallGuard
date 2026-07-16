@@ -1567,6 +1567,31 @@ new file mode 100644
             preparation["source_check_report_ids"], ["check-finding"]
         )
 
+    def test_prepare_ignores_stale_occurrences_after_fresh_revalidation(self) -> None:
+        self.prepare_failed_check()
+        check_path = self.root / "targets/starry/static-checks/check-one.yaml"
+        check = load_mapping(check_path)
+        check["title"] = "refreshed check definition"
+        atomic_write_yaml(check_path, check)
+
+        run_mapping(
+            None,
+            self.root,
+            "mapping-refreshed-evidence",
+            target_branch(self.root),
+        )
+        run_check(
+            "mapping-refreshed-evidence",
+            self.root,
+            "check-refreshed-evidence",
+        )
+
+        preparation = prepare_fix(self.root, "fix-refreshed-evidence")
+        self.assertEqual(
+            preparation["source_check_report_ids"],
+            ["check-refreshed-evidence"],
+        )
+
     def test_cli_has_no_from_parameter_and_supports_internal_finalize(self) -> None:
         with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             build_fix_parser().parse_args(["--from", "check-old"])
