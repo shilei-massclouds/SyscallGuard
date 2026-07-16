@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(addr, size, advise)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EBB107DB7E3EFF2A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - addr
+    - size
+    - advise
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ebb107db7e3eff2a30e6da94b1ca8da54beb5c0ac7b982b4aee0be67c474c1d2
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise10.c
+  line: 93
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:92ca4ea7797af5b5d5191da78ef9a6ce70363a5e6ae774823884ac06ed687292
+  case: madvise10_93_raw

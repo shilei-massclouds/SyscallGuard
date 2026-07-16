@@ -1,0 +1,53 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_PROCESS_LOOKUP
+title: process lookup recognizes pid zero and reports NoSuchProcess for absent live or zombie pids
+rule_refs:
+- LTP_8C1C2578972FCA1D
+- LTP_9461AA782926BAB4
+- LTP_F8FD511858BB650D
+applies_to_syscalls:
+- getpgid
+- getsid
+path: os/StarryOS/kernel/src/task/ops.rs
+patterns:
+- label: pid zero selects the current process
+  regex: 'pub fn get_process\(pid: Pid\)[\s\S]*?if pid == 0 \{\s*return Ok\(current\(\)\.as_thread\(\)\.proc_data\.proc\.clone\(\)\);'
+- label: missing live and zombie processes return NoSuchProcess
+  regex: get_zombie_process\(pid\)\.ok_or\(AxError::NoSuchProcess\)
+upstream_dependencies:
+- id: LTP_8C1C2578972FCA1D
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:8c1c2578972fca1d655df720a137f88882824f681ac3cbfa59052c4a1f8ef64a
+- id: LTP_9461AA782926BAB4
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:9461aa782926bab4cb006db18510ae154420b8c023b3b2f9cc0308d205ca9cf7
+- id: LTP_F8FD511858BB650D
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:f8fd511858bb650d732732911dd9b8f3b5680d09787b4b47438a5bb603dc1aff
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/job.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a028bda9fb89a9dd7cb112542e74b72af633471c5eceedf0413ab87e9f3679fa
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:1e27b292d0f06406e3346e2449e4469f2535641cf869c494109da000e7d13c59
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/task/ops.rs
+  symbols:
+  - get_process
+  scope: symbols
+  file_hash: sha256:8aa08b7cb8aa3b4510aa0faed156b31ad022ca51b58fc939ac56fbe60750dbcd
+  symbol_hashes:
+    get_process: sha256:04dca4065faef63b2b0b2ebf9421acdf5253598059be785ed827fa62b0b39472
+  missing_symbols: []
+  content_hash: sha256:62b5c8edecb138796194e5ba8ea2fcc4f5018b8656e51c378d85ca1dfd8c49ca
+target_content_fingerprint: sha256:6979f4eb8b57ba75522580a5e38ae0d4e5fd814f01101aa81d636e675f042efb
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

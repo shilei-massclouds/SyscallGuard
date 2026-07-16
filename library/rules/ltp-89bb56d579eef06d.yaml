@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 getcwd(NULL, (size_t)-1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_89BB56D579EEF06D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - 'NULL'
+    - (size_t)-1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:89bb56d579eef06d47c81ec803de4585a5afecb282c21eb9399b98db46b4e647
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getcwd/getcwd01.c
+  line: 48
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1a7750a0a5f83d0c9ecdf042ca651c6a72696958ce394845c941af9f74a28657
+  case: getcwd01_48_1

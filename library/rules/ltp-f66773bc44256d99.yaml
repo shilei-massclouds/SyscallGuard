@@ -1,0 +1,33 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 lgetxattr("symlink", SECURITY_KEY1, buf, size)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F66773BC44256D99
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - '"symlink"'
+    - SECURITY_KEY1
+    - buf
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:f66773bc44256d99cabe51efdecff95a87e4094881f276b6c902def452096fd4
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
+  line: 79
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:cab2a9c38c2bba420b48169eb17f015f423f049beb92dcd5f9443b28584893f5
+  case: lgetxattr01_79_raw

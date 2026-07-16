@@ -1,0 +1,32 @@
+# 合规检查：条件：PATH_TOO_LONG、USER_BUFFER；检查：调用 lstat(longpathname, &stat_buf)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9FB758C1B4AF2411
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - longpathname
+    - '&stat_buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:9fb758c1b4af2411c8da67a91fabb69ede90ed52ceed982b409de9eef6bc5a8c
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:37c9b4dce3179253a71b50d988e5460af5b350ced611e692a3b1d010a864b40b
+  case: lstat02_63_3

@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 ftruncate(read_fd, 4)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_63E6527501A08F92
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - read_fd
+    - '4'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:63e6527501a08f92aa43e68124f897c040ee1772af6738c64e18e0d766c0823e
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ftruncate/ftruncate03.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c2d9de71993eb609a84d21bb2a8027baf8c17e63d5e2856d57a779f0e2f94032
+  case: ftruncate03_48_1

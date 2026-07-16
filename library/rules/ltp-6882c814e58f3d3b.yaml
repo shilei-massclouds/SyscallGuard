@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(addr, MAP_SIZE, MADV_DONTNEED)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6882C814E58F3D3B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - addr
+    - MAP_SIZE
+    - MADV_DONTNEED
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:6882c814e58f3d3bc5b65b2b76e3cef7e5db13b8b78fb6aa3e2b8fb61d61de58
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise03.c
+  line: 24
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:5f6828fbc308f004b0584408ef67a4205d2540ddda106ab284d00c2c052629f7
+  case: madvise03_24_raw

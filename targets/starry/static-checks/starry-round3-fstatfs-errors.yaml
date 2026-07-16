@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_FSTATFS_ERRORS
+title: fstatfs validates the descriptor before copying statfs data to userspace
+rule_refs:
+- LTP_EB1B734A0943248E
+- LTP_F92A1A6292F40811
+applies_to_syscalls:
+- fstatfs
+path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+patterns:
+- label: fstatfs obtains a real file from the descriptor
+  regex: 'pub fn sys_fstatfs\(fd: i32, buf: \*mut statfs\)[\s\S]*?File::from_fd\(fd\)\?'
+- label: fstatfs writes via checked VM access
+  regex: buf\.vm_write\(statfs\([\s\S]*?\)\?\)\?;
+upstream_dependencies:
+- id: LTP_EB1B734A0943248E
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:eb1b734a0943248e40e858f9d9547299edda39a8c18852a2c1775fce0d0b0f6e
+- id: LTP_F92A1A6292F40811
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:f92a1a6292f408112c127494a4bcae4af4bb94ac649b58da52777e46e088a50e
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_fstatfs
+  scope: symbols
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes:
+    sys_fstatfs: sha256:3080b27e5c79e6bc73887933563d07e20c0e877f0ea4d6a3f2324ca9e467ec56
+  missing_symbols: []
+  content_hash: sha256:cc32451750bc94aed00fbd0dcbf1766aa469554996342bf85138c05bfdf7a4ad
+target_content_fingerprint: sha256:4c83be0adaa02f05925da9e9abef6d18793aed4c2ca36a498f3b3f9922b3dcc1
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

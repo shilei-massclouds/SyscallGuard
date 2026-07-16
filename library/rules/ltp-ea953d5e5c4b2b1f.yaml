@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getrlimit(RES(RLIMIT_NPROC), &rlim)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EA953D5E5C4B2B1F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getrlimit
+    arguments:
+    - RES(RLIMIT_NPROC)
+    - '&rlim'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:ea953d5e5c4b2b1f5d7e50d2191215d70c30b76cda9d1c29b51ec06d41f13bcd
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getrlimit/getrlimit01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:d848369500c07d54727f0c4b92b8a41537f968bbd884c63435094f56649e0787
+  case: getrlimit01_49_6

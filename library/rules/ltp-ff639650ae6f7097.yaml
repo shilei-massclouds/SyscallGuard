@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 getdents64(fd, dirp_bad, size)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FF639650AE6F7097
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: getdents64
+    arguments:
+    - fd
+    - dirp_bad
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ff639650ae6f70979e66371c53d1e1e4f4b214936d1fbfe5cb2be2fb4a1ea9ac
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getdents/getdents02.c
+  line: 77
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f4cf98d7d15ecb0dad002fdaaacab21cbdcdca980519369b32f3f91010e3ae92
+  case: getdents02_77_4

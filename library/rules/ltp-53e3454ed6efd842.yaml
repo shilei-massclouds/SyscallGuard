@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getcwd(buffer, 1)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_53E3454ED6EFD842
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - buffer
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:53e3454ed6efd842d4456341bdaf29e25ad49ab8f5a55c170a4e23c3355fe2f9
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getcwd/getcwd01.c
+  line: 48
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1a7750a0a5f83d0c9ecdf042ca651c6a72696958ce394845c941af9f74a28657
+  case: getcwd01_48_3

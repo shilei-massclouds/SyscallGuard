@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getsockname(sock_null, (struct sockaddr *) &fsin1, &sinlen)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_52CE7E6F9B5FF947
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sock_null
+    - (struct sockaddr *) &fsin1
+    - '&sinlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:52ce7e6f9b5ff947f2b92b0845844fa92e2daeaeb7f87b60c8f5436b7ad3450f
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockname/getsockname01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6c11595385c27f1c2ea193165281a79518f506fe0c3bd6554cada88ecc72c645
+  case: getsockname01_49_1

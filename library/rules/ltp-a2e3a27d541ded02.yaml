@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 kill(int_min_pid, SIGKILL)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A2E3A27D541DED02
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - int_min_pid
+    - SIGKILL
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:a2e3a27d541ded02ec7fb18cace3a23a82f65fafdc4837640cd62b790bea612c
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/kill/kill03.c
+  line: 36
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9549b6e48effb471bf58d11e06e6798131e10d22c741bdd684d1102136e3dced
+  case: kill03_36_2

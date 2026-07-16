@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 listxattr(TESTFILE, buf, sizeof(buf))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8F9E255B19623C24
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: listxattr
+    arguments:
+    - TESTFILE
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:8f9e255b19623c24a8ed6c18591f20ba43fb4dea01ce6c811c47ab4e682eaade
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/listxattr/listxattr01.c
+  line: 49
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a632a74f49401bcab7fde6e12c833cfaf6d13047e73065922588ef4da77b910c
+  case: listxattr01_49_raw

@@ -1,0 +1,37 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+title: gettimeofday validates and writes a non-null legacy timezone pointer
+rule_refs:
+- LTP_6C14DE68E3C0CC24
+applies_to_syscalls:
+- gettimeofday
+path: os/StarryOS/kernel/src/syscall/time.rs
+patterns:
+- label: handler accepts both timeval and timezone pointers
+  regex: 'pub fn sys_gettimeofday\(ts: \*mut timeval, tz: \*mut Timezone\)'
+- label: non-null timezone output uses checked VM access
+  regex: tz\.nullable\(\)[\s\S]*?tz\.vm_write\(Timezone::default\(\)\)\?;
+upstream_dependencies:
+- id: LTP_6C14DE68E3C0CC24
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:6c14de68e3c0cc24bbb7021cd805e26a73df65653f350d8fa8ed8de5232949e8
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols:
+  - sys_gettimeofday
+  scope: symbols
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  symbol_hashes:
+    sys_gettimeofday: sha256:9bc0f2124344b51cf1aa6b1355a9abb19cad1859afabce4d51cd2fb0c4ed248a
+  missing_symbols: []
+  content_hash: sha256:7d0c8e670c76147521a2380680f91c9e9bfcc646a5ed469e1baceeac9ca0329c
+target_content_fingerprint: sha256:6b4209e818de2971da252341b924031eda96fd2a415fb70abf153bf9b8cf4c88
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

@@ -1,0 +1,32 @@
+# 合规检查：条件：SYMLINK_LOOP、USER_BUFFER；检查：调用 lstat(elooppathname, &stat_buf)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CA3E9D83D71EEED4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - SYMLINK_LOOP
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - elooppathname
+    - '&stat_buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:ca3e9d83d71eeed4dad6312a2791dd24c2ba4db701f33ea456d44367a2f51f9a
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:37c9b4dce3179253a71b50d988e5460af5b350ced611e692a3b1d010a864b40b
+  case: lstat02_63_5

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 llistxattr(name, NULL, 0)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1B2E614CA8847B31
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - name
+    - 'NULL'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:1b2e614ca8847b312ed786b393a6a5996cfd3d7d05fce916a891c2a2ae5725ea
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/llistxattr/llistxattr03.c
+  line: 45
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d68d4f4b5b47aed4cdee11c5ce9dbcabadc9ee8fe4d7e930e4bd71f36813b941
+  case: llistxattr03_45_raw

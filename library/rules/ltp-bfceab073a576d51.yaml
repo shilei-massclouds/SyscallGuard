@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(addr, MAP_SIZE, MADV_GUARD_INSTALL)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BFCEAB073A576D51
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - addr
+    - MAP_SIZE
+    - MADV_GUARD_INSTALL
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:bfceab073a576d5129b9700f03a572fb492d42c6827ee5e84ac0ca8042467411
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise12.c
+  line: 38
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:f2f1cfca07ef830ea566ae68ef8b95433cce441e838dcafcea23ea17e0d0d015
+  case: madvise12_38_raw

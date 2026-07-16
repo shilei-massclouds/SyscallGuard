@@ -1,0 +1,31 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 lgetxattr("symlink", SECURITY_KEY2, buf, size)；预期：{'kind': 'return_value', 'return': 'strlen(VALUE2'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8710A0CE4DCC217D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - '"symlink"'
+    - SECURITY_KEY2
+    - buf
+    - size
+  expected_result:
+    kind: return_value
+    return: strlen(VALUE2
+  errno: []
+semantic_hash: sha256:8710a0ce4dcc217d40c455c33bc820340815ba5505c06fe17bac92938bbdec70
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
+  line: 62
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:4df780623c3bc4e37dcc3979d84b615344e1dbe82f11fa826733f06edb161b00
+  case: lgetxattr01_62_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 getrlimit(RLIMIT_CORE, (void *)-1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_963957F80E751EE6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: getrlimit
+    arguments:
+    - RLIMIT_CORE
+    - (void *)-1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:963957f80e751ee69ad1bc37cd06dda20a9abc3d44b32496ea0aae263fe7715f
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getrlimit/getrlimit02.c
+  line: 36
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a62b7ed8154af0662babf005b3e01883327424a48db8fb6ff6a7a8e912ded20e
+  case: getrlimit02_36_0

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 iopl(1)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7A6820B73D1C2059
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: iopl
+    arguments:
+    - '1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:7a6820b73d1c2059c5505b61a1f1f9153cf7e5f7a3b5b68602c63af375cfd6e9
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/iopl/iopl02.c
+  line: 35
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d598fec92220ebe289cfb54859a2947c16855d0e8bf9472c19d4ec3a25387c3e
+  case: iopl02_35_1

@@ -1,0 +1,33 @@
+# 合规检查：条件：NONEXISTENT_PATH、USER_BUFFER；检查：调用 llistxattr("", buf, sizeof(buf))；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D4159BF3AB78E108
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - '""'
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:d4159bf3ab78e1089fa7619581769c096275d25a03db3c3e6cf73a8dbb075974
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/llistxattr/llistxattr02.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c3c25a720b6b16c76f098b57fa8514e7586de1ee2df5b7588abf67b983d3ded1
+  case: llistxattr02_52_1

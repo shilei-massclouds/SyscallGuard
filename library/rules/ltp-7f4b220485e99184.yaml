@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 get_robust_list(0, NULL, &len_ptr)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7F4B220485E99184
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - '0'
+    - 'NULL'
+    - '&len_ptr'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7f4b220485e99184e61a7692983c01eff9a4abf0aa67b529ce23dd78af7d2fc7
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+  line: 113
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ad8e79320f08a793aecca37d2aa0731c8f5cf8618becb49f06f524d42ec8bd08
+  case: get_robust_list01_113_raw

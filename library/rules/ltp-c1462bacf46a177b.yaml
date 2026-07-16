@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(amem, st.st_size, MADV_PAGEOUT)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C1462BACF46A177B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - amem
+    - st.st_size
+    - MADV_PAGEOUT
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c1462bacf46a177b61a92dd94a50cbcf3231d3f068308375419d28706759d623
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise01.c
+  line: 100
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2902ee3a6b967328f16987a20d01d360837b5feb6d312e1a35e4267b814cbf1b
+  case: madvise01_100_19

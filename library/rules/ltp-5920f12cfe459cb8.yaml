@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 getsockname(sock_bind, (struct sockaddr *) NULL, &sinlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5920F12CFE459CB8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sock_bind
+    - (struct sockaddr *) NULL
+    - '&sinlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5920f12cfe459cb877731bccb8be3c2da00f049e439c1796b92e3e9a5ac6c9ef
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockname/getsockname01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6c11595385c27f1c2ea193165281a79518f506fe0c3bd6554cada88ecc72c645
+  case: getsockname01_49_2

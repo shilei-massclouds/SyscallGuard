@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_fix_index
-updated_at_utc: '2026-07-16T03:19:45.343234Z'
+updated_at_utc: '2026-07-16T03:48:12.083545Z'
 entities:
 - id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -44,3 +44,17 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-16T03:19:45.343234Z'
   content_hash: sha256:63112bb21b01158482e6cefba178e04135beccb8c5b57931e320c9e916275f97
+- id: fix-finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+  path: targets/starry/fixes/fix-finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133.yaml
+  finding_refs:
+  - finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+  status: fixed
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:2d6948c91953b62ca2ff6efb6a224b727e8048b66ea053546ed3e0cea99edab7
+- id: fix-finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+  path: targets/starry/fixes/fix-finding-init-module-ltp-d246498b20d9cb2c-117b5f149133.yaml
+  finding_refs:
+  - finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+  status: fixed
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:3a1d12426a0c6263be3e3045a5525dbafd3e29dd94d619a1010bfd2a38c4cbda

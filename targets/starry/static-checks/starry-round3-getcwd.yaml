@@ -1,0 +1,55 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_GETCWD
+title: getcwd includes the trailing NUL, rejects short buffers, and uses checked user writes
+rule_refs:
+- LTP_53E3454ED6EFD842
+- LTP_729222947741DFD6
+- LTP_89BB56D579EEF06D
+- LTP_912BE233FAFE6762
+- LTP_FC1E41C3414E7F21
+applies_to_syscalls:
+- getcwd
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: signed size conversion rejects impossible sizes
+  regex: 'pub fn sys_getcwd\([\s\S]*?let size: usize = size\.try_into\(\)\.map_err\(\|_\| AxError::BadAddress\)\?;'
+- label: the C string length includes its terminator
+  regex: let cwd = cwd\.as_bytes_with_nul\(\);
+- label: short buffers return OutOfRange
+  regex: if cwd\.len\(\) <= size \{[\s\S]*?vm_write_slice\(buf, cwd\)\?;[\s\S]*?\} else \{\s*Err\(AxError::OutOfRange\)
+upstream_dependencies:
+- id: LTP_53E3454ED6EFD842
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:53e3454ed6efd842d4456341bdaf29e25ad49ab8f5a55c170a4e23c3355fe2f9
+- id: LTP_729222947741DFD6
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:729222947741dfd63a81e9c93572baf5c789acbffca84a2edd5dce13fe1fb2a3
+- id: LTP_89BB56D579EEF06D
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:89bb56d579eef06d47c81ec803de4585a5afecb282c21eb9399b98db46b4e647
+- id: LTP_912BE233FAFE6762
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:912be233fafe67624b7249f0492e0d4ded1fbd11fc3cf20af5bc3bb23dfc0874
+- id: LTP_FC1E41C3414E7F21
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:fc1e41c3414e7f214284f077070cc39320ebd294786eda043234fca8d9f5da6d
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_getcwd
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_getcwd: sha256:9c2e1ce153437668394cf37c2109645ae16ff80edbb88a018923b7a74e75f86c
+  missing_symbols: []
+  content_hash: sha256:18d71decf970e3fff40862c4c99b2d88d44caf9f050a70c78a6080e8d10e34f7
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:436fd13903f93329bcf339c87bd42c7fb9448027fa852ef16233830b035b79a7
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

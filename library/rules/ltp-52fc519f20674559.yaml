@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 kill(-getpgrp(), SIGKILL)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_52FC519F20674559
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - -getpgrp()
+    - SIGKILL
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:52fc519f20674559343beffa85217a29d10a1d0566b335d584493da0eb9282d6
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/kill/kill06.c
+  line: 30
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:73b52a767c75c4ad97a892a8d488a63b9de5e552e0d3d79483950c967570f454
+  case: kill06_30_raw

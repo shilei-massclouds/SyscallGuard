@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(target, MEM_LIMIT, MADV_WILLNEED)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D90E4279570B6A94
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - target
+    - MEM_LIMIT
+    - MADV_WILLNEED
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:d90e4279570b6a944cabc5d1f610b1faf35f2b1aff4c67d789b7e403fcd1b247
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise06.c
+  line: 166
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:cc7ee74cad9eb6edda4de68a6d560a2cc3fd06561ff05dbf7b3b4d6905cb5bfb
+  case: madvise06_166_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getsockname(sock_bind, (struct sockaddr *) &fsin1, &sininval)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DBFBE6A110B3D17B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sock_bind
+    - (struct sockaddr *) &fsin1
+    - '&sininval'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dbfbe6a110b3d17bac558d2ea9f40b57cb18ad41d2b90f2ef587ede93cff633f
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockname/getsockname01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6c11595385c27f1c2ea193165281a79518f506fe0c3bd6554cada88ecc72c645
+  case: getsockname01_49_5

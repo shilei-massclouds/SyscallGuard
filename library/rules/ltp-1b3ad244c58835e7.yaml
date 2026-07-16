@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(*(tc->addr), st.st_size, tc->advice)；预期：返回 -1，errno 为 tc->exp_errno。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1B3AD244C58835E7
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - '*(tc->addr)'
+    - st.st_size
+    - tc->advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: tc->exp_errno
+  errno:
+  - tc->exp_errno
+semantic_hash: sha256:1b3ad244c58835e70d5fd7720aae6a6d96f8857d549acf0ad8b355a34b65458b
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise02.c
+  line: 166
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fa73955da8f9118d25883ad231009675de6d329a2d4e01f433fe5b5ccdaf89dc
+  case: madvise02_166_raw

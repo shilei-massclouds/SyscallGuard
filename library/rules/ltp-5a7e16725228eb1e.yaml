@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(sfile, st.st_size, MADV_DONTNEED)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5A7E16725228EB1E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - sfile
+    - st.st_size
+    - MADV_DONTNEED
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5a7e16725228eb1ee19985d876a9200479a8d1dcebc16fb74778ab4ba4261574
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise01.c
+  line: 100
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2902ee3a6b967328f16987a20d01d360837b5feb6d312e1a35e4267b814cbf1b
+  case: madvise01_100_4

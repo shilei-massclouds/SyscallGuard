@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getpgid(0)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F9357233C6D73800
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getpgid
+    arguments:
+    - '0'
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:f9357233c6d73800c2cf4dea52dc1935bf1ac03fbe6c0be994610be5e0748070
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getpgid/getpgid01.c
+  line: 36
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:13570068728ea8bdf5045c6f7b9af36e04d9bd59613ddb2ac308d1930672c210
+  case: getpgid01_36_raw

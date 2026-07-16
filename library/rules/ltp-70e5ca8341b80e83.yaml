@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getcontext(&ptr)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_70E5CA8341B80E83
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getcontext
+    arguments:
+    - '&ptr'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:70e5ca8341b80e8352b9c97562fa5463658d7d1287b107416580dec7fa2f79b9
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getcontext/getcontext01.c
+  line: 29
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:52e5d21010c514e3e5c32ac5eb57c666b3c7ceebd84304002f8bb7fc5f948bfe
+  case: getcontext01_29_raw

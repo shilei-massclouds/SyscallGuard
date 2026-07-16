@@ -1,0 +1,26 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getpgrp()；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A82CC878A661AA28
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getpgrp
+    arguments: []
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:a82cc878a661aa289f9978fb4eb6ba9b8717916191a4d0a92b729bbd245c7023
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getpgrp/getpgrp01.c
+  line: 16
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:bc6c9f81d21604e33cd73e56ae0061f887efbd18dc1eb9cea8d952aa8231a9b2
+  case: getpgrp01_16_raw

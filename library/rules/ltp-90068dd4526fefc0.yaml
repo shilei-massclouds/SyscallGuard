@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 fstatat(fds[i], filenames[i], &statbuf, flags[i])；预期：返回 -1，errno 为 expected_errn。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_90068DD4526FEFC0
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: fstatat
+    arguments:
+    - fds[i]
+    - filenames[i]
+    - '&statbuf'
+    - flags[i]
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: expected_errn
+  errno:
+  - expected_errn
+semantic_hash: sha256:90068dd4526fefc01f1d69c833e3bfc26dbeb3d17893baa29a215ca3685e77c4
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstatat/fstatat01.c
+  line: 97
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3a7b1ae129931e98dabc5184c49e6071f0bfda69b831cb959f1d021ea089153a
+  case: fstatat01_97_raw

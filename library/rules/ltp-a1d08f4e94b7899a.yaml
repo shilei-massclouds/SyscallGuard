@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 listen(s, 0)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A1D08F4E94B7899A
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: listen
+    arguments:
+    - s
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:a1d08f4e94b7899ae3ee856410e934a6e2e7d1c5f44ab183d80d579b5ea59277
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/listen/listen01.c
+  line: 98
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8a9916b267bdf051731f24df02501447c9259996fd5b97758c2f96b23ac080e8
+  case: listen01_98_0

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(target, pg_sz * 3, MADV_WILLNEED)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1A68979B981D8947
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - target
+    - pg_sz * 3
+    - MADV_WILLNEED
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:1a68979b981d8947fa406b35f6017ae6e5ed07a0f0df6aa68253f616ba812c40
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise06.c
+  line: 187
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d10a38817ab7622a053a305406651e729cf3c2710817d3094a0d874afc2df1e3
+  case: madvise06_187_raw

@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+syscall: gettimeofday
+rule_id: LTP_6C14DE68E3C0CC24
+target_snapshot_hash: sha256:117b5f149133d675e2090cbee65583ded74d7f19faf62873843614ca56168abe
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t034600z-819e26b8
+  evidence_kind: static
+  source_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  evidence:
+    check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+    rule_refs:
+    - LTP_6C14DE68E3C0CC24
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/time.rs
+    patterns:
+    - label: handler accepts both timeval and timezone pointers
+      regex: 'pub fn sys_gettimeofday\(ts: \*mut timeval, tz: \*mut Timezone\)'
+      matched: false
+      line: null
+    - label: non-null timezone output uses checked VM access
+      regex: tz\.nullable\(\)[\s\S]*?tz\.vm_write\(Timezone::default\(\)\)\?;
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T03:48:12.083545Z'
+upstream_dependencies:
+- id: fix-finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:2d6948c91953b62ca2ff6efb6a224b727e8048b66ea053546ed3e0cea99edab7
+fix_ref: fix-finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+fixed_by_run: fix-20260716t034649z-df5b0f3b

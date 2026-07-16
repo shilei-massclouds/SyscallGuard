@@ -1,0 +1,26 @@
+# 合规检查：条件：无额外前置条件；检查：调用 gettid()；预期：{'kind': 'return_value', 'return': 'pid'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BD3B3CC9032DF4E5
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: gettid
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: pid
+  errno: []
+semantic_hash: sha256:bd3b3cc9032df4e5ed71324ac3a187fd6b9c5708435812e1f3fa5f2f5d7297ea
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gettid/gettid01.c
+  line: 25
+  recognizer_id: ltp.tst-exp.equal-value
+  evidence_hash: sha256:3dd57293ba82e5907fb1db6b397b4568443e4823c07b2e82bb29bf8e34bdbea3
+  case: gettid01_25_raw

@@ -32,13 +32,20 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
 - path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3ba80ccd23c3328f7ed3613063c60711e0347c7fc8fac50604506963b3828367
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c06c08b0713479ae6251e6bfbb8e67b6a60de70c93aea23a2c4ab7f977f6038b
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
   symbols:
   - sys_finit_module
   scope: symbols
-  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
+  file_hash: sha256:3ba80ccd23c3328f7ed3613063c60711e0347c7fc8fac50604506963b3828367
   symbol_hashes:
-    sys_finit_module: sha256:142c737cba186eec5d5ca84d736568514e9a04d65fc0a05d5d435928b1942526
+    sys_finit_module: sha256:a04ce76044a3317f5cb0d90d139e54496710ddeef060a0a920ca326ac0ed8c12
   missing_symbols: []
-  content_hash: sha256:9ab0133e24ce011a32314fa378c1f68bdaa45ecb1b0d6133fc0f7d84e8a89012
-target_content_fingerprint: sha256:6fcb689c51f91e0b8c77cd3160dc05eb806a5d292b469f393d8ccf980a6d6453
-generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:d864130a8360b84bf9ca0327afcd40f6bb785c993ab2d8b1741751befff71516
+target_content_fingerprint: sha256:b1877a85ba55a54113f071cc0c413c0bedde414b31dc1056d5417eb325186837
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

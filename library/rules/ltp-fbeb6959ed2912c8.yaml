@@ -1,0 +1,27 @@
+# 合规检查：条件：无额外前置条件；检查：调用 iopl(level)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FBEB6959ED2912C8
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: iopl
+    arguments:
+    - level
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:fbeb6959ed2912c89af854a1f29abd1de11252e5409418a7cc0eb374b7ac3461
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/iopl/iopl01.c
+  line: 31
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d6588c0e4fd8250ee2975cff4ec4c726000032089fe20798beee8e1d3669279c
+  case: iopl01_31_raw

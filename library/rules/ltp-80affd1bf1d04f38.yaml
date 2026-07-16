@@ -1,0 +1,33 @@
+# 合规检查：条件：OBJECT_ALREADY_EXISTS、USER_BUFFER；检查：调用 init_module(buf, size, "")；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_80AFFD1BF1D04F38
+category: syscall_behavior
+semantics:
+  preconditions:
+  - OBJECT_ALREADY_EXISTS
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments:
+    - buf
+    - size
+    - '""'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:80affd1bf1d04f38304f6fc04212433f9b32e76a16eda4000eb08cec472454fc
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/init_module/init_module02.c
+  line: 96
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5223a91ab8e0ecb7b85d00e3e07f068f21f1ed8d1c759eea7d5bf74ca3ed4a57
+  case: init_module02_96_6

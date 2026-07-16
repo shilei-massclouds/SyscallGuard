@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: '2026-07-16T03:17:56.282688Z'
+updated_at_utc: '2026-07-16T03:45:25.334454Z'
 syscalls:
   access:
   - check_id: STARRY_ACCESS_PATH_RESOLUTION
@@ -91,7 +91,7 @@ syscalls:
     - LTP_0CD17E662AFD2956
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: &id008
+    rule_refs: &id011
     - LTP_09B39E9C9254ECB2
     - LTP_0CD17E662AFD2956
     - LTP_36C99C10CD38F8DB
@@ -374,10 +374,165 @@ syscalls:
     path: targets/starry/static-checks/starry-finit-module-flag-validation.yaml
     rule_refs:
     - LTP_DA65D6C7A0E4ABBC
+  fstat:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: &id008
+    - LTP_2648B36BD9CF39EE
+    - LTP_466F01834F965621
+    - LTP_53E3454ED6EFD842
+    - LTP_5B4AA4EE494B37D2
+    - LTP_64B1B6EEEC3F79FC
+    - LTP_6C14DE68E3C0CC24
+    - LTP_729222947741DFD6
+    - LTP_88D300A8FB407324
+    - LTP_89BB56D579EEF06D
+    - LTP_8C1C2578972FCA1D
+    - LTP_912BE233FAFE6762
+    - LTP_9461AA782926BAB4
+    - LTP_D246498B20D9CB2C
+    - LTP_EB1B734A0943248E
+    - LTP_F8FD511858BB650D
+    - LTP_F92A1A6292F40811
+    - LTP_FC1E41C3414E7F21
+    - LTP_FCF5A4835CFCD143
+  - check_id: STARRY_ROUND3_FSTAT_CORE
+    path: targets/starry/static-checks/starry-round3-fstat-core.yaml
+    rule_refs:
+    - LTP_466F01834F965621
+    - LTP_64B1B6EEEC3F79FC
+    - LTP_A363671517C058B1
+  fstatfs:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_FSTATFS_ERRORS
+    path: targets/starry/static-checks/starry-round3-fstatfs-errors.yaml
+    rule_refs:
+    - LTP_EB1B734A0943248E
+    - LTP_F92A1A6292F40811
+  ftruncate:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_FTRUNCATE_NEGATIVE
+    path: targets/starry/static-checks/starry-round3-ftruncate-negative.yaml
+    rule_refs:
+    - LTP_2648B36BD9CF39EE
+  getcwd:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_GETCWD
+    path: targets/starry/static-checks/starry-round3-getcwd.yaml
+    rule_refs:
+    - LTP_53E3454ED6EFD842
+    - LTP_729222947741DFD6
+    - LTP_89BB56D579EEF06D
+    - LTP_912BE233FAFE6762
+    - LTP_FC1E41C3414E7F21
+  getpgid:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_JOB_ID_LOOKUP
+    path: targets/starry/static-checks/starry-round3-job-id-lookup.yaml
+    rule_refs: &id009
+    - LTP_8C1C2578972FCA1D
+    - LTP_9461AA782926BAB4
+    - LTP_F8FD511858BB650D
+  - check_id: STARRY_ROUND3_PROCESS_LOOKUP
+    path: targets/starry/static-checks/starry-round3-process-lookup.yaml
+    rule_refs: &id010
+    - LTP_8C1C2578972FCA1D
+    - LTP_9461AA782926BAB4
+    - LTP_F8FD511858BB650D
+  getpriority:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+    path: targets/starry/static-checks/starry-round3-getpriority-selector.yaml
+    rule_refs:
+    - LTP_88D300A8FB407324
+  getrlimit:
+  - check_id: STARRY_ROUND3_GETRLIMIT_CORE
+    path: targets/starry/static-checks/starry-round3-getrlimit-core.yaml
+    rule_refs:
+    - LTP_2554AC2E46FC6A15
+    - LTP_26555A26680524AD
+    - LTP_3741A721C9C463D0
+    - LTP_3B1458E6E26CBB53
+    - LTP_652CE911B47794E0
+    - LTP_7DFAC48A8971CFE3
+    - LTP_8988E5015778894A
+    - LTP_914935DA5C379DA1
+    - LTP_91ED7E85761CE00F
+    - LTP_9305FA6D8B835652
+    - LTP_963957F80E751EE6
+    - LTP_A0547B601C515355
+    - LTP_B058D6B9CBBB459D
+    - LTP_BD5C209F4C6EE910
+    - LTP_E6C69C9F4AB565BC
+    - LTP_EA953D5E5C4B2B1F
+    - LTP_FADBA4ADECCFBA4E
+    - LTP_FB0ABF26A21EAE3C
+  - check_id: STARRY_ROUND3_GETRLIMIT_DISPATCH
+    path: targets/starry/static-checks/starry-round3-getrlimit-dispatch.yaml
+    rule_refs:
+    - LTP_2554AC2E46FC6A15
+    - LTP_26555A26680524AD
+    - LTP_3741A721C9C463D0
+    - LTP_3B1458E6E26CBB53
+    - LTP_652CE911B47794E0
+    - LTP_7DFAC48A8971CFE3
+    - LTP_8988E5015778894A
+    - LTP_914935DA5C379DA1
+    - LTP_91ED7E85761CE00F
+    - LTP_9305FA6D8B835652
+    - LTP_963957F80E751EE6
+    - LTP_A0547B601C515355
+    - LTP_B058D6B9CBBB459D
+    - LTP_BD5C209F4C6EE910
+    - LTP_E6C69C9F4AB565BC
+    - LTP_EA953D5E5C4B2B1F
+    - LTP_FADBA4ADECCFBA4E
+    - LTP_FB0ABF26A21EAE3C
+  getsid:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_JOB_ID_LOOKUP
+    path: targets/starry/static-checks/starry-round3-job-id-lookup.yaml
+    rule_refs: *id009
+  - check_id: STARRY_ROUND3_PROCESS_LOOKUP
+    path: targets/starry/static-checks/starry-round3-process-lookup.yaml
+    rule_refs: *id010
+  gettimeofday:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+    path: targets/starry/static-checks/starry-round3-gettimeofday-timezone.yaml
+    rule_refs:
+    - LTP_6C14DE68E3C0CC24
+  - check_id: STARRY_ROUND3_GETTIMEOFDAY_VALUE
+    path: targets/starry/static-checks/starry-round3-gettimeofday-value.yaml
+    rule_refs:
+    - LTP_5B4AA4EE494B37D2
+    - LTP_FCF5A4835CFCD143
+  init_module:
+  - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-round3-errno-translation.yaml
+    rule_refs: *id008
+  - check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+    path: targets/starry/static-checks/starry-round3-init-module-permission.yaml
+    rule_refs:
+    - LTP_D246498B20D9CB2C
   mmap:
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: *id008
+    rule_refs: *id011
   - check_id: STARRY_MMAP_ACCESS
     path: targets/starry/static-checks/starry-mmap-access.yaml
     rule_refs:

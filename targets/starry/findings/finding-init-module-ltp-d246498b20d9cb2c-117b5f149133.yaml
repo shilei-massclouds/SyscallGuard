@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+syscall: init_module
+rule_id: LTP_D246498B20D9CB2C
+target_snapshot_hash: sha256:117b5f149133d675e2090cbee65583ded74d7f19faf62873843614ca56168abe
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t034600z-819e26b8
+  evidence_kind: static
+  source_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  evidence:
+    check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+    rule_refs:
+    - LTP_D246498B20D9CB2C
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/kmod.rs
+    patterns:
+    - label: init_module checks CAP_SYS_MODULE
+      regex: pub fn sys_init_module\([\s\S]*?if !current\(\)\.as_thread\(\)\.cred\(\)\.has_cap_sys_module\(\)
+      matched: false
+      line: null
+    - label: permission failure precedes user-buffer access
+      regex: pub fn sys_init_module\([\s\S]*?has_cap_sys_module\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);[\s\S]*?VmBytes::new
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T03:48:12.083545Z'
+upstream_dependencies:
+- id: fix-finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:3a1d12426a0c6263be3e3045a5525dbafd3e29dd94d619a1010bfd2a38c4cbda
+fix_ref: fix-finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+fixed_by_run: fix-20260716t034649z-df5b0f3b

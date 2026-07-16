@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 llistxattr((char *)-1, buf, sizeof(buf))；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C9D2C2E3FC2B9581
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - (char *)-1
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c9d2c2e3fc2b95818a9380681086fcc9296cb4914b7e4d08df9b27097c9d00a8
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/llistxattr/llistxattr02.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c3c25a720b6b16c76f098b57fa8514e7586de1ee2df5b7588abf67b983d3ded1
+  case: llistxattr02_52_2

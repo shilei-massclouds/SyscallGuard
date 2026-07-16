@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 init_module(buf, sb.st_size, "status=valid")；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0D3B043506A61BD6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments:
+    - buf
+    - sb.st_size
+    - '"status=valid"'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:0d3b043506a61bd69accde8c08199f4636f7796b6e95193d24adad0ca99ce286
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/init_module/init_module01.c
+  line: 47
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:8e51aa1ddbd0211975e06751e4ef6b7f82324ab43acb62966a311acaa6889b9d
+  case: init_module01_47_raw

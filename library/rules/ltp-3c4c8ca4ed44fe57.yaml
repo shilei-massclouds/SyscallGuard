@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getdomainname(domain_name, sizeof(domain_name))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3C4C8CA4ED44FE57
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getdomainname
+    arguments:
+    - domain_name
+    - sizeof(domain_name)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:3c4c8ca4ed44fe574b6132e5f1b86df5e014211eda61e0bf3ae1c0ca704dbab6
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getdomainname/getdomainname01.c
+  line: 23
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:638c3500667890aed808d71e539932c053fd59769c51afb8684af6ad1884954b
+  case: getdomainname01_23_raw

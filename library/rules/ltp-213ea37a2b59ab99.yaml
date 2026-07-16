@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 ftruncate(fd, TRUNC_LEN1)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_213EA37A2B59AB99
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - TRUNC_LEN1
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:213ea37a2b59ab99adf7f686665e25ddbe33d1ab0987a2491350f663626e280c
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ftruncate/ftruncate01.c
+  line: 66
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:886c86ed0e9583407ac81265ec1e4b8a1da36d29c3146e70ebdde4b413aca097
+  case: ftruncate01_66_raw

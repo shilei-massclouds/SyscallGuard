@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 kill(0, SIGUSR1)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6D195DDAB1BE2B57
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - '0'
+    - SIGUSR1
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:6d195ddab1be2b57ff112525baae6af1a6055cd12b1a319f25d0415f8a5c20ea
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/kill/kill02.c
+  line: 311
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:7319c55716e5114dd9f3f768e41fb4502190bc1ea419c0181f3f887e23317470
+  case: kill02_311_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 fstat(fd_ok, NULL)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_64B1B6EEEC3F79FC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd_ok
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:64b1b6eeec3f79fc85edbb4e3e6e6066f854c28d9721e3cbbab7294f2295e473
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstat/fstat03.c
+  line: 44
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9338cf6070480f4df94795bf4c1361ed3bfe06cf39a318f82cb844b0e9260915
+  case: fstat03_44_1

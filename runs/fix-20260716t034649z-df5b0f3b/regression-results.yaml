@@ -1,0 +1,384 @@
+schema_version: 1
+kind: syscallguard_fix_regression
+run_id: fix-20260716t034649z-df5b0f3b
+generated_at_utc: '2026-07-16T03:48:11.854136Z'
+upstream_dependencies:
+- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:6d8ffe193808bde740053a61419adcf0e7c090388b2f5fea0475696c5b402070
+- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:39ebc0849b8fede86d9689ed1dba7fda23315b83937a447b328ffd1a94bdfb34
+- id: STARRY_EPOLL_NESTED_LOOP
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:d1db97954ea66c6632d4d74191ef0d91751bbbcfee42883a78137bbdaac22e58
+- id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:dc386f0f1e684798e6c95359648b40bc8b35029e6225ca8f5fe0d1e3c8119e5e
+- id: STARRY_ROUND3_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:d6230c19c9780e6e7ba4c5d5752b9029e1d6a8575efeb6c4f262c8f3214c1a83
+- id: STARRY_ROUND3_FSTATFS_ERRORS
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:a4779e53065976fa564f53fb0b901e87fcd8c95b3eb2d6ad5d8c46acc390b1e1
+- id: STARRY_ROUND3_FSTAT_CORE
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:c03fbea34b01ec1891e40a732c263b37429525d389e12235b3a638c227a0d37a
+- id: STARRY_ROUND3_FTRUNCATE_NEGATIVE
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:81f1a37871f4ed42e333270b6a6229f87c03bb704e472bd7593437dd70290281
+- id: STARRY_ROUND3_GETCWD
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:962560d14712aae8bc75802edf0b76d97b11cccd1748f890789deb252c3cce6e
+- id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:70b7e27926c91c7a973fe2c436229d13946d73e1d03ff19bfcbb129a1046eed6
+- id: STARRY_ROUND3_GETRLIMIT_CORE
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:df024c7997b871d665489e8320271b8c35553d83a5b4c33378673f462659be87
+- id: STARRY_ROUND3_GETRLIMIT_DISPATCH
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:7e99498a0d93451e421a010b0f7ff54fb309ea498190a17a93f254db4d027bfe
+- id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:92bc710c6c3f284e3eff2c787941c590b62affb1bc04fcd6bdd64874db819663
+- id: STARRY_ROUND3_GETTIMEOFDAY_VALUE
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:92e018dcac5c003b40d4bc2ac920008e8bce2b0cb30b174e3b55a0d79b7402ea
+- id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:bb8b549ce47a786283f4228f35bd1f41b767c396d4abbfe84df1f67fb2f824d8
+- id: STARRY_ROUND3_JOB_ID_LOOKUP
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:200d4c22b88ccaa3197ad71f0ac11fabc2563a258bcf1c3b1cf4bc7aa6b2b9c8
+- id: STARRY_ROUND3_PROCESS_LOOKUP
+  generated_at_utc: '2026-07-16T03:45:25.334454Z'
+  content_hash: sha256:faf088c7797542a64336a18a1f4b3ee9724ce0a6bce05d6ea7bd8152ffd2a88b
+target_snapshot_hash: sha256:117b5f149133d675e2090cbee65583ded74d7f19faf62873843614ca56168abe
+static:
+- check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  rule_refs:
+  - LTP_425E5A3502541DE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: first and last use unsigned 32-bit syscall semantics
+    regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+    matched: true
+    line: 489
+  - label: the maximum unsigned range is accepted and capped to open descriptors
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 489
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  rule_refs:
+  - LTP_74BB3F96CBA52D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+    regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+    matched: true
+    line: 773
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_NESTED_LOOP
+  rule_refs:
+  - LTP_66C670178B06E9F3
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll.rs
+  patterns:
+  - label: add detects whether a nested epoll reaches the destination instance
+    regex: pub fn add\([\s\S]*?downcast_arc::<Epoll>\(\)[\s\S]*?reaches_epoll\([\s\S]*?AxError::FilesystemLoop
+    matched: true
+    line: 501
+  reason: all required patterns matched
+- check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  rule_refs:
+  - LTP_DA65D6C7A0E4ABBC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: finit_module names and inspects its flags argument
+    regex: 'pub fn sys_finit_module\(module_fd: i32, param_ptr: \*const u8, flags: u32\)'
+    matched: true
+    line: 46
+  - label: unsupported nonzero flags return InvalidInput
+    regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 46
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_2648B36BD9CF39EE
+  - LTP_466F01834F965621
+  - LTP_53E3454ED6EFD842
+  - LTP_5B4AA4EE494B37D2
+  - LTP_64B1B6EEEC3F79FC
+  - LTP_6C14DE68E3C0CC24
+  - LTP_729222947741DFD6
+  - LTP_88D300A8FB407324
+  - LTP_89BB56D579EEF06D
+  - LTP_8C1C2578972FCA1D
+  - LTP_912BE233FAFE6762
+  - LTP_9461AA782926BAB4
+  - LTP_D246498B20D9CB2C
+  - LTP_EB1B734A0943248E
+  - LTP_F8FD511858BB650D
+  - LTP_F92A1A6292F40811
+  - LTP_FC1E41C3414E7F21
+  - LTP_FCF5A4835CFCD143
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: missing processes map to ESRCH
+    regex: NoSuchProcess => ESRCH
+    matched: true
+    line: 242
+  - label: permission failure maps to EPERM
+    regex: OperationNotPermitted => EPERM
+    matched: true
+    line: 250
+  - label: short output buffers map to ERANGE
+    regex: OutOfRange => ERANGE
+    matched: true
+    line: 252
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_FSTATFS_ERRORS
+  rule_refs:
+  - LTP_EB1B734A0943248E
+  - LTP_F92A1A6292F40811
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: fstatfs obtains a real file from the descriptor
+    regex: 'pub fn sys_fstatfs\(fd: i32, buf: \*mut statfs\)[\s\S]*?File::from_fd\(fd\)\?'
+    matched: true
+    line: 245
+  - label: fstatfs writes via checked VM access
+    regex: buf\.vm_write\(statfs\([\s\S]*?\)\?\)\?;
+    matched: true
+    line: 235
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_FSTAT_CORE
+  rule_refs:
+  - LTP_466F01834F965621
+  - LTP_64B1B6EEEC3F79FC
+  - LTP_A363671517C058B1
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: fstat uses the descriptor form of fstatat
+    regex: 'pub fn sys_fstat\(fd: i32, statbuf: \*mut stat\)[\s\S]*?sys_fstatat\(fd, core::ptr::null\(\),
+      statbuf, AT_EMPTY_PATH\)'
+    matched: true
+    line: 44
+  - label: fstatat resolves the supplied descriptor and path
+    regex: pub fn sys_fstatat\([\s\S]*?let loc = resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;
+    matched: true
+    line: 58
+  - label: stat output is copied through checked VM access
+    regex: statbuf\.vm_write\(loc\.stat\(\)\?\.into\(\)\)\?;
+    matched: true
+    line: 76
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_FTRUNCATE_NEGATIVE
+  rule_refs:
+  - LTP_2648B36BD9CF39EE
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: negative lengths return InvalidInput first
+    regex: pub fn sys_ftruncate\([\s\S]*?if length < 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}[\s\S]*?File::from_fd\(fd\)
+    matched: true
+    line: 237
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETCWD
+  rule_refs:
+  - LTP_53E3454ED6EFD842
+  - LTP_729222947741DFD6
+  - LTP_89BB56D579EEF06D
+  - LTP_912BE233FAFE6762
+  - LTP_FC1E41C3414E7F21
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: signed size conversion rejects impossible sizes
+    regex: 'pub fn sys_getcwd\([\s\S]*?let size: usize = size\.try_into\(\)\.map_err\(\|_\| AxError::BadAddress\)\?;'
+    matched: true
+    line: 418
+  - label: the C string length includes its terminator
+    regex: let cwd = cwd\.as_bytes_with_nul\(\);
+    matched: true
+    line: 425
+  - label: short buffers return OutOfRange
+    regex: if cwd\.len\(\) <= size \{[\s\S]*?vm_write_slice\(buf, cwd\)\?;[\s\S]*?\} else \{\s*Err\(AxError::OutOfRange\)
+    matched: true
+    line: 427
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+  rule_refs:
+  - LTP_88D300A8FB407324
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: unknown which values return InvalidInput
+    regex: pub fn sys_getpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+    matched: true
+    line: 237
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETRLIMIT_CORE
+  rule_refs:
+  - LTP_2554AC2E46FC6A15
+  - LTP_26555A26680524AD
+  - LTP_3741A721C9C463D0
+  - LTP_3B1458E6E26CBB53
+  - LTP_652CE911B47794E0
+  - LTP_7DFAC48A8971CFE3
+  - LTP_8988E5015778894A
+  - LTP_914935DA5C379DA1
+  - LTP_91ED7E85761CE00F
+  - LTP_9305FA6D8B835652
+  - LTP_963957F80E751EE6
+  - LTP_A0547B601C515355
+  - LTP_B058D6B9CBBB459D
+  - LTP_BD5C209F4C6EE910
+  - LTP_E6C69C9F4AB565BC
+  - LTP_EA953D5E5C4B2B1F
+  - LTP_FADBA4ADECCFBA4E
+  - LTP_FB0ABF26A21EAE3C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/resources.rs
+  patterns:
+  - label: resource numbers are bounded by RLIM_NLIMITS
+    regex: if resource >= RLIM_NLIMITS \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 23
+  - label: all valid resource slots are read from the process limit array
+    regex: let limit = &proc_data\.rlim\.read\(\)\[resource\];
+    matched: true
+    line: 28
+  - label: the result is copied through checked VM access
+    regex: 'old_limit\.vm_write\(rlimit64 \{\s*rlim_cur: limit\.current,\s*rlim_max: limit\.max,\s*\}\)\?;'
+    matched: true
+    line: 29
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETRLIMIT_DISPATCH
+  rule_refs:
+  - LTP_2554AC2E46FC6A15
+  - LTP_26555A26680524AD
+  - LTP_3741A721C9C463D0
+  - LTP_3B1458E6E26CBB53
+  - LTP_652CE911B47794E0
+  - LTP_7DFAC48A8971CFE3
+  - LTP_8988E5015778894A
+  - LTP_914935DA5C379DA1
+  - LTP_91ED7E85761CE00F
+  - LTP_9305FA6D8B835652
+  - LTP_963957F80E751EE6
+  - LTP_A0547B601C515355
+  - LTP_B058D6B9CBBB459D
+  - LTP_BD5C209F4C6EE910
+  - LTP_E6C69C9F4AB565BC
+  - LTP_EA953D5E5C4B2B1F
+  - LTP_FADBA4ADECCFBA4E
+  - LTP_FB0ABF26A21EAE3C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mod.rs
+  patterns:
+  - label: getrlimit routes current process and output pointer to prlimit64
+    regex: Sysno::getrlimit => sys_prlimit64\(0, uctx\.arg0\(\) as _, core::ptr::null\(\), uctx\.arg1\(\)
+      as _\)
+    matched: true
+    line: 645
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  rule_refs:
+  - LTP_6C14DE68E3C0CC24
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: handler accepts both timeval and timezone pointers
+    regex: 'pub fn sys_gettimeofday\(ts: \*mut timeval, tz: \*mut Timezone\)'
+    matched: true
+    line: 43
+  - label: non-null timezone output uses checked VM access
+    regex: tz\.nullable\(\)[\s\S]*?tz\.vm_write\(Timezone::default\(\)\)\?;
+    matched: true
+    line: 47
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETTIMEOFDAY_VALUE
+  rule_refs:
+  - LTP_5B4AA4EE494B37D2
+  - LTP_FCF5A4835CFCD143
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: timeval is written with VM validation
+    regex: pub fn sys_gettimeofday\([\s\S]*?ts\.vm_write\(timeval::from_time_value\(wall_time\(\)\)\)\?;
+    matched: true
+    line: 43
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  rule_refs:
+  - LTP_D246498B20D9CB2C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: init_module checks CAP_SYS_MODULE
+    regex: pub fn sys_init_module\([\s\S]*?if !current\(\)\.as_thread\(\)\.cred\(\)\.has_cap_sys_module\(\)
+    matched: true
+    line: 22
+  - label: permission failure precedes user-buffer access
+    regex: pub fn sys_init_module\([\s\S]*?has_cap_sys_module\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);[\s\S]*?VmBytes::new
+    matched: true
+    line: 22
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_JOB_ID_LOOKUP
+  rule_refs:
+  - LTP_8C1C2578972FCA1D
+  - LTP_9461AA782926BAB4
+  - LTP_F8FD511858BB650D
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/job.rs
+  patterns:
+  - label: getsid resolves the requested process
+    regex: 'pub fn sys_getsid\(pid: Pid\)[\s\S]*?get_process\(pid\)\?\.group\(\)\.session\(\)\.sid\(\)'
+    matched: true
+    line: 10
+  - label: getpgid resolves the requested process
+    regex: 'pub fn sys_getpgid\(pid: Pid\)[\s\S]*?get_process\(pid\)\?\.group\(\)\.pgid\(\)'
+    matched: true
+    line: 30
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_PROCESS_LOOKUP
+  rule_refs:
+  - LTP_8C1C2578972FCA1D
+  - LTP_9461AA782926BAB4
+  - LTP_F8FD511858BB650D
+  result: pass
+  path: os/StarryOS/kernel/src/task/ops.rs
+  patterns:
+  - label: pid zero selects the current process
+    regex: 'pub fn get_process\(pid: Pid\)[\s\S]*?if pid == 0 \{\s*return Ok\(current\(\)\.as_thread\(\)\.proc_data\.proc\.clone\(\)\);'
+    matched: true
+    line: 255
+  - label: missing live and zombie processes return NoSuchProcess
+    regex: get_zombie_process\(pid\)\.ok_or\(AxError::NoSuchProcess\)
+    matched: true
+    line: 262
+  reason: all required patterns matched
+dynamic: []
+blockers: []

@@ -1,0 +1,29 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 lstat(TESTSYML, &stat_buf)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DACAAECF088B0CFE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - TESTSYML
+    - '&stat_buf'
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:dacaaecf088b0cfe5e5625c1b5115f669f9eff3debf6d0c5c9b445b87b4a910f
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat01.c
+  line: 35
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d02a13b87af25a8eba8f5080461107fb6d13fff54ffd5da805c3215c0ba6adfc
+  case: lstat01_35_raw

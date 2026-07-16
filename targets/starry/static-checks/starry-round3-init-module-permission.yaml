@@ -1,0 +1,37 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+title: init_module requires CAP_SYS_MODULE before reading module bytes from userspace
+rule_refs:
+- LTP_D246498B20D9CB2C
+applies_to_syscalls:
+- init_module
+path: os/StarryOS/kernel/src/syscall/kmod.rs
+patterns:
+- label: init_module checks CAP_SYS_MODULE
+  regex: pub fn sys_init_module\([\s\S]*?if !current\(\)\.as_thread\(\)\.cred\(\)\.has_cap_sys_module\(\)
+- label: permission failure precedes user-buffer access
+  regex: pub fn sys_init_module\([\s\S]*?has_cap_sys_module\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);[\s\S]*?VmBytes::new
+upstream_dependencies:
+- id: LTP_D246498B20D9CB2C
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:d246498b20d9cb2cd6ece54014a50e1c77fa08b6a598251c2dc0e3a3700193e2
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols:
+  - sys_init_module
+  scope: symbols
+  file_hash: sha256:3ba80ccd23c3328f7ed3613063c60711e0347c7fc8fac50604506963b3828367
+  symbol_hashes:
+    sys_init_module: sha256:4ab1aeec8bd4b071d881e62a00b3bbeca1b503c59069efa923bf6a5442732a93
+  missing_symbols: []
+  content_hash: sha256:e3ff290763a0527de3c4602a5f71d9b8be06b41c93a5b8ac8ec26cacd1b1f8d5
+target_content_fingerprint: sha256:a9366f66c4122e9959da4d462993753e6204890e21103ff29e4d735bc0b510f5
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

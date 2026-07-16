@@ -1,0 +1,32 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 init_module(buf, sb.st_size, "status=valid")；预期：返回 -1，errno 为 EKEYREJECTED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_77C73AE1FE592877
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments:
+    - buf
+    - sb.st_size
+    - '"status=valid"'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREJECTED
+  errno:
+  - EKEYREJECTED
+semantic_hash: sha256:77c73ae1fe5928779940252f0789b97020f1eb053e7270c368326200db871398
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/init_module/init_module01.c
+  line: 43
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6fd304c29c95e61c56ec5c301cd4542e6119a8878ceb6a3e42dd6dcb7210435a
+  case: init_module01_43_raw

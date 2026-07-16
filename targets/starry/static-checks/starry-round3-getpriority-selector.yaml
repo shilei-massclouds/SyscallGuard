@@ -1,0 +1,35 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+title: getpriority rejects selector values outside PRIO_PROCESS, PRIO_PGRP, and PRIO_USER
+rule_refs:
+- LTP_88D300A8FB407324
+applies_to_syscalls:
+- getpriority
+path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+patterns:
+- label: unknown which values return InvalidInput
+  regex: pub fn sys_getpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+upstream_dependencies:
+- id: LTP_88D300A8FB407324
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:88d300a8fb407324aefbe09d1b569b46d87628a1639509250755357a2c634c1a
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols:
+  - sys_getpriority
+  scope: symbols
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes:
+    sys_getpriority: sha256:11e2d0fe33ed91195689cedacd6521d91c1c52237e6f6d308e595d3abcc75b59
+  missing_symbols: []
+  content_hash: sha256:13ec338677675e3f2bcae26081de8cc1d7eada21c2caee8fc5e29f0112d7bbd8
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+target_content_fingerprint: sha256:2248777c5b7993c46742d1a620bfa7555ae6395da6570c736750e8f5aa22ad98
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

@@ -1,0 +1,33 @@
+# 合规检查：条件：PATH_TOO_LONG、USER_BUFFER；检查：调用 listxattr(longpathname, buf, sizeof(buf))；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_31E977FBCF448AFD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: listxattr
+    arguments:
+    - longpathname
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:31e977fbcf448afd70274ac44c9fe26bf996bf30ec21a404bdd1c7240ad4393e
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/listxattr/listxattr02.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:824f8c8c5c2b33d9b03af643be437aa307727bf9f10089068d4cff607c2fa766
+  case: listxattr02_52_3

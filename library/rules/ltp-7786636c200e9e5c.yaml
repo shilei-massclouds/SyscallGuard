@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 lremovexattr(SYMLINK, XATTR_KEY)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7786636C200E9E5C
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: lremovexattr
+    arguments:
+    - SYMLINK
+    - XATTR_KEY
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:7786636c200e9e5c6ead718b2a4c4fcfac3263e45a8732ee521bb3a6e2f6136b
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:6073ae738a0d8e09bd267518c38e8a701c4b5d7f4e55206c4a3bf10dea17705c
+  case: lremovexattr01_61_raw

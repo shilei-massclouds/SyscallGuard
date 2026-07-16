@@ -1,0 +1,32 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 get_robust_list(0, (struct robust_list_head *)&head, NULL)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C46B746DAC4331D5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - '0'
+    - (struct robust_list_head *)&head
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c46b746dac4331d56727fcdf00d90f08ce593dc1087d55018d0449db964039ff
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+  line: 97
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:56a58766ca564b120e19d2d2b4bfe56e838d17c2a61595caf0e15c420f24f6ec
+  case: get_robust_list01_97_raw

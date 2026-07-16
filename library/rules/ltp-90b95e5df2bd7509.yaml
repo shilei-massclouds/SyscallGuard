@@ -1,0 +1,29 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 fstatfs(pipe_fd, &buf)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_90B95E5DF2BD7509
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - pipe_fd
+    - '&buf'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:90b95e5df2bd7509dcf232f0e78eb3461eb6da29dfa4f6dc8795bff6676b016a
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstatfs/fstatfs01.c
+  line: 35
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:7014ccb24bda46a337bef035c43985b7f9d9ba59b7a838d902d8b2f5930d597b
+  case: fstatfs01_35_1

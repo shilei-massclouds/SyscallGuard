@@ -1,0 +1,33 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 lgetxattr("symlink", SECURITY_KEY, buf, sizeof(buf))；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9586C4C3CAC60BBC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - '"symlink"'
+    - SECURITY_KEY
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:9586c4c3cac60bbcda466d4717e8774a514e5a7cc8464e773af27d48ba92e1ea
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lgetxattr/lgetxattr02.c
+  line: 46
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b650e1753f60c3d9165202c9f732278698e880cd781accae295ea38b19034c10
+  case: lgetxattr02_46_1

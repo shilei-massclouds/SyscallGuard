@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 llistxattr(SYMLINK, buf, sizeof(buf))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C9789067DD7A3D60
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - SYMLINK
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:c9789067dd7a3d600b43d62e8bcff4e7f437ebceb4d2ed2aced2ca5e218656a5
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/llistxattr/llistxattr01.c
+  line: 49
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fdb88eb5806a9ad3183afd6627c1f1e80b57f3561205d2ed25c50f77e48a2f38
+  case: llistxattr01_49_raw

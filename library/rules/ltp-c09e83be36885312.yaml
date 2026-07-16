@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 gethostname(hname, sizeof(hname))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C09E83BE36885312
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: gethostname
+    arguments:
+    - hname
+    - sizeof(hname)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:c09e83be3688531210e2e1d786e85d9e52cc39bd66d7f65a47dcf87f4365c2b8
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gethostname/gethostname01.c
+  line: 18
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2b8b07ee264b1908d6af1057881513d041167964c52299e5f58b9a127b4de54b
+  case: gethostname01_18_raw

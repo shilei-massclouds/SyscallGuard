@@ -1,0 +1,32 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 listxattr(TESTFILE, buf, sizeof(buf))；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8D6B83A8176DB57E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: listxattr
+    arguments:
+    - TESTFILE
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:8d6b83a8176db57ea72511e83a5811fbc4347db725a4d723db54300d9e8b328a
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/listxattr/listxattr02.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:824f8c8c5c2b33d9b03af643be437aa307727bf9f10089068d4cff607c2fa766
+  case: listxattr02_52_0

@@ -1,0 +1,33 @@
+# 合规检查：条件：NONEXISTENT_PATH、USER_BUFFER；检查：调用 getdents64(fd_unlinked, dirp, size)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_409C97094F0CED1F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NONEXISTENT_PATH
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: getdents64
+    arguments:
+    - fd_unlinked
+    - dirp
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:409c97094f0ced1f465e2cdae5bbfb4caf29b11c7062603a1139d46f3d6322be
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getdents/getdents02.c
+  line: 77
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f4cf98d7d15ecb0dad002fdaaacab21cbdcdca980519369b32f3f91010e3ae92
+  case: getdents02_77_3

@@ -1,0 +1,48 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_ROUND3_FSTAT_CORE
+title: fstat resolves the descriptor through fstatat and writes the result through checked user memory
+rule_refs:
+- LTP_466F01834F965621
+- LTP_64B1B6EEEC3F79FC
+- LTP_A363671517C058B1
+applies_to_syscalls:
+- fstat
+path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+patterns:
+- label: fstat uses the descriptor form of fstatat
+  regex: 'pub fn sys_fstat\(fd: i32, statbuf: \*mut stat\)[\s\S]*?sys_fstatat\(fd, core::ptr::null\(\),
+    statbuf, AT_EMPTY_PATH\)'
+- label: fstatat resolves the supplied descriptor and path
+  regex: pub fn sys_fstatat\([\s\S]*?let loc = resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;
+- label: stat output is copied through checked VM access
+  regex: statbuf\.vm_write\(loc\.stat\(\)\?\.into\(\)\)\?;
+upstream_dependencies:
+- id: LTP_466F01834F965621
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:466f01834f965621ab012906888aad7acf5ae6e62b290e92e8975f01e19fc7ef
+- id: LTP_64B1B6EEEC3F79FC
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:64b1b6eeec3f79fc85edbb4e3e6e6066f854c28d9721e3cbbab7294f2295e473
+- id: LTP_A363671517C058B1
+  generated_at_utc: '2026-07-16T03:35:24.146836Z'
+  content_hash: sha256:a363671517c058b177b37c8394c48508feb8e3077c9818d779846e05afad7aa3
+target_dependencies:
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols:
+  - sys_fstat
+  scope: symbols
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes:
+    sys_fstat: sha256:40ddaada164b353221610e56c2272597d1d231a317f2cab23c02992117aab097
+  missing_symbols: []
+  content_hash: sha256:d1ef21c63411cd05413bdfc07c69c6060e0f3cafb4481c70769a65c292145761
+target_content_fingerprint: sha256:205f7bb89f38b24edb1b063473dc66b544abd4894d16570ae35753b36f83d04e
+generated_at_utc: '2026-07-16T03:45:25.334454Z'

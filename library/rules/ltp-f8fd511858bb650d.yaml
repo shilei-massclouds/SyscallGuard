@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getsid(unused_pid)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F8FD511858BB650D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getsid
+    arguments:
+    - unused_pid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:f8fd511858bb650d732732911dd9b8f3b5680d09787b4b47438a5bb603dc1aff
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsid/getsid02.c
+  line: 20
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:7b8c75d88344c9478cdda181729d8e3aecd5678863a31bd70dbe307feb3b3b7b
+  case: getsid02_20_raw

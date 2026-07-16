@@ -1,0 +1,33 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getsockopt(sock_bind, 500, SO_OOBINLINE, &optval, &optlen)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8BCA62F97A197BC2
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sock_bind
+    - '500'
+    - SO_OOBINLINE
+    - '&optval'
+    - '&optlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:8bca62f97a197bc2486638365fd31e2c4fa35bab95eb651113068ba12997e583
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockopt/getsockopt01.c
+  line: 70
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5a415210b0e7eb032be508ebe5cf0f99e1bd78796d5fb40f665fb02845def96e
+  case: getsockopt01_70_4

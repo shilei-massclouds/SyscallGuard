@@ -1,0 +1,32 @@
+# 合规检查：条件：NON_DIRECTORY_PATH_COMPONENT、USER_BUFFER；检查：调用 lstat(TEST_ENOTDIR, &stat_buf)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_32D132100CDC04ED
+category: syscall_behavior
+semantics:
+  preconditions:
+  - NON_DIRECTORY_PATH_COMPONENT
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - TEST_ENOTDIR
+    - '&stat_buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:32d132100cdc04ed54a6e9b3929df16914bd750ac1121246e6fa05211e6c6ad7
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:37c9b4dce3179253a71b50d988e5460af5b350ced611e692a3b1d010a864b40b
+  case: lstat02_63_4

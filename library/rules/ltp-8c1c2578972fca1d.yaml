@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 getpgid(neg_pid)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8C1C2578972FCA1D
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: getpgid
+    arguments:
+    - neg_pid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:8c1c2578972fca1d655df720a137f88882824f681ac3cbfa59052c4a1f8ef64a
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getpgid/getpgid02.c
+  line: 25
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:70d2b8254d16a9cd1fb260bfb9e3516c197fa069980b8fad4edb3eb174361e24
+  case: getpgid02_25_raw

@@ -1,0 +1,31 @@
+# 合规检查：条件：无额外前置条件；检查：调用 madvise(p, ALLOC_SIZE, MADV_WILLNEED)；预期：返回 0，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8703114C595382AB
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - p
+    - ALLOC_SIZE
+    - MADV_WILLNEED
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:8703114c595382ab1bcd18ccaa8f81c8feb084620cba4ac59450575e9d779cd6
+generated_at_utc: '2026-07-16T03:35:24.146836Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise05.c
+  line: 34
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1416028b46f723b4f05334662d252cd5c370b811668b77f84307d0d4ca3e46d0
+  case: madvise05_34_raw

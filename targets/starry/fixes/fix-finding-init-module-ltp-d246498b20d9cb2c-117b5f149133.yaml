@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+finding_refs:
+- finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+source_check_report_ids:
+- check-20260716t034600z-819e26b8
+patch: runs/fix-20260716t034649z-df5b0f3b/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-syscalls-compliance-1
+regression: runs/fix-20260716t034649z-df5b0f3b/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-16T03:48:12.083545Z'
+upstream_dependencies:
+- id: finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+  generated_at_utc: '2026-07-16T03:46:03.609800Z'
+  content_hash: sha256:5158779bf71318b08cb6011af8990d93f3ea9398d94ef617df2343683a790f4e
+- id: check-20260716t034600z-819e26b8
+  generated_at_utc: '2026-07-16T03:46:03.609800Z'
+  content_hash: sha256:ef0d046052dd0043e218a416ae15bcff64570d208da309a1607293848c752401
+- id: implementation.patch
+  generated_at_utc: '2026-07-16T03:48:11.814642Z'
+  content_hash: sha256:511955f443f19f8d624347698c75532207c48ff6af99898761835ad9a464a5e1
+- id: fix-20260716t034649z-df5b0f3b
+  generated_at_utc: '2026-07-16T03:48:11.854136Z'
+  content_hash: sha256:b80f24e5ed087a15bfa14d3dee481b785c92d44d7e20da04783065da0ee7e998

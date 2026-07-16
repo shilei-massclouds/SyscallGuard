@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-16T03:19:45.343234Z'
+updated_at_utc: '2026-07-16T03:48:12.083545Z'
 entities:
 - id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -56,3 +56,21 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-16T03:19:45.343234Z'
   content_hash: sha256:bf1dba8c9da3e8dc1ef24343684f472835906cf32fe64561a4caa3c555f3934d
+- id: finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133
+  path: targets/starry/findings/finding-gettimeofday-ltp-6c14de68e3c0cc24-117b5f149133.yaml
+  syscall: gettimeofday
+  rule_id: LTP_6C14DE68E3C0CC24
+  target_snapshot_hash: sha256:117b5f149133d675e2090cbee65583ded74d7f19faf62873843614ca56168abe
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:f730d4d7270e444f528088bb7a10b67fd268040645f78bef371c7ef14e200562
+- id: finding-init-module-ltp-d246498b20d9cb2c-117b5f149133
+  path: targets/starry/findings/finding-init-module-ltp-d246498b20d9cb2c-117b5f149133.yaml
+  syscall: init_module
+  rule_id: LTP_D246498B20D9CB2C
+  target_snapshot_hash: sha256:117b5f149133d675e2090cbee65583ded74d7f19faf62873843614ca56168abe
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-16T03:48:12.083545Z'
+  content_hash: sha256:f723838d8222f9b5817421ca11fc90b5a88706de9b04e54b21696e4ae6a95cc3
