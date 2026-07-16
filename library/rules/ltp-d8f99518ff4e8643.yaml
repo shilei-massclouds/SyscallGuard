@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 symlink(fname, symlnk)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D8F99518FF4E8643
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: symlink
+    arguments:
+    - fname
+    - symlnk
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:d8f99518ff4e8643c8a74b95d327b12985404bc44c965c9e3e23563c81ce4922
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/symlink/symlink02.c
+  line: 18
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:22bb338971499d68f8fef6483cb3e2aa41fba2a55a8676e706006c8c7483a581
+  case: symlink02_18_raw

@@ -1,0 +1,75 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_UNSHARE_MOUNT_BEHAVIOR
+title: mount namespace isolation and unmount behavior under QEMU
+rule_refs:
+- LTP_412173E3E81DC995
+- LTP_5CF4B42A5ABA3D0D
+- LTP_96D8C80548B2B4E0
+applies_to_syscalls:
+- umount
+- unshare
+test_source: test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: test-unshare-mount-ns
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/test-unshare-mount-ns
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+upstream_dependencies:
+- id: LTP_412173E3E81DC995
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:412173e3e81dc9959635f1c34d93d65232ba6f40956db08eb86c6214301565d2
+- id: LTP_5CF4B42A5ABA3D0D
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:5cf4b42a5aba3d0d993d4b307856f5ec2234c06d696585bc72260e1a39827cba
+- id: LTP_96D8C80548B2B4E0
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:96d8c80548b2b4e0e34fe791102b0afa0a522100507abe2552214a6fc39c5d72
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/mount.rs
+  symbols:
+  - sys_umount2
+  scope: symbols
+  file_hash: sha256:8d3e78a5531e632c2af62333d5467c88f98d22ce619dada97984ad3014ec5764
+  symbol_hashes:
+    sys_umount2: sha256:721133f6b30f4ae02f4c0c5ec1dde98cac46acb91b981b12aaef7ee14306a19b
+  missing_symbols: []
+  content_hash: sha256:4d1f8fb6bbdeab73c84b11c2ac655ffd911969dc47a5fe3f85adeaf4a109b6bd
+- path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  symbols:
+  - sys_unshare
+  scope: symbols
+  file_hash: sha256:ab75bf7d126a9a123a08bc5f973ea135383c64177fc16accac34ceeed19864f4
+  symbol_hashes:
+    sys_unshare: sha256:ee3ee01688bfffe878c6b8de39fc8ed7f483ac0ee03a2c61dc0e22376037245c
+  missing_symbols: []
+  content_hash: sha256:8ade53d136b1e1e3c4e8c70d2933d43baf20b0b2c6ac12bbf0ad316ba1e61c66
+- path: test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c
+  symbols: []
+  scope: file
+  file_hash: sha256:61e24cb5947ed14160076741f49bd1a612497e5a164bfe3422ddec6ce99879d3
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:ae9b167ed43785508f09ad22c00531a95e1295effc5889a8d51e68517e914c82
+target_content_fingerprint: sha256:66c4a5bd8f561aed7c059d2e538bf116c19a9062c933efd87aca06b14d77dd27
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

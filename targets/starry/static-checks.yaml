@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: '2026-07-16T05:25:46.137226Z'
+updated_at_utc: '2026-07-16T12:43:42.925340Z'
 syscalls:
   access:
   - check_id: STARRY_ACCESS_PATH_RESOLUTION
@@ -800,3 +800,166 @@ syscalls:
     - LTP_AF8D38878ED1A9DA
     - LTP_DD2E1A555B603C7B
     - LTP_E316C28E36E136DA
+  symlink:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: &id015
+    - LTP_02908A57586A60CF
+    - LTP_10B3572DBFA6742B
+    - LTP_22F13AFD9925B2AE
+    - LTP_25D7B6229831E0EF
+    - LTP_287CF10D893735AB
+    - LTP_4184881E196F9E5E
+    - LTP_498695B75BD43DAD
+    - LTP_4FCD61E2EED61335
+    - LTP_6B9F97B897EC5C32
+    - LTP_6D02D744B460F97E
+    - LTP_82A8802A27A3D2BF
+    - LTP_89AC9F4AA9032B8D
+    - LTP_9FD87A3F7688FEF1
+    - LTP_B212BAAA2C2C75CC
+    - LTP_C8376BC347F94A98
+    - LTP_C8F11074F91F94EF
+    - LTP_DB77907DDC5EDFF4
+    - LTP_E272B715ECA16E6C
+    - LTP_F92CEB15161CB23C
+    - LTP_FCC236A4D5926B81
+  - check_id: STARRY_FINAL_SYMLINK_USER_POINTERS
+    path: targets/starry/static-checks/starry-final-symlink-user-pointers.yaml
+    rule_refs:
+    - LTP_C8F11074F91F94EF
+  sysinfo:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_SYSINFO_COPYOUT
+    path: targets/starry/static-checks/starry-final-sysinfo-copyout.yaml
+    rule_refs:
+    - LTP_A367723236ADA8B4
+    - LTP_B212BAAA2C2C75CC
+  syslog:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_SYSLOG_CONSOLE_LEVEL
+    path: targets/starry/static-checks/starry-final-syslog-console-level.yaml
+    rule_refs:
+    - LTP_02908A57586A60CF
+    - LTP_18304438A1D5D6C1
+    - LTP_4FCD61E2EED61335
+    - LTP_C0694665E22D48E8
+  - check_id: STARRY_FINAL_SYSLOG_CONTROL_ACTIONS
+    path: targets/starry/static-checks/starry-final-syslog-control-actions.yaml
+    rule_refs:
+    - LTP_4828EB12592F311C
+    - LTP_6D819B66D5B60871
+    - LTP_7F4262FC753FC8D9
+    - LTP_F38A837D067865DC
+  - check_id: STARRY_FINAL_SYSLOG_INVALID_ACTION
+    path: targets/starry/static-checks/starry-final-syslog-invalid-action.yaml
+    rule_refs:
+    - LTP_4184881E196F9E5E
+  - check_id: STARRY_FINAL_SYSLOG_PRIVILEGE
+    path: targets/starry/static-checks/starry-final-syslog-privilege.yaml
+    rule_refs:
+    - LTP_498695B75BD43DAD
+  - check_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+    path: targets/starry/static-checks/starry-final-syslog-read-arguments.yaml
+    rule_refs:
+    - LTP_6B9F97B897EC5C32
+    - LTP_C8376BC347F94A98
+  timer_delete:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_TIMER_DELETE
+    path: targets/starry/static-checks/starry-final-timer-delete.yaml
+    rule_refs:
+    - LTP_10B3572DBFA6742B
+    - LTP_9B36D27A4A2994D0
+  tkill:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_TKILL_TID_VALIDATION
+    path: targets/starry/static-checks/starry-final-tkill-tid-validation.yaml
+    rule_refs:
+    - LTP_FCC236A4D5926B81
+  umount:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_UMOUNT_MOUNTPOINT
+    path: targets/starry/static-checks/starry-final-umount-mountpoint.yaml
+    rule_refs:
+    - LTP_E272B715ECA16E6C
+  - check_id: STARRY_FINAL_UMOUNT_PRIVILEGE
+    path: targets/starry/static-checks/starry-final-umount-privilege.yaml
+    rule_refs:
+    - LTP_287CF10D893735AB
+  - check_id: STARRY_FINAL_UMOUNT_USER_PATH
+    path: targets/starry/static-checks/starry-final-umount-user-path.yaml
+    rule_refs:
+    - LTP_6D02D744B460F97E
+  uname:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_UNAME_COPYOUT
+    path: targets/starry/static-checks/starry-final-uname-copyout.yaml
+    rule_refs:
+    - LTP_25D7B6229831E0EF
+    - LTP_5516B8A938B9C3A5
+  unshare:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_UNSHARE_FILES
+    path: targets/starry/static-checks/starry-final-unshare-files.yaml
+    rule_refs:
+    - LTP_40A45C5E82D7F4A1
+  - check_id: STARRY_FINAL_UNSHARE_FLAG_VALIDATION
+    path: targets/starry/static-checks/starry-final-unshare-flag-validation.yaml
+    rule_refs:
+    - LTP_F92CEB15161CB23C
+  - check_id: STARRY_FINAL_UNSHARE_NEWNS_PRIVILEGE
+    path: targets/starry/static-checks/starry-final-unshare-newns-privilege.yaml
+    rule_refs:
+    - LTP_82A8802A27A3D2BF
+  wait4:
+  - check_id: STARRY_FINAL_WAITPID_INT_MIN
+    path: targets/starry/static-checks/starry-final-waitpid-int-min.yaml
+    rule_refs: &id016
+    - LTP_03AF14160F8B59A0
+    - LTP_1691F6F9712C5546
+  waitid:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_WAITID_OPTIONS
+    path: targets/starry/static-checks/starry-final-waitid-options.yaml
+    rule_refs:
+    - LTP_9FD87A3F7688FEF1
+  waitpid:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_WAITPID_INT_MIN
+    path: targets/starry/static-checks/starry-final-waitpid-int-min.yaml
+    rule_refs: *id016
+  - check_id: STARRY_FINAL_WAITPID_OPTIONS
+    path: targets/starry/static-checks/starry-final-waitpid-options.yaml
+    rule_refs:
+    - LTP_DB77907DDC5EDFF4
+  write:
+  - check_id: STARRY_FINAL_ERRNO_TRANSLATION
+    path: targets/starry/static-checks/starry-final-errno-translation.yaml
+    rule_refs: *id015
+  - check_id: STARRY_FINAL_WRITE_BAD_FD
+    path: targets/starry/static-checks/starry-final-write-bad-fd.yaml
+    rule_refs:
+    - LTP_22F13AFD9925B2AE
+  - check_id: STARRY_FINAL_WRITE_USER_BUFFER
+    path: targets/starry/static-checks/starry-final-write-user-buffer.yaml
+    rule_refs:
+    - LTP_89AC9F4AA9032B8D

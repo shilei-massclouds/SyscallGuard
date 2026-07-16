@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 waitid(P_PGID, pid_group+1, infop, WEXITED)；预期：返回 -1，errno 为 ECHILD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4494B70BBA693D42
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: waitid
+    arguments:
+    - P_PGID
+    - pid_group+1
+    - infop
+    - WEXITED
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECHILD
+  errno:
+  - ECHILD
+semantic_hash: sha256:4494b70bba693d42cda9d0a59c88ea7d9d8bd0fcb3276d8a3fc52fa386e7ef78
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid05.c
+  line: 32
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:34e725c0f7539c98488e58c8e409ce0fc2c0928d4cac121f0592959eec814704
+  case: waitid05_32_raw

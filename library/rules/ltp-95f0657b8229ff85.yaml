@@ -1,0 +1,30 @@
+# 合规检查：条件：PATH_TOO_LONG；检查：调用 umount(long_path)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_95F0657B8229FF85
+category: syscall_behavior
+semantics:
+  preconditions:
+  - PATH_TOO_LONG
+  action:
+    operation: invoke_syscall
+    syscall: umount
+    arguments:
+    - long_path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:95f0657b8229ff85be4707165cfd53f30a4a7be9d8922cff2f0e73f62929b7c4
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/umount/umount02.c
+  line: 46
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:cdffc2e79e9aadf8803f8514b9df2e147d94c0e1469eedd754dda58ee7d42fdd
+  case: umount02_46_4

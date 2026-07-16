@@ -1,0 +1,30 @@
+# 合规检查：条件：无额外前置条件；检查：调用 tkill(inval_tid, SIGUSR1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_FCC236A4D5926B81
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - inval_tid
+    - SIGUSR1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fcc236a4d5926b81662f49a2c62c658e9c87bcf2c7e179151e8658bd9395a42f
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/tkill/tkill02.c
+  line: 43
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5ad28760c7beeaed83590a0e8fa93c14e90b7e5c0ad7c4c296c9d64352132a02
+  case: tkill02_43_0

@@ -1,0 +1,54 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
+syscall: unshare
+rule_id: LTP_40A45C5E82D7F4A1
+target_snapshot_hash: sha256:444533f79a99575b82552aaca4a4a99d006322491b7c1fd8f913dfc2542e0afa
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t105412z-45ac09bc
+  evidence_kind: static
+  source_id: STARRY_FINAL_UNSHARE_FILES
+  evidence:
+    check_id: STARRY_FINAL_UNSHARE_FILES
+    rule_refs:
+    - LTP_40A45C5E82D7F4A1
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+    patterns:
+    - label: CLONE_FILES is accepted as a supported unshare flag
+      regex: 'const SUPPORTED_NS_FLAGS: u32 =[\s\S]*?CLONE_FILES'
+      matched: false
+      line: null
+    - label: CLONE_FILES clones and rebinds the descriptor table
+      regex: if flags & CLONE_FILES != 0 \{[\s\S]*?FD_TABLE\.read\(\)\.clone\(\)[\s\S]*?FD_TABLE\.scope_mut\(scope\)
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t124421z-214097eb
+  evidence_kind: static
+  source_id: STARRY_FINAL_UNSHARE_FILES
+  evidence:
+    check_id: STARRY_FINAL_UNSHARE_FILES
+    rule_refs:
+    - LTP_40A45C5E82D7F4A1
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+    patterns:
+    - label: CLONE_FILES is accepted as a supported unshare flag
+      regex: 'const SUPPORTED_NS_FLAGS: u32 =[\s\S]*?CLONE_FILES'
+      matched: false
+      line: null
+    - label: CLONE_FILES clones and rebinds the descriptor table
+      regex: if flags & CLONE_FILES != 0 \{[\s\S]*?FD_TABLE\.read\(\)\.clone\(\)[\s\S]*?FD_TABLE\.scope_mut\(scope\)
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: fix-finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:73341e021a939a66f7641e5ca9eaea28816189ffa886235b36857c0694141189
+fix_ref: fix-finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
+fixed_by_run: fix-20260716t130912z-b607f7c0

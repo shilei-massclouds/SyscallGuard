@@ -1,0 +1,30 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+finding_refs:
+- finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+source_check_report_ids:
+- check-20260716t122612z-272bbd3a
+- check-20260716t124421z-214097eb
+patch: runs/fix-20260716t130912z-b607f7c0/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-syscalls-compliance-1
+regression: runs/fix-20260716t130912z-b607f7c0/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+  generated_at_utc: '2026-07-16T11:06:29.244183Z'
+  content_hash: sha256:a3eca326f1e5a8c98962ab6add87150ac45a4a4b5b2010284b8b84c12795bdb0
+- id: check-20260716t122612z-272bbd3a
+  generated_at_utc: '2026-07-16T12:39:03.254257Z'
+  content_hash: sha256:3e7418329d0186312400d4a352142622b805d5620900c4c3947d400a8336bdba
+- id: check-20260716t124421z-214097eb
+  generated_at_utc: '2026-07-16T13:01:57.122053Z'
+  content_hash: sha256:c0e729d776461a1c95be0cb1540dc1223db8238fd0a875fa7359e57f5ba94bc4
+- id: implementation.patch
+  generated_at_utc: '2026-07-16T13:21:19.553383Z'
+  content_hash: sha256:6d9d2a8316936e8c48f778d9ff37d107f80896c6bcbccab290c999f7732e0237
+- id: fix-20260716t130912z-b607f7c0
+  generated_at_utc: '2026-07-16T13:52:36.244358Z'
+  content_hash: sha256:3b75d34589d55be82a01e891765c52ef75326a1fb097301e975aad8ee518b8aa

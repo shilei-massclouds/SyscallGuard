@@ -1,0 +1,61 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_TKILL_BEHAVIOR
+title: tkill delivery and missing-thread errors under QEMU
+rule_refs:
+- LTP_2084284EEECEEAC0
+- LTP_EF9CD83ECACAA86C
+applies_to_syscalls:
+- tkill
+test_source: test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: syscall-test-tkill
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/syscall-test-tkill
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+upstream_dependencies:
+- id: LTP_2084284EEECEEAC0
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:2084284eeeceeac0e6f5c717b5b17232056b355dd77de847c28449311321c9bf
+- id: LTP_EF9CD83ECACAA86C
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:ef9cd83ecacaa86c2d4c93d98b8ca5dd3cdbb29fe71fc87fb7cbd3254e95b616
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/signal.rs
+  symbols:
+  - sys_tkill
+  scope: symbols
+  file_hash: sha256:814fc5601e37d33ffb672ddb4c4a8ff448cf55a99b874b33be492217fb6047ee
+  symbol_hashes:
+    sys_tkill: sha256:be0788b89921d4887232d383e4b491d32c6b18f58be97520b0ce99b5e0bed0af
+  missing_symbols: []
+  content_hash: sha256:21dd4c3edd22c7328ece448d17e6baabf50565def87212ab23bf79982fd45c2a
+- path: test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c
+  symbols: []
+  scope: file
+  file_hash: sha256:10e90f34a84b661c1fb0945de95dbe108f0145bddf78bc84e62a727110e5161a
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:8052a91228c6f720d2de6a307e31cd660fc20062f17a2f60ab260790343b5f55
+target_content_fingerprint: sha256:502da7ab3e80bcfcd70ec47bd1be91c362c24ee9dea5924e95861fd6f76f8395
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

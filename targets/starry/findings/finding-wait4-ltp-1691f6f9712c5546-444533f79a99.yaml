@@ -1,0 +1,48 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-wait4-ltp-1691f6f9712c5546-444533f79a99
+syscall: wait4
+rule_id: LTP_1691F6F9712C5546
+target_snapshot_hash: sha256:444533f79a99575b82552aaca4a4a99d006322491b7c1fd8f913dfc2542e0afa
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t105412z-45ac09bc
+  evidence_kind: static
+  source_id: STARRY_FINAL_WAITPID_INT_MIN
+  evidence:
+    check_id: STARRY_FINAL_WAITPID_INT_MIN
+    rule_refs:
+    - LTP_03AF14160F8B59A0
+    - LTP_1691F6F9712C5546
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/wait.rs
+    patterns:
+    - label: INT_MIN returns ESRCH before process-group negation
+      regex: pub fn sys_waitpid\([\s\S]*?if pid == i32::MIN \{\s*return Err\(AxError::from\(LinuxError::ESRCH\)\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t124421z-214097eb
+  evidence_kind: static
+  source_id: STARRY_FINAL_WAITPID_INT_MIN
+  evidence:
+    check_id: STARRY_FINAL_WAITPID_INT_MIN
+    rule_refs:
+    - LTP_03AF14160F8B59A0
+    - LTP_1691F6F9712C5546
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/wait.rs
+    patterns:
+    - label: INT_MIN returns ESRCH before process-group negation
+      regex: pub fn sys_waitpid\([\s\S]*?if pid == i32::MIN \{\s*return Err\(AxError::from\(LinuxError::ESRCH\)\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: fix-finding-wait4-ltp-1691f6f9712c5546-444533f79a99
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:e61f75ff30b4d294ea370608872f4aa06e2670d20d444d8dbcbc3405930d2b59
+fix_ref: fix-finding-wait4-ltp-1691f6f9712c5546-444533f79a99
+fixed_by_run: fix-20260716t130912z-b607f7c0

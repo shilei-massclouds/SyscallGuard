@@ -1,0 +1,111 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_FS_RUNTIME
+title: symlink errors and utime filesystem behavior under QEMU
+rule_refs:
+- LTP_04236FD5B061DEB9
+- LTP_21FCBFC328D1815A
+- LTP_38432B154B641410
+- LTP_43728156B00FF104
+- LTP_58C8C307B1FF2510
+- LTP_6F4B3A38B8BF4C7E
+- LTP_6F77CAA9FC4423BA
+- LTP_71DD72481EF5740E
+- LTP_86144BF50FB25D3A
+- LTP_B0433B78A1641F24
+- LTP_D254EE40E8B5957E
+- LTP_DCC88B2C458969EA
+- LTP_DDA854712C50CD6A
+applies_to_syscalls:
+- symlink
+- utime
+test_source: test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: syscallguard-final-fs-runtime
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/syscallguard-final-fs-runtime
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+patch_file: targets/starry/dynamic-tests/assets/starry-final-runtime.patch
+upstream_dependencies:
+- id: LTP_04236FD5B061DEB9
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:04236fd5b061deb91a99cc5990d76abb4d0305312af10adf6221c7cdbcf28567
+- id: LTP_21FCBFC328D1815A
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:21fcbfc328d1815aad1c1fd20c4797e91d64cad63f8c4dd02b3340c29fc06412
+- id: LTP_38432B154B641410
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:38432b154b641410365b7f4a7ad2ca324c3c356bf93948d3c948552a39f1f368
+- id: LTP_43728156B00FF104
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:43728156b00ff104889586e9f9c3c97e3681823265c64387f32a84c300f8aebb
+- id: LTP_58C8C307B1FF2510
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:58c8c307b1ff25100a989b73841bba45b1dcf61406863df2f8b8bfce4c294f2e
+- id: LTP_6F4B3A38B8BF4C7E
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:6f4b3a38b8bf4c7e714c705e096b38742f0d55e11af069efd85a780cbd567c0f
+- id: LTP_6F77CAA9FC4423BA
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:6f77caa9fc4423ba48f8bccdc757c34ac19acb29a8df9d9089f395904ee88d54
+- id: LTP_71DD72481EF5740E
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:71dd72481ef5740e84d8f583e4c75aa6d22288a996d96ab3f4c50bef33fc2b5b
+- id: LTP_86144BF50FB25D3A
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:86144bf50fb25d3a419e3c011f5c2334e4885d5643718a54ea7d6d0d3e8b4bab
+- id: LTP_B0433B78A1641F24
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:b0433b78a1641f2478404ccbec3a8cad14d0a94ee86936a6d26460330ce10de8
+- id: LTP_D254EE40E8B5957E
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:d254ee40e8b5957eb45b944d458cd22c2b8bd611d8da6326448e10c63c65ed36
+- id: LTP_DCC88B2C458969EA
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:dcc88b2c458969ead361273a98cbb21fb0bf32a05c20068c76ebabffd55bf579
+- id: LTP_DDA854712C50CD6A
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:dda854712c50cd6a2ea2a11371b97c4eee905e31d70b389262238b10091fa2c9
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_symlinkat
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_symlinkat: sha256:0f3b9c3a85213ca07f6bae9c495cb760950ca900ab084b91f141ea72de866009
+  missing_symbols: []
+  content_hash: sha256:3fa46de6c023195dd56d248fb4d5e65d53f1d961184d3592ce14e779f809fd7a
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_utime
+  - sys_utimensat
+  scope: symbols
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes:
+    sys_utime: sha256:a3a83f7dbafea3b9ecb503b1defd953b1d9ee9f372bf241125249bf5478984ce
+    sys_utimensat: sha256:9ab67f0d3c6ee39414fd1fee6248676c9de06b01de8a32dab41905346ab3a2f5
+  missing_symbols: []
+  content_hash: sha256:cd41de6997a15420d35e9916e513d06d7cdc89877db75bb0c188c139db3b71e5
+target_content_fingerprint: sha256:c06e9f859abd48cff0c769457921170191ce3942b848bd58cbd7e50a71d4af28
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

@@ -1735,7 +1735,7 @@ class RepositoryMappingScopeTests(unittest.TestCase):
         all_rules = {
             row["rule_id"] for refs in index.values() for row in refs
         }
-        self.assertEqual(len(all_rules), 1077)
+        self.assertEqual(len(all_rules), 1184)
         self.assertEqual(len({row["rule_id"] for row in index["mmap"]}), 9)
         self.assertEqual(len({row["rule_id"] for row in index["close"]}), 5)
 

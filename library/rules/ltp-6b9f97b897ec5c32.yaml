@@ -1,0 +1,33 @@
+# 合规检查：条件：文件描述符无效、USER_BUFFER；检查：调用 syslog(3, &buf, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6B9F97B897EC5C32
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - '3'
+    - '&buf'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6b9f97b897ec5c326f9f68e26e9353a0e9bcb1ca59ce6f15c338328a7d201bda
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/syslog/syslog12.c
+  line: 70
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3d22c70e19ba559409670ee8e43c6ec640bc17a8d504364b5020d63e1108f320
+  case: syslog12_70_2

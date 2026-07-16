@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 umount(MNTPOINT)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BA10B957ACB3FFC3
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: umount
+    arguments:
+    - MNTPOINT
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:ba10b957acb3ffc3f735e9ac0e7841382981ac5f91af68418b9c4bc64eac1dbf
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/umount/umount02.c
+  line: 46
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:cdffc2e79e9aadf8803f8514b9df2e147d94c0e1469eedd754dda58ee7d42fdd
+  case: umount02_46_0

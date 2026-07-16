@@ -1,0 +1,76 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-syslog-ltp-c8376bc347f94a98-444533f79a99
+syscall: syslog
+rule_id: LTP_C8376BC347F94A98
+target_snapshot_hash: sha256:444533f79a99575b82552aaca4a4a99d006322491b7c1fd8f913dfc2542e0afa
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t105412z-45ac09bc
+  evidence_kind: static
+  source_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+  evidence:
+    check_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+    rule_refs:
+    - LTP_6B9F97B897EC5C32
+    - LTP_C8376BC347F94A98
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: destructive reads validate their user buffer and signed length
+      regex: SYSLOG_ACTION_READ => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    - label: read-all validates its user buffer and signed length
+      regex: SYSLOG_ACTION_READ_ALL => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t121157z-10d9773a
+  evidence_kind: static
+  source_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+  evidence:
+    check_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+    rule_refs:
+    - LTP_6B9F97B897EC5C32
+    - LTP_C8376BC347F94A98
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: destructive reads validate their user buffer and signed length
+      regex: SYSLOG_ACTION_READ => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    - label: read-all validates its user buffer and signed length
+      regex: SYSLOG_ACTION_READ_ALL => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t122612z-272bbd3a
+  evidence_kind: static
+  source_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+  evidence:
+    check_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+    rule_refs:
+    - LTP_6B9F97B897EC5C32
+    - LTP_C8376BC347F94A98
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: destructive reads validate their user buffer and signed length
+      regex: SYSLOG_ACTION_READ => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    - label: read-all validates its user buffer and signed length
+      regex: SYSLOG_ACTION_READ_ALL => \{\s*validate_syslog_read_args\(buf, len\)\?;
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: fix-finding-syslog-ltp-c8376bc347f94a98-444533f79a99
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:5d983fc6815d3ce64812bb1067a236592494196c70b702c589b641c7f67c87b6
+fix_ref: fix-finding-syslog-ltp-c8376bc347f94a98-444533f79a99
+fixed_by_run: fix-20260716t130912z-b607f7c0

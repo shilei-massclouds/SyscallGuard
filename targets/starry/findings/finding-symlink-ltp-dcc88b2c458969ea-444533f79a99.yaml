@@ -1,0 +1,184 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+syscall: symlink
+rule_id: LTP_DCC88B2C458969EA
+target_snapshot_hash: sha256:444533f79a99575b82552aaca4a4a99d006322491b7c1fd8f913dfc2542e0afa
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t105412z-45ac09bc
+  evidence_kind: dynamic
+  source_id: STARRY_FINAL_FS_RUNTIME
+  evidence:
+    test_id: STARRY_FINAL_FS_RUNTIME
+    rule_refs:
+    - LTP_04236FD5B061DEB9
+    - LTP_21FCBFC328D1815A
+    - LTP_38432B154B641410
+    - LTP_43728156B00FF104
+    - LTP_58C8C307B1FF2510
+    - LTP_6F4B3A38B8BF4C7E
+    - LTP_6F77CAA9FC4423BA
+    - LTP_71DD72481EF5740E
+    - LTP_86144BF50FB25D3A
+    - LTP_B0433B78A1641F24
+    - LTP_D254EE40E8B5957E
+    - LTP_DCC88B2C458969EA
+    - LTP_DDA854712C50CD6A
+    result: fail
+    exit_code: 1
+    command:
+    - cargo
+    - xtask
+    - starry
+    - test
+    - qemu
+    - --arch
+    - riscv64
+    - -c
+    - qemu/system/syscallguard-final-fs-runtime
+    reason: command produced reliable implementation failure evidence
+    output_tail: "302-0/staging-root//etc/inittab\ndump_file: Operation not permitted while changing ownership\
+      \ of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc/hosts\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc/hostname\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc/group\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc/fstab\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc/resolv.conf\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//etc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/tmp\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/spool/cron\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/spool\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/opt\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/mail\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/local\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/lib/misc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/lib\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/empty\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/cache/apk\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/cache/misc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/cache\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/log/apk.log\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var/log\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//var\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/linux/linux-qemu\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/linux/manifest.txt\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/linux\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/nimbos/manifest.txt\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/nimbos/nimbos-qemu\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/nimbos/nimbos-qemu-usertests\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/nimbos/nimbos-qemu.img\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest/nimbos\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root//guest\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root/\n\
+      cd /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system && /home/cloud/gitWork/qemu-10.2.1/build/qemu-riscv64\
+      \ -L /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root\
+      \ /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root/bin/busybox\
+      \ sh -eu /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system/prebuild.sh\n/usr/bin/cmake\
+      \ -S /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system -B /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/build\
+      \ -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY\
+      \ -DCMAKE_TOOLCHAIN_FILE=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/cmake-toolchain.cmake\
+      \ -DCMAKE_MAKE_PROGRAM=/usr/bin/make -DPKG_CONFIG_EXECUTABLE=/usr/bin/pkg-config -DSTARRY_STAGING_ROOT=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/staging-root\
+      \ -DSTARRY_GROUPED_C_SUBCASES=syscallguard-final-fs-runtime\nCMake Warning:\n  Manually-specified\
+      \ variables were not used by the project:\n\n    PKG_CONFIG_EXECUTABLE\n    STARRY_STAGING_ROOT\n\
+      \n\n/usr/bin/cmake --build /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/build\
+      \ --parallel\n/usr/bin/cmake --install /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/build\n\
+      debugfs -w /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/65302-0/case-rootfs.img\n\
+      debugfs 1.46.5 (30-Dec-2021)\nrm: File not found by ext2_lookup while trying to resolve filename\n\
+      rm: File not found by ext2_lookup while trying to resolve filename\nrm: File not found by ext2_lookup\
+      \ while trying to resolve filename\nfailed: system: starry qemu test failed for case `system`: Fail\
+      \ pattern matched '(?m)^STARRY_GROUPED_TEST_FAILED:': goskits/test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c:23\
+      \ | build fixture path PASS | /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c:23\
+      \ | build fixture path PAS...\nError: starry qemu tests failed for 1 case(s): system\n"
+    output_truncated: true
+- check_report_id: check-20260716t124421z-214097eb
+  evidence_kind: dynamic
+  source_id: STARRY_FINAL_FS_RUNTIME
+  evidence:
+    test_id: STARRY_FINAL_FS_RUNTIME
+    rule_refs:
+    - LTP_04236FD5B061DEB9
+    - LTP_21FCBFC328D1815A
+    - LTP_38432B154B641410
+    - LTP_43728156B00FF104
+    - LTP_58C8C307B1FF2510
+    - LTP_6F4B3A38B8BF4C7E
+    - LTP_6F77CAA9FC4423BA
+    - LTP_71DD72481EF5740E
+    - LTP_86144BF50FB25D3A
+    - LTP_B0433B78A1641F24
+    - LTP_D254EE40E8B5957E
+    - LTP_DCC88B2C458969EA
+    - LTP_DDA854712C50CD6A
+    result: fail
+    exit_code: 1
+    command:
+    - cargo
+    - xtask
+    - starry
+    - test
+    - qemu
+    - --arch
+    - riscv64
+    - -c
+    - qemu/system/syscallguard-final-fs-runtime
+    reason: command produced reliable implementation failure evidence
+    output_tail: "879-0/staging-root//etc/inittab\ndump_file: Operation not permitted while changing ownership\
+      \ of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc/hosts\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc/hostname\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc/group\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc/fstab\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc/resolv.conf\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//etc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/tmp\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/spool/cron\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/spool\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/opt\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/mail\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/local\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/lib/misc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/lib\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/empty\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/cache/apk\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/cache/misc\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/cache\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/log/apk.log\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var/log\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//var\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/linux/linux-qemu\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/linux/manifest.txt\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/linux\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/nimbos/manifest.txt\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/nimbos/nimbos-qemu\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/nimbos/nimbos-qemu-usertests\n\
+      dump_file: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/nimbos/nimbos-qemu.img\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest/nimbos\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root//guest\n\
+      rdump: Operation not permitted while changing ownership of /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root/\n\
+      cd /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system && /home/cloud/gitWork/qemu-10.2.1/build/qemu-riscv64\
+      \ -L /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root\
+      \ /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root/bin/busybox\
+      \ sh -eu /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system/prebuild.sh\n/usr/bin/cmake\
+      \ -S /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system -B /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/build\
+      \ -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY\
+      \ -DCMAKE_TOOLCHAIN_FILE=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/cmake-toolchain.cmake\
+      \ -DCMAKE_MAKE_PROGRAM=/usr/bin/make -DPKG_CONFIG_EXECUTABLE=/usr/bin/pkg-config -DSTARRY_STAGING_ROOT=/home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/staging-root\
+      \ -DSTARRY_GROUPED_C_SUBCASES=syscallguard-final-fs-runtime\nCMake Warning:\n  Manually-specified\
+      \ variables were not used by the project:\n\n    PKG_CONFIG_EXECUTABLE\n    STARRY_STAGING_ROOT\n\
+      \n\n/usr/bin/cmake --build /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/build\
+      \ --parallel\n/usr/bin/cmake --install /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/build\n\
+      debugfs -w /home/cloud/gitLinux/tgoskits/target/riscv64gc-unknown-none-elf/qemu-cases/qemu/system/runs/89879-0/case-rootfs.img\n\
+      debugfs 1.46.5 (30-Dec-2021)\nrm: File not found by ext2_lookup while trying to resolve filename\n\
+      rm: File not found by ext2_lookup while trying to resolve filename\nrm: File not found by ext2_lookup\
+      \ while trying to resolve filename\nfailed: system: starry qemu test failed for case `system`: Fail\
+      \ pattern matched '(?m)^STARRY_GROUPED_TEST_FAILED:': goskits/test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c:23\
+      \ | build fixture path PASS | /home/cloud/gitLinux/tgoskits/test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c:23\
+      \ | build fixture path PAS...\nError: starry qemu tests failed for 1 case(s): system\n"
+    output_truncated: true
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: fix-finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:94d2807607738cd95b00714955d7382b8544ffcf40c3ac342b8674130a620475
+fix_ref: fix-finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+fixed_by_run: fix-20260716t130912z-b607f7c0

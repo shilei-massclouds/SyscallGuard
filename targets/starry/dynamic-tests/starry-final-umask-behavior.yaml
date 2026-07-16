@@ -1,0 +1,57 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_UMASK_BEHAVIOR
+title: umask return value and mode masking under QEMU
+rule_refs:
+- LTP_FE4AD44ED28FE386
+applies_to_syscalls:
+- umask
+test_source: test-suit/starryos/qemu/system/syscall-test-umask/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: syscall-test-umask
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/syscall-test-umask
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+upstream_dependencies:
+- id: LTP_FE4AD44ED28FE386
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:fe4ad44ed28fe386c6f454015920a059ba052becc45d76521fb756e0a11bc535
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/ctl.rs
+  symbols:
+  - sys_umask
+  scope: symbols
+  file_hash: sha256:901fc111c7b58af132705a41cf8a75d89164f522f89135f794e08b76a1ec05e9
+  symbol_hashes:
+    sys_umask: sha256:ca772203756d39a45c2f91424673049e16f0d6d754f69f0b9457c70e83c2c40e
+  missing_symbols: []
+  content_hash: sha256:86e46879ecee046561f467ff122c645c67ad299999b126dbbe30820bc44b7d2e
+- path: test-suit/starryos/qemu/system/syscall-test-umask/src/main.c
+  symbols: []
+  scope: file
+  file_hash: sha256:07f0213b53279c0bae5f2f25555bdf05f5576130242783cd66f52368575e2a2f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c8c8e7f59ecfc0da004ba62795eb968c9eca7ad6aa66fd5563998e4313f208bc
+target_content_fingerprint: sha256:13768fc5f2e3a9dba394190a73a73e62544773422388809fe4f314793e661bc7
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

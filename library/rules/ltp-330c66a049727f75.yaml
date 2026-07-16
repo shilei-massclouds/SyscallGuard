@@ -1,0 +1,30 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 syslog(2, &buf, 0)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_330C66A049727F75
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - '2'
+    - '&buf'
+    - '0'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:330c66a049727f7518cbc03f78e0a13298797ce579a19a07aba3934bf5a032a9
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/syslog/syslog11.c
+  line: 52
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:7c78b28f2be341e560463f2b389d7c553187ec974a10bb07cabf0e16a935dd2d
+  case: syslog11_52_2

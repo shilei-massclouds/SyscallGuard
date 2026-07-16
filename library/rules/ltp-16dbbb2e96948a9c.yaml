@@ -1,0 +1,31 @@
+# 合规检查：条件：BAD_USER_ADDRESS；检查：调用 ustat((unsigned int)root_dev, (void*)-1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_16DBBB2E96948A9C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  action:
+    operation: invoke_syscall
+    syscall: ustat
+    arguments:
+    - (unsigned int)root_dev
+    - (void*)-1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:16dbbb2e96948a9c6649079c041ed99e1a7caffecc8e20185d6b5a9191cc06fd
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ustat/ustat02.c
+  line: 40
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b949354bc37b36bfea2624db365ee9d17e957a9a96784c228a43d6f2d7396548
+  case: ustat02_40_1

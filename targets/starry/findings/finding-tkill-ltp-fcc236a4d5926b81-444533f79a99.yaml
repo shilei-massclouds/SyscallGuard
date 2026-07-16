@@ -1,0 +1,61 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-tkill-ltp-fcc236a4d5926b81-444533f79a99
+syscall: tkill
+rule_id: LTP_FCC236A4D5926B81
+target_snapshot_hash: sha256:444533f79a99575b82552aaca4a4a99d006322491b7c1fd8f913dfc2542e0afa
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260716t105412z-45ac09bc
+  evidence_kind: static
+  source_id: STARRY_FINAL_TKILL_TID_VALIDATION
+  evidence:
+    check_id: STARRY_FINAL_TKILL_TID_VALIDATION
+    rule_refs:
+    - LTP_FCC236A4D5926B81
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/signal.rs
+    patterns:
+    - label: tkill rejects zero and negative tids with InvalidInput
+      regex: pub fn sys_tkill\([\s\S]*?if tid <= 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t121157z-10d9773a
+  evidence_kind: static
+  source_id: STARRY_FINAL_TKILL_TID_VALIDATION
+  evidence:
+    check_id: STARRY_FINAL_TKILL_TID_VALIDATION
+    rule_refs:
+    - LTP_FCC236A4D5926B81
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/signal.rs
+    patterns:
+    - label: tkill rejects zero and negative tids with InvalidInput
+      regex: pub fn sys_tkill\([\s\S]*?if tid <= 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260716t122612z-272bbd3a
+  evidence_kind: static
+  source_id: STARRY_FINAL_TKILL_TID_VALIDATION
+  evidence:
+    check_id: STARRY_FINAL_TKILL_TID_VALIDATION
+    rule_refs:
+    - LTP_FCC236A4D5926B81
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/signal.rs
+    patterns:
+    - label: tkill rejects zero and negative tids with InvalidInput
+      regex: pub fn sys_tkill\([\s\S]*?if tid <= 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-16T13:52:36.624532Z'
+upstream_dependencies:
+- id: fix-finding-tkill-ltp-fcc236a4d5926b81-444533f79a99
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:522cd3ac871ad947db873a3f482df4c3221c20130ecdd9ae204c3a43463e3edd
+fix_ref: fix-finding-tkill-ltp-fcc236a4d5926b81-444533f79a99
+fixed_by_run: fix-20260716t130912z-b607f7c0

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 timer_delete(INVALID_ID)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_10B3572DBFA6742B
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: timer_delete
+    arguments:
+    - INVALID_ID
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:10b3572dbfa6742b44e40e6ffb78f797d484d1c0f37cedc5e4bc5c0099e8b498
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/timer_delete/timer_delete02.c
+  line: 26
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a58b37eb78f1253f9e270aff522ec154416120168c16b342ddbe8192c98b465c
+  case: timer_delete02_26_raw

@@ -1,0 +1,29 @@
+# 合规检查：条件：无额外前置条件；检查：调用 wait(NULL)；预期：返回 -1，errno 为 ECHILD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_AD3A4B98FF201ABE
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: wait
+    arguments:
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECHILD
+  errno:
+  - ECHILD
+semantic_hash: sha256:ad3a4b98ff201abe4bafe39d5fede2f4d497cf03a7d50837c4c7441c515b34fa
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/wait/wait01.c
+  line: 17
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:d094b4e335227178d9e13050ecba3396b1a9a0cdccad9f2a7396d98613de5ff7
+  case: wait01_17_raw

@@ -1,0 +1,57 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_UNSHARE_FS_BEHAVIOR
+title: filesystem-context unshare behavior under QEMU
+rule_refs:
+- LTP_49ABEE42EF290FDC
+applies_to_syscalls:
+- unshare
+test_source: test-suit/starryos/qemu/system/test-unshare-fs/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: test-unshare-fs
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/test-unshare-fs
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+upstream_dependencies:
+- id: LTP_49ABEE42EF290FDC
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:49abee42ef290fdccc194857d597df925fac592f976582768e8ae944c3a25482
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  symbols:
+  - sys_unshare
+  scope: symbols
+  file_hash: sha256:ab75bf7d126a9a123a08bc5f973ea135383c64177fc16accac34ceeed19864f4
+  symbol_hashes:
+    sys_unshare: sha256:ee3ee01688bfffe878c6b8de39fc8ed7f483ac0ee03a2c61dc0e22376037245c
+  missing_symbols: []
+  content_hash: sha256:8ade53d136b1e1e3c4e8c70d2933d43baf20b0b2c6ac12bbf0ad316ba1e61c66
+- path: test-suit/starryos/qemu/system/test-unshare-fs/src/main.c
+  symbols: []
+  scope: file
+  file_hash: sha256:5cf0efd5f7e3badd0d325539f7fb99f94cf9ac9419b950636ae51c223f446a6b
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:e7f3ff0b5f8db65f988027c41257aa303d13eaee222b5f37630c6608b37fe657
+target_content_fingerprint: sha256:19a0bd81b00b62b7b48f2e83ed9c45caf92ec4b2d7dda5b225f9d5b4522cea0b
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

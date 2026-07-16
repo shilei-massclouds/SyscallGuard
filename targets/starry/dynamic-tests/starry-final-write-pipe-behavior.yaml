@@ -1,0 +1,68 @@
+schema_version: 1
+kind: syscallguard_starry_dynamic_test
+test_id: STARRY_FINAL_WRITE_PIPE_BEHAVIOR
+title: pipe write EPIPE and EAGAIN behavior under QEMU
+rule_refs:
+- LTP_3F8B5B68E9CDC1F9
+- LTP_85742F5EC5C0112F
+applies_to_syscalls:
+- write
+test_source: test-suit/starryos/qemu/system/syscall-test-pipe-syscalls/src/main.c
+build:
+  kind: starry_grouped_qemu_subcase
+  subcase: syscall-test-pipe-syscalls
+  target_arch: riscv64
+command:
+- cargo
+- xtask
+- starry
+- test
+- qemu
+- --arch
+- riscv64
+- -c
+- qemu/system/syscall-test-pipe-syscalls
+working_directory: .
+target_arch: riscv64
+timeout_seconds: 1800
+blocker_patterns:
+- No space left on device
+- failed to unpack
+- failed to request .*rootfs
+- failed to load Starry qemu test cases
+- failed to prepare Starry qemu assets
+- failed to build
+- qemu-system.*not found
+upstream_dependencies:
+- id: LTP_3F8B5B68E9CDC1F9
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:3f8b5b68e9cdc1f980e44691a83d3b5788c86273070e759891e3403e651a742e
+- id: LTP_85742F5EC5C0112F
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:85742f5ec5c0112fc5450c1c6c95469726dbd05873c4632fc58a9157f73831e9
+target_dependencies:
+- path: test-suit/starryos/qemu/system/syscall-test-pipe-syscalls/src/main.c
+  symbols: []
+  scope: file
+  file_hash: sha256:9483fd39fdf7ddac12c7727aa69430376f59ec875a1f3d171a54969fd30650f6
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:071c1ae6ee11060a26eb44988536ee3f3604e7d294bdcf0c94e498cf94099ec5
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_write
+  scope: symbols
+  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  symbol_hashes:
+    sys_write: sha256:e56a59cac4b66400aa54c9265112803461bea6948e7415baa17cf6ac808e631b
+  missing_symbols: []
+  content_hash: sha256:244edb0800ce1b41d069c78edaabc634f5122e52657b25b0596fb5f152d7d2e4
+- path: os/StarryOS/kernel/src/file/pipe.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:0517fff43dca4def8a5de84111826c3ab6ae004a1c4cb04b33d764ffe5001bca
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:eecedb5c8e36aa6def152706d072d48290f49270fff678a21d35242282124b38
+target_content_fingerprint: sha256:f13193b29aa39865c9e7fa35845041774abbbb408717850c15b0a2caa67d78e4
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

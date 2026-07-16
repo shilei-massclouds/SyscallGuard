@@ -1,0 +1,30 @@
+# 合规检查：条件：文件描述符无效；检查：调用 unshare(-1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F92CEB15161CB23C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f92ceb15161cb23cd37673ad2b1e78081eaf5d927174f20812d06cca3cf0c67c
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/unshare/unshare02.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0774c9adf9a521f10b716d6269b415589b1026237bb016c2edb7c552cf6ba685
+  case: unshare02_49_0

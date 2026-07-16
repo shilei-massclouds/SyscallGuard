@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_fix_index
-updated_at_utc: '2026-07-16T05:29:55.408016Z'
+updated_at_utc: '2026-07-16T13:52:36.624532Z'
 entities:
 - id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -72,3 +72,248 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-16T05:29:55.408016Z'
   content_hash: sha256:597e6b4cfa4c1f213362605329271f9585711e6fb5dd3e91f9c8133ba370ae44
+- id: fix-finding-symlink-ltp-21fcbfc328d1815a-444533f79a99
+  path: targets/starry/fixes/fix-finding-symlink-ltp-21fcbfc328d1815a-444533f79a99.yaml
+  finding_refs:
+  - finding-symlink-ltp-21fcbfc328d1815a-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:cd8647ebeafa7529dd0058cc3f0bbb3ed11d5f2b19f277422597ce39b1248723
+- id: fix-finding-symlink-ltp-b0433b78a1641f24-444533f79a99
+  path: targets/starry/fixes/fix-finding-symlink-ltp-b0433b78a1641f24-444533f79a99.yaml
+  finding_refs:
+  - finding-symlink-ltp-b0433b78a1641f24-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:b69544f4c351352e24febf5b756ee9e7ead9ed3d086dbe1ae3fb7edbaa2bf263
+- id: fix-finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+  path: targets/starry/fixes/fix-finding-symlink-ltp-dcc88b2c458969ea-444533f79a99.yaml
+  finding_refs:
+  - finding-symlink-ltp-dcc88b2c458969ea-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:94d2807607738cd95b00714955d7382b8544ffcf40c3ac342b8674130a620475
+- id: fix-finding-symlink-ltp-dda854712c50cd6a-444533f79a99
+  path: targets/starry/fixes/fix-finding-symlink-ltp-dda854712c50cd6a-444533f79a99.yaml
+  finding_refs:
+  - finding-symlink-ltp-dda854712c50cd6a-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:8a3e492872fcb2e7a3dc015df7cd570afb30fa0e6118fbfe6d541146e58e91ef
+- id: fix-finding-syslog-ltp-6b9f97b897ec5c32-444533f79a99
+  path: targets/starry/fixes/fix-finding-syslog-ltp-6b9f97b897ec5c32-444533f79a99.yaml
+  finding_refs:
+  - finding-syslog-ltp-6b9f97b897ec5c32-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:fd2f59f039021c74b5cf030a4f2f18eb52aa2ea9608da961adb621c49ead740c
+- id: fix-finding-syslog-ltp-c8376bc347f94a98-444533f79a99
+  path: targets/starry/fixes/fix-finding-syslog-ltp-c8376bc347f94a98-444533f79a99.yaml
+  finding_refs:
+  - finding-syslog-ltp-c8376bc347f94a98-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:5d983fc6815d3ce64812bb1067a236592494196c70b702c589b641c7f67c87b6
+- id: fix-finding-tkill-ltp-fcc236a4d5926b81-444533f79a99
+  path: targets/starry/fixes/fix-finding-tkill-ltp-fcc236a4d5926b81-444533f79a99.yaml
+  finding_refs:
+  - finding-tkill-ltp-fcc236a4d5926b81-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:522cd3ac871ad947db873a3f482df4c3221c20130ecdd9ae204c3a43463e3edd
+- id: fix-finding-umount-ltp-287cf10d893735ab-444533f79a99
+  path: targets/starry/fixes/fix-finding-umount-ltp-287cf10d893735ab-444533f79a99.yaml
+  finding_refs:
+  - finding-umount-ltp-287cf10d893735ab-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:d08177baf401806084df459f641f5f5d45d23d10886f56d6c1c5d6b16cdc6042
+- id: fix-finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
+  path: targets/starry/fixes/fix-finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99.yaml
+  finding_refs:
+  - finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:73341e021a939a66f7641e5ca9eaea28816189ffa886235b36857c0694141189
+- id: fix-finding-unshare-ltp-82a8802a27a3d2bf-444533f79a99
+  path: targets/starry/fixes/fix-finding-unshare-ltp-82a8802a27a3d2bf-444533f79a99.yaml
+  finding_refs:
+  - finding-unshare-ltp-82a8802a27a3d2bf-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:34a2b22feec0afe346327d927d609c78ce9db509b40f00a1581bed41f741f979
+- id: fix-finding-utime-ltp-04236fd5b061deb9-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-04236fd5b061deb9-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-04236fd5b061deb9-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:a694c5d7fe1892e60abc91d65a037317d3f394b16432bc0c290dcb468814e49d
+- id: fix-finding-utime-ltp-38432b154b641410-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-38432b154b641410-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-38432b154b641410-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:d90903047e6b9f510341f1787bbbda4681a912e83aa81a5fb71159ce4f7e1a5a
+- id: fix-finding-utime-ltp-43728156b00ff104-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-43728156b00ff104-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-43728156b00ff104-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:f56962f3d15c786a87ef0c77985643ac8aa24b35a2fe15cd9b56c205f6fe6d29
+- id: fix-finding-utime-ltp-58c8c307b1ff2510-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-58c8c307b1ff2510-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-58c8c307b1ff2510-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:076c665cad9d0e7ec72e9917810d616786c9576fddd095eaf65ce8334da348b3
+- id: fix-finding-utime-ltp-6f4b3a38b8bf4c7e-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-6f4b3a38b8bf4c7e-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-6f4b3a38b8bf4c7e-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:d7d0db69266af24474476c0d8555456b1a4987550f65992f10258f2f5103741b
+- id: fix-finding-utime-ltp-6f77caa9fc4423ba-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-6f77caa9fc4423ba-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-6f77caa9fc4423ba-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:c2bda6994de07389b97a1c2ffe535d377b7443fc2d0d92e56b30c1caaa00d023
+- id: fix-finding-utime-ltp-71dd72481ef5740e-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-71dd72481ef5740e-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-71dd72481ef5740e-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:03f3f7ec25f503b647ba318ee4a35e6490da59fa57b3c7feba77976f8cf9479f
+- id: fix-finding-utime-ltp-86144bf50fb25d3a-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-86144bf50fb25d3a-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-86144bf50fb25d3a-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:c107160870b228853a46257387f7b69aaa6e43c995dbfc7ecb34c6a1c7872f71
+- id: fix-finding-utime-ltp-d254ee40e8b5957e-444533f79a99
+  path: targets/starry/fixes/fix-finding-utime-ltp-d254ee40e8b5957e-444533f79a99.yaml
+  finding_refs:
+  - finding-utime-ltp-d254ee40e8b5957e-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:8aa2d27836ca8b702c1f380e3b591fdba0121285ada062e1d873f164b6453348
+- id: fix-finding-wait-ltp-7b0f966046aeca7e-444533f79a99
+  path: targets/starry/fixes/fix-finding-wait-ltp-7b0f966046aeca7e-444533f79a99.yaml
+  finding_refs:
+  - finding-wait-ltp-7b0f966046aeca7e-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:42fa1293a8e4d82d40c58431f6c0c184956f2a85cba31eb8703819056b83e046
+- id: fix-finding-wait-ltp-ad3a4b98ff201abe-444533f79a99
+  path: targets/starry/fixes/fix-finding-wait-ltp-ad3a4b98ff201abe-444533f79a99.yaml
+  finding_refs:
+  - finding-wait-ltp-ad3a4b98ff201abe-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:f33983e6882848e5b36c814af391e3a7c9d0e8b0901ddfcdf02590a9187caa3b
+- id: fix-finding-wait4-ltp-1691f6f9712c5546-444533f79a99
+  path: targets/starry/fixes/fix-finding-wait4-ltp-1691f6f9712c5546-444533f79a99.yaml
+  finding_refs:
+  - finding-wait4-ltp-1691f6f9712c5546-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:e61f75ff30b4d294ea370608872f4aa06e2670d20d444d8dbcbc3405930d2b59
+- id: fix-finding-wait4-ltp-c24e55f06625d564-444533f79a99
+  path: targets/starry/fixes/fix-finding-wait4-ltp-c24e55f06625d564-444533f79a99.yaml
+  finding_refs:
+  - finding-wait4-ltp-c24e55f06625d564-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:43fc2df8fe35e834e0561e05d1c2fd8ba8a1da7f8eec20f5e7b0b594d422460c
+- id: fix-finding-waitid-ltp-4494b70bba693d42-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-4494b70bba693d42-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-4494b70bba693d42-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:deb478fe7d34e3406e66e15240242535653ae1f59806d3828cdb0b8d85bbdc5a
+- id: fix-finding-waitid-ltp-9c2fb7732a0b90b6-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-9c2fb7732a0b90b6-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-9c2fb7732a0b90b6-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:0159ee8d1bfd1df7d67973da86d5fab5a80a11a6a41c48f3f39cdd3d5aeba73c
+- id: fix-finding-waitid-ltp-c13c4f63d58904bc-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-c13c4f63d58904bc-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-c13c4f63d58904bc-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:6f78dfc1f68108d7bcf386cb02350a3eb2d24cdefba190a540033e1e16af008c
+- id: fix-finding-waitid-ltp-d1a18560e485e146-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-d1a18560e485e146-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-d1a18560e485e146-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:63762c578f4ac9ab904ee9f620c1ab02844eb615683c27501db2556ec411ddc8
+- id: fix-finding-waitid-ltp-da64fd04e43656e6-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-da64fd04e43656e6-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-da64fd04e43656e6-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:01faa9d149f5bc91a66371a48e983586236cf9a0d29f6d397f888b3272318198
+- id: fix-finding-waitid-ltp-df5b725563fdfb31-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-df5b725563fdfb31-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-df5b725563fdfb31-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:46945223a99e410589a3fb5fd9824e638f91495bd26c1d19a2128a9de561cd60
+- id: fix-finding-waitid-ltp-ecd986f27cf15e1e-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitid-ltp-ecd986f27cf15e1e-444533f79a99.yaml
+  finding_refs:
+  - finding-waitid-ltp-ecd986f27cf15e1e-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:13e4446a82c1ef7d7cb775b8c1d0c23daaeb157f14d7169fc474f64776df68a0
+- id: fix-finding-waitpid-ltp-03af14160f8b59a0-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitpid-ltp-03af14160f8b59a0-444533f79a99.yaml
+  finding_refs:
+  - finding-waitpid-ltp-03af14160f8b59a0-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:c9c19b10a1b7dfedecf69edc03d87d6faf36dff216c6ea73732281c4b40628d4
+- id: fix-finding-waitpid-ltp-2f3e34fd672dbf34-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitpid-ltp-2f3e34fd672dbf34-444533f79a99.yaml
+  finding_refs:
+  - finding-waitpid-ltp-2f3e34fd672dbf34-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:d3d04f4ee83dfcf39795717bb2c50893b8784fa21ed5d7cb99c707ffa9c95042
+- id: fix-finding-waitpid-ltp-614c018f61c078a0-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitpid-ltp-614c018f61c078a0-444533f79a99.yaml
+  finding_refs:
+  - finding-waitpid-ltp-614c018f61c078a0-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:9fbc2a15f54eedbfc446a2d3b1990f687130517a4fd8c9e3a9f0b40fa6d53662
+- id: fix-finding-waitpid-ltp-a2934b80997b62c9-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitpid-ltp-a2934b80997b62c9-444533f79a99.yaml
+  finding_refs:
+  - finding-waitpid-ltp-a2934b80997b62c9-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:052fd84afd983f14832e5063121926388ae0651dcb44e6a220f3d5d8db573541
+- id: fix-finding-waitpid-ltp-fc8ba85373ea2d8f-444533f79a99
+  path: targets/starry/fixes/fix-finding-waitpid-ltp-fc8ba85373ea2d8f-444533f79a99.yaml
+  finding_refs:
+  - finding-waitpid-ltp-fc8ba85373ea2d8f-444533f79a99
+  status: fixed
+  generated_at_utc: '2026-07-16T13:52:36.624532Z'
+  content_hash: sha256:2a1bf168d8c3738ef59a340c11df781c5a3c35ebdadf7d0d1b3fe380d888a108

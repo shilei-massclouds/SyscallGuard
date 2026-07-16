@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 swapon(SWAP_FILE, 0)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8D3FD114CB0C7420
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - SWAP_FILE
+    - '0'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:8d3fd114cb0c74201e48883709b52db162fe5bb4aa93133e8d694931edc73df9
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/swapon/swapon01.c
+  line: 25
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:004a0b47ec48e2b831f29019472386ae740173d94dcaa6e227d6f84ac687362a
+  case: swapon01_25_raw

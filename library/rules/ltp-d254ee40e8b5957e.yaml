@@ -1,0 +1,44 @@
+# 合规检查：条件：无额外前置条件；检查：调用 utime(TEMP_FILE, &utbuf)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D254EE40E8B5957E
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: utime
+    arguments:
+    - TEMP_FILE
+    - '&utbuf'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:d254ee40e8b5957eb45b944d458cd22c2b8bd611d8da6326448e10c63c65ed36
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime01.c
+  line: 36
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:d7b5e35be0a0e1ccff8f439b0a00d6f2340cb45f242d8a9eeb571f0d940435cb
+  case: utime01_36_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime02.c
+  line: 53
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:6be7e4ab09c8641bd83684aa7a44beba3e1b7b75b65a88fdad57789b5347ebe1
+  case: utime02_53_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime03.c
+  line: 61
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:554b027c673e799e6736497e01c98a296d5b4b48c44e627f6141832c0ada6959
+  case: utime03_61_raw

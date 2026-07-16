@@ -90,13 +90,6 @@ target_dependencies:
     sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
   missing_symbols: []
   content_hash: sha256:0ad60a780900236db787a7407dc15621008e9ce86d621b6753c82b2a5fc211e2
-- path: os/StarryOS/kernel/src/syscall/net/socket.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:12acde55ac6a168ea9d9e1b6540b3011215272b51f4ad9b0cb3b7dc9bfa8a4fa
 - path: os/StarryOS/kernel/src/syscall/net/addr.rs
   symbols: []
   scope: file
@@ -104,6 +97,13 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:1ed4ae5bd39b5ca9ec44afa9f274799be9e067405d921b852007abf34ee308b3
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:5314123c79615dd7bc360eca2c2c6c0f434fe28ec165b863b3e1979973eaa399
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:2680d1d4e08d0406622928121484f402231f38359b985bc713f4f7eba2909f8b
 - path: os/StarryOS/kernel/src/syscall/fs/io.rs
   symbols:
   - sys_copy_file_range
@@ -140,7 +140,7 @@ target_dependencies:
   symbols:
   - sys_connect
   scope: symbols
-  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  file_hash: sha256:5314123c79615dd7bc360eca2c2c6c0f434fe28ec165b863b3e1979973eaa399
   symbol_hashes:
     sys_connect: sha256:5e3031bc0f968eb84e7e7ec2cbd7de6650844bd46d67ce5a79d72e3d3075f616
   missing_symbols: []
@@ -185,5 +185,5 @@ target_dependencies:
     sys_dup3: sha256:601d6c8ea8ef9c64dad4312a6de2c09db675ea1b518834d2447757c7965d5192
   missing_symbols: []
   content_hash: sha256:e0ca835a6d2370ba9451f18940b811cb38ab5cdef062bb5bc528105813bd6a95
-target_content_fingerprint: sha256:05f04e13fa0f05fd18487cb37d19eade8b564fc6c07b4f0a2d5139cb1bfdb274
-generated_at_utc: '2026-07-16T03:17:56.282688Z'
+target_content_fingerprint: sha256:0b9f44534ac7bb325851480d77fc509dc9cc09e08447176236e54605f223a437
+generated_at_utc: '2026-07-16T08:20:59.387945Z'

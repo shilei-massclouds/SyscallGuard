@@ -1,0 +1,32 @@
+# 合规检查：条件：无额外前置条件；检查：调用 wait4(INT_MIN, &status, 0, &rusage)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1691F6F9712C5546
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: wait4
+    arguments:
+    - INT_MIN
+    - '&status'
+    - '0'
+    - '&rusage'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:1691f6f9712c5546d1b81c76cc385ed8b961683e209c8d54e9543a02a199aac5
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/wait4/wait403.c
+  line: 29
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:aa0d45c46d2ec975a28d37ad8250117d659d61b55cd3ec5f79846673bb0cee75
+  case: wait403_29_raw

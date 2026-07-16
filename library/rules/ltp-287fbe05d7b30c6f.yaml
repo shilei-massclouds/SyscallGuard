@@ -1,0 +1,28 @@
+# 合规检查：条件：无额外前置条件；检查：调用 ulimit(UL_SETFSIZE, current_fsize - 1)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_287FBE05D7B30C6F
+category: syscall_behavior
+semantics:
+  preconditions: []
+  action:
+    operation: invoke_syscall
+    syscall: ulimit
+    arguments:
+    - UL_SETFSIZE
+    - current_fsize - 1
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:287fbe05d7b30c6fbe2694789ed8d27dfd69891644ad0a2638b4bef47e6dc257
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ulimit/ulimit01.c
+  line: 30
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:f0a3be8a57b47536ef337f622ca89655f81e0a2c4ff698f6760a9730cf91dea8
+  case: ulimit01_30_raw

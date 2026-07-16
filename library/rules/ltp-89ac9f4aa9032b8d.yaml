@@ -1,0 +1,33 @@
+# 合规检查：条件：BAD_USER_ADDRESS、USER_BUFFER；检查：调用 write(fd, bad_addr, sizeof(buf))；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_89AC9F4AA9032B8D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - BAD_USER_ADDRESS
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - bad_addr
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:89ac9f4aa9032b8d11bb4ae86cf399214fec330c862ae0acea4b7e8158e7e21b
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/write/write05.c
+  line: 60
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e7b3dbb454b1ee2865963f284d1bde20f06f5186403f6aa5be955fa3aea9d7ce
+  case: write05_60_1

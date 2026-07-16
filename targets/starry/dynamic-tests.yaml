@@ -1,4 +1,158 @@
 schema_version: 1
 kind: syscallguard_starry_dynamic_test_index
-updated_at_utc: '2026-07-16T05:25:46.137226Z'
-syscalls: {}
+updated_at_utc: '2026-07-16T12:43:42.925340Z'
+syscalls:
+  symlink:
+  - test_id: STARRY_FINAL_FS_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-fs-runtime.yaml
+    rule_refs: &id002
+    - LTP_04236FD5B061DEB9
+    - LTP_21FCBFC328D1815A
+    - LTP_38432B154B641410
+    - LTP_43728156B00FF104
+    - LTP_58C8C307B1FF2510
+    - LTP_6F4B3A38B8BF4C7E
+    - LTP_6F77CAA9FC4423BA
+    - LTP_71DD72481EF5740E
+    - LTP_86144BF50FB25D3A
+    - LTP_B0433B78A1641F24
+    - LTP_D254EE40E8B5957E
+    - LTP_DCC88B2C458969EA
+    - LTP_DDA854712C50CD6A
+  - test_id: STARRY_FINAL_SYMLINK_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-symlink-behavior.yaml
+    rule_refs:
+    - LTP_29873BE2A9AABFF4
+    - LTP_87EDCD6CC0E458CD
+    - LTP_8ED8688C6292FECF
+  sysinfo:
+  - test_id: STARRY_FINAL_SYSINFO_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-sysinfo-behavior.yaml
+    rule_refs:
+    - LTP_A367723236ADA8B4
+    - LTP_B212BAAA2C2C75CC
+  syslog:
+  - test_id: STARRY_FINAL_SYSLOG_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-syslog-behavior.yaml
+    rule_refs:
+    - LTP_02908A57586A60CF
+    - LTP_18304438A1D5D6C1
+    - LTP_330C66A049727F75
+    - LTP_4184881E196F9E5E
+    - LTP_4828EB12592F311C
+    - LTP_498695B75BD43DAD
+    - LTP_4FCD61E2EED61335
+    - LTP_6D819B66D5B60871
+    - LTP_7F4262FC753FC8D9
+    - LTP_C0694665E22D48E8
+    - LTP_E7CB95EADCE845E9
+    - LTP_F38A837D067865DC
+  timer_delete:
+  - test_id: STARRY_FINAL_TIMER_DELETE_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-timer-delete-behavior.yaml
+    rule_refs:
+    - LTP_10B3572DBFA6742B
+    - LTP_9B36D27A4A2994D0
+  tkill:
+  - test_id: STARRY_FINAL_TKILL_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-tkill-behavior.yaml
+    rule_refs:
+    - LTP_2084284EEECEEAC0
+    - LTP_EF9CD83ECACAA86C
+  umask:
+  - test_id: STARRY_FINAL_UMASK_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-umask-behavior.yaml
+    rule_refs:
+    - LTP_FE4AD44ED28FE386
+  umount:
+  - test_id: STARRY_FINAL_MOUNT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-mount-runtime.yaml
+    rule_refs: &id003
+    - LTP_3B77ABEF9EF7D3ED
+    - LTP_95F0657B8229FF85
+    - LTP_BA10B957ACB3FFC3
+    - LTP_D3FBF11AA35FDC98
+  - test_id: STARRY_FINAL_UNSHARE_MOUNT_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-unshare-mount-behavior.yaml
+    rule_refs: &id001
+    - LTP_412173E3E81DC995
+    - LTP_5CF4B42A5ABA3D0D
+    - LTP_96D8C80548B2B4E0
+  uname:
+  - test_id: STARRY_FINAL_UNAME_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-uname-behavior.yaml
+    rule_refs:
+    - LTP_25D7B6229831E0EF
+    - LTP_5516B8A938B9C3A5
+  unshare:
+  - test_id: STARRY_FINAL_UNSHARE_FS_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-unshare-fs-behavior.yaml
+    rule_refs:
+    - LTP_49ABEE42EF290FDC
+  - test_id: STARRY_FINAL_UNSHARE_MOUNT_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-unshare-mount-behavior.yaml
+    rule_refs: *id001
+  utime:
+  - test_id: STARRY_FINAL_FS_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-fs-runtime.yaml
+    rule_refs: *id002
+  - test_id: STARRY_FINAL_MOUNT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-mount-runtime.yaml
+    rule_refs: *id003
+  wait:
+  - test_id: STARRY_FINAL_WAIT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-wait-runtime.yaml
+    rule_refs: &id004
+    - LTP_2F3E34FD672DBF34
+    - LTP_4494B70BBA693D42
+    - LTP_614C018F61C078A0
+    - LTP_7B0F966046AECA7E
+    - LTP_9C2FB7732A0B90B6
+    - LTP_A2934B80997B62C9
+    - LTP_AD3A4B98FF201ABE
+    - LTP_C13C4F63D58904BC
+    - LTP_C24E55F06625D564
+    - LTP_D1A18560E485E146
+    - LTP_DA64FD04E43656E6
+    - LTP_DF5B725563FDFB31
+    - LTP_ECD986F27CF15E1E
+    - LTP_FC8BA85373EA2D8F
+  wait4:
+  - test_id: STARRY_FINAL_WAIT4_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-wait4-behavior.yaml
+    rule_refs: &id005
+    - LTP_2AE73292A13647D5
+    - LTP_DB77907DDC5EDFF4
+  - test_id: STARRY_FINAL_WAIT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-wait-runtime.yaml
+    rule_refs: *id004
+  waitid:
+  - test_id: STARRY_FINAL_WAITID_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-waitid-behavior.yaml
+    rule_refs:
+    - LTP_0FE0E20EAC6DE889
+    - LTP_53E7B9C40A44F6D0
+    - LTP_74C73CBABE325D5D
+    - LTP_77C2FB4A0A9E30F2
+    - LTP_9FD87A3F7688FEF1
+  - test_id: STARRY_FINAL_WAIT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-wait-runtime.yaml
+    rule_refs: *id004
+  waitpid:
+  - test_id: STARRY_FINAL_WAIT4_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-wait4-behavior.yaml
+    rule_refs: *id005
+  - test_id: STARRY_FINAL_WAIT_RUNTIME
+    path: targets/starry/dynamic-tests/starry-final-wait-runtime.yaml
+    rule_refs: *id004
+  write:
+  - test_id: STARRY_FINAL_WRITE_FILE_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-write-file-behavior.yaml
+    rule_refs:
+    - LTP_1B4A2A1831541F06
+    - LTP_22F13AFD9925B2AE
+  - test_id: STARRY_FINAL_WRITE_PIPE_BEHAVIOR
+    path: targets/starry/dynamic-tests/starry-final-write-pipe-behavior.yaml
+    rule_refs:
+    - LTP_3F8B5B68E9CDC1F9
+    - LTP_85742F5EC5C0112F

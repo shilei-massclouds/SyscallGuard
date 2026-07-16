@@ -1,0 +1,380 @@
+diff --git a/os/StarryOS/kernel/src/syscall/fs/ctl.rs b/os/StarryOS/kernel/src/syscall/fs/ctl.rs
+index bfad736..7e08512 100644
+--- a/os/StarryOS/kernel/src/syscall/fs/ctl.rs
++++ b/os/StarryOS/kernel/src/syscall/fs/ctl.rs
+@@ -716,17 +716,20 @@ pub fn sys_utimensat(
+         }
+     }
+ 
+-    let (atime, mtime) = if let Some(times) = times.nullable() {
++    let (atime, mtime, write_permission_suffices) = if let Some(times) = times.nullable() {
+         // SAFETY: `timespec` is #[repr(C)] with only integer fields;
+         // any bit pattern is a valid value.
+         let [atime, mtime] = unsafe { times.vm_read_uninit()?.assume_init() };
++        let write_permission_suffices =
++            atime.tv_nsec == UTIME_NOW as _ && mtime.tv_nsec == UTIME_NOW as _;
+         (
+             utime_to_duration(&atime).transpose()?,
+             utime_to_duration(&mtime).transpose()?,
++            write_permission_suffices,
+         )
+     } else {
+         let time = wall_time();
+-        (Some(time), Some(time))
++        (Some(time), Some(time), true)
+     };
+     if atime.is_none() && mtime.is_none() {
+         return Ok(0);
+@@ -742,7 +745,17 @@ pub fn sys_utimensat(
+     if !cred.has_cap_fowner() {
+         let meta = loc.metadata()?;
+         if cred.fsuid != meta.uid {
+-            return Err(AxError::OperationNotPermitted);
++            if !write_permission_suffices {
++                return Err(AxError::OperationNotPermitted);
++            }
++            let has_write = if cred.in_group(meta.gid) {
++                meta.mode.contains(NodePermission::GROUP_WRITE)
++            } else {
++                meta.mode.contains(NodePermission::OTHER_WRITE)
++            };
++            if !has_write {
++                return Err(AxError::PermissionDenied);
++            }
+         }
+     }
+ 
+diff --git a/os/StarryOS/kernel/src/syscall/fs/mount.rs b/os/StarryOS/kernel/src/syscall/fs/mount.rs
+index ab87d22..7e97d1c 100644
+--- a/os/StarryOS/kernel/src/syscall/fs/mount.rs
++++ b/os/StarryOS/kernel/src/syscall/fs/mount.rs
+@@ -3,6 +3,7 @@ use core::ffi::{c_char, c_void};
+ 
+ use ax_errno::{AxError, AxResult, LinuxError};
+ use ax_fs_ng::vfs::{FS_CONTEXT, is_mount_busy as fs_is_mount_busy};
++use ax_task::current;
+ 
+ use crate::{
+     file::{Directory, FD_TABLE, File, FileLike},
+@@ -308,6 +309,10 @@ pub fn sys_umount2(target: *const c_char, flags: i32) -> AxResult<isize> {
+         return Err(AxError::InvalidInput);
+     }
+ 
++    if !current().as_thread().cred().has_cap_sys_admin() {
++        return Err(AxError::OperationNotPermitted);
++    }
++
+     let target = if (flags & UMOUNT_NOFOLLOW) != 0 {
+         FS_CONTEXT.lock().resolve_no_follow(target)?
+     } else {
+diff --git a/os/StarryOS/kernel/src/syscall/signal.rs b/os/StarryOS/kernel/src/syscall/signal.rs
+index ff259fd..7e83735 100644
+--- a/os/StarryOS/kernel/src/syscall/signal.rs
++++ b/os/StarryOS/kernel/src/syscall/signal.rs
+@@ -212,6 +212,9 @@ pub fn sys_kill(pid: i32, signo: u32) -> AxResult<isize> {
+ }
+ 
+ pub fn sys_tkill(tid: Pid, signo: u32) -> AxResult<isize> {
++    if tid <= 0 {
++        return Err(AxError::InvalidInput);
++    }
+     check_kill_permission(tid)?;
+     let sig = make_siginfo(signo, SI_TKILL)?;
+     send_signal_to_thread(None, tid, sig)?;
+diff --git a/os/StarryOS/kernel/src/syscall/sys.rs b/os/StarryOS/kernel/src/syscall/sys.rs
+index 054149d..b73c0ab 100644
+--- a/os/StarryOS/kernel/src/syscall/sys.rs
++++ b/os/StarryOS/kernel/src/syscall/sys.rs
+@@ -749,10 +749,19 @@ fn require_syslog_privilege() -> AxResult<()> {
+     }
+ }
+ 
++fn validate_syslog_read_args(buf: *mut c_char, len: usize) -> AxResult<()> {
++    if buf.is_null() || len > i32::MAX as usize {
++        Err(AxError::InvalidInput)
++    } else {
++        Ok(())
++    }
++}
++
+ pub fn sys_syslog(ty: i32, buf: *mut c_char, len: usize) -> AxResult<isize> {
+     match ty {
+         SYSLOG_ACTION_CLOSE | SYSLOG_ACTION_OPEN => Ok(0),
+         SYSLOG_ACTION_READ => {
++            validate_syslog_read_args(buf, len)?;
+             require_syslog_privilege()?;
+             let data = {
+                 let mut state = SYSLOG_STATE.lock();
+@@ -764,6 +773,7 @@ pub fn sys_syslog(ty: i32, buf: *mut c_char, len: usize) -> AxResult<isize> {
+             Ok(data.len() as isize)
+         }
+         SYSLOG_ACTION_READ_ALL => {
++            validate_syslog_read_args(buf, len)?;
+             require_syslog_privilege()?;
+             let data = {
+                 let state = SYSLOG_STATE.lock();
+@@ -775,6 +785,7 @@ pub fn sys_syslog(ty: i32, buf: *mut c_char, len: usize) -> AxResult<isize> {
+             Ok(data.len() as isize)
+         }
+         SYSLOG_ACTION_READ_CLEAR => {
++            validate_syslog_read_args(buf, len)?;
+             require_syslog_privilege()?;
+             let data = {
+                 let mut state = SYSLOG_STATE.lock();
+diff --git a/os/StarryOS/kernel/src/syscall/task/namespace.rs b/os/StarryOS/kernel/src/syscall/task/namespace.rs
+index dc58bb6..8eb7987 100644
+--- a/os/StarryOS/kernel/src/syscall/task/namespace.rs
++++ b/os/StarryOS/kernel/src/syscall/task/namespace.rs
+@@ -1,15 +1,17 @@
+ use alloc::sync::Arc;
++use core::ops::DerefMut;
+ 
+ use ax_errno::{AxError, AxResult};
+ use ax_fs_ng::FS_CONTEXT;
+ use ax_sync::Mutex;
+ use ax_task::current;
+ use linux_raw_sys::general::{
+-    CLONE_FS, CLONE_NEWIPC, CLONE_NEWNET, CLONE_NEWNS, CLONE_NEWPID, CLONE_NEWUSER, CLONE_NEWUTS,
++    CLONE_FILES, CLONE_FS, CLONE_NEWIPC, CLONE_NEWNET, CLONE_NEWNS, CLONE_NEWPID, CLONE_NEWUSER,
++    CLONE_NEWUTS,
+ };
+ 
+ use crate::{
+-    file::{NsFd, PidFd, get_file_like},
++    file::{FD_TABLE, NsFd, PidFd, get_file_like},
+     task::AsThread,
+ };
+ 
+@@ -19,7 +21,10 @@ const SUPPORTED_NS_FLAGS: u32 = CLONE_NEWUTS
+     | CLONE_NEWNET
+     | CLONE_NEWIPC
+     | CLONE_NEWUSER
+-    | CLONE_FS;
++    | CLONE_FS
++    | CLONE_FILES;
++
++const SUPPORTED_SETNS_FLAGS: u32 = SUPPORTED_NS_FLAGS & !CLONE_FILES;
+ 
+ /// unshare(2) — disassociate parts of the process execution context.
+ pub fn sys_unshare(flags: u32) -> AxResult<isize> {
+@@ -33,6 +38,17 @@ pub fn sys_unshare(flags: u32) -> AxResult<isize> {
+     let want_ns = flags & CLONE_NEWNS != 0;
+     let want_fs = flags & CLONE_FS != 0;
+ 
++    if want_ns && !curr.as_thread().cred().has_cap_sys_admin() {
++        return Err(AxError::OperationNotPermitted);
++    }
++
++    if flags & CLONE_FILES != 0 {
++        let new_files = Arc::new(ax_kspin::SpinRwLock::new(FD_TABLE.read().clone()));
++        proc_data.with_current_scope_mut(|scope| {
++            *FD_TABLE.scope_mut(scope).deref_mut() = new_files;
++        });
++    }
++
+     // Phase 1: spinlock-protected nsproxy ops (SpinNoIrq — no sleeping).
+     {
+         let mut nsproxy = proc_data.nsproxy.lock();
+@@ -93,7 +109,7 @@ pub fn sys_unshare(flags: u32) -> AxResult<isize> {
+ ///   process attempts to change PID namespace
+ /// * `EPERM` — insufficient privileges (e.g. user namespace restrictions)
+ pub fn sys_setns(fd: u32, nstype: u32) -> AxResult<isize> {
+-    if nstype != 0 && nstype & !SUPPORTED_NS_FLAGS != 0 {
++    if nstype != 0 && nstype & !SUPPORTED_SETNS_FLAGS != 0 {
+         warn!("sys_setns: unsupported nstype {:#x}", nstype);
+         return Err(AxError::InvalidInput);
+     }
+@@ -190,7 +206,7 @@ fn setns_via_pidfd(pidfd: &PidFd, nstype: u32) -> AxResult<isize> {
+         warn!("sys_setns: nstype must be non-zero for pidfd");
+         return Err(AxError::InvalidInput);
+     }
+-    if nstype & !SUPPORTED_NS_FLAGS != 0 {
++    if nstype & !SUPPORTED_SETNS_FLAGS != 0 {
+         warn!("sys_setns: unsupported nstype flags {:#x}", nstype);
+         return Err(AxError::InvalidInput);
+     }
+diff --git a/os/StarryOS/kernel/src/syscall/task/wait.rs b/os/StarryOS/kernel/src/syscall/task/wait.rs
+index 01c1058..614964c 100644
+--- a/os/StarryOS/kernel/src/syscall/task/wait.rs
++++ b/os/StarryOS/kernel/src/syscall/task/wait.rs
+@@ -233,6 +233,9 @@ fn waitable_processes(
+ 
+ pub fn sys_waitpid(pid: i32, exit_code: *mut i32, options: u32) -> AxResult<isize> {
+     let options = WaitPidOptions::from_bits(options).ok_or(AxError::InvalidInput)?;
++    if pid == i32::MIN {
++        return Err(AxError::from(LinuxError::ESRCH));
++    }
+     info!("sys_waitpid <= pid: {pid:?}, options: {options:?}");
+ 
+     let curr = current();
+@@ -433,6 +436,36 @@ pub fn sys_waitid(
+             return Ok(Some(0));
+         }
+ 
++        let want_stopped = options.contains(WaitIdOptions::WUNTRACED);
++        let want_continued = options.contains(WaitIdOptions::WCONTINUED);
++        if want_stopped || want_continued {
++            for child in &children {
++                let Ok(data) = get_process_data(child.pid()) else {
++                    continue;
++                };
++                if let Some(status) = data.peek_job_status_if(want_stopped, want_continued) {
++                    let (code, status) = match status {
++                        JobStatus::Stopped(signo) => {
++                            (linux_raw_sys::general::CLD_STOPPED as i32, signo as i32)
++                        }
++                        JobStatus::Continued => (
++                            linux_raw_sys::general::CLD_CONTINUED as i32,
++                            Signo::SIGCONT as i32,
++                        ),
++                    };
++                    if let Some(infop) = infop.nullable() {
++                        let siginfo =
++                            SignalInfo::new_sigchld(child.pid(), child_uid(child), code, status);
++                        infop.vm_write(siginfo.0)?;
++                    }
++                    if !options.contains(WaitIdOptions::WNOWAIT) {
++                        data.take_job_status_if(want_stopped, want_continued);
++                    }
++                    return Ok(Some(0));
++                }
++            }
++        }
++
+         if options.contains(WaitIdOptions::WEXITED)
+             && let Some(child) = children.iter().find(|child| child.is_zombie())
+         {
+diff --git a/test-suit/starryos/qemu/system/bugfix-bug-wait4-invalid-options/src/main.c b/test-suit/starryos/qemu/system/bugfix-bug-wait4-invalid-options/src/main.c
+index 5c1e337..2a62afa 100644
+--- a/test-suit/starryos/qemu/system/bugfix-bug-wait4-invalid-options/src/main.c
++++ b/test-suit/starryos/qemu/system/bugfix-bug-wait4-invalid-options/src/main.c
+@@ -1,5 +1,6 @@
+ #define _GNU_SOURCE
+ #include <errno.h>
++#include <limits.h>
+ #include <signal.h>
+ #include <stdio.h>
+ #include <string.h>
+@@ -122,6 +123,22 @@ static void expect_valid_wait4(void)
+     }
+ }
+ 
++static void expect_int_min_selector(void)
++{
++    int status = 0x12345678;
++    errno = 0;
++    pid_t ret = wait4_raw(INT_MIN, &status, WNOHANG, NULL);
++    if (ret == -1 && errno == ESRCH && status == 0x12345678) {
++        note_pass("wait4 INT_MIN selector returns ESRCH without changing status");
++    } else {
++        char detail[192];
++        snprintf(detail, sizeof(detail),
++                 "ret=%ld errno=%d (%s) status=0x%x, expected -1/ESRCH",
++                 (long)ret, errno, strerror(errno), status);
++        note_fail("wait4 INT_MIN selector", detail);
++    }
++}
++
+ int main(void)
+ {
+     printf("=== bug-wait4-invalid-options ===\n");
+@@ -129,6 +146,7 @@ int main(void)
+     expect_invalid_option("wait4 rejects waitid-only WEXITED", WEXITED);
+     expect_invalid_option("wait4 rejects waitid-only WNOWAIT", WNOWAIT);
+     expect_invalid_option("wait4 rejects unknown option bit 0x10", 0x10);
++    expect_int_min_selector();
+     expect_valid_wait4();
+ 
+     printf("=== Results: %d passed, %d failed ===\n", passed, failed);
+diff --git a/test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c b/test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c
+index f9c7a91..bbbb278 100644
+--- a/test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c
++++ b/test-suit/starryos/qemu/system/syscall-test-tkill/src/main.c
+@@ -129,6 +129,10 @@ static void test_tkill_errors(void)
+ 
+     CHECK(raw_tkill((pid_t)tid, INVALID_SIGNAL_NUMBER) == -1 && errno == EINVAL,
+           "tkill invalid signal returns EINVAL");
++    CHECK(raw_tkill(0, SIGUSR1) == -1 && errno == EINVAL,
++          "tkill tid 0 returns EINVAL");
++    CHECK(raw_tkill(-1, SIGUSR1) == -1 && errno == EINVAL,
++          "tkill negative tid returns EINVAL");
+     CHECK(raw_tkill(MISSING_TID, SIGUSR1) == -1 && errno == ESRCH,
+           "tkill missing tid returns ESRCH");
+     CHECK(raw_tkill(MISSING_TID, 0) == -1 && errno == ESRCH,
+diff --git a/test-suit/starryos/qemu/system/test-syslog/src/main.c b/test-suit/starryos/qemu/system/test-syslog/src/main.c
+index 250fc34..bdffe28 100644
+--- a/test-suit/starryos/qemu/system/test-syslog/src/main.c
++++ b/test-suit/starryos/qemu/system/test-syslog/src/main.c
+@@ -98,6 +98,11 @@ int main(void) {
+     CHECK(size_unread >= 0, "SIZE_UNREAD is non-negative");
+     CHECK(size_unread <= size_buffer, "SIZE_UNREAD does not exceed SIZE_BUFFER");
+ 
++    CHECK_ERR(syscall(SYS_syslog, SYSLOG_ACTION_READ, NULL, 0), EINVAL,
++              "READ rejects a null buffer with EINVAL");
++    CHECK_ERR(syscall(SYS_syslog, SYSLOG_ACTION_READ_ALL, buf, -1), EINVAL,
++              "READ_ALL rejects a negative length with EINVAL");
++
+     long read_all = syscall(SYS_syslog, SYSLOG_ACTION_READ_ALL, buf, (int)sizeof(buf));
+     CHECK(read_all >= 0, "READ_ALL returns a non-negative length");
+     CHECK(read_all <= (long)sizeof(buf), "READ_ALL respects destination buffer length");
+diff --git a/test-suit/starryos/qemu/system/test-unshare-fs/src/main.c b/test-suit/starryos/qemu/system/test-unshare-fs/src/main.c
+index a6a1bfe..3f757b0 100644
+--- a/test-suit/starryos/qemu/system/test-unshare-fs/src/main.c
++++ b/test-suit/starryos/qemu/system/test-unshare-fs/src/main.c
+@@ -88,6 +88,10 @@ static void test_unshare_fs_basic(void) {
+     check(rc == 0, "unshare(CLONE_FS) on independent task (rc=%d, errno=%d)",
+           rc, errno);
+ 
++    rc = unshare(CLONE_FILES);
++    check(rc == 0, "unshare(CLONE_FILES) on independent task (rc=%d, errno=%d)",
++          rc, errno);
++
+     char cwd[256];
+     check(getcwd(cwd, sizeof(cwd)) != NULL, "getcwd after unshare(CLONE_FS)");
+     check(cwd[0] == '/', "cwd valid after unshare(CLONE_FS): %s", cwd);
+diff --git a/test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c b/test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c
+index acc5d82..d7d60a5 100644
+--- a/test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c
++++ b/test-suit/starryos/qemu/system/test-unshare-mount-ns/src/main.c
+@@ -38,6 +38,32 @@ static int xsetns(int fd, int nstype) {
+     return (int)syscall(__NR_setns, fd, nstype);
+ }
+ 
++static void test_unprivileged_mount_operations(void) {
++    pid_t pid = fork();
++    if (pid < 0)
++        FAIL("fork unprivileged mount checks");
++    if (pid == 0) {
++        if (setresuid(1000, 1000, 1000) < 0)
++            _exit(1);
++        errno = 0;
++        if (unshare(CLONE_NEWNS) != -1 || errno != EPERM)
++            _exit(2);
++        errno = 0;
++        if (umount2("/", MNT_DETACH) != -1 || errno != EPERM)
++            _exit(3);
++        _exit(0);
++    }
++
++    int status = 0;
++    if (waitpid(pid, &status, 0) != pid)
++        FAIL("waitpid unprivileged mount checks");
++    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
++        errno = EPERM;
++        FAIL("unprivileged unshare/umount did not return EPERM");
++    }
++    PASS("unprivileged unshare(CLONE_NEWNS) and umount2 return EPERM");
++}
++
+ static void write_all(int fd, const char *buf, size_t len, const char *what) {
+     size_t done = 0;
+     while (done < len) {
+@@ -181,6 +207,8 @@ int main(void) {
+     printf("  TEST: unshare/setns(CLONE_NEWNS) mount view\n");
+     printf("================================================\n");
+ 
++    test_unprivileged_mount_operations();
++
+     /* Scenario 1: clone(CLONE_FS) + child unshare(CLONE_NEWNS) → parent
+        must NOT see child's namespace-local bind mount. */
+     test_clone_fs_unshare_new_ns();

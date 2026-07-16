@@ -1,0 +1,32 @@
+# 合规检查：条件：USER_BUFFER；检查：调用 syslog(2, &buf, 0)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_498695B75BD43DAD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - USER_BUFFER
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - '2'
+    - '&buf'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:498695b75bd43dadefde5707b7bcf6e34235569b786f3cce6145ec6b7368b0c0
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/syslog/syslog12.c
+  line: 70
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3d22c70e19ba559409670ee8e43c6ec640bc17a8d504364b5020d63e1108f320
+  case: syslog12_70_5

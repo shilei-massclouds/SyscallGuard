@@ -1,0 +1,29 @@
+# 合规检查：条件：文件描述符无效；检查：调用 ulimit(UL_GETFSIZE, -1)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4984976D88DF21AE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - INVALID_FD
+  action:
+    operation: invoke_syscall
+    syscall: ulimit
+    arguments:
+    - UL_GETFSIZE
+    - '-1'
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:4984976d88df21ae2776c5e23c70c552b2fe81a776d404ea395e317f5b568279
+generated_at_utc: '2026-07-16T07:55:00.843723Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ulimit/ulimit01.c
+  line: 20
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:a1b81f29839994c84b922cc68c113c2fc96b423906f4c85a571acd022e2202ba
+  case: ulimit01_20_raw
