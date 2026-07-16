@@ -1295,6 +1295,14 @@ class CheckTests(FlowTestCase):
             "DYNAMIC_BLOCKER",
             ["/bin/sh", "-c", "echo 'No space left on device' >&2; exit 1"],
         )
+        self.add_dynamic_test(
+            "DYNAMIC_READONLY",
+            [
+                "/bin/sh",
+                "-c",
+                "echo 'failed to open .cargo-build-lock: Read-only file system' >&2; exit 1",
+            ],
+        )
         self.add_dynamic_test("DYNAMIC_FAIL", ["/bin/sh", "-c", "exit 7"])
         self.add_dynamic_test("DYNAMIC_SKIPPED", ["/bin/false"])
         skipped_path = self.root / "targets/starry/dynamic-tests/dynamic-skipped.yaml"
@@ -1311,6 +1319,7 @@ class CheckTests(FlowTestCase):
             {
                 "DYNAMIC_BLOCKER": "not_run",
                 "DYNAMIC_FAIL": "fail",
+                "DYNAMIC_READONLY": "not_run",
                 "DYNAMIC_SKIPPED": "skipped",
             },
         )

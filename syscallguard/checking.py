@@ -44,6 +44,7 @@ DEFAULT_BLOCKER_PATTERNS = [
     r"failed to unpack",
     r"could not resolve host",
     r"network is unreachable",
+    r"Read-only file system",
     r"qemu-system-[^: ]+: (?:command not found|not found)",
     r"linker .+ not found",
     r"toolchain .+ is not installed",
