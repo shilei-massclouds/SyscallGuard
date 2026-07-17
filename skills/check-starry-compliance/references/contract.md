@@ -1,5 +1,12 @@
 # Compliance Check Contract
 
+`from=<mapping-report-id>` is optional. When omitted, resolve the current clean Starry checkout from the target
+descriptor and consider only completed mapping reports whose repository identity, branch, and content snapshot all
+match it. Select the sole report at the latest `generated_at_utc`; if none match or multiple reports share that
+latest timestamp, stop and require an explicit report ID. An explicit `from=` remains authoritative but must still
+pass all normal branch, snapshot, and staleness checks. Resolve before asking the user to confirm the branch, then
+execute the confirmed report by its exact ID.
+
 Start with static-check and dynamic-test IDs from the mapping report's `execution_scope`, then load their current
 two-level details and recompute hashes. Load the finding index before execution. Add every resolvable original
 static/dynamic source of an open older-snapshot finding to a revalidation scope. Apply each unique dynamic

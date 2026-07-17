@@ -1,4 +1,4 @@
 interface:
-  display_name: "Reset SyscallGuard"
-  short_description: "Clear syscall rules and ingest report history"
-  default_prompt: "Use $reset-syscallguard to restore the syscall ingestion state to an empty baseline."
+  display_name: "$项目重置"
+  short_description: "二次确认后清空规则库和提取历史"
+  default_prompt: "Use $项目重置 (compatible alias: $reset-syscallguard) to warn me about clearing the syscall rule library and ingest history, explain what will be preserved, and wait for my explicit second confirmation before deleting anything."

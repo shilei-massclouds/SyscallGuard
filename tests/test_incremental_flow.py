@@ -14,7 +14,10 @@ import yaml
 
 from syscallguard.checking import (
     TEMP_ROOT as CHECK_TEMP_ROOT,
+    build_parser as build_check_parser,
     load_check_report,
+    main as check_main,
+    resolve_mapping_report_id,
     run_check,
 )
 from syscallguard.common import (
@@ -996,6 +999,66 @@ class MappingTests(FlowTestCase):
 
 
 class CheckTests(FlowTestCase):
+    def test_mapping_report_argument_is_optional(self) -> None:
+        self.assertIsNone(build_check_parser().parse_args([]).from_run_id)
+        self.assertEqual(
+            build_check_parser().parse_args(["--from", "mapping-explicit"]).from_run_id,
+            "mapping-explicit",
+        )
+
+    def test_automatic_mapping_report_resolution_uses_current_checkout(self) -> None:
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        repo, descriptor, _commit = self.make_target("good\n")
+        self.map_fixture(descriptor, "mapping-first")
+        self.map_fixture(descriptor, "mapping-latest")
+
+        other_branch = dict(load_mapping_report(self.root, "mapping-latest"))
+        other_branch["report_id"] = "mapping-other-branch"
+        other_branch["generated_at_utc"] = "9999-01-01T00:00:00.000000Z"
+        other_branch["target"] = dict(other_branch["target"])
+        other_branch["target"]["branch"] = "some-other-branch"
+        atomic_write_text(
+            self.root / "runs/mapping-other-branch/report.md",
+            markdown_report(other_branch),
+        )
+
+        self.assertEqual(resolve_mapping_report_id(self.root), "mapping-latest")
+        output = io.StringIO()
+        with mock.patch("sys.stdout", new=output):
+            self.assertEqual(
+                check_main(["--root", str(self.root), "--resolve-only"]), 0
+            )
+        self.assertIn("mapping_report_id: mapping-latest", output.getvalue())
+        self.assertIn(f"branch: {target_branch(self.root)}", output.getvalue())
+
+        commit_file(repo, "code.txt", "changed snapshot\n")
+        with self.assertRaisesRegex(SyscallGuardError, "no completed mapping report matches"):
+            resolve_mapping_report_id(self.root)
+
+    def test_automatic_mapping_report_resolution_rejects_missing_and_ambiguous(self) -> None:
+        self.make_target("good\n")
+        with self.assertRaisesRegex(SyscallGuardError, "no completed mapping report matches"):
+            resolve_mapping_report_id(self.root)
+
+        self.prepare_spec_run()
+        self.add_static_check("good")
+        descriptor = self.root / "targets/starry/target.yaml"
+        self.map_fixture(descriptor, "mapping-original")
+        original = load_mapping_report(self.root, "mapping-original")
+        tied = dict(original)
+        tied["report_id"] = "mapping-tied"
+        atomic_write_text(
+            self.root / "runs/mapping-tied/report.md",
+            markdown_report(tied),
+        )
+        with self.assertRaisesRegex(SyscallGuardError, "equally latest"):
+            resolve_mapping_report_id(self.root)
+        self.assertEqual(
+            resolve_mapping_report_id(self.root, "mapping-original"),
+            "mapping-original",
+        )
+
     def test_pass_and_identical_input_reuse_on_negotiated_branch(self) -> None:
         self.prepare_spec_run()
         self.add_static_check("bad")

@@ -18,6 +18,13 @@ SKILLS = {
     "fix-starry-compliance",
     "reset-syscallguard",
 }
+SKILL_DISPLAY_NAMES = {
+    "ingest-syscall-specs": "$提取规则",
+    "map-starry-checks": "$映射规则",
+    "check-starry-compliance": "$合规检查",
+    "fix-starry-compliance": "$修复缺口",
+    "reset-syscallguard": "$项目重置",
+}
 RUN_STATUSES = {"running", "completed", "completed_with_blockers", "failed", "superseded"}
 TARGET_INDEXES = {
     "targets/starry/findings/index.yaml": (
@@ -136,16 +143,14 @@ def validate_skills(errors: list[str]) -> None:
         prompt = agent.get("interface", {}).get("default_prompt", "") if isinstance(agent, dict) else ""
         if f"${name}" not in str(prompt):
             errors.append(f"default_prompt does not mention ${name}: skills/{name}/agents/openai.yaml")
-        if name == "check-starry-compliance" and (
+        if (
             not isinstance(agent, dict)
-            or agent.get("interface", {}).get("display_name") != "$合规检查"
+            or agent.get("interface", {}).get("display_name")
+            != SKILL_DISPLAY_NAMES[name]
         ):
-            errors.append("check-starry-compliance display name must be $合规检查")
-        if name == "fix-starry-compliance" and (
-            not isinstance(agent, dict)
-            or agent.get("interface", {}).get("display_name") != "$修复缺口"
-        ):
-            errors.append("fix-starry-compliance display name must be $修复缺口")
+            errors.append(
+                f"{name} display name must be {SKILL_DISPLAY_NAMES[name]}"
+            )
         if not (directory / "scripts/run.py").is_file():
             errors.append(f"missing runner: skills/{name}/scripts/run.py")
 

@@ -1,28 +1,36 @@
 ---
 name: check-starry-compliance
-description: After confirming the mapping-negotiated Starry branch with the user, execute static checks and temporarily injected dynamic tests directly on that clean branch, aggregate every current open finding, and revalidate historical findings after content changes. Use when the user invokes `$合规检查` or the compatible `$check-starry-compliance` alias with a from argument. Do not generate implementation fixes.
+description: After confirming the mapping-negotiated Starry branch with the user, execute static checks and temporarily injected dynamic tests directly on that clean branch, aggregate every current open finding, and revalidate historical findings after content changes. Use when the user invokes `$合规检查` or the compatible `$check-starry-compliance` alias, optionally with a from argument. Without from, automatically select the latest completed mapping report matching the current clean Starry branch and content snapshot. Do not generate implementation fixes.
 ---
 
 # 合规检查
 
 ## Execute
 
-1. Parse exactly `from=<mapping-report-id>`.
+1. Parse optional `from=<mapping-report-id>` and reject every other argument.
 2. Read [references/contract.md](references/contract.md).
-3. Read `target.branch` from the mapping report and ask the user to confirm that compliance checking should still use that branch. Wait for confirmation, and require that branch to be currently checked out and clean.
-4. Run:
+3. Resolve the mapping report without executing checks:
+
+   ```bash
+   python3 skills/check-starry-compliance/scripts/run.py --resolve-only [--from <mapping-report-id>]
+   ```
+
+   Without `from`, this selects the uniquely latest completed mapping report whose repository identity, branch, and content snapshot match the current clean Starry checkout. If there is no match or the latest timestamp is ambiguous, ask the user for an explicit mapping report ID.
+4. Read `target.branch` from the resolved mapping report and ask the user to confirm that compliance checking should still use that branch. Wait for confirmation, and require that branch to be currently checked out and clean.
+5. Run with the resolved ID so that the confirmed report cannot change between resolution and execution:
 
    ```bash
    python3 skills/check-starry-compliance/scripts/run.py --from <mapping-report-id>
    ```
 
-5. Confirmation authorizes temporary test-patch injection on that branch, static checks, builds, QEMU, and bound dynamic tests. Do not request another authorization. Revert injected test patches before publishing the report.
-6. Inspect the Chinese report and its trailing `syscallguard_check_report` metadata. Keep build, disk, toolchain, QEMU, rootfs, test-injection, and cleanup failures as blockers. Publish only evidence-backed rule failures as findings. Treat fixed findings from another content snapshot only as historical regression seeds: keep them unchanged and create a current-snapshot finding only when their source fails again.
-7. Report the confirmed branch, pass/fail/skipped/not-run/error counts, blockers, the complete current-snapshot open finding IDs, new/carried/revalidated/needs-revalidation IDs, retained diagnostic path when present, and the report path.
+6. Confirmation authorizes temporary test-patch injection on that branch, static checks, builds, QEMU, and bound dynamic tests. Do not request another authorization. Revert injected test patches before publishing the report.
+7. Inspect the Chinese report and its trailing `syscallguard_check_report` metadata. Keep build, disk, toolchain, QEMU, rootfs, test-injection, and cleanup failures as blockers. Publish only evidence-backed rule failures as findings. Treat fixed findings from another content snapshot only as historical regression seeds: keep them unchanged and create a current-snapshot finding only when their source fails again.
+8. Report the selected mapping report ID, confirmed branch, pass/fail/skipped/not-run/error counts, blockers, the complete current-snapshot open finding IDs, new/carried/revalidated/needs-revalidation IDs, retained diagnostic path when present, and the report path.
 
 ## Boundaries
 
 - Reject stale mappings when any recorded entity dependency or the current Starry content snapshot differs.
+- Automatic selection considers only completed mapping reports matching the current repository identity, branch, and content snapshot. Never fall back to a report from another checkout; require explicit `from=` when no unique latest match exists.
 - Use the mapping report's `execution_scope` as the base. Add original static/dynamic sources for open findings from older snapshots as the revalidation scope, and record base, revalidation, and effective scopes separately.
 - Also revalidate a same-snapshot open finding when all of its occurrences predate the negotiated branch workflow or belong to another branch, so a new current-branch occurrence can become authoritative for fixing.
 - Carry forward same-snapshot open findings outside the effective scope. A conclusive old-snapshot failure supersedes the old finding with a current-snapshot finding; all-pass marks it `no_longer_reproduces`; missing definitions or blockers leave it open under `needs_revalidation`.

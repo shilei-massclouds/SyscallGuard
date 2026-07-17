@@ -33,7 +33,7 @@ from .common import (
     version_content_hash,
     yaml_text,
 )
-from .mapping import load_mapping_report
+from .mapping import load_mapping_report, scan_mapping_reports
 
 
 REPORT_KIND = "syscallguard_check_report"
@@ -49,6 +49,58 @@ DEFAULT_BLOCKER_PATTERNS = [
     r"linker .+ not found",
     r"toolchain .+ is not installed",
 ]
+
+
+def resolve_mapping_report_id(
+    root: Path | None = None, from_run_id: str | None = None
+) -> str:
+    """Resolve an explicit mapping report or the latest report for this checkout."""
+    root = (root or repo_root()).resolve()
+    if from_run_id is not None:
+        report_id = normalize_run_id(from_run_id)
+        load_mapping_report(root, report_id)
+        return report_id
+
+    _descriptor, repository, branch, repo_identity, snapshot_hash = (
+        ensure_target_workspace(root / "targets/starry/target.yaml")
+    )
+    _latest, reports = scan_mapping_reports(root)
+    candidates: list[tuple[str, str]] = []
+    for report_id, scanned in reports.items():
+        target = scanned.get("target")
+        if not isinstance(target, dict):
+            continue
+        if (
+            target.get("repository") != str(repository)
+            or target.get("repository_identity") != repo_identity
+            or target.get("branch") != branch
+            or target.get("snapshot_hash") != snapshot_hash
+        ):
+            continue
+        try:
+            report = load_mapping_report(root, report_id)
+        except SyscallGuardError:
+            continue
+        candidates.append((str(report["generated_at_utc"]), report_id))
+
+    if not candidates:
+        raise SyscallGuardError(
+            "no completed mapping report matches the current clean Starry checkout "
+            f"(branch {branch!r}, snapshot {snapshot_hash}); run map-starry-checks "
+            "or specify --from <mapping-report-id>"
+        )
+    latest_generated = max(generated for generated, _report_id in candidates)
+    latest_ids = sorted(
+        report_id
+        for generated, report_id in candidates
+        if generated == latest_generated
+    )
+    if len(latest_ids) != 1:
+        raise SyscallGuardError(
+            "multiple mapping reports are equally latest for the current Starry "
+            f"checkout: {', '.join(latest_ids)}; specify --from <mapping-report-id>"
+        )
+    return latest_ids[0]
 
 
 def _load_entities(
@@ -1433,25 +1485,49 @@ def run_check(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="检查 Starry 合规性")
-    parser.add_argument("--from", dest="from_run_id", required=True, help="mapping report id")
+    parser.add_argument(
+        "--from",
+        dest="from_run_id",
+        help="mapping report id; defaults to the latest report matching the current checkout",
+    )
     parser.add_argument("--root", type=Path, default=repo_root(), help=argparse.SUPPRESS)
     parser.add_argument("--run-id", help=argparse.SUPPRESS)
+    parser.add_argument("--resolve-only", action="store_true", help=argparse.SUPPRESS)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    requested_report_id = args.run_id or new_run_id("check", {"from": args.from_run_id})
+    requested_report_id = args.run_id
     try:
-        report_id = run_check(args.from_run_id, args.root, requested_report_id)
+        from_run_id = resolve_mapping_report_id(args.root, args.from_run_id)
+        mapping_report = load_mapping_report(args.root.resolve(), from_run_id)
+        target = mapping_report.get("target")
+        if (
+            not isinstance(target, dict)
+            or not isinstance(target.get("branch"), str)
+            or not isinstance(target.get("snapshot_hash"), str)
+        ):
+            raise SyscallGuardError(
+                f"mapping report {from_run_id} has invalid target metadata"
+            )
+        if args.resolve_only:
+            print(f"mapping_report_id: {from_run_id}")
+            print(f"branch: {target['branch']}")
+            print(f"snapshot: {target['snapshot_hash']}")
+            return 0
+        requested_report_id = args.run_id or new_run_id("check", {"from": from_run_id})
+        report_id = run_check(from_run_id, args.root, requested_report_id)
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
-        workspace = _check_workspace(requested_report_id)
-        if workspace.exists():
-            print(f"diagnostics: {workspace}", file=sys.stderr)
+        if requested_report_id:
+            workspace = _check_workspace(requested_report_id)
+            if workspace.exists():
+                print(f"diagnostics: {workspace}", file=sys.stderr)
         return 2
     path = args.root.resolve() / "runs" / report_id / "report.md"
     report = load_check_report(args.root.resolve(), report_id)
+    print(f"mapping_report_id: {from_run_id}")
     print(f"report_id: {report_id}")
     print(f"status: {report['status']}")
     print(f"report: {path}")
