@@ -1,0 +1,46 @@
+# 合规检查：条件：The operation was prevented by a file seal; see fcntl (2)；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C99BC5B9688A84D8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The operation was prevented by a file seal; see fcntl (2)
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:c99bc5b9688a84d824710cb1a6b544b99370e04285595bfe9dc943b08bcc8d2e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12fd20c1c5caa7d9f5caef14d5ddff032cfe4612bf6292d7fa73dce6417f7e04
+  case: errors_eperm_448
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12fd20c1c5caa7d9f5caef14d5ddff032cfe4612bf6292d7fa73dce6417f7e04
+  case: errors_eperm_448

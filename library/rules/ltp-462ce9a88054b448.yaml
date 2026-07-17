@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:e370cd32f4894c2008ddbdbda73983d8a68f2cf7416d815c9a32d0360ed5aa24
   case: mq_notify02_28_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify02.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e370cd32f4894c2008ddbdbda73983d8a68f2cf7416d815c9a32d0360ed5aa24
+  case: mq_notify02_28_1_0

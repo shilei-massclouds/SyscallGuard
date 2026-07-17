@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 timerfd_create(clockid, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9265198EAC52989E--9265198eac52
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_create
+    arguments:
+    - clockid
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:9265198eac52989e1c86271a712e6d19b4819bbc90b61b8a0e98d4f14c618889
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 387
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8ee0ad76e5bfe430b6325b80cd21723aef4bff384adebab3f1e8abc9dd3b7a59
+  case: return_value_387

@@ -1,0 +1,45 @@
+# 合规检查：条件：The specified executable was open for writing by one or more processes；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_89D33AB929D9531F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ETXTBSY
+    summary: The specified executable was open for writing by one or more processes
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:89d33ab929d9531f817c25cc6521e9703cc666901b0e894efc86b7cae6f7397e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 548
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7fdbff8f559ced677c9186e1b6a7f59be7cfadfbed2c977f42e22db9c93426a1
+  case: errors_etxtbsy_548
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 548
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7fdbff8f559ced677c9186e1b6a7f59be7cfadfbed2c977f42e22db9c93426a1
+  case: errors_etxtbsy_548

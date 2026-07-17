@@ -1,0 +1,43 @@
+# 合规检查：条件：name was too long；检查：调用 mq_unlink(name)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BCD9474510C6AD2C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: name
+    predicate: documented_condition
+    value: ENAMETOOLONG
+    summary: name was too long
+  action:
+    operation: invoke_syscall
+    syscall: mq_unlink
+    arguments:
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:bcd9474510c6ad2c4ae789d3b6060d6d6e41f7d0c0ee147f4ccacfea318c5da6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 37
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:064dcf35c9be6a42a6206ad2a0840abf3f312196e04ce60c93518bebabc79645
+  case: errors_enametoolong_37
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_unlink
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 37
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:064dcf35c9be6a42a6206ad2a0840abf3f312196e04ce60c93518bebabc79645
+  case: errors_enametoolong_37

@@ -1,0 +1,48 @@
+# 合规检查：条件：A component of the path prefix of one of from_path or to_path is not a directory, or one of from_path or to_path is relative and the corresponding...；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_01387ECF64F15BAA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: from_path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix of one of from_path or to_path is not a directory, or one
+      of from_path or to_path is relative and the corresponding...
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:01387ecf64f15baa1bfb4c821119b9cb7c0fd8eab36461106901018e70641103
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 492
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fe561ce5dde84ef79b6a2532f954cedac39463fccd99fb46a0072316a3207c9
+  case: errors_enotdir_492
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 492
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fe561ce5dde84ef79b6a2532f954cedac39463fccd99fb46a0072316a3207c9
+  case: errors_enotdir_492

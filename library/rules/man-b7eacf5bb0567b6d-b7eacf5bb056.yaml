@@ -1,0 +1,37 @@
+# 合规检查：条件：One of the arguments specified an address outside the calling program's address space；检查：调用 getresgid(rgid, egid, sgid)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7EACF5BB0567B6D--b7eacf5bb056
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of the arguments specified an address outside the calling program's address space
+  action:
+    operation: invoke_syscall
+    syscall: getresgid
+    arguments:
+    - rgid
+    - egid
+    - sgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:b7eacf5bb0567b6d801cd360c1cf5fe3563b6360b359122c52b23a53f9c13c8c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getresgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getresuid.2
+  line: 38
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8e187928dcc20fc610c09755d02b9f222e1b531a8c669fd808ac195a16a1396
+  case: errors_efault_38

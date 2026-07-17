@@ -1,0 +1,44 @@
+# 合规检查：条件：One of the arguments was invalid；检查：调用 capset(hdrp, datap)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FBFD397D4E9E3926
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: One of the arguments was invalid
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b57d5a78b1e0be9f8adb2e6165121c5f023aa4184af62fd9d0abecdac811bf04
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bce6aef84282967e3b06b3ae07903d1be631ebd71ceeb4af5f985436eaffde88
+  case: errors_einval_200
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bce6aef84282967e3b06b3ae07903d1be631ebd71ceeb4af5f985436eaffde88
+  case: errors_einval_200

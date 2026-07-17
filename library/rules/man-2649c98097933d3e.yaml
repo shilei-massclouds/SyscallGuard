@@ -1,0 +1,46 @@
+# 合规检查：条件：The parent directory does not allow write permission to the process, or one of the directories in path did not allow search permission. (See also...；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2649C98097933D3E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: The parent directory does not allow write permission to the process, or one of the directories
+      in path did not allow search permission. (See also...
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:2649c98097933d3e6614a04b03cb3accd6c6627e3cb9e2227a7bb8c81a892b31
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82e147e40e1a2704b6881ac1d0ece1426188af638943b0c7a7d8343253e3ae5a
+  case: errors_eacces_120
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82e147e40e1a2704b6881ac1d0ece1426188af638943b0c7a7d8343253e3ae5a
+  case: errors_eacces_120

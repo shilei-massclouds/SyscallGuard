@@ -1,0 +1,46 @@
+# 合规检查：条件：A directory component in path does not exist or is a dangling symbolic link；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9021A0739A34E0FF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A directory component in path does not exist or is a dangling symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:9021a0739a34e0ff83ba77243363588528ffed38c08b9d0699dd0bb638573231
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:835e7340f4e80a27d4ada3821d44f1ebdc8185352607511652b89ca819d95f54
+  case: errors_enoent_198
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:835e7340f4e80a27d4ada3821d44f1ebdc8185352607511652b89ca819d95f54
+  case: errors_enoent_198

@@ -1,0 +1,45 @@
+# 合规检查：条件：One of the data structures points to invalid data；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AE46DE0C8B9366F0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: One of the data structures points to invalid data
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ae46de0c8b9366f00472d544a599d9518dbaee776be9d608297df127ce135d99
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c4d327724a2d240b8f6ad8d0a62c3289213ea6313b79f45d3cdb6bd584ff663
+  case: errors_efault_265
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c4d327724a2d240b8f6ad8d0a62c3289213ea6313b79f45d3cdb6bd584ff663
+  case: errors_efault_265

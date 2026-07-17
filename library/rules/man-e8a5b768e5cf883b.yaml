@@ -1,0 +1,47 @@
+# 合规检查：条件：( fstatat ()) path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8A5B768E5CF883B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( fstatat ()) path is relative and dirfd is a file descriptor referring to a file other than
+      a directory
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:e8a5b768e5cf883bc63b1601c00a779f6d99b95e35dbd864314524d3be654a86
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5999265804761373db6aa0af0810096a0f89fdf3cf90da0aebea7f3c7e03c55e
+  case: errors_enotdir_275
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5999265804761373db6aa0af0810096a0f89fdf3cf90da0aebea7f3c7e03c55e
+  case: errors_enotdir_275

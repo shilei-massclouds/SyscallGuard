@@ -1,0 +1,44 @@
+# 合规检查：条件：memfd_secret () is not implemented on this architecture, or has not been enabled on the kernel command-line with secretmem_enable =1；检查：调用 memfd_secret(flags)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D2BFACFBB0F4563B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: memfd_secret () is not implemented on this architecture, or has not been enabled on the kernel
+      command-line with secretmem_enable =1
+  action:
+    operation: invoke_syscall
+    syscall: memfd_secret
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:d2bfacfbb0f4563bec9697ca5bf223489c0105b98df9b4239cd1e103cbb70f7d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_secret.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0a4ec087439276eda5b867dcfae4eaed9da8d9b2b0f4288f0172528783845d5
+  case: errors_enosys_127
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_secret
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_secret.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0a4ec087439276eda5b867dcfae4eaed9da8d9b2b0f4288f0172528783845d5
+  case: errors_enosys_127

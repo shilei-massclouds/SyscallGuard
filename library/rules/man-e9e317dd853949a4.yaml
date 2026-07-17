@@ -1,0 +1,46 @@
+# 合规检查：条件：The file does not exist；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E9E317DD853949A4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The file does not exist
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:0b75f83a9d6072b10b6435a4266808a653575892dd8b9145e0b104a66aad858d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 283
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e69ddf76190be5ebbcf9f578e9e050af2a1aa8f4acca8ca9cbff18b9b23d0a35
+  case: errors_enoent_283
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 283
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e69ddf76190be5ebbcf9f578e9e050af2a1aa8f4acca8ca9cbff18b9b23d0a35
+  case: errors_enoent_283

@@ -1,0 +1,48 @@
+# 合规检查：条件：Invalid argument passed；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_643316829BCBA523
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid argument passed
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2864a73bfdfb58c647423991790bba7ea6007f591bbbd61b7d1d3f216d5170e0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:006efc77eee3e7095f1c27773e4a86b3b0ac26870fcbe46541cc61fa84f109f2
+  case: errors_einval_393
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:006efc77eee3e7095f1c27773e4a86b3b0ac26870fcbe46541cc61fa84f109f2
+  case: errors_einval_393

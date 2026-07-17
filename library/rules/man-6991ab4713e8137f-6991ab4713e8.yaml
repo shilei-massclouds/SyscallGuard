@@ -1,0 +1,38 @@
+# 合规检查：条件：The size of the list of extended attribute names is larger than the maximum size allowed; the list cannot be retrieved. This can happen on filesystems that...；检查：调用 flistxattr(fd, list, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6991AB4713E8137F--6991ab4713e8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: list
+    predicate: invalid_value
+    value: E2BIG
+    summary: The size of the list of extended attribute names is larger than the maximum size allowed;
+      the list cannot be retrieved. This can happen on filesystems that...
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:6991ab4713e8137ff8c5e463524dc2a9e7d7cbffe2ddf7b24b790ee7e2c79ece
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c7722dcd558b0c8908886fcff4cccbdd33651c59771f2663ee224b3f9e055777
+  case: errors_e2big_116

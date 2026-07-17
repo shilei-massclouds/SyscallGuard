@@ -1,0 +1,47 @@
+# 合规检查：条件：type is invalid；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5126172582E0CF35
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: type
+    predicate: documented_condition
+    value: EINVAL
+    summary: type is invalid
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5126172582e0cf3580aca2a6d177c54e21ac1151c80c7fb38deb3c6f5e870cfc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7e83eae4cb40d58e6ecdbe33a9b71e55c6293d5a8aeecf4eae9cc39af848a35c
+  case: errors_einval_260
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7e83eae4cb40d58e6ecdbe33a9b71e55c6293d5a8aeecf4eae9cc39af848a35c
+  case: errors_einval_260

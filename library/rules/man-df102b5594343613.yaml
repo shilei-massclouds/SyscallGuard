@@ -1,0 +1,46 @@
+# 合规检查：条件：A directory component in linkpath does not exist or is a dangling symbolic link, or target or linkpath is an empty string；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DF102B5594343613
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: target
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A directory component in linkpath does not exist or is a dangling symbolic link, or target
+      or linkpath is an empty string
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:df102b55943436134d3f521da4250c1e063da1f1cce898a0ff8cbe86f246bdfa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 172
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:31d142804a565271366a6adb2734e97e7247c5c6512ab1e4c3a712834a111ed5
+  case: errors_enoent_172
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 172
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:31d142804a565271366a6adb2734e97e7247c5c6512ab1e4c3a712834a111ed5
+  case: errors_enoent_172

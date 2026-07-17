@@ -1,0 +1,39 @@
+# 合规检查：条件：The size of the value buffer is too small to hold the result. In addition, the errors documented in stat (2) can also occur；检查：调用 getxattr(path, name, size, size)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C5359ECB0F177D68
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: ERANGE
+    summary: The size of the value buffer is too small to hold the result. In addition, the errors documented
+      in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: getxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:c5359ecb0f177d6863a824b62434c2d9b913598f3a4a24a20944b33c031160ec
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c94ae5be48626e9cd81eed7a5308888887d4aa43e282d4ee59e143f699ab864
+  case: errors_erange_115

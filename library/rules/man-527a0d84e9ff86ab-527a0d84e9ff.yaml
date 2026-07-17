@@ -1,0 +1,40 @@
+# 合规检查：条件：Invalid msqid value, or nonpositive mtype value, or invalid msgsz value (less than 0 or greater than the system value MSGMAX )；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_527A0D84E9FF86AB--527a0d84e9ff
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: msqid
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid msqid value, or nonpositive mtype value, or invalid msgsz value (less than 0 or greater
+      than the system value MSGMAX )
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:527a0d84e9ff86ab91ae146a078a903e1a68fcdea56716f72dc173f5e474ee40
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b15412cc03d450dff2e36472ddcd3ddc4802434e2e525daa9de31b8b69c50c73
+  case: errors_einval_349

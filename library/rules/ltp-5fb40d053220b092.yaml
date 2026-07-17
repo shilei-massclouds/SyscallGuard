@@ -1,0 +1,37 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 openat2(AT_FDCWD, TEST_FILE, myhow, sizeof(*how) + 1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5FB40D053220B092
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - AT_FDCWD
+    - TEST_FILE
+    - myhow
+    - sizeof(*how) + 1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5fb40d053220b092c105968b807ed753f5e6619fc55fb6f8bb4921f13b78a02e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat203.c
+  line: 58
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b805d4c729f23d9eb3e6a8f4a4b3b4f9b5ac48ee546243aa60a19e163cb958bc
+  case: openat203_58_7_0

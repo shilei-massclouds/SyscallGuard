@@ -1,0 +1,48 @@
+# 合规检查：条件：Out of memory；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C22AC7C03A3848CE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:c22ac7c03a3848ce0a7a40a4f095e5d80034c9436653a3290e2732812b227420
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a8103fda49952bf8e051846a59ba4d4fbd5de5a30928391b35f54ec6b670731a
+  case: errors_enomem_151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a8103fda49952bf8e051846a59ba4d4fbd5de5a30928391b35f54ec6b670731a
+  case: errors_enomem_151

@@ -1,0 +1,45 @@
+# 合规检查：条件：op or argp is not valid；检查：调用 ioctl(fd, op, arg3)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E0402378E4A5C8A3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: EINVAL
+    summary: op or argp is not valid
+  action:
+    operation: invoke_syscall
+    syscall: ioctl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e0402378e4a5c8a36e0fb0dcd339522643ddc319c7d9751e3b2f3523c028bdf1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 73
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f8c356f20a473d5132f626156e42e87c72af330184be1e18d90e5c674887d1fa
+  case: errors_einval_73
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 73
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f8c356f20a473d5132f626156e42e87c72af330184be1e18d90e5c674887d1fa
+  case: errors_einval_73

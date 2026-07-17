@@ -1,0 +1,48 @@
+# 合规检查：条件：A low-level I/O error occurred while copying；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB64C1EFF713C2DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: A low-level I/O error occurred while copying
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:fb64c1eff713c2dfa5a477658ad1527cf9884078805dfb36de0fef0d9cec0f07
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7156af25544f0bae2d214c0bb0b85dc415e24d1efe795a8b3c37434fcc80881c
+  case: errors_eio_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7156af25544f0bae2d214c0bb0b85dc415e24d1efe795a8b3c37434fcc80881c
+  case: errors_eio_141

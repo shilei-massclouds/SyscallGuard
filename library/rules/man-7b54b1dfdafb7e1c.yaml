@@ -1,0 +1,45 @@
+# 合规检查：条件：size is less than the number of supplementary group IDs, but is not zero. setgroups () can additionally fail with the following errors:；检查：调用 setgroups(size, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7B54B1DFDAFB7E1C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'size is less than the number of supplementary group IDs, but is not zero. setgroups () can
+      additionally fail with the following errors:'
+  action:
+    operation: invoke_syscall
+    syscall: setgroups
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7b54b1dfdafb7e1cdd0de6854c6b92ff5486a2fc4bc87ea0afa0eb02ac68690d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df2dd578d3be1a933521554cdf7e476af4c159bfa2d4d80477a91d183930698a
+  case: errors_einval_105
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setgroups
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df2dd578d3be1a933521554cdf7e476af4c159bfa2d4d80477a91d183930698a
+  case: errors_einval_105

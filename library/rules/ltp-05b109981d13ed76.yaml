@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.positive
   evidence_hash: sha256:afacfd5c64b17135188c477818ba668ca5b131f7a8f94395d2aae7bad0c24deb
   case: write02_18_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/write/write02.c
+  line: 18
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:afacfd5c64b17135188c477818ba668ca5b131f7a8f94395d2aae7bad0c24deb
+  case: write02_18_raw_0

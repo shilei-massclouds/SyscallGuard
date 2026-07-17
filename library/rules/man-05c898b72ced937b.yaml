@@ -1,0 +1,45 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05C898B72CED937B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:05c898b72ced937ba70a5799369c9a14f7fc1c72f8837f88184647405b3a82a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 505
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a15d0d1d21b5c77f3086bc2975a36b15cd913a651044ddebb177d7204f59e54b
+  case: errors_emfile_505
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 505
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a15d0d1d21b5c77f3086bc2975a36b15cd913a651044ddebb177d7204f59e54b
+  case: errors_emfile_505

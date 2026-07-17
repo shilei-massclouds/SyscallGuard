@@ -1,0 +1,37 @@
+# 合规检查：条件：An invalid thread ID, thread group ID, or signal was specified；检查：调用 tgkill(tgid, tid, sig)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E9B0EB62F08112DF--e9b0eb62f081
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An invalid thread ID, thread group ID, or signal was specified
+  action:
+    operation: invoke_syscall
+    syscall: tgkill
+    arguments:
+    - tgid
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e9b0eb62f08112df34499dec795c5a20a9d85fd8d476a03babd6cf7b4e72f436
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tgkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:755f6115b35e4498cbe44d209bf6f8e4a9ebb1f9dbcb8d3f78453e8be57647ac
+  case: errors_einval_98

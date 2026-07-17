@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath or newpath was too long；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8C6E18A34BED8073
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: oldpath or newpath was too long
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:8c6e18a34bed80734274815f8830fc4947cd679ebb737ed0f2a6225f1f5045cf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 345
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eb82bea38fa7df262490cbaaf154602a035058d41b630e26d6bdd94c86df631d
+  case: errors_enametoolong_345
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 345
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eb82bea38fa7df262490cbaaf154602a035058d41b630e26d6bdd94c86df631d
+  case: errors_enametoolong_345

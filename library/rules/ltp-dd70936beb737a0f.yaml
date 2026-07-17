@@ -1,0 +1,43 @@
+# 合规检查：条件：The fixture creates DNAME_WX"/"FNAME_X as a regular file.、The fixture sets DNAME_WX"/"FNAME_X mode to 0111.、The test invokes the syscall as root.；检查：调用 access(DNAME_WX"/"FNAME_X, R_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_DD70936BEB737A0F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates DNAME_WX"/"FNAME_X as a regular file.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0111'
+    summary: The fixture sets DNAME_WX"/"FNAME_X mode to 0111.
+  - kind: credential
+    subject: caller
+    predicate: effective_identity
+    value: root
+    summary: The test invokes the syscall as root.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - DNAME_WX"/"FNAME_X
+    - R_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:dd70936beb737a0fe554c4975c84142806c18e5b93e8710b8b15b38cdc290623
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 243
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:4e6b2ee6c625779b7be6d3ac407874b4395274618e8d1570ffaaeec3a8cfae67
+  case: access01_243_93_0

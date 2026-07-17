@@ -1,0 +1,37 @@
+# 合规检查：条件：No thread with the thread ID pid could be found；检查：调用 get_robust_list(pid, head_ptr, sizep)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0FBFE027E29A7E90--0fbfe027e29a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: No thread with the thread ID pid could be found
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - pid
+    - head_ptr
+    - sizep
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:0fbfe027e29a7e90020878947ced090694fa64088d1a7b3e63458e6b3bcbdef1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: get_robust_list
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0447f989dcb19bfda1407db22cb08eda4434335bc6b108aad96de9aa894206bd
+  case: errors_esrch_121

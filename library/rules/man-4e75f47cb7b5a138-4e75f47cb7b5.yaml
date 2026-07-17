@@ -1,0 +1,35 @@
+# 合规检查：条件：The file path does not exist；检查：调用 swapoff(path)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4E75F47CB7B5A138--4e75f47cb7b5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: The file path does not exist
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:4e75f47cb7b5a138c1a7b8392eb99ef11271a38005e739bbbd7235fb6c5a9d6f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:56a0b6e25e9334ea814e2ea34fa5b7c6620ba71435e7b7b8c2ead5c3e087f9eb
+  case: errors_enoent_121

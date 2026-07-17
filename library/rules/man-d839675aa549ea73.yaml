@@ -1,0 +1,45 @@
+# 合规检查：条件：The resulting file offset cannot be represented in an off_t；检查：调用 lseek(fd, offset, whence)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D839675AA549EA73
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: offset
+    predicate: documented_condition
+    value: EOVERFLOW
+    summary: The resulting file offset cannot be represented in an off_t
+  action:
+    operation: invoke_syscall
+    syscall: lseek
+    arguments:
+    - fd
+    - offset
+    - whence
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:d839675aa549ea73b2646a08518acd5e8933ab8ff75cf56011d3fd42d6df203e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2be72fd938b3373cd920b75c51d7945f4d7458b19c653732566ad3c69a1b963d
+  case: errors_eoverflow_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lseek
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2be72fd938b3373cd920b75c51d7945f4d7458b19c653732566ad3c69a1b963d
+  case: errors_eoverflow_190

@@ -1,0 +1,34 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 sysinfo(bad_info)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F0BF53984C9E5C92
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: sysinfo
+    arguments:
+    - bad_info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f0bf53984c9e5c92c40b0dd388ec437e290d975748263d80ebb353a51aedae8d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sysinfo/sysinfo02.c
+  line: 24
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3726dce4b42a3f5a36284a437e892b4bfbafb7aedd9fae62723f70d5b87cb945
+  case: sysinfo02_24_raw_0

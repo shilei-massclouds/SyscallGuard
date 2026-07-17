@@ -1,0 +1,45 @@
+# 合规检查：条件：The system has too many open files to create more；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5D7D3D5FA2803685
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENFILE
+    summary: The system has too many open files to create more
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:5d7d3d5fa28036857662f9b68706f64e97624e5b0cf57ce25955a10383e5d230
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db093bb70398cfe9a1468ef99a4181add90fed1334f9705a4c536bb9939c0854
+  case: errors_enfile_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db093bb70398cfe9a1468ef99a4181add90fed1334f9705a4c536bb9939c0854
+  case: errors_enfile_444

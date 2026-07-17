@@ -1,0 +1,46 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 socketpair(domain, type, protocol, sv)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_29018D1605BB68EE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:29018d1605bb68ee3443c9dbfcf8bdf535ecf4e183051be02e3ab62a6587a532
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98adf3118d28b1aaf8e00008d27d66137a884dbab78f84e60131a1bd06ca70d0
+  case: errors_emfile_60
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98adf3118d28b1aaf8e00008d27d66137a884dbab78f84e60131a1bd06ca70d0
+  case: errors_emfile_60

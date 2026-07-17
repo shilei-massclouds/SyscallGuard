@@ -1,0 +1,46 @@
+# 合规检查：条件：The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC is specified, this maximum is given by the...；检查：调用 writev(fd, iov, iovcnt)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0C54653F18526D07
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: iovcnt
+    predicate: documented_condition
+    value: EINVAL
+    summary: The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC
+      is specified, this maximum is given by the...
+  action:
+    operation: invoke_syscall
+    syscall: writev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:549a130b2099fd4eccff746cc4fbb970f24e734def5f3b81793bc8fc7bcdf148
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16f86942231614cde8d9168261c7b581ee011c9df4893b5e174e3f556de0501f
+  case: errors_einval_393
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16f86942231614cde8d9168261c7b581ee011c9df4893b5e174e3f556de0501f
+  case: errors_einval_393

@@ -1,0 +1,47 @@
+# 合规检查：条件：fd refers to an epoll instance and this EPOLL_CTL_ADD operation would result in a circular loop of epoll instances monitoring one another or a nesting depth...；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CDD195853C6DFE14
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ELOOP
+    summary: fd refers to an epoll instance and this EPOLL_CTL_ADD operation would result in a circular
+      loop of epoll instances monitoring one another or a nesting depth...
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:cdd195853c6dfe14718620f8892fbace0a9e23ca40f5e2ea0f799870b96b6b6d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 331
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:603b9da3650bca8dc7c7daef75989722e24e0676faa6f66ad23ddefea749bc8d
+  case: errors_eloop_331
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 331
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:603b9da3650bca8dc7c7daef75989722e24e0676faa6f66ad23ddefea749bc8d
+  case: errors_eloop_331

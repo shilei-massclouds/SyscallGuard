@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:9f8998e09688bf0042627b2ff00d0506ef8d78145b08e1d454bf9419603c3beb
   case: rt_sigprocmask01_140_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+  line: 140
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9f8998e09688bf0042627b2ff00d0506ef8d78145b08e1d454bf9419603c3beb
+  case: rt_sigprocmask01_140_raw_0

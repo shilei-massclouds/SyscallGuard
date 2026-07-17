@@ -1,0 +1,45 @@
+# 合规检查：条件：fd refers to a directory. Other errors may occur, depending on the object connected to fd；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1DD124B05A5DBAD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EISDIR
+    summary: fd refers to a directory. Other errors may occur, depending on the object connected to fd
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:a1dd124b05a5dbadde98a161b41e8324c67413f70a9724c211a138b805aa7990
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c40c7e2fdc61988b5fcbe6885ebcaeea4a3afa8afc64ee1b316ffd31c546771
+  case: errors_eisdir_156
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c40c7e2fdc61988b5fcbe6885ebcaeea4a3afa8afc64ee1b316ffd31c546771
+  case: errors_eisdir_156

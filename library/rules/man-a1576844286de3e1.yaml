@@ -1,0 +1,46 @@
+# 合规检查：条件：offset is not NULL but the input file is not seekable；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1576844286DE3E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: offset
+    predicate: invalid_or_inaccessible
+    value: ESPIPE
+    summary: offset is not NULL but the input file is not seekable
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:a1576844286de3e1ae33d5451d3bce52dfa943d11e784ca7afd3059f7eb72f0d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9349f072b1569f19934a400f3c4988b7072abec77476cf4da1a1d9db54287a7a
+  case: errors_espipe_158
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9349f072b1569f19934a400f3c4988b7072abec77476cf4da1a1d9db54287a7a
+  case: errors_espipe_158

@@ -1,0 +1,46 @@
+# 合规检查：条件：All possible shared memory IDs have been taken ( SHMMNI ), or allocating a segment of the requested size would cause the system to exceed the system-wide...；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_115E9A54ED8D67E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: size
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: All possible shared memory IDs have been taken ( SHMMNI ), or allocating a segment of the
+      requested size would cause the system to exceed the system-wide...
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:115e9a54ed8d67e18f84ecf8fffa782ae590b10ec83df40c5acbf03a4bb0a246
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5169675785ee7fcfa4f8f5cf5014e752fa6d49b9ba947732cb384b2c10e933b3
+  case: errors_enospc_239
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5169675785ee7fcfa4f8f5cf5014e752fa6d49b9ba947732cb384b2c10e933b3
+  case: errors_enospc_239

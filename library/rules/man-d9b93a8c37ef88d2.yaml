@@ -1,0 +1,45 @@
+# 合规检查：条件：No process(es) could be found that matched the specification in which and who；检查：调用 ioprio_set(which, who, ioprio)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D9B93A8C37EF88D2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: which
+    predicate: documented_condition
+    value: ESRCH
+    summary: No process(es) could be found that matched the specification in which and who
+  action:
+    operation: invoke_syscall
+    syscall: ioprio_set
+    arguments:
+    - which
+    - who
+    - ioprio
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:9a3d265603f7571b039bab58e138879c80adc373acc73bf39c930cffa1fbce74
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70b5eaa0a4746bf486143975087aa57f943d0d4ceb2664b9480553225d6b5b9d
+  case: errors_esrch_181
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioprio_set
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70b5eaa0a4746bf486143975087aa57f943d0d4ceb2664b9480553225d6b5b9d
+  case: errors_esrch_181

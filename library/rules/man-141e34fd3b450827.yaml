@@ -1,0 +1,44 @@
+# 合规检查：条件：A pointer argument points to a location outside the accessible address space；检查：调用 setrlimit(resource, rlim)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_141E34FD3B450827
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: A pointer argument points to a location outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: setrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:222835b2c7999f163110f7d5e6b2729c0f68ba807644865f3aaf527475c7bd5c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1987afeecebbee4ca03e1a622beb684a170f93d6cf15d1290bd1f50d530e2f2d
+  case: errors_efault_473
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1987afeecebbee4ca03e1a622beb684a170f93d6cf15d1290bd1f50d530e2f2d
+  case: errors_efault_473

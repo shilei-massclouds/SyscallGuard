@@ -1,0 +1,47 @@
+# 合规检查：条件：The size of name or value exceeds a filesystem-specific limit；检查：调用 setxattr(path, name, size, size, flags)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A953E8990237D494
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: name
+    predicate: unavailable_or_exhausted
+    value: ERANGE
+    summary: The size of name or value exceeds a filesystem-specific limit
+  action:
+    operation: invoke_syscall
+    syscall: setxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:e01d5c9f461beaf7acf68cb3a5bcba6295c48827659434c3ab324ff040f8f3d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fc9dae04dc6279f84053faa90e17d5bcd9f9151942925ee51b451a3c5ac31c9
+  case: errors_erange_137
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fc9dae04dc6279f84053faa90e17d5bcd9f9151942925ee51b451a3c5ac31c9
+  case: errors_erange_137

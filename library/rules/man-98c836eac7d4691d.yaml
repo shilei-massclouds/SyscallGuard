@@ -1,0 +1,37 @@
+# 合规检查：条件：The hot-pluggable device (like USB for example) represented by a dynamic clk_id has disappeared after its character device was opened；检查：调用 clock_gettime(clockid, tp)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98C836EAC7D4691D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODEV
+    summary: The hot-pluggable device (like USB for example) represented by a dynamic clk_id has disappeared
+      after its character device was opened
+  action:
+    operation: invoke_syscall
+    syscall: clock_gettime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:98c836eac7d4691d05dc9806dda7f797c706f898cc7843859968daf881d01b26
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 322
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b2419ecc3bb7b8418af575e7f0a356c94ecde2de6fc1d9c276d8758760f886a6
+  case: errors_enodev_322

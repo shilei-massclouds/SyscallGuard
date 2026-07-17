@@ -1,0 +1,47 @@
+# 合规检查：条件：The caller does not have permission to access the address space of the process pidfd；检查：调用 process_madvise(pidfd, n, n, advice, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_898010CF460EB43C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: pidfd
+    predicate: invalid_or_inaccessible
+    value: EPERM
+    summary: The caller does not have permission to access the address space of the process pidfd
+  action:
+    operation: invoke_syscall
+    syscall: process_madvise
+    arguments:
+    - pidfd
+    - n
+    - n
+    - advice
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:898010cf460eb43c09e76719ceff22ea6586a4b49a6e8898aed01b486c49b590
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4828942dff19ee5c38b0d1dac929b6a99a4a593215d2e62e6dd8fe816331d7cd
+  case: errors_eperm_171
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4828942dff19ee5c38b0d1dac929b6a99a4a593215d2e62e6dd8fe816331d7cd
+  case: errors_eperm_171

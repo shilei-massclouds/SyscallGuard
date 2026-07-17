@@ -1,0 +1,38 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 move_mount(fsmfd, "", -1, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_08E6F527B4F8150F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fsmfd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - fsmfd
+    - '""'
+    - '-1'
+    - MNTPOINT
+    - MOVE_MOUNT_F_EMPTY_PATH
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:08e6f527b4f8150f2636c95432f2231716123245a809fb0ca3ec7e87e168e1aa
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fbd24b9b8603684810eca402d178ad7c4fafcb08dbb8d7bed50ba500d4922c12
+  case: move_mount02_63_2_0

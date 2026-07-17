@@ -1,0 +1,37 @@
+# 合规检查：条件：(since Linux 3.7) Module signature is misformatted；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EBADMSG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7EF435B7693EFFC7--7ef435b7693e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBADMSG
+    summary: (since Linux 3.7) Module signature is misformatted
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADMSG
+  errno:
+  - EBADMSG
+semantic_hash: sha256:7ef435b7693effc7a55718baa3df4ee6f4c2b52c0820d0e5ffb67a7fe8cbe1a7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe847b6d98dec718d6af54d0c7086e45eefcaafd718ad109ac4c716dec63276b
+  case: errors_ebadmsg_184

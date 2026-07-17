@@ -1,0 +1,34 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 epoll_create1(-1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_11C0431607FD5753
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_create1
+    arguments:
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:11c0431607fd57533d1c5963042c455cbbde73e3b6692aa38141822fd5cf6e40
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_create1/epoll_create1_02.c
+  line: 29
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:74e9f9f8b4077ccbf702806f38a20826d3ea5c212bd670ff9f8a5abf7d12a2e2
+  case: epoll_create1_02_29_0_0

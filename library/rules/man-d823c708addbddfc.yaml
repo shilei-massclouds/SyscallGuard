@@ -1,0 +1,46 @@
+# 合规检查：条件：See NOTES；检查：调用 timerfd_settime(fd, flags, new_value, old_value)；预期：返回 -1，errno 为 ECANCELED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D823C708ADDBDDFC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECANCELED
+    summary: See NOTES
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_settime
+    arguments:
+    - fd
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECANCELED
+  errno:
+  - ECANCELED
+semantic_hash: sha256:cc3925cd3ba1f036e5498f4de635f72ecb9c43b96272e394d883218f6c4801b5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 462
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1868266b1eb931fc983454fb86d53fb16cbb38b2fd9ac33118b665dd8d8393b2
+  case: errors_ecanceled_462
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 462
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1868266b1eb931fc983454fb86d53fb16cbb38b2fd9ac33118b665dd8d8393b2
+  case: errors_ecanceled_462

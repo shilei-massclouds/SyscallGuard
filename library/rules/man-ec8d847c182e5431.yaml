@@ -1,0 +1,47 @@
+# 合规检查：条件：The specified process cannot be traced. This could be because the tracer has insufficient privileges (the required capability is CAP_SYS_PTRACE );...；检查：调用 ptrace(op, pid, addr, data)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EC8D847C182E5431
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The specified process cannot be traced. This could be because the tracer has insufficient
+      privileges (the required capability is CAP_SYS_PTRACE );...
+  action:
+    operation: invoke_syscall
+    syscall: ptrace
+    arguments:
+    - op
+    - pid
+    - addr
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ec8d847c182e5431659c4d05f4cc78ad40779eb7659e6ab6b5ef28a038d10ce0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:832a6f03787c9a35dc376b1c06bdb39b450239819f990b99ad4963223c3c28a5
+  case: errors_eperm_2453
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ptrace
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:832a6f03787c9a35dc376b1c06bdb39b450239819f990b99ad4963223c3c28a5
+  case: errors_eperm_2453

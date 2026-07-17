@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 setsockopt(sockfd, level, optname, optlen, optlen)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73BF7257C99A2E8B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: setsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:78845f40d1d1c4fcba87870dd2b56bb8cf828f513b65dd84a8d8bb07d5548d25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 98
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b5cc017c9196f96fb634cd155e5e9d2429ba8b44d0857f5dcc8e545685c3756e
+  case: return_value_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 98
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b5cc017c9196f96fb634cd155e5e9d2429ba8b44d0857f5dcc8e545685c3756e
+  case: return_value_98

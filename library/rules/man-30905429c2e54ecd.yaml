@@ -1,0 +1,63 @@
+# 合规检查：条件：The address pointed to by msgp isn't accessible；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_30905429C2E54ECD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: The address pointed to by msgp isn't accessible
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:30905429c2e54ecdcea79f61aff441ac074101b8c7d892a27a7192f7f40dda78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96447b026948f5ee5586b80b7c9fd287e69d616e27baa3a7daccb0eba1516135
+  case: errors_efault_338
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96447b026948f5ee5586b80b7c9fd287e69d616e27baa3a7daccb0eba1516135
+  case: errors_efault_338
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1856e5871067dc8c90636e97b39b8980678d6fe2e42bf362301173c59cfe9815
+  case: errors_efault_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1856e5871067dc8c90636e97b39b8980678d6fe2e42bf362301173c59cfe9815
+  case: errors_efault_382

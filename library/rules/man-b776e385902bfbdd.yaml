@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 umount2(target)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B776E385902BFBDD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:b776e385902bfbdd518cd4ec4f67b868c079d901a924c09939de6a69b454d389
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 95
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:fcaf8fe095159811f7ca1ad71b1f63cbe7a4e4267ada8c70b2373be9f198b7b9
+  case: return_value_95
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 95
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:fcaf8fe095159811f7ca1ad71b1f63cbe7a4e4267ada8c70b2373be9f198b7b9
+  case: return_value_95

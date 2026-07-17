@@ -1,0 +1,45 @@
+# 合规检查：条件：An attempt was made to set buf.tick to a value outside the range 900000/ HZ to 1100000/ HZ , where HZ is the system timer interrupt frequency；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D906B0BC75089225
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: buf
+    predicate: invalid_value
+    value: EINVAL
+    summary: An attempt was made to set buf.tick to a value outside the range 900000/ HZ to 1100000/ HZ
+      , where HZ is the system timer interrupt frequency
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:461385d03a39c1cc92006fd8ad0218ed193b0a628494a8c68978242ebc89abef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f47c56eec1d67698ebac14b3ce8b2f6911062045bd88cfb7d7c92e29db51f249
+  case: errors_einval_503
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f47c56eec1d67698ebac14b3ce8b2f6911062045bd88cfb7d7c92e29db51f249
+  case: errors_einval_503

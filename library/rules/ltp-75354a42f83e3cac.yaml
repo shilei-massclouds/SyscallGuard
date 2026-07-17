@@ -1,0 +1,35 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 pathconf(emptypath, 0)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_75354A42F83E3CAC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: pathconf
+    arguments:
+    - emptypath
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:75354a42f83e3cace074274950ab8d2be010cb683186babd97e19349ba50bd28
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a8ca298ba98e8d8fc1d3559917b8109efed8e4fd325fe09ae6b5c74491fea1fe
+  case: pathconf02_58_1_0

@@ -1,0 +1,48 @@
+# 合规检查：条件：Insufficient permission to inspect process resources. The CAP_SYS_PTRACE capability is required to inspect processes that you do not own. Other ptrace...；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EA48F07CE657127F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: Insufficient permission to inspect process resources. The CAP_SYS_PTRACE capability is required
+      to inspect processes that you do not own. Other ptrace...
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ea48f07ce657127fbd87b453dacf353c9ac6ae99d89de2150975c936e2cd4a17
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01e5f332e98f6c203f353bd79f91dcb8df47896720860a061e8d8986bc588b73
+  case: errors_eperm_269
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01e5f332e98f6c203f353bd79f91dcb8df47896720860a061e8d8986bc588b73
+  case: errors_eperm_269

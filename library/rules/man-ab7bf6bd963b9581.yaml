@@ -1,0 +1,46 @@
+# 合规检查：条件：( utimensat ()) Search permission is denied for one of the prefix components of path；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AB7BF6BD963B9581
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ESRCH
+    summary: ( utimensat ()) Search permission is denied for one of the prefix components of path
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:ab7bf6bd963b9581dc28efcf160fff709b4359590d2b01cd5c1f1084903e5a3c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 392
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:74f34d04712da87063f3071cbb16b0f579a74a697896f6a7fe46683ebf333148
+  case: errors_esrch_392
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 392
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:74f34d04712da87063f3071cbb16b0f579a74a697896f6a7fe46683ebf333148
+  case: errors_esrch_392

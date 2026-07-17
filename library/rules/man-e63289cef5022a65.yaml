@@ -1,0 +1,42 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 eventfd2()；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E63289CEF5022A65
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: eventfd2
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:e63289cef5022a65b23582267936ba0b685eccd3b955932988ad9364777846ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ef69b03125eba284439d5e65cb493fdbe881d00654824a762684350c0c4abd
+  case: errors_enfile_237
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: eventfd2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ef69b03125eba284439d5e65cb493fdbe881d00654824a762684350c0c4abd
+  case: errors_enfile_237

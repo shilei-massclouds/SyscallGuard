@@ -1,0 +1,46 @@
+# 合规检查：条件：The address pointed to by arg.buf or arg.array isn't accessible；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1A4D408E72E87885
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: The address pointed to by arg.buf or arg.array isn't accessible
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:1a4d408e72e878850a26911e3f22bbc2dd2b421cee7c07f834f9db2439dd891b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f6d7c6f49105e9aec7922bb9753166a9b31135bc3db296ec3897d30170659d36
+  case: errors_efault_445
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f6d7c6f49105e9aec7922bb9753166a9b31135bc3db296ec3897d30170659d36
+  case: errors_efault_445

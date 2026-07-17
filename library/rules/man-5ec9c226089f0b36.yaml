@@ -1,0 +1,43 @@
+# 合规检查：条件：FUTEX2_NUMA was set in waiters []. flags , and the NUMA word is larger than the maximum possible NUMA node and not FUTEX_NO_NODE；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5EC9C226089F0B36
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: FUTEX2_NUMA was set in waiters []. flags , and the NUMA word is larger than the maximum possible
+      NUMA node and not FUTEX_NO_NODE
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5ec9c226089f0b3615d311a3c3035f621ad7bbace7f13ddbc21b4581372cb7b2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 258
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f6cdfee0e55ac8839509012622f678b54d28541d80f841bc530308fbdc2d39c
+  case: errors_einval_258
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 258
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f6cdfee0e55ac8839509012622f678b54d28541d80f841bc530308fbdc2d39c
+  case: errors_einval_258

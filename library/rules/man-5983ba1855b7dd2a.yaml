@@ -1,0 +1,46 @@
+# 合规检查：条件：The value in the tv_nsec field was not in the range [0, 999999999] or tv_sec was negative；检查：调用 clock_nanosleep(clockid, flags, t, remain)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5983BA1855B7DD2A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value in the tv_nsec field was not in the range [0, 999999999] or tv_sec was negative
+  action:
+    operation: invoke_syscall
+    syscall: clock_nanosleep
+    arguments:
+    - clockid
+    - flags
+    - t
+    - remain
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5983ba1855b7dd2a6d860f9002bc79fc80d4441d5d1279e1d7457fbbf300c06a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c9331d4752d1e27292d9790c1a8f9a261d7e512447facecd16c37759d7ebfcc
+  case: errors_einval_157
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c9331d4752d1e27292d9790c1a8f9a261d7e512447facecd16c37759d7ebfcc
+  case: errors_einval_157

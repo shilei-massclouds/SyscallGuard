@@ -1,0 +1,47 @@
+# 合规检查：条件：The call timed out before a message could be transferred；检查：调用 mq_timedreceive(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 ETIMEDOUT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_63064D0C5A9838DC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ETIMEDOUT
+    summary: The call timed out before a message could be transferred
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedreceive
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETIMEDOUT
+  errno:
+  - ETIMEDOUT
+semantic_hash: sha256:63064d0c5a9838dc4dc4a4808f4e2c5055844db6a43f4dd56ce2722763b4133e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e5273c1b70a3413a7b450802e6b632863f46d6d2725f49f8d1d89a44894eb557
+  case: errors_etimedout_129
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedreceive
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e5273c1b70a3413a7b450802e6b632863f46d6d2725f49f8d1d89a44894eb557
+  case: errors_etimedout_129

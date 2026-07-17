@@ -1,0 +1,47 @@
+# 合规检查：条件：( faccessat ()) path is relative but dirfd is neither AT_FDCWD ( faccessat ()) nor a valid file descriptor；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7BB011FC81656C5C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( faccessat ()) path is relative but dirfd is neither AT_FDCWD ( faccessat ()) nor a valid
+      file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:7bb011fc81656c5c49c0a14d42723949d694032aa98feadd0e77302df7d9b2b5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e7f9c45c95dcc7eb209ea22783d684db393e13b87e741afbc2f1fe7220caafb
+  case: errors_ebadf_220
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e7f9c45c95dcc7eb209ea22783d684db393e13b87e741afbc2f1fe7220caafb
+  case: errors_ebadf_220

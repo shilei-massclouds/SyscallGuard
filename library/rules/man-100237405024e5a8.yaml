@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 mq_unlink(name)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_100237405024E5A8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: mq_unlink
+    arguments:
+    - name
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:100237405024e5a8ad464d2ad05914f81594f8c8013a6a65abc48f0d7e5807f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 27
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:00610314f9cddaa87d6eac8c91480695d6e153878c6b312b2f81db69e9a66a61
+  case: return_value_27
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_unlink
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 27
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:00610314f9cddaa87d6eac8c91480695d6e153878c6b312b2f81db69e9a66a61
+  case: return_value_27

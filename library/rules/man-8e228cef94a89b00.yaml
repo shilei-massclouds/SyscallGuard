@@ -1,0 +1,48 @@
+# 合规检查：条件：The filesystem object indicated by dirfd and path has a mark that was updated with the FAN_MARK_IGNORE flag, and the user attempted to update the mark with...；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8E228CEF94A89B00
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EEXIST
+    summary: The filesystem object indicated by dirfd and path has a mark that was updated with the FAN_MARK_IGNORE
+      flag, and the user attempted to update the mark with...
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:8e228cef94a89b00d9ff08666006fd25034c31fe2c4c36f6b9c9891f135aeea6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 624
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3574b44ab3db42bf15e85bc402b7f867e94a70bd72eb001afcbbf9aae58edec7
+  case: errors_eexist_624
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 624
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3574b44ab3db42bf15e85bc402b7f867e94a70bd72eb001afcbbf9aae58edec7
+  case: errors_eexist_624

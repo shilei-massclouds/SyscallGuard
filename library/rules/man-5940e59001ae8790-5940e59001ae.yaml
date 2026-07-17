@@ -1,0 +1,36 @@
+# 合规检查：条件：The hot-pluggable device (like USB for example) represented by a dynamic clk_id has disappeared after its character device was opened. See clock_gettime (2)...；检查：调用 adjtimex(buf)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5940E59001AE8790--5940e59001ae
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODEV
+    summary: The hot-pluggable device (like USB for example) represented by a dynamic clk_id has disappeared
+      after its character device was opened. See clock_gettime (2)...
+  action:
+    operation: invoke_syscall
+    syscall: adjtimex
+    arguments:
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:5940e59001ae8790fd5e85dc76075c1c0396ffff2d878eb8e1c4fae938c2d21e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: adjtimex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 514
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b92d519290ce6e5e190c9d3f6fc53bf731f43f5fd3d715c206dab442d95f476
+  case: errors_enodev_514

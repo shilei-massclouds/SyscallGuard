@@ -1,0 +1,45 @@
+# 合规检查：条件：act or oldact points to memory which is not a valid part of the process address space；检查：调用 rt_sigaction(signum, act, oldact)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2DD651B77E7D10AC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: act
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: act or oldact points to memory which is not a valid part of the process address space
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigaction
+    arguments:
+    - signum
+    - act
+    - oldact
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2dd651b77e7d10acffc7bbc575c54b230d5471d028c21be90e43fb89f1664570
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaction.2
+  line: 973
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bcda26bcd873c45c084ed6107694b0c1ce437694a3f08348b389173b4b098aa
+  case: errors_efault_973
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigaction
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaction.2
+  line: 973
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bcda26bcd873c45c084ed6107694b0c1ce437694a3f08348b389173b4b098aa
+  case: errors_efault_973

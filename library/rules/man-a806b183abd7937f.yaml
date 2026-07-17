@@ -1,0 +1,45 @@
+# 合规检查：条件：( swapon ()) The indicated path does not contain a valid swap signature or resides on an in-memory filesystem such as tmpfs (5)；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A806B183ABD7937F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: ( swapon ()) The indicated path does not contain a valid swap signature or resides on an
+      in-memory filesystem such as tmpfs (5)
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a806b183abd7937fd8cafba1655903291c72d4227836d707e7e8fbb50f500c6f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f0b3dcadc8d036f05801d2b70ddc6b4f88c26e986c1d89ddb52c04031d66b2a
+  case: errors_einval_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f0b3dcadc8d036f05801d2b70ddc6b4f88c26e986c1d89ddb52c04031d66b2a
+  case: errors_einval_102

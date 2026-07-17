@@ -1,0 +1,38 @@
+# 合规检查：条件：(since Linux 4.7) The file referred to by fd is opened for read-write. In addition to the above errors, if the module's init function is executed and...；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_161E4EF12C551F0F--161e4ef12c55
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ETXTBSY
+    summary: (since Linux 4.7) The file referred to by fd is opened for read-write. In addition to the
+      above errors, if the module's init function is executed and...
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:161e4ef12c551f0fe8a88ef0a08207edb9322eadcd9984c571d2ac939cdb361a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 281
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e4375d074f12220efa60e0d4f1dc57fd24ac0a43c7a181b6837a923dea3fc6a
+  case: errors_etxtbsy_281

@@ -1,0 +1,46 @@
+# 合规检查：条件：Invalid flags specified in prot；检查：调用 pkey_mprotect(size, size, prot, pkey)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_84706FE26532D57F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: prot
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid flags specified in prot
+  action:
+    operation: invoke_syscall
+    syscall: pkey_mprotect
+    arguments:
+    - size
+    - size
+    - prot
+    - pkey
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2e7575ce40f7bc6ba813fcc09dc53218eee248be0816e20f18577ab984873386
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c64d2f1c5a2410f72f99bc40a4172fe3b1a9fa1cd076b1c07fd1fc25f7b09688
+  case: errors_einval_158
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c64d2f1c5a2410f72f99bc40a4172fe3b1a9fa1cd076b1c07fd1fc25f7b09688
+  case: errors_einval_158

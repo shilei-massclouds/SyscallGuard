@@ -1,0 +1,44 @@
+# 合规检查：条件：fd refers to a namespace whose type does not match that specified in nstype；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_378558E7B426F613
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd refers to a namespace whose type does not match that specified in nstype
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:378558e7b426f61392a7ac34ab991512b736fd1608c7b3c46ca20842c838c41c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96daa7de26a55f572397d6fd73a75ad554c9e4d31a8036d31a910d12626bd274
+  case: errors_einval_269
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96daa7de26a55f572397d6fd73a75ad554c9e4d31a8036d31a910d12626bd274
+  case: errors_einval_269

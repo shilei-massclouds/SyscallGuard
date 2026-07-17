@@ -1,0 +1,44 @@
+# 合规检查：条件：The calling process does not have the required \%CAP_SYS_ADMIN capability；检查：调用 fsopen(fsname, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F36403F294AF1A0B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have the required \%CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: fsopen
+    arguments:
+    - fsname
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f36403f294af1a0b5d1527ef300f02b93768d47a94abd09f55127d1c94e13565
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec40f89d7d789c7b5864594b85b073ba6f7e479f2723bde8f4f7f58067ab67a2
+  case: errors_eperm_253
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsopen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec40f89d7d789c7b5864594b85b073ba6f7e479f2723bde8f4f7f58067ab67a2
+  case: errors_eperm_253

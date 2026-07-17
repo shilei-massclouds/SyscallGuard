@@ -1,0 +1,45 @@
+# 合规检查：条件：Empty accesses (i.e., attr did not specify any access rights to restrict)；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 ENOMSG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_99D6BE23E27B3A69
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: attr
+    predicate: documented_condition
+    value: ENOMSG
+    summary: Empty accesses (i.e., attr did not specify any access rights to restrict)
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMSG
+  errno:
+  - ENOMSG
+semantic_hash: sha256:99d6be23e27b3a69b3870eedd356aaaf0dce446d1b701c1179a7c461e5b9977b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 206
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67a3815a9ec6ba8e97880b0084828fb92582675b7e38d8344846ecb889693886
+  case: errors_enomsg_206
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 206
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67a3815a9ec6ba8e97880b0084828fb92582675b7e38d8344846ecb889693886
+  case: errors_enomsg_206

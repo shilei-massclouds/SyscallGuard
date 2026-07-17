@@ -1,0 +1,38 @@
+# 合规检查：条件：Addresses in the range [ addr , addr + size -1] are invalid for the address space of the process, or specify one or more pages that are not mapped. (Before...；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F4932B8D711D713C--f4932b8d711d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: size
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: Addresses in the range [ addr , addr + size -1] are invalid for the address space of the
+      process, or specify one or more pages that are not mapped. (Before...
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:f4932b8d711d713cf95d34bfb17754d6d341ab8e86e56d8726ce814df0daa186
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 172
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36294478af0a7861703d8445ee795b65cf02bbc33227ff798bb7ecc05c8ef7ea
+  case: errors_enomem_172

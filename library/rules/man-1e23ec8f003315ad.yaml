@@ -1,0 +1,46 @@
+# 合规检查：条件：The file referred to by kernel_fd or initrd_fd is empty (length zero)；检查：调用 kexec_load(entry, nr_segments, nr_segments, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1E23EC8F003315AD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: The file referred to by kernel_fd or initrd_fd is empty (length zero)
+  action:
+    operation: invoke_syscall
+    syscall: kexec_load
+    arguments:
+    - entry
+    - nr_segments
+    - nr_segments
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8c42866d994cbb8e249379a896bb486f2f8c612ec0cb407d271f4162bbb7d404
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 293
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d38323e204d76686bfcdf6d3562326f5312875daded18b67482810370a810fc
+  case: errors_einval_293
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 293
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d38323e204d76686bfcdf6d3562326f5312875daded18b67482810370a810fc
+  case: errors_einval_293

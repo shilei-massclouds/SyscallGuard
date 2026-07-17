@@ -1,0 +1,47 @@
+# 合规检查：条件：One of from_dirfd or to_dirfd is not a valid file descriptor；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4B9C90FCF8BB2CCF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: from_dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: One of from_dirfd or to_dirfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:4b9c90fcf8bb2ccff4c1f8a00cf615cd71169e61c71f6b46c486f466803eb584
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 399
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2a8275ddd1a40786c2b06942e0d62d870dd2caad20559cead2f1f28719695227
+  case: errors_ebadf_399
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 399
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2a8275ddd1a40786c2b06942e0d62d870dd2caad20559cead2f1f28719695227
+  case: errors_ebadf_399

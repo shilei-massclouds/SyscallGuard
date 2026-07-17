@@ -1,0 +1,45 @@
+# 合规检查：条件：Invalid flag specified in flags；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8251328BCEF43D9E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid flag specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8251328bcef43d9ece5bb443a71ffc089f57244b7d709bebecb84f7a49825b07
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14d08781817b816e4b256b7b189219febbbdf53df4a1d459cb985583be54bae1
+  case: errors_einval_428
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14d08781817b816e4b256b7b189219febbbdf53df4a1d459cb985583be54bae1
+  case: errors_einval_428

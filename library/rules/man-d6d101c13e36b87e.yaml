@@ -1,0 +1,44 @@
+# 合规检查：条件：One of kernel memory allocation routines failed during the execution of the syscall；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D6D101C13E36B87E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: One of kernel memory allocation routines failed during the execution of the syscall
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:d6d101c13e36b87eb3fde094d6b84c81996f99863b2a28eedac2ad4d4dea21c3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e121b427b4d84c7ffa3aac9a6d24094103b8ee74daac3de5e6be8176dc1b7fd7
+  case: errors_enomem_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e121b427b4d84c7ffa3aac9a6d24094103b8ee74daac3de5e6be8176dc1b7fd7
+  case: errors_enomem_126

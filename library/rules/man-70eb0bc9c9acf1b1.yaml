@@ -1,0 +1,45 @@
+# 合规检查：条件：The specified n exceeds the limit of available events, as defined in /proc/sys/fs/aio-max-nr (see proc_sys_fs (5))；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_70EB0BC9C9ACF1B1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: n
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The specified n exceeds the limit of available events, as defined in /proc/sys/fs/aio-max-nr
+      (see proc_sys_fs (5))
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:70eb0bc9c9acf1b174ff3ef1e160f3509d974cc5500e53d46897a8c5b605e778
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d9267749d1e5efb5e6ea4ef8c16ac4db2b5c180b0b870fae1334374b931d7203
+  case: errors_eagain_52
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d9267749d1e5efb5e6ea4ef8c16ac4db2b5c180b0b870fae1334374b931d7203
+  case: errors_eagain_52

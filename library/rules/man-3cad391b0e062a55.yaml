@@ -1,0 +1,47 @@
+# 合规检查：条件：mode requested creation of something other than a regular file, FIFO (named pipe), or UNIX domain socket, and the caller is not privileged (Linux: does not...；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3CAD391B0E062A55
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: mode
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'mode requested creation of something other than a regular file, FIFO (named pipe), or UNIX
+      domain socket, and the caller is not privileged (Linux: does not...'
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:3cad391b0e062a559707b9fe6d87f27be1332d96f32fc4033760b7c7e85b5490
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8e6e19d69f59884b02d93a963bf88412eb6a7675604e1f2fb3d89b61dc18b0e5
+  case: errors_eperm_223
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8e6e19d69f59884b02d93a963bf88412eb6a7675604e1f2fb3d89b61dc18b0e5
+  case: errors_eperm_223

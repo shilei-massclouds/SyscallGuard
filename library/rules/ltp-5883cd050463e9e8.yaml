@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:fdefabec5f843db77d24ccc49ee7ccadbb80f248232e6ad6e7ff912165ef7d4d
   case: epoll_ctl01_123_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+  line: 123
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fdefabec5f843db77d24ccc49ee7ccadbb80f248232e6ad6e7ff912165ef7d4d
+  case: epoll_ctl01_123_raw_0

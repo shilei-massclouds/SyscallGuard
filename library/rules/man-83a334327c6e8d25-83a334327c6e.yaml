@@ -1,0 +1,38 @@
+# 合规检查：条件：The size of the list buffer is too small to hold the result. In addition, the errors documented in stat (2) can also occur；检查：调用 flistxattr(fd, list, size)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_83A334327C6E8D25--83a334327c6e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: list
+    predicate: invalid_value
+    value: ERANGE
+    summary: The size of the list buffer is too small to hold the result. In addition, the errors documented
+      in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:83a334327c6e8d25674bd47203c09c54e9bb1b2292f415905875dcd38e844bc7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f28d6b385364f5ce0a49aca51880b0ca47cc07effa6e40069444f71d9cacac7b
+  case: errors_erange_129

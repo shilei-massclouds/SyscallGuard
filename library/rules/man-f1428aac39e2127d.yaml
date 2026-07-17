@@ -1,0 +1,42 @@
+# 合规检查：条件：The operation was interrupted by a signal (see signal (7))；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F1428AAC39E2127D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The operation was interrupted by a signal (see signal (7))
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:f1428aac39e2127d91815140f9f19b78451bad9df7c0f5579c628b2596ee44d9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5315dd565f6cdbc7dcc7c315b5a95f4d6d85c2b036d63d3a09f4813899d1bedc
+  case: errors_eintr_275
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5315dd565f6cdbc7dcc7c315b5a95f4d6d85c2b036d63d3a09f4813899d1bedc
+  case: errors_eintr_275

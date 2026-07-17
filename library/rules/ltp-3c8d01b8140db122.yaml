@@ -1,0 +1,37 @@
+# 合规检查：条件：The caller lacks a permission required by the operation.；检查：调用 faccessat2(atcwd_fd, rel_path, R_OK, AT_EACCESS)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3C8D01B8140DB122
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - atcwd_fd
+    - rel_path
+    - R_OK
+    - AT_EACCESS
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:3c8d01b8140db122142b9432d924effc7d761792b1bc511d0fd9f5fd9c4030e4
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat202.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0262ed12557dd2d6095de58479d0eb81b4a91dd7482f6906003a8476c80134a5
+  case: faccessat202_65_5_0

@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:0bf7b01524a14aa2c7c35f35bb336596ca7248ad64d44e4ab45844cc7bdddf82
   case: socket01_53_5
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/socket/socket01.c
+  line: 53
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:0bf7b01524a14aa2c7c35f35bb336596ca7248ad64d44e4ab45844cc7bdddf82
+  case: socket01_53_5_0

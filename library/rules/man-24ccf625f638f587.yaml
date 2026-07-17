@@ -1,0 +1,45 @@
+# 合规检查：条件：Cannot allocate sufficient memory to allocate a task structure for the child, or to copy those parts of the caller's context that need to be copied；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_24CCF625F638F587
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Cannot allocate sufficient memory to allocate a task structure for the child, or to copy
+      those parts of the caller's context that need to be copied
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:be3fd772157c161d4e5b556b22c56f5678bafed438f54604e6dbb22d1206a561
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cf94927b1f4480e21f05fb786d9a5ffe2c694f7aa8d748d253eb0fda76884302
+  case: errors_enomem_1445
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cf94927b1f4480e21f05fb786d9a5ffe2c694f7aa8d748d253eb0fda76884302
+  case: errors_enomem_1445

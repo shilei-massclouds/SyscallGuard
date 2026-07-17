@@ -1,0 +1,45 @@
+# 合规检查：条件：fd refers to a datagram socket for which a peer address has not been set using connect (2)；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EDESTADDRREQ。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A16A4CAD298D4C96
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EDESTADDRREQ
+    summary: fd refers to a datagram socket for which a peer address has not been set using connect (2)
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDESTADDRREQ
+  errno:
+  - EDESTADDRREQ
+semantic_hash: sha256:a16a4cad298d4c96039dfe875a36d3a1c609385c1c4aaaa4f97ced55dae28de1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7aa5ca1fa54f0d3b6cc6784b436d3c4ab83a8626020f39bb2443b26c8e6157d4
+  case: errors_edestaddrreq_139
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7aa5ca1fa54f0d3b6cc6784b436d3c4ab83a8626020f39bb2443b26c8e6157d4
+  case: errors_edestaddrreq_139

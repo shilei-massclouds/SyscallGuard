@@ -1,0 +1,42 @@
+# 合规检查：条件：The referenced path does not exist.、The argument is a userspace buffer.；检查：调用 readlinkat(dir_fd, "does_not_exists", buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4D5D0A94700C0B71
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - '"does_not_exists"'
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:4d5d0a94700c0b7166873cd3bc8b0c9ade1048583d27cef9464ad330694da827
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_5_0

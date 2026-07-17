@@ -1,0 +1,48 @@
+# 合规检查：条件：optlen invalid in setsockopt (). In some cases this error can also occur for an invalid value in optval (e.g., for the IP_ADD_MEMBERSHIP option described in...；检查：调用 setsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9B9DE9517916476A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: optlen
+    predicate: invalid_value
+    value: EINVAL
+    summary: optlen invalid in setsockopt (). In some cases this error can also occur for an invalid value
+      in optval (e.g., for the IP_ADD_MEMBERSHIP option described in...
+  action:
+    operation: invoke_syscall
+    syscall: setsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9b9de9517916476ad49bcc68a179c5ad7ca57732d4e97eec8a10a2b169ec877f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89a2a40d0ab83c5d3dfd3474caa487568ada55a5fca258fc3d05ee4a97be06b6
+  case: errors_einval_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89a2a40d0ab83c5d3dfd3474caa487568ada55a5fca258fc3d05ee4a97be06b6
+  case: errors_einval_123

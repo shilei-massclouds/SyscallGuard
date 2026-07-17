@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getresuid(ruid, euid, suid)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1D3BA7CB60EB5557
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getresuid
+    arguments:
+    - ruid
+    - euid
+    - suid
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:a2488bf7ba6948e69026807c8d1e9089d512f961849fd51d34fbfe94697b4b65
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getresuid.2
+  line: 33
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b1e0d0ffe110c2f431ca966921086dabd0b656836ab8c4775f25890266208c44
+  case: return_value_33
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getresuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getresuid.2
+  line: 33
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b1e0d0ffe110c2f431ca966921086dabd0b656836ab8c4775f25890266208c44
+  case: return_value_33

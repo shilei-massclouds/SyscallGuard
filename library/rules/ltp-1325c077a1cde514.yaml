@@ -31,8 +31,24 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat01.c
+  line: 54
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:1dd1bb42206f0827b24caddd2556f9c1cf2edaec13278a66cc64fb6d8eef215d
+  case: cachestat01_54_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/cachestat/cachestat02.c
   line: 50
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:f86dd78e68d17eb75cd7c11a37bb6e5981e8977c78204e353962b80658d1c397
   case: cachestat02_50_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat02.c
+  line: 50
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:f86dd78e68d17eb75cd7c11a37bb6e5981e8977c78204e353962b80658d1c397
+  case: cachestat02_50_raw_0

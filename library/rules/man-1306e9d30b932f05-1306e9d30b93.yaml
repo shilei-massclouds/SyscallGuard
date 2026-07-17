@@ -1,0 +1,39 @@
+# 合规检查：条件：The size of the attribute value is larger than the maximum size allowed; the attribute cannot be retrieved. This can happen on filesystems that support very...；检查：调用 fgetxattr(fd, name, size, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1306E9D30B932F05--1306e9d30b93
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: E2BIG
+    summary: The size of the attribute value is larger than the maximum size allowed; the attribute cannot
+      be retrieved. This can happen on filesystems that support very...
+  action:
+    operation: invoke_syscall
+    syscall: fgetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:1306e9d30b932f0523bd3f2f05df5afb8d220d4a7d09eca127157a6f74f1e53d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ebb535bd875857900952b635303c059c2faee6e5a6ef55805ec2a9400916ae7
+  case: errors_e2big_97

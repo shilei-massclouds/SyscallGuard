@@ -1,0 +1,35 @@
+# 合规检查：条件：An error occurred during synchronization. This error may relate to data written to any file on the filesystem, or on metadata related to the filesystem itself；检查：调用 sync()；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_851C55E19663FC3F--851c55e19663
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An error occurred during synchronization. This error may relate to data written to any file
+      on the filesystem, or on metadata related to the filesystem itself
+  action:
+    operation: invoke_syscall
+    syscall: sync
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:851c55e19663fc3fb030f1cbe45ef6cc866bc4fdd1b07bb1ff327a3278c0a4f7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5abda743b9614c9420dc45bcdaaf9124f8b04bfb822ae5e04346997bec71498c
+  case: errors_eio_65

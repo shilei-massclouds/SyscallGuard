@@ -16,9 +16,17 @@ Implement every source adapter with `discover`, `prescan`, and `extract`. The cu
 reads source instances containing only `source_id`, `adapter`, `location`, `revision`, and optional
 `default_count`. Keep all macro, helper, old-API, array, normalization, precondition, and rule-template
 choices in `sources/adapters/ltp/recognition-rules.yaml`; never import tools from the LTP checkout.
+The `man_pages` adapter discovers only raw `__NR_*` entries from the configured RISC-V64 generated
+UAPI header, excludes `__NR_syscalls`, follows man2 `.so` aliases, and uses directly referenced
+man2const, man2type, and man7 pages only as hashed semantic context. Missing man2 documentation is a
+non-blocking `no_rules: missing_documentation` result. Treat `ERRORS` as the primary rule-analysis
+index: emit one independent rule per errno clause after applying its function qualifier. Use
+`RETURN VALUE` only for unambiguous simple success, positive, fd, or fixed-value results.
 
 Write only `runs/<report-id>/report.md`, `library/syscalls.yaml`, and created or updated
-`library/rules/*.yaml`. `library/syscalls.yaml` is the first-level syscall-to-rule index; the rule
+`library/rules/*.yaml`. `library/syscalls.yaml` is the first-level active syscall-to-rule index. Its
+`inactive_rules` section retains retired/conflicted paths and original syscall ownership for
+historical validation; new mapping selects active rules only. The rule
 files are the second-level details. Prefix each rule YAML with a Chinese summary comment and repeat
 the exact comment above its reference in `library/syscalls.yaml`. The report
 starts with a concise Chinese explanation of rule conditions and expected results, and keeps its
@@ -28,9 +36,10 @@ rules atomically and publish the report last. Skip unchanged
 `formed_rules` and `no_rules` rows. A failed call writes no report and advances no state.
 
 Each syscall row records source and recognition fingerprints, result, versioned rules, raw evidence
-count, unresolved evidence count, and reason. If any evidence is unresolved or no rule forms, record
-`no_rules` and publish none of that syscall's candidates. Context evidence does not participate in
-this gate; explicitly unresolved expected evidence still does. Do not persist raw or normalized evidence.
+count, unresolved evidence count, and reason. If any non-isolated evidence is unresolved or no rule
+forms, record `no_rules` and publish none of that syscall's candidates. Explicitly invalid expected
+errno and same-condition conflicts are isolated and never become active rules. Context evidence does
+not participate in this gate. Do not persist raw or normalized evidence.
 
 Hash rule category and semantics into `semantic_hash`. Reuse identical semantics and merge `sources`.
 Do not advance `generated_at_utc` for a sources-only change. Record every rule source with source ID

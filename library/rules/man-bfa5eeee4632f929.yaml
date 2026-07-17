@@ -1,0 +1,47 @@
+# 合规检查：条件：One of the source parameters referred to an invalid superblock；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BFA5EEEE4632F929
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: One of the source parameters referred to an invalid superblock
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bfa5eeee4632f9299114ec73686726562a2210ccd7ad3735b681b1f99d2c33fb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 447
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db3dfd16283af4beaa59ea829087a629fcec15a80b372d7173b5fe6354ed4b95
+  case: errors_einval_447
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 447
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db3dfd16283af4beaa59ea829087a629fcec15a80b372d7173b5fe6354ed4b95
+  case: errors_einval_447

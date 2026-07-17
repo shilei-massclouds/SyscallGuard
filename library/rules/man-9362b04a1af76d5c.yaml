@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 munlock(size, size)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9362B04A1AF76D5C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: munlock
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:9362b04a1af76d5cfd6c2f85da637f59c5887556f0d537b56af79eee1ebd8979
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munlock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8103342028de6e4c413cbab106afe8661d62299ac8f019f5d10cf5c0629ad10f
+  case: return_value_165

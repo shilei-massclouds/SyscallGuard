@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:4c91367bdebe5d4157b1ad85fa86fca60239daaee97583057de935810e407acd
   case: capget01_35_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/capget/capget01.c
+  line: 35
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:4c91367bdebe5d4157b1ad85fa86fca60239daaee97583057de935810e407acd
+  case: capget01_35_raw_0

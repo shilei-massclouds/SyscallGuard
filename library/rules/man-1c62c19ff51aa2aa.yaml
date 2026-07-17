@@ -1,0 +1,48 @@
+# 合规检查：条件：An attempt was made to modify ( MS_REMOUNT ) the MS_RDONLY , MS_NOSUID , or MS_NOEXEC flag, or one of the atime flags ( MS_NOATIME , MS_NODIRATIME ,...；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1C62C19FF51AA2AA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: An attempt was made to modify ( MS_REMOUNT ) the MS_RDONLY , MS_NOSUID , or MS_NOEXEC flag,
+      or one of the atime flags ( MS_NOATIME , MS_NODIRATIME ,...
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:1c62c19ff51aa2aa69067d4164dceef66bf3e480c6c0db9187916c7845b99560
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 831
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3bccb21af830ce5568a19bc5d0ce6a78c71a56580629773446519abbfb017eba
+  case: errors_eperm_831
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 831
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3bccb21af830ce5568a19bc5d0ce6a78c71a56580629773446519abbfb017eba
+  case: errors_eperm_831

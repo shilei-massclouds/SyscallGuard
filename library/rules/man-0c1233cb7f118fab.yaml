@@ -1,0 +1,46 @@
+# 合规检查：条件：The filesystem does not support the O_DIRECT flag. See NOTES for more information；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0C1233CB7F118FAB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The filesystem does not support the O_DIRECT flag. See NOTES for more information
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0c1233cb7f118fab9eb146a9d75b537d5633861f121e0fad824dd45508742148
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1056
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:228533a79edcb523f3499f06cf2daf14c179a537fd93e2416b6472e3a308821f
+  case: errors_einval_1056
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1056
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:228533a79edcb523f3499f06cf2daf14c179a537fd93e2416b6472e3a308821f
+  case: errors_einval_1056

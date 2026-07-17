@@ -1,0 +1,36 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached (see the discussion of RLIMIT_NOFILE in getrlimit (2))；检查：调用 dup(oldfd)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7F34A257DE64CAFE--7f34a257de64
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached (see the discussion
+      of RLIMIT_NOFILE in getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - oldfd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:7f34a257de64cafee279c771c2acbea7a0867468d9f877e9194368fd553486c1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:312cd1086e1dc17333df19a6b4135445f883efa428100243ac9fa078f4cc74f5
+  case: errors_emfile_184

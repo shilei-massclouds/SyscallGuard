@@ -1,0 +1,48 @@
+# 合规检查：条件：or EACCES The directory containing oldpath has the sticky bit ( S_ISVTX ) set and the process's effective user ID is neither the user ID of the file to be...；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD9A71FB720F3F16
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EPERM
+    summary: or EACCES The directory containing oldpath has the sticky bit ( S_ISVTX ) set and the process's
+      effective user ID is neither the user ID of the file to be...
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ad9a71fb720f3f167aeb454c7f72224d213e6ef01d343588854ccc7c991b6e82
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5bea66164841fe9201232874e8c0e41a3a2a4cf9b1cd58d1c90320547222ec8b
+  case: errors_eperm_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5bea66164841fe9201232874e8c0e41a3a2a4cf9b1cd58d1c90320547222ec8b
+  case: errors_eperm_382

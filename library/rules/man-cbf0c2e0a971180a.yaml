@@ -1,0 +1,48 @@
+# 合规检查：条件：The pathname specified via the dirfd and path arguments to mount_setattr () isn't a mount point；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CBF0C2E0A971180A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: The pathname specified via the dirfd and path arguments to mount_setattr () isn't a mount
+      point
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:cbf0c2e0a971180ae7ecda7205f798e513acaa01a7ac47aefc9378fc10b81a9e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e8f54a42ba4f059d6d646aa19076ec43fdbc82698c045c36c12be82ea6d7d12
+  case: errors_einval_410
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e8f54a42ba4f059d6d646aa19076ec43fdbc82698c045c36c12be82ea6d7d12
+  case: errors_einval_410

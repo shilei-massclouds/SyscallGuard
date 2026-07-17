@@ -1,0 +1,47 @@
+# 合规检查：条件：Protocol error. In addition, network errors for the new socket and as defined for the protocol may be returned. Various Linux kernels can return other...；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EPROTO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E5F3CF8AD505B08F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPROTO
+    summary: Protocol error. In addition, network errors for the new socket and as defined for the protocol
+      may be returned. Various Linux kernels can return other...
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPROTO
+  errno:
+  - EPROTO
+semantic_hash: sha256:7ddee5b6c79ec8b4f04df90045204f3afc1aea87fdd888a196f0da6933072a65
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d3c3e7807ff584d5577cadfaf23f96824a8bfa7e539c8f7de55d6183db5e9bf
+  case: errors_eproto_239
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d3c3e7807ff584d5577cadfaf23f96824a8bfa7e539c8f7de55d6183db5e9bf
+  case: errors_eproto_239

@@ -1,0 +1,47 @@
+# 合规检查：条件：( mknodat ()) path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2AC4772264DFD22E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( mknodat ()) path is relative and dirfd is a file descriptor referring to a file other than
+      a directory
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:2ac4772264dfd22e689cdb462c2cb77e710b1403e488eada868b12251b73ccec
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 216
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:287727978e426bf1e950fe02f93a82cd278cda0040823dbe2b046aca56bf67f6
+  case: errors_enotdir_216
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 216
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:287727978e426bf1e950fe02f93a82cd278cda0040823dbe2b046aca56bf67f6
+  case: errors_enotdir_216

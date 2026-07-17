@@ -1,0 +1,46 @@
+# 合规检查：条件：The user tried to connect to a broadcast address without having the socket broadcast flag enabled or the connection request failed because of a local...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B433B3C8DACC5EB4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The user tried to connect to a broadcast address without having the socket broadcast flag
+      enabled or the connection request failed because of a local...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b433b3c8dacc5eb4e25d211ba0ae9391b31fdb91f970dd12204ed9c349c0d270
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db4a17238e9ffcb61162173e8b8c2a3300860a5cd60755232e963509561db881
+  case: errors_eperm_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db4a17238e9ffcb61162173e8b8c2a3300860a5cd60755232e963509561db881
+  case: errors_eperm_102

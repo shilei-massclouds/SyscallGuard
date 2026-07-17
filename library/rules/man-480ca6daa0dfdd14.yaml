@@ -1,0 +1,46 @@
+# 合规检查：条件：path cannot be unlinked because it is being used by the system or another process; for example, it is a mount point or the NFS client software created it to...；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_480CA6DAA0DFDD14
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EBUSY
+    summary: path cannot be unlinked because it is being used by the system or another process; for example,
+      it is a mount point or the NFS client software created it to...
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:480ca6daa0dfdd1404526ddbc338fb0036b81ba88ec83db825be006c64cca102
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a11cdafad69607f23680388c7e4cae38511b995ce039d101b6aeffd6c90c8ed8
+  case: errors_ebusy_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a11cdafad69607f23680388c7e4cae38511b995ce039d101b6aeffd6c90c8ed8
+  case: errors_ebusy_141

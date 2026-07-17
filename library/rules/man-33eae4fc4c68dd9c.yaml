@@ -1,0 +1,40 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 vhangup()；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33EAE4FC4C68DD9C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: vhangup
+    arguments: []
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:33eae4fc4c68dd9c9b2aac4949b8369ff8c4e953d3b1e7d2bdf93201c803475d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vhangup.2
+  line: 40
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:edb6e9ec4b9d5d1c400bbcee56290caeb1f62ecaa84b142365b616e3a2159d02
+  case: return_value_40
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: vhangup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vhangup.2
+  line: 40
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:edb6e9ec4b9d5d1c400bbcee56290caeb1f62ecaa84b142365b616e3a2159d02
+  case: return_value_40

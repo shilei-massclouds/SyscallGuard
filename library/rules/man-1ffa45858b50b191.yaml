@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 4.3) A call to clock_settime () with a clockid of CLOCK_REALTIME attempted to set the time to a value less than the current value of the...；检查：调用 clock_settime(clockid, tp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1FFA45858B50B191
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: clockid
+    predicate: invalid_value
+    value: EINVAL
+    summary: (since Linux 4.3) A call to clock_settime () with a clockid of CLOCK_REALTIME attempted to
+      set the time to a value less than the current value of the...
+  action:
+    operation: invoke_syscall
+    syscall: clock_settime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1ffa45858b50b1914489f589384b719c5649444f3cc2e44bf87c7179f2ccbdf3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 309
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed3a353e8b4ca1f8e390a5d807719041e29dcf51f123290932e8b5470859a699
+  case: errors_einval_309
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 309
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed3a353e8b4ca1f8e390a5d807719041e29dcf51f123290932e8b5470859a699
+  case: errors_einval_309

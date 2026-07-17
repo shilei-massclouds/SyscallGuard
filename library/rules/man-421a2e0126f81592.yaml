@@ -1,0 +1,45 @@
+# 合规检查：条件：attr_flags had an invalid MOUNT_ATTR_ * flag set；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_421A2E0126F81592
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: attr_flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: attr_flags had an invalid MOUNT_ATTR_ * flag set
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:421a2e0126f815929713c7aabf20035681a2d1a7a0df8443c7b0c0f620b12802
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f63967a7c1b14f0bbec2dc70889241b2d42d4cc24730cc28ad790f1fce44ebb2
+  case: errors_einval_168
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f63967a7c1b14f0bbec2dc70889241b2d42d4cc24730cc28ad790f1fce44ebb2
+  case: errors_einval_168

@@ -1,0 +1,40 @@
+# 合规检查：条件：Disk quota limits meant that there is insufficient space remaining to store the extended attribute；检查：调用 fsetxattr(fd, name, size, size, flags)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_74476925933868E7--744769259338
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: Disk quota limits meant that there is insufficient space remaining to store the extended
+      attribute
+  action:
+    operation: invoke_syscall
+    syscall: fsetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:74476925933868e71da6357d9b6aba735a60ff666ecb4aeef38e59fe042e4e1e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e763e906c2626c4d6c17876ad0581d5717f84e683486d1acb3080e6703d2afd1
+  case: errors_edquot_100

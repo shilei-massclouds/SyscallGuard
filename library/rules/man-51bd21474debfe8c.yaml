@@ -1,0 +1,42 @@
+# 合规检查：条件：req is too large, the limit is the architectures page size；检查：调用 listmount()；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_51BD21474DEBFE8C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: E2BIG
+    summary: req is too large, the limit is the architectures page size
+  action:
+    operation: invoke_syscall
+    syscall: listmount
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:51bd21474debfe8cfc86785c659efc0bcb73bd8af74e039a02b646a15b45f35e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7fd632756d62dcb21c9b89f14840489bc1fd38be73c1fb6ad3078fc192da8fb5
+  case: errors_e2big_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7fd632756d62dcb21c9b89f14840489bc1fd38be73c1fb6ad3078fc192da8fb5
+  case: errors_e2big_102

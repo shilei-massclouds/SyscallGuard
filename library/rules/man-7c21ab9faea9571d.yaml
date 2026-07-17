@@ -1,0 +1,42 @@
+# 合规检查：条件：Any waiters []. uaddr field points outside the accessible address space；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C21AB9FAEA9571D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Any waiters []. uaddr field points outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7c21ab9faea9571dd59b0970fa93509fed6575a13798ba3a62cb21f823baaa32
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:09799b7eab5cccb832bde8721a7231edc2511efbaccc3536178c28c98691f0a8
+  case: errors_efault_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:09799b7eab5cccb832bde8721a7231edc2511efbaccc3536178c28c98691f0a8
+  case: errors_efault_190

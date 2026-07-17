@@ -1,0 +1,45 @@
+# 合规检查：条件：The membarrier () system call is not implemented by this kernel；检查：调用 membarrier(cmd, flags, cpu_id)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CFA25F5D32CDF0BE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: The membarrier () system call is not implemented by this kernel
+  action:
+    operation: invoke_syscall
+    syscall: membarrier
+    arguments:
+    - cmd
+    - flags
+    - cpu_id
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:cfa25f5d32cdf0be624d1705d5d6a01836b0982600945e8a73dde40dba335cf1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:edc5f979e321e170472b9fedf36922652ee18f307685c2a6daba7525e7ce0c98
+  case: errors_enosys_275
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: membarrier
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:edc5f979e321e170472b9fedf36922652ee18f307685c2a6daba7525e7ce0c98
+  case: errors_enosys_275

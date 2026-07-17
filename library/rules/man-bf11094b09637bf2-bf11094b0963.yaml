@@ -1,0 +1,36 @@
+# 合规检查：条件：new_value , old_value , or curr_value is not a valid pointer；检查：调用 timer_gettime(timerid, curr_value)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BF11094B09637BF2--bf11094b0963
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: curr_value
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: new_value , old_value , or curr_value is not a valid pointer
+  action:
+    operation: invoke_syscall
+    syscall: timer_gettime
+    arguments:
+    - timerid
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:bf11094b09637bf221b1e7128eb661f5430424cd15b59f9b13525344a2f9d47c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d802775b41e0c5e082f1486c590e4461d3302a07fe70c029931eb658be64ed5
+  case: errors_efault_153

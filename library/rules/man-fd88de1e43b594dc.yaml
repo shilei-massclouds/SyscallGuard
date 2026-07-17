@@ -1,0 +1,45 @@
+# 合规检查：条件：( sched_setscheduler ()) param does not make sense for the specified policy；检查：调用 sched_setscheduler(pid, policy, param)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD88DE1E43B594DC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: policy
+    predicate: documented_condition
+    value: EINVAL
+    summary: ( sched_setscheduler ()) param does not make sense for the specified policy
+  action:
+    operation: invoke_syscall
+    syscall: sched_setscheduler
+    arguments:
+    - pid
+    - policy
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fd88de1e43b594dcda1fc746c08576c116a0eba35d0f0ad0ffbfecfcb46bceae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c67d871f9aef7b0c975500b182c36ac43b646744ed9451657443e6421bcf371a
+  case: errors_einval_146
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setscheduler
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c67d871f9aef7b0c975500b182c36ac43b646744ed9451657443e6421bcf371a
+  case: errors_einval_146

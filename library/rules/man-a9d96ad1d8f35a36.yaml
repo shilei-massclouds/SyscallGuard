@@ -1,0 +1,43 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A9D96AD1D8F35A36
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:09530e1bb14c2efc9c626f5b069e47665d3a754aaee977d05171447ed942b9c7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f7d490775f513e7bcb93fd3630e73b2fa7f6e11aad9ea499160db354195738e
+  case: errors_enomem_80
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f7d490775f513e7bcb93fd3630e73b2fa7f6e11aad9ea499160db354195738e
+  case: errors_enomem_80

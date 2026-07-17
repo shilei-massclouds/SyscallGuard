@@ -1,0 +1,44 @@
+# 合规检查：条件：There was insufficient memory to create a new anonymous file；检查：调用 memfd_create(name, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_220E6A40224963FF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: There was insufficient memory to create a new anonymous file
+  action:
+    operation: invoke_syscall
+    syscall: memfd_create
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:220e6a40224963ff4b38922abadbb7f2986aedabce1f239a52ffe64016852127
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 189
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6bbd7816c78ce2913465e7f0d4fdde5f30f8a2cfbb2a30196905b040593594d5
+  case: errors_enomem_189
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 189
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6bbd7816c78ce2913465e7f0d4fdde5f30f8a2cfbb2a30196905b040593594d5
+  case: errors_enomem_189

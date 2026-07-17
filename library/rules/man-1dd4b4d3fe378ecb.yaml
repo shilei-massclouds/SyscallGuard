@@ -1,0 +1,47 @@
+# 合规检查：条件：Too many links encountered during pathname resolution；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1DD4B4D3FE378ECB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many links encountered during pathname resolution
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:1dd4b4d3fe378ecbc7930a15e1b374f27fd1c0f60dfc95a1da22806e45c8a674
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 771
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a26a51276bd56015cf031d2a68132179e04f7f02cd8b5df6720f5c425efd36d2
+  case: errors_eloop_771
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 771
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a26a51276bd56015cf031d2a68132179e04f7f02cd8b5df6720f5c425efd36d2
+  case: errors_eloop_771

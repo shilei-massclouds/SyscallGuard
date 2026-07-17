@@ -1,0 +1,46 @@
+# 合规检查：条件：A semaphore set corresponding to key already exists, but nsems is larger than the number of semaphores in that set；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A941E98A7CBC5E96
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: EINVAL
+    summary: A semaphore set corresponding to key already exists, but nsems is larger than the number
+      of semaphores in that set
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a941e98a7cbc5e963f02c2c31c4259bc19b4c8222152b264a12cf44a1b89e6c2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b2f55980d6625bd9b434576dd9f192c897c5731942d719b63233245ab9c0688
+  case: errors_einval_162
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b2f55980d6625bd9b434576dd9f192c897c5731942d719b63233245ab9c0688
+  case: errors_einval_162

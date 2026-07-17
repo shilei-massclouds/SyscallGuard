@@ -1,0 +1,33 @@
+# 合规检查：条件：The fixture creates SNAME_R as a symbolic link.；检查：调用 access(SNAME_R, R_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_342F7EADB5D10802
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates SNAME_R as a symbolic link.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - SNAME_R
+    - R_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:342f7eadb5d1080234e0abc1ff8fed84e03ac78d1e068532c4fdb451534d53b8
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2831bab9389bdd03f3e4f864361a021821c088da4ee15c573123237c43f4d84f
+  case: access02_58_5_0

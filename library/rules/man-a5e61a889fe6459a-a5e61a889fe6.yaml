@@ -1,0 +1,36 @@
+# 合规检查：条件：pkey , flags , or access_rights is invalid；检查：调用 pkey_alloc(flags, access_rights)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A5E61A889FE6459A--a5e61a889fe6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: pkey , flags , or access_rights is invalid
+  action:
+    operation: invoke_syscall
+    syscall: pkey_alloc
+    arguments:
+    - flags
+    - access_rights
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a5e61a889fe6459a9199d5fe5e33ea368a6b3f6bb1d293dd57606dcd53b6dd0b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_alloc
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:544534266e69c4c0354d79d779e8d5c7909220c4628369f0889473f8be715d61
+  case: errors_einval_65

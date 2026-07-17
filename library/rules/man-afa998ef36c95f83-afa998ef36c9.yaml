@@ -1,0 +1,41 @@
+# 合规检查：条件：A remote host refused to allow the network connection (typically because it is not running the requested service)；检查：调用 recvfrom(sockfd, size, size, flags, src_addr, addrlen)；预期：返回 -1，errno 为 ECONNREFUSED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AFA998EF36C95F83--afa998ef36c9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECONNREFUSED
+    summary: A remote host refused to allow the network connection (typically because it is not running
+      the requested service)
+  action:
+    operation: invoke_syscall
+    syscall: recvfrom
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - src_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECONNREFUSED
+  errno:
+  - ECONNREFUSED
+semantic_hash: sha256:afa998ef36c95f83117361819dfa8e21f8ef37b6ee2a1948e77a9f4de0d8ef55
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvfrom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 458
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc08c515b7e30394aa6a10cd371f869641bf43a5fc2be2508c673bf364951846
+  case: errors_econnrefused_458

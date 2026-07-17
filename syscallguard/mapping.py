@@ -35,6 +35,7 @@ from .common import (
 REPORT_KIND = "syscallguard_mapping_report"
 REPORT_STATUSES = {"covered", "needs_review", "unsupported", "pending"}
 ANALYSIS_STATUSES = {"covered", "needs_review", "unsupported"}
+COVERAGE_MODES = {"full", "static-only"}
 TARGET_DESCRIPTOR = Path("targets/starry/target.yaml")
 TEMP_ROOT = Path("/tmp/syscallguard-map")
 INDEX_SPECS = {
@@ -54,6 +55,23 @@ INDEX_SPECS = {
     },
 }
 
+_RULE_LIBRARY_CACHE: dict[
+    Path,
+    tuple[
+        tuple[tuple[str, int, int], ...],
+        tuple[
+            dict[str, dict[str, Any]],
+            dict[str, dict[str, str]],
+            dict[str, list[str]],
+            dict[str, list[str]],
+            str,
+        ],
+    ],
+] = {}
+_MAPPING_REPORT_CACHE: dict[
+    Path, tuple[dict[Path, tuple[int, int]], dict[str, dict[str, Any]]]
+] = {}
+
 
 def resolve_syscalls(value: str | None) -> list[str] | None:
     if value is None:
@@ -66,6 +84,13 @@ def resolve_syscalls(value: str | None) -> list[str] | None:
             "syscalls must be a non-empty comma-separated list without empty entries"
         )
     return sorted(set(names))
+
+
+def resolve_coverage(value: str | None) -> str:
+    mode = value or "full"
+    if mode not in COVERAGE_MODES:
+        raise SyscallGuardError("coverage must be 'full' or 'static-only'")
+    return mode
 
 
 def _yaml_text(value: Any) -> str:
@@ -94,6 +119,27 @@ def _rule_library(
     raw_syscalls = index.get("syscalls")
     if not isinstance(raw_syscalls, dict):
         raise SyscallGuardError(f"syscall rule index has no syscalls mapping: {index_path}")
+
+    referenced_paths = [index_path]
+    for refs in raw_syscalls.values():
+        if not isinstance(refs, list):
+            continue
+        for ref in refs:
+            if isinstance(ref, dict) and isinstance(ref.get("path"), str):
+                referenced_paths.append(root / safe_relative_path(ref["path"]))
+    signature = tuple(
+        sorted(
+            (
+                str(path),
+                path.stat().st_mtime_ns if path.is_file() else -1,
+                path.stat().st_size if path.is_file() else -1,
+            )
+            for path in set(referenced_paths)
+        )
+    )
+    cached = _RULE_LIBRARY_CACHE.get(root)
+    if cached is not None and cached[0] == signature:
+        return cached[1]
 
     rules: dict[str, dict[str, Any]] = {}
     versions: dict[str, dict[str, str]] = {}
@@ -129,13 +175,15 @@ def _rule_library(
             if syscall not in rule_syscalls[rule_id]:
                 rule_syscalls[rule_id].append(syscall)
 
-    return (
+    result = (
         {key: rules[key] for key in sorted(rules)},
         {key: versions[key] for key in sorted(versions)},
         {key: sorted(value) for key, value in sorted(rule_syscalls.items())},
         {key: sorted(set(value)) for key, value in sorted(syscall_rules.items())},
         entity_hash(index_path),
     )
+    _RULE_LIBRARY_CACHE[root] = (signature, result)
+    return result
 
 
 def load_mapping_report(root: Path, report_id: str) -> dict[str, Any]:
@@ -156,11 +204,24 @@ def load_mapping_report(root: Path, report_id: str) -> dict[str, Any]:
 
 
 def scan_mapping_reports(root: Path) -> tuple[dict[str, Any] | None, dict[str, dict[str, Any]]]:
-    reports: dict[str, dict[str, Any]] = {}
     runs = root / "runs"
     if not runs.is_dir():
-        return None, reports
-    for path in sorted(runs.glob("mapping-*/report.md")):
+        return None, {}
+    paths = sorted(runs.glob("mapping-*/report.md"))
+    signatures = {
+        path: (path.stat().st_mtime_ns, path.stat().st_size) for path in paths
+    }
+    cached = _MAPPING_REPORT_CACHE.get(root)
+    cached_signatures, cached_reports = cached if cached is not None else ({}, {})
+    reports: dict[str, dict[str, Any]] = {
+        report_id: report
+        for report_id, report in cached_reports.items()
+        if (path := runs / report_id / "report.md") in signatures
+        and cached_signatures.get(path) == signatures[path]
+    }
+    for path in paths:
+        if cached_signatures.get(path) == signatures[path] and path.parent.name in reports:
+            continue
         try:
             value, _body = read_frontmatter(path)
         except SyscallGuardError:
@@ -175,6 +236,7 @@ def scan_mapping_reports(root: Path) -> tuple[dict[str, Any] | None, dict[str, d
         ):
             continue
         reports[report_id] = value
+    _MAPPING_REPORT_CACHE[root] = (signatures, reports)
     latest = max(
         reports.values(),
         key=lambda row: (str(row.get("generated_at_utc", "")), str(row.get("report_id", ""))),
@@ -381,6 +443,8 @@ def _pending_reasons(
     repository_identity: str,
     rule_version: dict[str, str],
     row: Any,
+    coverage_mode: str = "full",
+    prior_coverage_mode: str = "full",
 ) -> list[str]:
     if not isinstance(row, dict):
         return ["new_rule"]
@@ -393,6 +457,14 @@ def _pending_reasons(
         return ["invalid_rule_status"]
     if status == "pending":
         return [str(row.get("reason") or "still_pending")]
+    if coverage_mode == "static-only" and row.get("dynamic_test_refs"):
+        return ["static_only_dynamic_reference"]
+    if (
+        coverage_mode == "full"
+        and prior_coverage_mode == "static-only"
+        and row.get("deferred") == "dynamic_test"
+    ):
+        return ["deferred_dynamic_test_retry"]
     if status in {"needs_review", "unsupported"}:
         if row.get("last_verified_snapshot_hash") != snapshot_hash:
             return ["target_snapshot_changed_retry"]
@@ -443,6 +515,7 @@ def _expand_shared_entity_selection(
     selected: set[str],
     known_rules: set[str],
     pending_reasons: dict[str, list[str]],
+    coverage_mode: str = "full",
 ) -> set[str]:
     """Close a mapping selection over shared executable entities.
 
@@ -453,7 +526,10 @@ def _expand_shared_entity_selection(
     still-valid ownership from the published two-level library.
     """
 
-    indexed = {section: _load_indexed_entities(root, section) for section in INDEX_SPECS}
+    sections = (
+        ("static_checks",) if coverage_mode == "static-only" else tuple(INDEX_SPECS)
+    )
+    indexed = {section: _load_indexed_entities(root, section) for section in sections}
     expanded = set(selected)
     changed = True
     while changed:
@@ -465,12 +541,8 @@ def _expand_shared_entity_selection(
                     raise SyscallGuardError(f"executable {entity_id} has invalid rule_refs")
                 if not expanded.intersection(refs):
                     continue
-                unknown = sorted(set(refs) - known_rules)
-                if unknown:
-                    raise SyscallGuardError(
-                        f"executable {entity_id} references unknown rules: {', '.join(unknown)}"
-                    )
-                for rule_id in sorted(set(refs) - expanded):
+                active_refs = set(refs).intersection(known_rules)
+                for rule_id in sorted(active_refs - expanded):
                     expanded.add(rule_id)
                     reason = f"shared_entity_dependency:{entity_id}"
                     if reason not in pending_reasons[rule_id]:
@@ -501,27 +573,74 @@ def _result_locations(
     return [unique[key] for key in sorted(unique)]
 
 
-def _prepare_staged_entities(root: Path, workspace: Path, selected: list[str]) -> None:
+def _target_dispatches(repository: Path, syscalls: list[str]) -> bool:
+    dispatch = repository / "os/StarryOS/kernel/src/syscall/mod.rs"
+    if not dispatch.is_file():
+        return False
+    text = dispatch.read_text(encoding="utf-8", errors="replace")
+    return any(
+        re.search(rf"\bSysno::{re.escape(syscall)}\s*=>", text)
+        for syscall in syscalls
+    )
+
+
+def _prepare_staged_entities(
+    root: Path,
+    workspace: Path,
+    selected: list[str],
+    coverage_mode: str = "full",
+    repository: Path | None = None,
+    rule_syscalls: dict[str, list[str]] | None = None,
+) -> None:
     indexed = {section: _load_indexed_entities(root, section) for section in INDEX_SPECS}
     staged_checks: dict[str, dict[str, Any]] = {}
     staged_tests: dict[str, dict[str, Any]] = {}
     for rule_id in selected:
         checks = _matching_entities(indexed["static_checks"], rule_id)
-        tests = _matching_entities(indexed["dynamic_tests"], rule_id)
+        tests = (
+            _matching_entities(indexed["dynamic_tests"], rule_id)
+            if coverage_mode == "full"
+            else {}
+        )
+        for values in (checks, tests):
+            for entity_id, entity in list(values.items()):
+                active_refs = sorted(set(entity.get("rule_refs", [])).intersection(selected))
+                if not active_refs:
+                    del values[entity_id]
+                    continue
+                values[entity_id] = {**entity, "rule_refs": active_refs}
         locations = _result_locations(checks, tests)
         covered = bool(checks or tests) and bool(locations)
+        unsupported = (
+            coverage_mode == "static-only"
+            and not covered
+            and repository is not None
+            and not _target_dispatches(
+                repository, (rule_syscalls or {}).get(rule_id, [])
+            )
+        )
+        status = "covered" if covered else "unsupported" if unsupported else "needs_review"
         result = {
             "schema_version": SCHEMA_VERSION,
             "kind": "syscallguard_starry_rule_mapping_result",
             "rule_id": rule_id,
-            "status": "covered" if covered else "needs_review",
+            "status": status,
             "target_locations": locations if covered else [],
             "static_check_refs": sorted(checks) if covered else [],
             "dynamic_test_refs": sorted(tests) if covered else [],
             "reason": (
                 "复用现有可执行检查或测试，并重新校验目标内容依赖。"
                 if covered
+                else "Starry 没有该 syscall 的分派入口。"
+                if unsupported
+                else "需要运行时夹具才能证明该规则；static-only 模式已延后动态测试。"
+                if coverage_mode == "static-only"
                 else "尚无足够的 Starry 实现证据；需要只读分析目标代码。"
+            ),
+            **(
+                {"deferred": "dynamic_test"}
+                if coverage_mode == "static-only" and status == "needs_review"
+                else {}
             ),
         }
         atomic_write_yaml(
@@ -566,6 +685,7 @@ def prepare_mapping(
     root: Path | None = None,
     requested_run_id: str | None = None,
     branch: str | None = None,
+    coverage: str = "full",
 ) -> str:
     root = (root or repo_root()).resolve()
     if not isinstance(branch, str) or not branch.strip():
@@ -573,6 +693,7 @@ def prepare_mapping(
             "mapping requires the user-created Starry branch name"
         )
     branch = branch.strip()
+    coverage_mode = resolve_coverage(coverage)
     requested_syscalls = resolve_syscalls(syscalls)
     rules, versions, rule_syscalls, syscall_rules, rule_index_hash = _rule_library(root)
     if requested_syscalls is not None:
@@ -588,6 +709,9 @@ def prepare_mapping(
     descriptor_hash = entity_hash(descriptor_path)
     prior, _reports = scan_mapping_reports(root)
     prior_rows = prior.get("rules", {}) if isinstance(prior, dict) else {}
+    prior_coverage_mode = (
+        str(prior.get("coverage_mode", "full")) if isinstance(prior, dict) else "full"
+    )
     if not isinstance(prior_rows, dict):
         prior_rows = {}
     pending_reasons = {
@@ -598,6 +722,8 @@ def prepare_mapping(
             repo_identity,
             versions[rule_id],
             prior_rows.get(rule_id),
+            coverage_mode,
+            prior_coverage_mode,
         )
         for rule_id in rules
     }
@@ -616,6 +742,7 @@ def prepare_mapping(
         scope.intersection(pending),
         set(rules),
         pending_reasons,
+        coverage_mode,
     )
     selected = sorted(selected_set)
     pending = sorted(rule_id for rule_id, reasons in pending_reasons.items() if reasons)
@@ -627,6 +754,7 @@ def prepare_mapping(
             {
                 "syscalls": requested_syscalls,
                 "branch": current_branch,
+                "coverage": coverage_mode,
                 "snapshot": snapshot_hash,
                 "at": utc_now(),
             },
@@ -657,6 +785,7 @@ def prepare_mapping(
             "prior_report_id": prior.get("report_id") if prior else None,
             "prior_report_hash": content_hash(prior) if prior else None,
             "requested_syscalls": requested_syscalls,
+            "coverage_mode": coverage_mode,
             "pending_rule_ids": pending,
             "selected_rule_ids": selected,
             "skipped_rule_ids": skipped,
@@ -667,7 +796,14 @@ def prepare_mapping(
         }
         atomic_write_yaml(workspace / "preparation.yaml", preparation)
         atomic_write_yaml(workspace / "target-descriptor.yaml", descriptor)
-        _prepare_staged_entities(root, workspace, selected)
+        _prepare_staged_entities(
+            root,
+            workspace,
+            selected,
+            coverage_mode,
+            repository,
+            rule_syscalls,
+        )
         return run_id
     except BaseException as exc:
         _mark_failed(workspace, exc)
@@ -719,6 +855,7 @@ def _validate_staged(
     selected: set[str],
     results: dict[str, dict[str, Any]],
     staged: dict[str, dict[str, tuple[Path, dict[str, Any]]]],
+    coverage_mode: str = "full",
 ) -> None:
     if set(results) != selected:
         missing = sorted(selected - set(results))
@@ -750,6 +887,15 @@ def _validate_staged(
                 raise SyscallGuardError(f"{status} rule {rule_id} must not reference executables")
             if not isinstance(row.get("reason"), str) or not row["reason"].strip():
                 raise SyscallGuardError(f"{status} rule {rule_id} needs a reason")
+        if coverage_mode == "static-only":
+            if dynamic_refs:
+                raise SyscallGuardError(
+                    f"static-only rule {rule_id} must not reference dynamic tests"
+                )
+            if status == "needs_review" and row.get("deferred") != "dynamic_test":
+                raise SyscallGuardError(
+                    f"static-only needs_review rule {rule_id} must defer dynamic_test"
+                )
         for location in locations:
             if not isinstance(location, dict) or not isinstance(location.get("path"), str):
                 raise SyscallGuardError(f"rule {rule_id} has an invalid target location")
@@ -760,6 +906,8 @@ def _validate_staged(
         raise SyscallGuardError("staged static checks and rule references do not match")
     if set(staged["dynamic_tests"]) != referenced_tests:
         raise SyscallGuardError("staged dynamic tests and rule references do not match")
+    if coverage_mode == "static-only" and staged["dynamic_tests"]:
+        raise SyscallGuardError("static-only mapping must not stage dynamic tests")
     for check_id, (_path, entity) in staged["static_checks"].items():
         refs = entity.get("rule_refs")
         if not isinstance(refs, list) or not refs or not set(refs).issubset(selected):
@@ -805,6 +953,28 @@ def _validate_staged(
     unreferenced = sorted(str(path) for path in staged_assets - referenced_assets)
     if unreferenced:
         raise SyscallGuardError("staged dynamic assets are unreferenced: " + ", ".join(unreferenced))
+    if coverage_mode == "static-only" and staged_assets:
+        raise SyscallGuardError("static-only mapping must not stage dynamic assets")
+
+
+def _all_rule_syscalls(
+    root: Path, active: dict[str, list[str]]
+) -> dict[str, list[str]]:
+    result = {rule_id: list(syscalls) for rule_id, syscalls in active.items()}
+    index = load_mapping(root / "library/syscalls.yaml")
+    inactive = index.get("inactive_rules", [])
+    if isinstance(inactive, list):
+        for row in inactive:
+            if not isinstance(row, dict) or not isinstance(row.get("rule_id"), str):
+                continue
+            owners = row.get("original_syscalls", [])
+            if not isinstance(owners, list):
+                continue
+            result.setdefault(row["rule_id"], [])
+            result[row["rule_id"]].extend(
+                syscall for syscall in owners if isinstance(syscall, str)
+            )
+    return {key: sorted(set(value)) for key, value in result.items()}
 
 
 def _versioned_output(
@@ -1018,7 +1188,8 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
         selected = set(selected_list)
         results = _load_rule_results(workspace)
         staged = {section: _load_staged(workspace, section) for section in INDEX_SPECS}
-        _validate_staged(root, workspace, selected, results, staged)
+        coverage_mode = resolve_coverage(preparation.get("coverage_mode", "full"))
+        _validate_staged(root, workspace, selected, results, staged, coverage_mode)
         generated_at = utc_now()
 
         rule_dependencies: dict[str, list[dict[str, Any]]] = {}
@@ -1103,6 +1274,11 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
                     "last_verified_snapshot_hash": snapshot_hash,
                     "last_processed_report": run_id,
                     "reason": result.get("reason") or "映射结果已通过 finalizer 校验。",
+                    **(
+                        {"deferred": result["deferred"]}
+                        if result.get("deferred") == "dynamic_test"
+                        else {}
+                    ),
                 }
             elif rule_id in pending_ids and (
                 not isinstance(old, dict) or old.get("status") in {"covered", "pending"}
@@ -1137,8 +1313,11 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
             else:
                 raise SyscallGuardError(f"mapping state unexpectedly missing rule {rule_id}")
 
+        all_rule_syscalls = _all_rule_syscalls(root, rule_syscalls)
         indexes = {
-            section: _grouped_index(root, section, all_entities[section], rule_syscalls, generated_at)
+            section: _grouped_index(
+                root, section, all_entities[section], all_rule_syscalls, generated_at
+            )
             for section in INDEX_SPECS
         }
         execution_static = sorted(outputs["static_checks"])
@@ -1168,6 +1347,7 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
             "report_id": run_id,
             "status": "completed",
             "generated_at_utc": generated_at,
+            "coverage_mode": coverage_mode,
             "rule_index_hash": rule_index_hash,
             "requested_syscalls": preparation.get("requested_syscalls"),
             "selected_rule_ids": selected_list,
@@ -1220,6 +1400,8 @@ def finalize_mapping(run_id: str, root: Path | None = None) -> str:
                 for path, entity, _action in values.values()
             )
         for section, index in indexes.items():
+            if coverage_mode == "static-only" and section == "dynamic_tests":
+                continue
             files.append((root / INDEX_SPECS[section]["index"], _yaml_text(index).encode("utf-8")))
         assets_root = workspace / "staged/targets/starry/dynamic-tests/assets"
         if assets_root.is_dir():
@@ -1248,8 +1430,9 @@ def run_mapping(
     root: Path | None = None,
     requested_run_id: str | None = None,
     branch: str | None = None,
+    coverage: str = "full",
 ) -> str:
-    run_id = prepare_mapping(syscalls, root, requested_run_id, branch)
+    run_id = prepare_mapping(syscalls, root, requested_run_id, branch, coverage)
     return finalize_mapping(run_id, root)
 
 
@@ -1257,6 +1440,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="增量生成 Starry 规则映射")
     parser.add_argument("--syscalls", help="逗号分隔的 syscall 名称")
     parser.add_argument("--branch", help="用户创建并已切换到的 Starry 专用分支")
+    parser.add_argument(
+        "--coverage",
+        choices=("full", "static-only"),
+        default="full",
+        help="覆盖模式；static-only 禁止新动态测试",
+    )
     parser.add_argument(
         "--phase",
         choices=("prepare", "finalize", "auto"),
@@ -1285,7 +1474,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         elif args.phase == "auto":
-            run_id = run_mapping(args.syscalls, args.root, requested, args.branch)
+            run_id = run_mapping(
+                args.syscalls, args.root, requested, args.branch, args.coverage
+            )
             report = load_mapping_report(args.root.resolve(), run_id)
             counts = report["counts"]
             print(f"报告 ID：{run_id}")
@@ -1295,7 +1486,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(f"报告：{args.root.resolve() / 'runs' / run_id / 'report.md'}")
         else:
-            run_id = prepare_mapping(args.syscalls, args.root, requested, args.branch)
+            run_id = prepare_mapping(
+                args.syscalls, args.root, requested, args.branch, args.coverage
+            )
             workspace = _workspace(run_id)
             preparation = load_mapping(workspace / "preparation.yaml")
             print(f"运行 ID：{run_id}")

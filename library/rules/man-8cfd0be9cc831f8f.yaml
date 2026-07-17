@@ -1,0 +1,47 @@
+# 合规检查：条件：Where O_CREAT is specified, the protected_fifos or protected_regular sysctl is enabled, the file already exists and is a FIFO or regular file, the owner of...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8CFD0BE9CC831F8F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EACCES
+    summary: Where O_CREAT is specified, the protected_fifos or protected_regular sysctl is enabled, the
+      file already exists and is a FIFO or regular file, the owner of...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:8cfd0be9cc831f8f9223a9ba05b8d4471882b1ca8148985a393a1591036d3690
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 991
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af3815cd947d6020f6ca0fbd4edcbfff79afdc9eb591bd12278cd88276a4d370
+  case: errors_eacces_991
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 991
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af3815cd947d6020f6ca0fbd4edcbfff79afdc9eb591bd12278cd88276a4d370
+  case: errors_eacces_991

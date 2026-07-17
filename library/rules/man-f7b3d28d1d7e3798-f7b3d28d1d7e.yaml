@@ -1,0 +1,38 @@
+# 合规检查：条件：attr.sched_priority is invalid；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F7B3D28D1D7E3798--f7b3d28d1d7e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: attr
+    predicate: documented_condition
+    value: EINVAL
+    summary: attr.sched_priority is invalid
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f7b3d28d1d7e37987405a37318ecde1ad6db58c732d71bfe12296b7e8ac404d1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 421
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e4a56ede84ac5835d5235595253a249144959ee497834219595b671067f22f0b
+  case: errors_einval_421

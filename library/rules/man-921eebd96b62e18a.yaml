@@ -1,0 +1,43 @@
+# 合规检查：条件：There are no more free file structures or we ran out of memory；检查：调用 acct(path)；预期：返回 -1，errno 为 EUSERS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_921EEBD96B62E18A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EUSERS
+    summary: There are no more free file structures or we ran out of memory
+  action:
+    operation: invoke_syscall
+    syscall: acct
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EUSERS
+  errno:
+  - EUSERS
+semantic_hash: sha256:921eebd96b62e18a94302a47c1285460da253941ed2765ca4a804a07c9646264
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75b0596cd7159dc4aef695625f508a61f5d2973dc1aad71f2b2d6b05128d0596
+  case: errors_eusers_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: acct
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75b0596cd7159dc4aef695625f508a61f5d2973dc1aad71f2b2d6b05128d0596
+  case: errors_eusers_112

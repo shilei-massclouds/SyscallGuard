@@ -1,0 +1,44 @@
+# 合规检查：条件：A revoked key was found or specified；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 EKEYREVOKED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5639DF08C3AD9674
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EKEYREVOKED
+    summary: A revoked key was found or specified
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREVOKED
+  errno:
+  - EKEYREVOKED
+semantic_hash: sha256:5639df08c3ad9674990fbe7175ec210ec9bf526cb1de64b7f76491be72633be6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:877df24d1e4f3fd082b5455f59e7edc9d069bffa6541acc2c35ff9ebe47aaea5
+  case: errors_ekeyrevoked_120
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:877df24d1e4f3fd082b5455f59e7edc9d069bffa6541acc2c35ff9ebe47aaea5
+  case: errors_ekeyrevoked_120

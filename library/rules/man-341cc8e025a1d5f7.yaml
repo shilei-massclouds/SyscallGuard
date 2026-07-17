@@ -1,0 +1,45 @@
+# 合规检查：条件：vec points to an invalid address；检查：调用 mincore(length, length, vec)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_341CC8E025A1D5F7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: vec
+    predicate: documented_condition
+    value: EFAULT
+    summary: vec points to an invalid address
+  action:
+    operation: invoke_syscall
+    syscall: mincore
+    arguments:
+    - length
+    - length
+    - vec
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:341cc8e025a1d5f7f8e52d02907986a3e91b62536c68a5b4d02405b3c2893e97
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 86
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5603864ca204aba480ead35a864749d46bb7cfac86a2e5655840297dc5169d1
+  case: errors_efault_86
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mincore
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 86
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5603864ca204aba480ead35a864749d46bb7cfac86a2e5655840297dc5169d1
+  case: errors_efault_86

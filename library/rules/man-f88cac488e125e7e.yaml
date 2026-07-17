@@ -1,0 +1,47 @@
+# 合规检查：条件：type was logon and the description was not qualified with a prefix string of the form service:；检查：调用 add_key(type, description, size, size, keyring)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F88CAC488E125E7E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: type
+    predicate: documented_condition
+    value: EINVAL
+    summary: 'type was logon and the description was not qualified with a prefix string of the form service:'
+  action:
+    operation: invoke_syscall
+    syscall: add_key
+    arguments:
+    - type
+    - description
+    - size
+    - size
+    - keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f88cac488e125e7e5b1879f6f28a806a82963063e15355fe2e26215cdbc5422e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:702d312c6a55df7c726b625868749e0ee48840f09def8c15a6903a349139612a
+  case: errors_einval_176
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: add_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:702d312c6a55df7c726b625868749e0ee48840f09def8c15a6903a349139612a
+  case: errors_einval_176

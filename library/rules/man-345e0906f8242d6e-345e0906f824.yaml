@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getitimer(which, curr_value)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_345E0906F8242D6E--345e0906f824
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getitimer
+    arguments:
+    - which
+    - curr_value
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:345e0906f8242d6e1ea0234ac0bb8b8057b579140813455e719579c3766ce369
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getitimer
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 133
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:5cc3913cb6ce01448bc938ebe076be48f661037bf1b95f03d898653c7729688e
+  case: return_value_133

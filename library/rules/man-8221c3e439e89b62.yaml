@@ -1,0 +1,44 @@
+# 合规检查：条件：The calling process is not privileged (does not have the CAP_SETGID capability in its user namespace), and gid does not match the real group ID or saved...；检查：调用 setgid(gid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8221C3E439E89B62
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: gid
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process is not privileged (does not have the CAP_SETGID capability in its user
+      namespace), and gid does not match the real group ID or saved...
+  action:
+    operation: invoke_syscall
+    syscall: setgid
+    arguments:
+    - gid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8221c3e439e89b62a1481d24300b76127a864d5ed7765184f448fc967be38f6e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setgid.2
+  line: 47
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f82b968c14c79145fbaacd6a4ca5e9b348204d0aaec852ba0eda9618fc61b4c
+  case: errors_eperm_47
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setgid.2
+  line: 47
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f82b968c14c79145fbaacd6a4ca5e9b348204d0aaec852ba0eda9618fc61b4c
+  case: errors_eperm_47

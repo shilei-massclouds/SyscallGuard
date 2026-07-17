@@ -1,0 +1,34 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 read(fd, buf, SIZE)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_29BB55727C5A5616
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - buf
+    - SIZE
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:29bb55727c5a5616bc7694e6be6d28d8dc66f2404335114edc2da7a452b231e3
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/read/read01.c
+  line: 19
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:440d613aa5c834391b8c27bea8eb25bc7e2b9d781013692d6b8ecb57c4c35052
+  case: read01_19_raw_0

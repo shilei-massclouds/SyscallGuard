@@ -1,0 +1,44 @@
+# 合规检查：条件：The specified n exceeds internal limits. n should be greater than 0；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_27E55F887C671CDB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: n
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The specified n exceeds internal limits. n should be greater than 0
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:27e55f887c671cdb5a7b2a8bdc7afa71f3d07bcc58435e77a4a3c89b3253fa89
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b092205ab8222f7f771d775d704a012c2be491f830c1b261282382e1bfbc0b2c
+  case: errors_einval_69
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b092205ab8222f7f771d775d704a012c2be491f830c1b261282382e1bfbc0b2c
+  case: errors_einval_69

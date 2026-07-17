@@ -1,0 +1,44 @@
+# 合规检查：条件：A rejected key was found or specified；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 EKEYREJECTED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CBB20D6569C9F207
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EKEYREJECTED
+    summary: A rejected key was found or specified
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREJECTED
+  errno:
+  - EKEYREJECTED
+semantic_hash: sha256:cbb20d6569c9f207af81e0d0abfdbc98be749e6f590ef9f9e2a5c5503bd45d50
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 117
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be0b2e6c8129b1d4740811dc384a96d42d2e6a1c0aae9681e71bdaceb82b7606
+  case: errors_ekeyrejected_117
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 117
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be0b2e6c8129b1d4740811dc384a96d42d2e6a1c0aae9681e71bdaceb82b7606
+  case: errors_ekeyrejected_117

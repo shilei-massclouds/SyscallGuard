@@ -1,0 +1,46 @@
+# 合规检查：条件：This kernel does not implement fallocate ()；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_93EBFE5E9F1617AF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: This kernel does not implement fallocate ()
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:93ebfe5e9f1617aff8c6f7c96c95a26dfc82bc5d08f1366ff1a07d6dd839cc1f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 415
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c120a228e2dae38f6e7a2a021492ddc1236d63f0454ad991da32e6f29cee6e4
+  case: errors_enosys_415
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 415
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c120a228e2dae38f6e7a2a021492ddc1236d63f0454ad991da32e6f29cee6e4
+  case: errors_enosys_415

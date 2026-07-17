@@ -1,0 +1,47 @@
+# 合规检查：条件：times pointed to an invalid address; or, dirfd was AT_FDCWD , and path is NULL or an invalid address；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7CE4DE0A9892B51D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: dirfd
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: times pointed to an invalid address; or, dirfd was AT_FDCWD , and path is NULL or an invalid
+      address
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7ce4de0a9892b51dc5f91a2cf4fde6d8583214c0ac73a15a12f000c5677c2e74
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 281
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a6f3ccf7e49888851295c0dcb527179e7fba433b94875546426887036f5fa52
+  case: errors_efault_281
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 281
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a6f3ccf7e49888851295c0dcb527179e7fba433b94875546426887036f5fa52
+  case: errors_efault_281

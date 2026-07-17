@@ -1,0 +1,43 @@
+# 合规检查：条件：The kernel could not allocate a free page to copy filenames or data into；检查：调用 umount2(target)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_61B106C06D65F9D3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: The kernel could not allocate a free page to copy filenames or data into
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:61b106c06d65f9d36e1314a7b981f0fabe62995a3c04d2145b6653f6fda22b92
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8cefbf95d0b736a391d1fe82b3d1b0f61384af16ec09b53a66917d34417ba7f8
+  case: errors_enomem_151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8cefbf95d0b736a391d1fe82b3d1b0f61384af16ec09b53a66917d34417ba7f8
+  case: errors_enomem_151

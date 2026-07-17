@@ -1,0 +1,43 @@
+# 合规检查：条件：fd isn't a valid open file descriptor；检查：调用 close(fd)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_23E25F7C4136339F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd isn't a valid open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:23e25f7c4136339fc233a376594c3e51adbc670feb4e07f06388abcb1a9fbe72
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:22f0ef2dfb420f6593173b547dc4f90c9aaf4ebe662162f0d11d7f73775a7ab0
+  case: errors_ebadf_52
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:22f0ef2dfb420f6593173b547dc4f90c9aaf4ebe662162f0d11d7f73775a7ab0
+  case: errors_ebadf_52

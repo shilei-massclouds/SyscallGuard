@@ -1,0 +1,47 @@
+# 合规检查：条件：op was EPOLL_CTL_ADD , and the supplied file descriptor fd is already registered with this epoll instance；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_838355DDB1BE708E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: op
+    predicate: invalid_or_wrong_type
+    value: EEXIST
+    summary: op was EPOLL_CTL_ADD , and the supplied file descriptor fd is already registered with this
+      epoll instance
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:838355ddb1be708e076ef02241ab692700e77935138c50c90713718e3cebea7a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 277
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94d1cae39bd48e6c50a9601857b63286808b31ee93451e1050e3646269bbaaec
+  case: errors_eexist_277
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 277
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94d1cae39bd48e6c50a9601857b63286808b31ee93451e1050e3646269bbaaec
+  case: errors_eexist_277

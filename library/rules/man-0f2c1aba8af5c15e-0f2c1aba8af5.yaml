@@ -1,0 +1,36 @@
+# 合规检查：条件：size is greater than NGROUPS_MAX (32 before Linux 2.6.4; 65536 since Linux 2.6.4)；检查：调用 getgroups(size, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0F2C1ABA8AF5C15E--0f2c1aba8af5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: size is greater than NGROUPS_MAX (32 before Linux 2.6.4; 65536 since Linux 2.6.4)
+  action:
+    operation: invoke_syscall
+    syscall: getgroups
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0f2c1aba8af5c15e5f5f4e006be439d9c3fe39674d76d6ae33930cc2a564d876
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getgroups
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:56b6483ea90f694e7ebf92b3dd6dc4c1f5808ac898cd1597eddad25d780c89e8
+  case: errors_einval_112

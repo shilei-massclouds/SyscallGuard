@@ -1,0 +1,46 @@
+# 合规检查：条件：Bad address；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB0A6B453C2E3A58
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: Bad address
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:fb0a6b453c2e3a584e0a436dfa2ef7fb46578337008ebdb58425e7231193a7d4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c81e8824f61a0bb928e0ad09fb856bc64f7e979775a899d2065735ff699b9d02
+  case: errors_efault_125
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c81e8824f61a0bb928e0ad09fb856bc64f7e979775a899d2065735ff699b9d02
+  case: errors_efault_125

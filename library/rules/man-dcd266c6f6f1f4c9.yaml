@@ -1,0 +1,44 @@
+# 合规检查：条件：The system-wide limit on the total number of open files and message queues has been reached；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DCD266C6F6F1F4C9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files and message queues has been reached
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:dcd266c6f6f1f4c967a56c12b9063db59510326b890c03065ff794d772cb3674
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:182894eba8d1207f2fa4c6f32c8c66a31c7fa73a996573b37deff639241c6d46
+  case: errors_enfile_225
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:182894eba8d1207f2fa4c6f32c8c66a31c7fa73a996573b37deff639241c6d46
+  case: errors_enfile_225

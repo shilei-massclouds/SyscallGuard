@@ -1,0 +1,43 @@
+# 合规检查：条件：The file does not exist；检查：调用 chroot(path)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C6190FF4FC99FFA8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The file does not exist
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:c6190ff4fc99ffa88678d15816668ea0c162e28c49fe6307ed8aa42ca845f156
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 122
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fb4baeb2983310c988dc109e69e83588a9568ece79986bf43051f5e7247095a
+  case: errors_enoent_122
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 122
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fb4baeb2983310c988dc109e69e83588a9568ece79986bf43051f5e7247095a
+  case: errors_enoent_122

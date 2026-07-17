@@ -1,0 +1,47 @@
+# 合规检查：条件：The necessary memory could not be allocated；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9DD61ABB88830438
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The necessary memory could not be allocated
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:9dd61abb88830438caab30b6cc0eb09a70a21f0fad5920ceb5c33e22607e7bd4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 723
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b4a9beb537dc6b63bc40d9a5e5f335d259c264247399edf3c6ea6d654809d2db
+  case: errors_enomem_723
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 723
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b4a9beb537dc6b63bc40d9a5e5f335d259c264247399edf3c6ea6d654809d2db
+  case: errors_enomem_723

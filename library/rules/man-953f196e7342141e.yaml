@@ -1,0 +1,47 @@
+# 合规检查：条件：source is not a block device (and a device was required)；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENOTBLK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_953F196E7342141E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: source
+    predicate: documented_condition
+    value: ENOTBLK
+    summary: source is not a block device (and a device was required)
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTBLK
+  errno:
+  - ENOTBLK
+semantic_hash: sha256:953f196e7342141eaf1ad7071acf24f43d67b776cb587f85fe1339cc300f6396
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 813
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6862a65efdc952db3714b78e6d8fde54646fa3a2024979c4dbfdf41705ff8b66
+  case: errors_enotblk_813
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 813
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6862a65efdc952db3714b78e6d8fde54646fa3a2024979c4dbfdf41705ff8b66
+  case: errors_enotblk_813

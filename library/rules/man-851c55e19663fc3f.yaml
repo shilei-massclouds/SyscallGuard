@@ -1,0 +1,44 @@
+# 合规检查：条件：An error occurred during synchronization. This error may relate to data written to any file on the filesystem, or on metadata related to the filesystem itself；检查：调用 syncfs(fd)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_851C55E19663FC3F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An error occurred during synchronization. This error may relate to data written to any file
+      on the filesystem, or on metadata related to the filesystem itself
+  action:
+    operation: invoke_syscall
+    syscall: syncfs
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:e7dc801a4542c18e388948b8718a6d9b49fa4440e59c9351878d73fe95582e3a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b041de94b5509b12f95b2a1e43eb437f1cdefd99339f6fd44dde776604063c3f
+  case: errors_eio_65
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syncfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b041de94b5509b12f95b2a1e43eb437f1cdefd99339f6fd44dde776604063c3f
+  case: errors_eio_65

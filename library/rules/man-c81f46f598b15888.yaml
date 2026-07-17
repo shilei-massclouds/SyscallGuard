@@ -1,0 +1,47 @@
+# 合规检查：条件：Not enough free memory. This often means that the memory allocation is limited by the socket buffer limits, not by the system memory；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C81F46F598B15888
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Not enough free memory. This often means that the memory allocation is limited by the socket
+      buffer limits, not by the system memory
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:7b5598f235e6b89adb8af37ba3896c7982da4c880d3fce672956f6aeb06a2a21
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec98954d1cdc80a11aff06e6a4f53cec6fa626ac11f25055bcba06db3623567a
+  case: errors_enomem_222
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec98954d1cdc80a11aff06e6a4f53cec6fa626ac11f25055bcba06db3623567a
+  case: errors_enomem_222

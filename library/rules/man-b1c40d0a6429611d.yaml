@@ -1,0 +1,45 @@
+# 合规检查：条件：fd is not associated with a character special device；检查：调用 ioctl(fd, op, arg3)；预期：返回 -1，errno 为 ENOTTY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B1C40D0A6429611D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ENOTTY
+    summary: fd is not associated with a character special device
+  action:
+    operation: invoke_syscall
+    syscall: ioctl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTTY
+  errno:
+  - ENOTTY
+semantic_hash: sha256:b1c40d0a6429611da2c45fcf82c4cb2ffbae12649cd6de843f0e4dce00251e46
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:486b6fb018a0780ff1b76f8350a332b04cbbfb332d931e0b6b586616ee5e00ce
+  case: errors_enotty_79
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:486b6fb018a0780ff1b76f8350a332b04cbbfb332d931e0b6b586616ee5e00ce
+  case: errors_enotty_79

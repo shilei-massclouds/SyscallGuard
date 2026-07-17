@@ -1,0 +1,45 @@
+# 合规检查：条件：An attempt was made to change the process group ID of one of the children of the calling process and the child had already performed an execve (2) ( setpgid...；检查：调用 setpgid(pid, pgid)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DD9CA389EB41CFD8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: An attempt was made to change the process group ID of one of the children of the calling
+      process and the child had already performed an execve (2) ( setpgid...
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - pid
+    - pgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:dd9ca389eb41cfd86ba4cb82602b26e670a08fa9dd387fb64b45579a69dfd1e3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c4fc8013b74937bcdc592070e95bee379166cfff97fcac829d792857ba59207
+  case: errors_eacces_183
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c4fc8013b74937bcdc592070e95bee379166cfff97fcac829d792857ba59207
+  case: errors_eacces_183

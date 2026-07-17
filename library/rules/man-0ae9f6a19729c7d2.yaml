@@ -1,0 +1,46 @@
+# 合规检查：条件：sockfd is not an open file descriptor；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0AE9F6A19729C7D2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: sockfd is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:21f6cffb79cc2e185f89d30d4c31f969abe742c09bd470ec783ef04dc28c841f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9fc4216e6f8e1d3e161318aad6ae45ae4752e6b1e9d1f66c99a2449601eabbf1
+  case: errors_ebadf_186
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9fc4216e6f8e1d3e161318aad6ae45ae4752e6b1e9d1f66c99a2449601eabbf1
+  case: errors_ebadf_186

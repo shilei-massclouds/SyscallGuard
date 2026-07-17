@@ -1,0 +1,44 @@
+# 合规检查：条件：CLONE_NEWPID was specified in flags , but the kernel was not configured with the CONFIG_PID_NS option；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_775954941C8D8008
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWPID was specified in flags , but the kernel was not configured with the CONFIG_PID_NS
+      option
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:775954941c8d80088a04a33ad8a74e3cf77464db043236d7b4d9614b83ce8d3f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 326
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f7b89ec3214afc6c1c9ffbdd835a9c6db4038be4fc8634a30a0b04135149472
+  case: errors_einval_326
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 326
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f7b89ec3214afc6c1c9ffbdd835a9c6db4038be4fc8634a30a0b04135149472
+  case: errors_einval_326

@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:52e1c0d868f914bc579e98918fab5788064a6181c73ad90f08374c677f6292e8
   case: fchmod01_29_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmod/fchmod01.c
+  line: 29
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:52e1c0d868f914bc579e98918fab5788064a6181c73ad90f08374c677f6292e8
+  case: fchmod01_29_raw_0

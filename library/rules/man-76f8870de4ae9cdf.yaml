@@ -1,0 +1,43 @@
+# 合规检查：条件：The caller does not have permission to unlink this message queue；检查：调用 mq_unlink(name)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_76F8870DE4AE9CDF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The caller does not have permission to unlink this message queue
+  action:
+    operation: invoke_syscall
+    syscall: mq_unlink
+    arguments:
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:76f8870de4ae9cdfa4f180f71382ed3efb6f830dd16205d8f0a3ec538bcb360c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 34
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3dd3bf175c1c4b886c83d17750a1d0a99f619584d75bf975e5ede40ece45ec77
+  case: errors_eacces_34
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_unlink
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 34
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3dd3bf175c1c4b886c83d17750a1d0a99f619584d75bf975e5ede40ece45ec77
+  case: errors_eacces_34

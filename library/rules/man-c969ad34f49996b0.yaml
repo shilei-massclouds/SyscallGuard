@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sched_setaffinity(pid, cpusetsize, mask)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C969AD34F49996B0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:a620b9678d0089cc269acf7a40ca487ec281f4460ae931c92348cc953b507692
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 83
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ca632a31a55f91f6e685f07345328822c768bdd442478127ee3add9cf855b936
+  case: return_value_83
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 83
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ca632a31a55f91f6e685f07345328822c768bdd442478127ee3add9cf855b936
+  case: return_value_83

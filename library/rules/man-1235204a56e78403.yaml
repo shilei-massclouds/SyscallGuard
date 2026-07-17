@@ -1,0 +1,47 @@
+# 合规检查：条件：A path argument had a non-existent component；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1235204A56E78403
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A path argument had a non-existent component
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:1235204a56e78403b5ab51b13b7907fb1b2893191f3beadf5622ddbafcf98eb7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 461
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f6d7f7e4032b03396af9115505e061e436ba975f83b40c2b35d6756c2b80189
+  case: errors_enoent_461
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 461
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f6d7f7e4032b03396af9115505e061e436ba975f83b40c2b35d6756c2b80189
+  case: errors_enoent_461

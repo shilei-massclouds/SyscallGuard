@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:184d531b5eebeac2850788d2bad5321cdfaff0c34395610aa64b8530f3535c0c
   case: dup3_01_41_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup3/dup3_01.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:184d531b5eebeac2850788d2bad5321cdfaff0c34395610aa64b8530f3535c0c
+  case: dup3_01_41_0_0

@@ -1,0 +1,39 @@
+# 合规检查：条件：msqid was invalid, or msgsz was less than 0；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2F9873D60115A72F--2f9873d60115
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msqid
+    predicate: documented_condition
+    value: EINVAL
+    summary: msqid was invalid, or msgsz was less than 0
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2f9873d60115a72fd0204d9ce3f28315200c5a6a2fc3246c1c30938c191578c5
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 397
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b59c9df017262d6ca19ed8c8edd74d9eff7672a752b04b7ec2e859cc4b0bf5f5
+  case: errors_einval_397

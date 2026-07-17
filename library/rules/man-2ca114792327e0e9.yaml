@@ -1,0 +1,44 @@
+# 合规检查：条件：Permission denied. For the required permissions, see kill (2)；检查：调用 tkill(tid, sig)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2CA114792327E0E9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: Permission denied. For the required permissions, see kill (2)
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:eb8fad75a5020a35a6807f4cdcdfeb56c6aaef6a92b606e57aedbd8562c10501
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 101
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5ff6e6c61f84b653e58aee2d97f7f8a8378964b15ff7a3495c492b4d5a56a6a
+  case: errors_eperm_101
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 101
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5ff6e6c61f84b653e58aee2d97f7f8a8378964b15ff7a3495c492b4d5a56a6a
+  case: errors_eperm_101

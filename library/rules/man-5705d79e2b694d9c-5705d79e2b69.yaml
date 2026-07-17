@@ -1,0 +1,40 @@
+# 合规检查：条件：The file descriptor supplied in dirfd does not refer to a directory, and it is not the case that both flags includes AT_EMPTY_PATH and path is an empty string；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5705D79E2B694D9C--5705d79e2b69
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: The file descriptor supplied in dirfd does not refer to a directory, and it is not the case
+      that both flags includes AT_EMPTY_PATH and path is an empty string
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:5705d79e2b694d9c60adcbe0ad34a1e0b7b3b223f036a56b833b37dd53326e63
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 373
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be5d3e3d2a56aa9941cdd3fedadece8662fc269908f62375643af47e880a7b69
+  case: errors_enotdir_373

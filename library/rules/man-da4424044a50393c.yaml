@@ -1,0 +1,46 @@
+# 合规检查：条件：While installing a new filter, the SECCOMP_FILTER_FLAG_NEW_LISTENER flag was specified, but a previous filter had already been installed with that flag；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA4424044A50393C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EBUSY
+    summary: While installing a new filter, the SECCOMP_FILTER_FLAG_NEW_LISTENER flag was specified, but
+      a previous filter had already been installed with that flag
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:da4424044a50393cc16645b1d08968c27576b98a968e91e1ba14ec48801cc7ac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 821
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fdae7717653d217292ada33ec88394a199cde029080e69c8249039e3df257310
+  case: errors_ebusy_821
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 821
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fdae7717653d217292ada33ec88394a199cde029080e69c8249039e3df257310
+  case: errors_ebusy_821

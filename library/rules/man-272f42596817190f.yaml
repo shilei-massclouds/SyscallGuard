@@ -1,0 +1,47 @@
+# 合规检查：条件：mode is FALLOC_FL_COLLAPSE_RANGE or FALLOC_FL_INSERT_RANGE , but either offset or size is not a multiple of the filesystem block size；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_272F42596817190F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mode
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode is FALLOC_FL_COLLAPSE_RANGE or FALLOC_FL_INSERT_RANGE , but either offset or size is
+      not a multiple of the filesystem block size
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:272f42596817190f62add75c195c062592af368177da67516899659adae5d5ae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 358
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47c66034d012a9c276a670a79db8068e03911def2ce7a44fc10093e1ba54c5e2
+  case: errors_einval_358
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 358
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47c66034d012a9c276a670a79db8068e03911def2ce7a44fc10093e1ba54c5e2
+  case: errors_einval_358

@@ -1,0 +1,45 @@
+# 合规检查：条件：The kernel could not allocate sufficient memory to complete the operation；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_509C682D77B312D0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The kernel could not allocate sufficient memory to complete the operation
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:509c682d77b312d001fbdff67c719b43a4a6e5258c0348aa078026fbc7bbb1f0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 480
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0456b0aabeb900cce97d6c7236ad3c37f5ce3dde663ad116b14a68d3361d7ce
+  case: errors_enomem_480
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 480
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0456b0aabeb900cce97d6c7236ad3c37f5ce3dde663ad116b14a68d3361d7ce
+  case: errors_enomem_480

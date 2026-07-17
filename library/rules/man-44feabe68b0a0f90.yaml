@@ -1,0 +1,48 @@
+# 合规检查：条件：In an unprivileged mount namespace (i.e., a mount namespace owned by a user namespace that was created by an unprivileged user), a bind mount operation (...；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_44FEABE68B0A0F90
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: In an unprivileged mount namespace (i.e., a mount namespace owned by a user namespace that
+      was created by an unprivileged user), a bind mount operation (...
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:44feabe68b0a0f90f8428e398906648601379942be627a9a51099ecd15422149
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 760
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7e281c9401def7eab734c40378da3a97070727ae6a9d0ae8f523169f2b817173
+  case: errors_einval_760
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 760
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7e281c9401def7eab734c40378da3a97070727ae6a9d0ae8f523169f2b817173
+  case: errors_einval_760

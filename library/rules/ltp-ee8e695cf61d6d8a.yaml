@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:919f5b302b6cfc0da88d101f648511aa022000265ad676783d9a9ff00c9443aa
   case: dup206_20_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup206.c
+  line: 20
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:919f5b302b6cfc0da88d101f648511aa022000265ad676783d9a9ff00c9443aa
+  case: dup206_20_raw_0

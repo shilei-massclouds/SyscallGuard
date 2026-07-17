@@ -1,0 +1,44 @@
+# 合规检查：条件：No matching key was found or an invalid key was specified；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_416740BC35B12738
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOKEY
+    summary: No matching key was found or an invalid key was specified
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:416740bc35b127386dd3b5e9cb6f1a773f01a77ea45ff944e25f6f22407e4b3a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c1a210ea4c8c9e8483b147f0525bc3b6849730484b4e244d2d338f6a3e74ca0b
+  case: errors_enokey_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c1a210ea4c8c9e8483b147f0525bc3b6849730484b4e244d2d338f6a3e74ca0b
+  case: errors_enokey_123

@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:162b84f2f3fa9e2c896c831fed2177cf4fa713b594371948f45bbc477c4468d0
   case: timer_delete01_49_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/timer_delete/timer_delete01.c
+  line: 49
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:162b84f2f3fa9e2c896c831fed2177cf4fa713b594371948f45bbc477c4468d0
+  case: timer_delete01_49_raw_0

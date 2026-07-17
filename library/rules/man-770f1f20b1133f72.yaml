@@ -1,0 +1,45 @@
+# 合规检查：条件：Local address is already in use；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EADDRINUSE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_770F1F20B1133F72
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EADDRINUSE
+    summary: Local address is already in use
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRINUSE
+  errno:
+  - EADDRINUSE
+semantic_hash: sha256:770f1f20b1133f72f9779188cbc5809e2006074b0aebb0c070d656bf37c98fd1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1bdd17ed22cf954625c6dd7bad470609a151ed5fd417d97e79393daeae1ddbaf
+  case: errors_eaddrinuse_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1bdd17ed22cf954625c6dd7bad470609a151ed5fd417d97e79393daeae1ddbaf
+  case: errors_eaddrinuse_113

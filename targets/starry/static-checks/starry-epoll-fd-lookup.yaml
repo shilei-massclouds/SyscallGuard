@@ -4,8 +4,6 @@ check_id: STARRY_EPOLL_FD_LOOKUP
 title: epoll lookup distinguishes absent descriptors from descriptors of another type
 rule_refs:
 - LTP_6FFB17DB762F3167
-- LTP_8F30861E18D66625
-- LTP_EC1CA29BE6888A6B
 applies_to_syscalls:
 - epoll_ctl
 - epoll_wait
@@ -20,12 +18,6 @@ upstream_dependencies:
 - id: LTP_6FFB17DB762F3167
   generated_at_utc: '2026-07-15T10:14:12.969080Z'
   content_hash: sha256:6ffb17db762f3167790a052bae0fa49f44b1075991c29dcec06f56509e9ae743
-- id: LTP_8F30861E18D66625
-  generated_at_utc: '2026-07-15T10:14:12.969080Z'
-  content_hash: sha256:8f30861e18d666256af3aaaa7bd2a46e35d4fa8cb90ab3960bb318a6b7f25a51
-- id: LTP_EC1CA29BE6888A6B
-  generated_at_utc: '2026-07-15T10:14:12.969080Z'
-  content_hash: sha256:ec1ca29be6888a6b373d18e61642398247eb0d3006feee8826fd7fda26f99ab4
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/execve.rs
   symbols:
@@ -36,6 +28,13 @@ target_dependencies:
     sys_execveat: sha256:d6d86dd90f2558edc739dc31bb45261901911a99ef93a17c8203ec6b138102b7
   missing_symbols: []
   content_hash: sha256:053f961d4ed11ae1471e01d9c395601d4516827c0e6271858bdbc775ef05f83a
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:17d7a04e1a8a303c1b2023167d9b6092b11aafde6f56442bfa85ef971aade4b1
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
   scope: file
@@ -50,6 +49,13 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/fs.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:7cc750f1650beea4c4b002e42b33c687e9c9c7ef5bc286d38ad97159eadba7e2
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
   - sys_epoll_create1
@@ -68,6 +74,13 @@ target_dependencies:
     get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
   missing_symbols: []
   content_hash: sha256:a0ac4f88598370fae1b30592b26c7f4bc7ec59aaecd3083ab5a806fd86592985
+- path: os/StarryOS/kernel/src/file/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:d5211ace3d1bda6f44c007dfd231f44f8059fbc1997424891f1cf8f2a502cdb6
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a0e4acaf6ae3284af85e4c39ac34a90e122495b558edcacbd32c149d59a25275
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols: []
   scope: file
@@ -84,13 +97,6 @@ target_dependencies:
     resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
   missing_symbols: []
   content_hash: sha256:b3dce20309fe9f480c0da78b10b6995550acae12ab1f7f9f348ac78ca0cebbe2
-- path: os/StarryOS/kernel/src/file/epoll.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:07f147156bd48060bf44b65297f8249c23b8cbef5bb8553d8258cc90e85cebef
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:b83456f5b805811b84c3479f1b93bd7552d9b41159cd0a01d562dbf612af90bb
 - path: os/StarryOS/kernel/src/syscall/fs/stat.rs
   symbols:
   - sys_faccessat2
@@ -100,6 +106,13 @@ target_dependencies:
     sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
   missing_symbols: []
   content_hash: sha256:b9d3889e8fbb42df5c189b100603b8ef0b4dc10a215e57e67299745e99c479bd
+- path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:41612e40819cf89f7d6c6dd9ccffd9dc8dee0857fb2d200bfdbade9ae036542d
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c3cb998175e3b1e9dbdb94429aee95905800e94079ea7e8184fd3bb508753dd7
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
   - sys_epoll_ctl
@@ -120,5 +133,5 @@ target_dependencies:
     sys_epoll_wait: sha256:35cea4c0b882c6dfb79cbf625e90c08ec1fd9810bec449614cc8cca633ec5507
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
-target_content_fingerprint: sha256:ced9d2d883dab5b50e57877de92cf772e75843869ae09665ba2a7ed88181c469
-generated_at_utc: '2026-07-16T03:17:56.282688Z'
+target_content_fingerprint: sha256:b1802eeb4315757d577fa1d7cbcbd03db33148c64c2c4bd9bb944c1d1d08cb06
+generated_at_utc: '2026-07-17T05:28:28.281302Z'

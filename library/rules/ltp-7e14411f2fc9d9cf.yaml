@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:379e29ad1286d7b3b84ad019a7ea403ef9e9480fce659c44e0d4d1692463e480
   case: move_mount03_95_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount03.c
+  line: 95
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:379e29ad1286d7b3b84ad019a7ea403ef9e9480fce659c44e0d4d1692463e480
+  case: move_mount03_95_raw_0

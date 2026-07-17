@@ -1,0 +1,37 @@
+# 合规检查：条件：The call would change the caller's real UID (i.e., ruid does not match the caller's real UID), but there was a temporary failure allocating the necessary...；检查：调用 setregid(rgid, egid)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3C065C38444E3DD3--3c065c38444e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EAGAIN
+    summary: The call would change the caller's real UID (i.e., ruid does not match the caller's real
+      UID), but there was a temporary failure allocating the necessary...
+  action:
+    operation: invoke_syscall
+    syscall: setregid
+    arguments:
+    - rgid
+    - egid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:3c065c38444e3dd312921e4750af7a2748442443d15499105d9750eb87cc24c0
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setregid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:76c44daa5ba1b15dcfed7817193655f1a872e2e771f14436cde9ffd3377d7280
+  case: errors_eagain_70

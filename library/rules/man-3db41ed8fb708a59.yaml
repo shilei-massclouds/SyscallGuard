@@ -1,0 +1,44 @@
+# 合规检查：条件：The file path exists, but refers neither to a regular file nor to a block device;；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3DB41ED8FB708A59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The file path exists, but refers neither to a regular file nor to a block device;
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:96de17120d9cbabcb5f331ad080fef21e69cd57deb75bc38613f5947decf05de
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d7056f92431c97de1804a2a0b0bd8d764f9665ce647d1f3a363fb0ae3099f41
+  case: errors_einval_97
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d7056f92431c97de1804a2a0b0bd8d764f9665ce647d1f3a363fb0ae3099f41
+  case: errors_einval_97

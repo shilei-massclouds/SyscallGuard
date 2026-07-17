@@ -1,0 +1,38 @@
+# 合规检查：条件：A component of path does not exist or is a dangling symbolic link；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DF7F8413F9C29ACE--df7f8413f9c2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A component of path does not exist or is a dangling symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:df7f8413f9c29ace06f8f56d5081777d854a72d388364293f87fb31e856198a5
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 254
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc2fbd347860232cf49462a43e7f66fe968894f2b02686c563c3d5339c9b6196
+  case: errors_enoent_254

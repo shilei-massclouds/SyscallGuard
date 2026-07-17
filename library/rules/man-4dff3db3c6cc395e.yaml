@@ -1,0 +1,48 @@
+# 合规检查：条件：Connection reset by peer；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 ECONNRESET。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4DFF3DB3C6CC395E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECONNRESET
+    summary: Connection reset by peer
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECONNRESET
+  errno:
+  - ECONNRESET
+semantic_hash: sha256:b4b516a67cf0b3fae9e304a07ae4c6743eeeb452732d9a889825d13bc1e3b081
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 379
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e09f2add3ee2fbbe51ad11b3aa70cba4562d094446caaab213ceea0df5bd573b
+  case: errors_econnreset_379
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 379
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e09f2add3ee2fbbe51ad11b3aa70cba4562d094446caaab213ceea0df5bd573b
+  case: errors_econnreset_379

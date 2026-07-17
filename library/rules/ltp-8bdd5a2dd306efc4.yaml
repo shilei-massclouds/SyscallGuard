@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 signalfd(fd_einval2, mask, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8BDD5A2DD306EFC4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd_einval2
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: signalfd
+    arguments:
+    - fd_einval2
+    - mask
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8bdd5a2dd306efc48ef27714fd4d9d1a71f9a81316fd6b9225f0a58a4291f7ec
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/signalfd/signalfd02.c
+  line: 57
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:52e3d7cb35fbfd463307d6ecd1d0ce5dbde8c36a4b3e67d775351284b9822f0a
+  case: signalfd02_57_2_0

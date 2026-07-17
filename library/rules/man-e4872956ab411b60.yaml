@@ -1,0 +1,45 @@
+# 合规检查：条件：( sched_setscheduler ()) policy is not one of the recognized policies；检查：调用 sched_setscheduler(pid, policy, param)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E4872956AB411B60
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: policy
+    predicate: documented_condition
+    value: EINVAL
+    summary: ( sched_setscheduler ()) policy is not one of the recognized policies
+  action:
+    operation: invoke_syscall
+    syscall: sched_setscheduler
+    arguments:
+    - pid
+    - policy
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e4872956ab411b6037fdac493abdb83c9c53a974df6d029aab013dd3df2b290e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1d079d320622c3820b4a3ae24b4214f1e011b37adc2665c35fe5b7878a13c7
+  case: errors_einval_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setscheduler
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1d079d320622c3820b4a3ae24b4214f1e011b37adc2665c35fe5b7878a13c7
+  case: errors_einval_141

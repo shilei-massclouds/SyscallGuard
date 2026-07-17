@@ -1,0 +1,38 @@
+# 合规检查：条件：attr.sched_flags contains a flag other than SCHED_FLAG_RESET_ON_FORK；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A18F05DC5097AB99--a18f05dc5097
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: attr
+    predicate: invalid_value
+    value: EINVAL
+    summary: attr.sched_flags contains a flag other than SCHED_FLAG_RESET_ON_FORK
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a18f05dc5097ab99a5f7061e40b2f328f1f9f4acad330aff90f2bd09b0fa5b97
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a2357d48276c0dd46c65a79223e3819c23dc1b61b9766412a54f6a842fd5f561
+  case: errors_einval_416

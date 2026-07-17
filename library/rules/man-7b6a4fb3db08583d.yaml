@@ -1,0 +1,44 @@
+# 合规检查：条件：name contained more than one slash；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7B6A4FB3DB08583D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: name
+    predicate: documented_condition
+    value: EACCES
+    summary: name contained more than one slash
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:7b6a4fb3db08583df92adf1609be4f3bb8443c95e6f63ad79f233bd33ecc31d0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b44257212f902ac57d1ff193021d0cb2cf332cab9dbb1d483fe1aec1c736ad27
+  case: errors_eacces_158
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b44257212f902ac57d1ff193021d0cb2cf332cab9dbb1d483fe1aec1c736ad27
+  case: errors_eacces_158

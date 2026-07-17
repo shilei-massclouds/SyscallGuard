@@ -1,0 +1,44 @@
+# 合规检查：条件：Data was written to a file on NFS or another filesystem which does not allocate space at the time of a write (2) system call, and some previous write failed...；检查：调用 syncfs(fd)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5182EE044E596F56
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: Data was written to a file on NFS or another filesystem which does not allocate space at
+      the time of a write (2) system call, and some previous write failed...
+  action:
+    operation: invoke_syscall
+    syscall: syncfs
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:e34ba37bf9559edb2f26edfaf91a39e09b8d5d53a584e43f818b7c64235afacd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d4eb6a734e77c59d1e3abb658b3d9cfceede83edcd520a52ace6bbe10c6f071
+  case: errors_edquot_75
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syncfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d4eb6a734e77c59d1e3abb658b3d9cfceede83edcd520a52ace6bbe10c6f071
+  case: errors_edquot_75

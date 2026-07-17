@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:d68d4f4b5b47aed4cdee11c5ce9dbcabadc9ee8fe4d7e930e4bd71f36813b941
   case: llistxattr03_45_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/llistxattr/llistxattr03.c
+  line: 45
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d68d4f4b5b47aed4cdee11c5ce9dbcabadc9ee8fe4d7e930e4bd71f36813b941
+  case: llistxattr03_45_raw_0

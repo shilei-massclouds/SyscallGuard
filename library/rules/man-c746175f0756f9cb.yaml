@@ -1,0 +1,47 @@
+# 合规检查：条件：The operation is not permitted because the caller lacks a required capability；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C746175F0756F9CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The operation is not permitted because the caller lacks a required capability
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:c746175f0756f9cb3e5b1aa2e699cf69e33bbb2173bfdeb4ee56b8d73cd03e2e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b44b0ea425383773394050df43d9005a69f30e9eed90b8556897d01a691332e0
+  case: errors_eperm_798
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b44b0ea425383773394050df43d9005a69f30e9eed90b8556897d01a691332e0
+  case: errors_eperm_798

@@ -1,0 +1,36 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 get_robust_list(0, NULL, &len_ptr)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8CF830DB0473B27D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: len_ptr
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - '0'
+    - 'NULL'
+    - '&len_ptr'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:8cf830db0473b27df2c0983edcb1a34d50686deaa7302150b4dd1e974d0f40a4
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+  line: 113
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:ad8e79320f08a793aecca37d2aa0731c8f5cf8618becb49f06f524d42ec8bd08
+  case: get_robust_list01_113_raw_0

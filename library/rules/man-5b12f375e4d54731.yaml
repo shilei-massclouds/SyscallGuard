@@ -1,0 +1,45 @@
+# 合规检查：条件：fd is not a valid file descriptor or is not open for reading；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5B12F375E4D54731
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor or is not open for reading
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:5b12f375e4d5473136b46b3daa2da55d0243875018339b6ec5a203df1178a9d2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fa6441650f7ae3a79f525b8e161ccfc97ed1841c0c45a16169fc1af8627a2c7
+  case: errors_ebadf_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fa6441650f7ae3a79f525b8e161ccfc97ed1841c0c45a16169fc1af8627a2c7
+  case: errors_ebadf_102

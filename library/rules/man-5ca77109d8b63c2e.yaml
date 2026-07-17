@@ -1,0 +1,44 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5CA77109D8B63C2E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:d75954cae1e88693cb4efdedb3310e164177b58361afeeb54edcaa241ec34a0a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54112c6aa45a5338673c264b8c8c7b79a6ed5089613d1c507b725a6ee0b713ff
+  case: errors_enomem_264
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54112c6aa45a5338673c264b8c8c7b79a6ed5089613d1c507b725a6ee0b713ff
+  case: errors_enomem_264

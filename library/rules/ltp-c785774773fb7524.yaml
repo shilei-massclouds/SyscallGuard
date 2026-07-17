@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:9e7d933c24342a9dbe113e0b9d8ef968c0ddc203bcd56f54ad946ea5452e8192
   case: alarm02_34_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/alarm/alarm02.c
+  line: 34
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:9e7d933c24342a9dbe113e0b9d8ef968c0ddc203bcd56f54ad946ea5452e8192
+  case: alarm02_34_0_0

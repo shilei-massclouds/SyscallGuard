@@ -1,0 +1,46 @@
+# 合规检查：条件：(since Linux 3.1) Having changed its real UID using one of the set*uid () calls, the caller was and is now still above its RLIMIT_NPROC resource limit (see...；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2482F6894B14F49D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EAGAIN
+    summary: (since Linux 3.1) Having changed its real UID using one of the set*uid () calls, the caller
+      was and is now still above its RLIMIT_NPROC resource limit (see...
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:2482f6894b14f49ddf59b50aaeb58d8a9cc7c3406919b54a192f3a668b0ab4f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 461
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5eed31f11063ea3bde877d4de0132f8d05ed492ee2749b4cb6f2166b0b7ee650
+  case: errors_eagain_461
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 461
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5eed31f11063ea3bde877d4de0132f8d05ed492ee2749b4cb6f2166b0b7ee650
+  case: errors_eagain_461

@@ -1,0 +1,46 @@
+# 合规检查：条件：For nonblocking UNIX domain sockets, the socket is nonblocking, and the connection cannot be completed immediately. For other socket families, there are...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0CAF71ABB038A13B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: For nonblocking UNIX domain sockets, the socket is nonblocking, and the connection cannot
+      be completed immediately. For other socket families, there are...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:0caf71abb038a13bd21a59cb5f92df192b09d182a7355f62c8383cf152cd0d6f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6846283ebfcfddb825c14dde1eb80e84d7171b29f0e3428ad779fafad706d120
+  case: errors_eagain_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6846283ebfcfddb825c14dde1eb80e84d7171b29f0e3428ad779fafad706d120
+  case: errors_eagain_134

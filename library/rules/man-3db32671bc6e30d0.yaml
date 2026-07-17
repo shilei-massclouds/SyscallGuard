@@ -1,0 +1,44 @@
+# 合规检查：条件：*ctx_idp is not initialized to 0；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3DB32671BC6E30D0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: ctx_idp
+    predicate: documented_condition
+    value: EINVAL
+    summary: '*ctx_idp is not initialized to 0'
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3db32671bc6e30d02fbf5d87281259c81526cb0b13b2f4106e1067320299815f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01c71543262cb827f5306129d649ae50bee0ea9b5351e68559a3b13e353307ac
+  case: errors_einval_65
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01c71543262cb827f5306129d649ae50bee0ea9b5351e68559a3b13e353307ac
+  case: errors_einval_65

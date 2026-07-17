@@ -1,0 +1,48 @@
+# 合规检查：条件：A partial access-time setting was specified in attr_clr instead of MOUNT_ATTR__ATIME being set；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E497CF592FF38726
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: A partial access-time setting was specified in attr_clr instead of MOUNT_ATTR__ATIME being
+      set
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e497cf592ff38726f0c25f48db0ac9f237d6478a88921a30398b4db3654ece7d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 485
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0428022f67456661fd11a56663fb4049b50c060ed7a33d783c2f71937037de1c
+  case: errors_einval_485
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 485
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0428022f67456661fd11a56663fb4049b50c060ed7a33d783c2f71937037de1c
+  case: errors_einval_485

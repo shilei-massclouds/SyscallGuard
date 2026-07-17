@@ -1,0 +1,44 @@
+# 合规检查：条件：put_old is a mount point and has the propagation type MS_SHARED；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D375B8E2579C0112
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: put_old
+    predicate: documented_condition
+    value: EINVAL
+    summary: put_old is a mount point and has the propagation type MS_SHARED
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d375b8e2579c01123853d845f76e8e21575607bd641c6fe550babe7badebbdc3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc98e8d4745377dc1b1ad7d9748e35bb0c672d87550d6799fe5592b04dad4ade
+  case: errors_einval_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc98e8d4745377dc1b1ad7d9748e35bb0c672d87550d6799fe5592b04dad4ade
+  case: errors_einval_154

@@ -1,0 +1,45 @@
+# 合规检查：条件：target or linkpath points outside your accessible address space；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C82CCE9E0EAD8323
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: target
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: target or linkpath points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c82cce9e0ead8323a8bf35ab063d4069eba638381bca61bf8a47337ad71f8bfc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:452a6f0100749e3a7430b018dab6f86c81d3c507f9a071e970be2e2abae9940d
+  case: errors_efault_159
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:452a6f0100749e3a7430b018dab6f86c81d3c507f9a071e970be2e2abae9940d
+  case: errors_efault_159

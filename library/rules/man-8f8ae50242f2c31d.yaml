@@ -1,0 +1,45 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8F8AE50242F2C31D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:8f8ae50242f2c31d939cb6ea006108947ce01a9200a0005c3cbb55274222013d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae629daf2ca878289b086ec5b0c22e294db1fe7d01d045009d0643b418e8c9a4
+  case: errors_eio_162
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae629daf2ca878289b086ec5b0c22e294db1fe7d01d045009d0643b418e8c9a4
+  case: errors_eio_162

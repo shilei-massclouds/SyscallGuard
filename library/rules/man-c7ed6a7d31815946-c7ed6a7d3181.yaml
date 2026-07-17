@@ -1,0 +1,35 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 semop(semid, sops, nsops)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C7ED6A7D31815946--c7ed6a7d3181
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:c7ed6a7d31815946b9a584049bf88a18650475fae06f94347846cfd4c3fc21fa
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 273
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:94c9f4ae87fabf4f2aefd4c5813d4ea625ea53dc8f6116ebca54ca6e44d7645b
+  case: return_value_273

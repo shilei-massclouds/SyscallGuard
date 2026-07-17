@@ -1,0 +1,47 @@
+# 合规检查：条件：userns_fd is not a valid file descriptor；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_835E50EF3C99648C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: userns_fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:835e50ef3c99648ce0eac5054ba3c45ecab2b2b0cfab3a52c5ae22d878e99abb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 394
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4dc0cb69945778c623631247d65bdbc5a1bdc02f23b590ea97d4f1c36719a68e
+  case: errors_ebadf_394
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 394
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4dc0cb69945778c623631247d65bdbc5a1bdc02f23b590ea97d4f1c36719a68e
+  case: errors_ebadf_394

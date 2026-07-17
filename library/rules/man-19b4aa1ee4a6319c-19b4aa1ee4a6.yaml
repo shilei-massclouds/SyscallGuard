@@ -1,0 +1,40 @@
+# 合规检查：条件：We don't like addr , because it exceeds the virtual address space of the CPU；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_19B4AA1EE4A6319C--19b4aa1ee4a6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: We don't like addr , because it exceeds the virtual address space of the CPU
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:19b4aa1ee4a6319c941e79f3802862ec701f1f7c45616b9f433428d5916dee66
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 583
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8e705d59efe56871fa0c6a65af6db1739c78a4a437b2638d4dcb3bdd1210cfd9
+  case: errors_enomem_583

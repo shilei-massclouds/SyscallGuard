@@ -1,0 +1,45 @@
+# 合规检查：条件：flags had an invalid flag set；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_309050E378DADFF9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags had an invalid flag set
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:309050e378dadff9a1f1bcd8a5f7e6af39a63948c15501faf76e73d9b10a99a1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d7100d6ea08532b3728866aa438375b52fdf08db890bdbdaf807285eb26b08cc
+  case: errors_einval_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d7100d6ea08532b3728866aa438375b52fdf08db890bdbdaf807285eb26b08cc
+  case: errors_einval_164

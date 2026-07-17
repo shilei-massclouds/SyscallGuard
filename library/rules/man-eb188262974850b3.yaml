@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 3.7) CLONE_NEWPID was specified in flags, but the limit on the nesting depth of PID namespaces would have been exceeded; see pid_namespaces (7)；检查：调用 unshare(flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EB188262974850B3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: (since Linux 3.7) CLONE_NEWPID was specified in flags, but the limit on the nesting depth
+      of PID namespaces would have been exceeded; see pid_namespaces (7)
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:eb188262974850b3201d5a45e4517a8dd9df45e4da69d3c026f521e4e4f0f05b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af618cb7e49002758ef235d5e7c068343ad6e4df1f47f3e4c1b453261d6fd3ef
+  case: errors_enospc_364
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af618cb7e49002758ef235d5e7c068343ad6e4df1f47f3e4c1b453261d6fd3ef
+  case: errors_enospc_364

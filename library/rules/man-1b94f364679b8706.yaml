@@ -1,0 +1,45 @@
+# 合规检查：条件：ruleset_fd has no read access to the underlying ruleset, or the calling thread is not running with no_new_privs , or it doesn't have the CAP_SYS_ADMIN in...；检查：调用 landlock_restrict_self(ruleset_fd, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1B94F364679B8706
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: ruleset_fd
+    predicate: documented_condition
+    value: EPERM
+    summary: ruleset_fd has no read access to the underlying ruleset, or the calling thread is not running
+      with no_new_privs , or it doesn't have the CAP_SYS_ADMIN in...
+  action:
+    operation: invoke_syscall
+    syscall: landlock_restrict_self
+    arguments:
+    - ruleset_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:1b94f364679b8706ffee50e4e2504b98b37557a0a65c975178c37f805de40761
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:640623772321d598545115512ea224bd91f3decb7cd1281b43085a3a283faf27
+  case: errors_eperm_183
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_restrict_self
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:640623772321d598545115512ea224bd91f3decb7cd1281b43085a3a283faf27
+  case: errors_eperm_183

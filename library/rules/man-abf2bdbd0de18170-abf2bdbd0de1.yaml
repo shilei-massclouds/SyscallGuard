@@ -1,0 +1,36 @@
+# 合规检查：条件：The call was interrupted by a signal; see signal (7)；检查：调用 fstatfs(fd, buf)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ABF2BDBD0DE18170--abf2bdbd0de1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The call was interrupted by a signal; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - fd
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:abf2bdbd0de1817060b9b97486adabf737906b9bdf55fb1813b828e32f02f805
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstatfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54f359ed6df7fffcd9f32cf3ef87c191d9c438b6170d56a7d9bdd36465b47aa6
+  case: errors_eintr_240

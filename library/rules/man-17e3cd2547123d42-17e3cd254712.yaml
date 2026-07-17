@@ -1,0 +1,38 @@
+# 合规检查：条件：attr is NULL; or pid is negative; or flags is not zero；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_17E3CD2547123D42--17e3cd254712
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: pid
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: attr is NULL; or pid is negative; or flags is not zero
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:17e3cd2547123d42da2c7921f3e51475378dac482ad5c192e9cf38bd3c9a942a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 361
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:732cf5ac057193f1420b9d85eec24ca3fefd33f23f0d9495a683bf035e08d4dd
+  case: errors_einval_361

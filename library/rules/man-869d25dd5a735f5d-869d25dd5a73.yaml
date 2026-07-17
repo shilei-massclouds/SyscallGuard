@@ -1,0 +1,40 @@
+# 合规检查：条件：IPC_NOWAIT was specified in msgflg and no message of the requested type existed on the message queue；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 ENOMSG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_869D25DD5A735F5D--869d25dd5a73
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: ENOMSG
+    summary: IPC_NOWAIT was specified in msgflg and no message of the requested type existed on the message
+      queue
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMSG
+  errno:
+  - ENOMSG
+semantic_hash: sha256:869d25dd5a735f5d383cd714146ed52aa6c9d88cb79641e08bca8a6e0250bbdd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 417
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5af9d1dcd8c05d4d59f1ba9828e6ddbe95673bceb9a1e6da3159f608910f6e92
+  case: errors_enomsg_417

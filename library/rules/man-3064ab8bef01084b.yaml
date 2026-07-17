@@ -1,0 +1,45 @@
+# 合规检查：条件：Non-NULL attr or non-zero size in combination with LANDLOCK_CREATE_RULESET_VERSION or LANDLOCK_CREATE_RULESET_ERRATA；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3064AB8BEF01084B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: attr
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: Non-NULL attr or non-zero size in combination with LANDLOCK_CREATE_RULESET_VERSION or LANDLOCK_CREATE_RULESET_ERRATA
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3064ab8bef01084ba77daae4973b1c4b16c6b057a52d64a38ddd813898f8bd59
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:768ea28e3a5f9c8c92672b52b17f9585d34c62c54ed1ef9e42232883308954f0
+  case: errors_einval_196
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:768ea28e3a5f9c8c92672b52b17f9585d34c62c54ed1ef9e42232883308954f0
+  case: errors_einval_196

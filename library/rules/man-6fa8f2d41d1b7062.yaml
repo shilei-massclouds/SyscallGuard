@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 memfd_create(name, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6FA8F2D41D1B7062
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: memfd_create
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:6fa8f2d41d1b7062512f7ef14612d6d6594e7f36cb6ef236fbebd35f0c135f4b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 152
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:7d7236fde917d8c06cb061106224f6b8214dfafe38dbc0343384e96ee3d22642
+  case: return_value_152
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 152
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:7d7236fde917d8c06cb061106224f6b8214dfafe38dbc0343384e96ee3d22642
+  case: return_value_152

@@ -1,0 +1,46 @@
+# 合规检查：条件：The anonymous mount namespace necessary to contain the \%OPEN_TREE_CLONE detached bind-mount mount object could not be allocated, as doing so would exceed...；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_168FD474472CC9B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: The anonymous mount namespace necessary to contain the \%OPEN_TREE_CLONE detached bind-mount
+      mount object could not be allocated, as doing so would exceed...
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:168fd474472cc9b5dfe3967e09880867365f280d4bb2ba72c39d0d27dd7e2c5d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 468
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d3aa9f3caef8edbb62c02ded4c0b3c06be32ee7458a09c0138a3d5075b29bde5
+  case: errors_enospc_468
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 468
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d3aa9f3caef8edbb62c02ded4c0b3c06be32ee7458a09c0138a3d5075b29bde5
+  case: errors_enospc_468

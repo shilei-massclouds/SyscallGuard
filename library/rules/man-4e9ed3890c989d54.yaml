@@ -1,0 +1,46 @@
+# 合规检查：条件：( sched_getaffinity () and, before Linux 2.6.9, sched_setaffinity ()) cpusetsize is smaller than the size of the affinity mask used by the kernel；检查：调用 sched_setaffinity(pid, cpusetsize, mask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4E9ED3890C989D54
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: cpusetsize
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( sched_getaffinity () and, before Linux 2.6.9, sched_setaffinity ()) cpusetsize is smaller
+      than the size of the affinity mask used by the kernel
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dea65624486fd1a9e7ee9246c83ae9e6a7282f6584d293a7bfe885e55f1a5c35
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d67b69d4610aaa59150515186066b4e5d6b57d93ea71479c8b25ef374378c9d9
+  case: errors_einval_108
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d67b69d4610aaa59150515186066b4e5d6b57d93ea71479c8b25ef374378c9d9
+  case: errors_einval_108

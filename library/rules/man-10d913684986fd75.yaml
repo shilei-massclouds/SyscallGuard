@@ -1,0 +1,48 @@
+# 合规检查：条件：Could not allocate memory for internal copies of the iovec structures；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_10D913684986FD75
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Could not allocate memory for internal copies of the iovec structures
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:1986d6a8a82d3d00571e91407d77d999deb59de7f42d924eb507830806140de9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 244
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8852ff09a627b02627fba0fe06c90c87020e88c7eb05e3821ec757a1e94badde
+  case: errors_enomem_244
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 244
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8852ff09a627b02627fba0fe06c90c87020e88c7eb05e3821ec757a1e94badde
+  case: errors_enomem_244

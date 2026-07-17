@@ -1,0 +1,36 @@
+# 合规检查：条件：A component of path does not exist or is a dangling symbolic link；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6BC3B59B02168621--6bc3b59b0216
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A component of path does not exist or is a dangling symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:6bc3b59b02168621c97f264c7d85f8018e9fbfea392bf88862a0771dab6a1963
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ab2d0e2426a65fb3fc9fedd0e3487ea6c94d4c814c061b2e4d1429da7be0cf1a
+  case: errors_enoent_255

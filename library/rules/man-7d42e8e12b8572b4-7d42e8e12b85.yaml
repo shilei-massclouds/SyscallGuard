@@ -1,0 +1,41 @@
+# 合规检查：条件：We don't like addr , length , or offset (e.g., they are too large, or not aligned on a page boundary)；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D42E8E12B8572B4--7d42e8e12b85
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: length
+    predicate: documented_condition
+    value: EINVAL
+    summary: We don't like addr , length , or offset (e.g., they are too large, or not aligned on a page
+      boundary)
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7d42e8e12b8572b4e6adfde09a15a7dceb60562ab93c5ad3ce8512133b2e505a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 531
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5352069b0af9e9518a30038e3f19e59e04eb543f4baefecbb8a9d70fa517e0c
+  case: errors_einval_531

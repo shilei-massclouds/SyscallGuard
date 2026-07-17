@@ -1,0 +1,46 @@
+# 合规检查：条件：The file descriptor fd refers to a file other than a socket and has been marked nonblocking ( O_NONBLOCK ), and the read would block. See open (2) for...；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1509E2071E4926B2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EAGAIN
+    summary: The file descriptor fd refers to a file other than a socket and has been marked nonblocking
+      ( O_NONBLOCK ), and the read would block. See open (2) for...
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:1509e2071e4926b213a86f403a0229a366771e1793f7528d511631c3c68b7acf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8942db035077b90f17e24d15aa3d94c121332e10b76430119ab239865382da9b
+  case: errors_eagain_79
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8942db035077b90f17e24d15aa3d94c121332e10b76430119ab239865382da9b
+  case: errors_eagain_79

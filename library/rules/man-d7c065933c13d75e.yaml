@@ -1,0 +1,44 @@
+# 合规检查：条件：The kernel could not allocate sufficient memory to complete the operation；检查：调用 fsopen(fsname, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D7C065933C13D75E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The kernel could not allocate sufficient memory to complete the operation
+  action:
+    operation: invoke_syscall
+    syscall: fsopen
+    arguments:
+    - fsname
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:d7c065933c13d75ed75712827b3f9c0b248d33ed30e04cf00c3d0f6985930267
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fb36705f32885b92d6747aed012d2e083d05dc0821b95e392456239936fe67df
+  case: errors_enomem_250
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsopen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fb36705f32885b92d6747aed012d2e083d05dc0821b95e392456239936fe67df
+  case: errors_enomem_250

@@ -1,0 +1,44 @@
+# 合规检查：条件：The file is locked and the LOCK_NB flag was selected；检查：调用 flock(fd, op)；预期：返回 -1，errno 为 EWOULDBLOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_30A1650A2C9C389D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EWOULDBLOCK
+    summary: The file is locked and the LOCK_NB flag was selected
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EWOULDBLOCK
+  errno:
+  - EWOULDBLOCK
+semantic_hash: sha256:30a1650a2c9c389d3b54c46db5ed7a1aecccd6447eb6c507efa415ab22e5dd3f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:762b69ed33cc1dcef2a73fd99748c72e26f20a85b27efeaf1442f7e41784c481
+  case: errors_ewouldblock_115
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:762b69ed33cc1dcef2a73fd99748c72e26f20a85b27efeaf1442f7e41784c481
+  case: errors_ewouldblock_115

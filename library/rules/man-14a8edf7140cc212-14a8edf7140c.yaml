@@ -1,0 +1,40 @@
+# 合规检查：条件：While the process was sleeping to receive a message, the process caught a signal; see signal (7)；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_14A8EDF7140CC212--14a8edf7140c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While the process was sleeping to receive a message, the process caught a signal; see signal
+      (7)
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:14a8edf7140cc212c5da1ade55fb4ebb84c61a2575f6f4c5ef3fb0492c7bf75b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 391
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:540ef2526150b73086d32497412ac0613e0046c97210692a220f9a8b49653a9a
+  case: errors_eintr_391

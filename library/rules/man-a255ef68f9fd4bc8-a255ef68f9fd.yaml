@@ -1,0 +1,39 @@
+# 合规检查：条件：path is an empty string, but AT_EMPTY_PATH was not specified in flags；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A255EF68F9FD4BC8--a255ef68f9fd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path is an empty string, but AT_EMPTY_PATH was not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:a255ef68f9fd4bc8e1b18ebb3afe2ca8a04c250b331e7ccb22b22b17bd4e02d2
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 366
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e463cc17d0f7a2d9a7e4fb4dae91e991f0c43159db4f872edacfb26d16d8ca0
+  case: errors_enoent_366

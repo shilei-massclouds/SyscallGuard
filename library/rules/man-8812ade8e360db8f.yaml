@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 shutdown(sockfd, how)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8812ADE8E360DB8F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: shutdown
+    arguments:
+    - sockfd
+    - how
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:8812ade8e360db8f8860c3534585321d58461d8a1b01b3614f8e6d175e7d1ebf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 41
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:84885a6992ba18b9dede68ec0be263c6d6ab4bc4b264c5fa1eb15f1832eedd3d
+  case: return_value_41
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shutdown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 41
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:84885a6992ba18b9dede68ec0be263c6d6ab4bc4b264c5fa1eb15f1832eedd3d
+  case: return_value_41

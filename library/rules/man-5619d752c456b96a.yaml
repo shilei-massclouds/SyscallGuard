@@ -1,0 +1,47 @@
+# 合规检查：条件：path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5619D752C456B96A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:5619d752c456b96ac7d904b117ae147625444363bb4b3c4bb58a3ae0555167e0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 386
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9b429d5944aa5ad2eafd3a9dc57fa874806d154053ed456359ff0ed0384f326
+  case: errors_ebadf_386
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 386
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9b429d5944aa5ad2eafd3a9dc57fa874806d154053ed456359ff0ed0384f326
+  case: errors_ebadf_386

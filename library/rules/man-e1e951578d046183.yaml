@@ -1,0 +1,45 @@
+# 合规检查：条件：targetfd is not an open file descriptor in the process referred to by pidfd；检查：调用 pidfd_getfd(pidfd, targetfd, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E1E951578D046183
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: pidfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: targetfd is not an open file descriptor in the process referred to by pidfd
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - pidfd
+    - targetfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:e1e951578d04618322c4946ed7c648444a049b83bf1ab14206cfa14af982e4ef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_getfd.2
+  line: 74
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26ca2ac26ebab138f28282b164f163c13d426582ab83e3127b716c69249aba7d
+  case: errors_ebadf_74
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_getfd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_getfd.2
+  line: 74
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26ca2ac26ebab138f28282b164f163c13d426582ab83e3127b716c69249aba7d
+  case: errors_ebadf_74

@@ -1,0 +1,46 @@
+# 合规检查：条件：Too many symbolic links encountered while traversing the path；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DD35836D94E4B623
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links encountered while traversing the path
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:1b1d1b3c651dab4c5872f37e348fca3fb8afc502fbbcbe7ae756be3ad17e56df
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3769ebc3e64e336dc5e2c6f5f40323709875baf22164a121193176b2f229570
+  case: errors_eloop_248
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3769ebc3e64e336dc5e2c6f5f40323709875baf22164a121193176b2f229570
+  case: errors_eloop_248

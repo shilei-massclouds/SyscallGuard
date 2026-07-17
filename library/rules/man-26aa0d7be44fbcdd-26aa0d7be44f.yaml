@@ -1,0 +1,39 @@
+# 合规检查：条件：(since Linux 3.14) msgflg specified both MSG_COPY and MSG_EXCEPT；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26AA0D7BE44FBCDD--26aa0d7be44f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 3.14) msgflg specified both MSG_COPY and MSG_EXCEPT
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:26aa0d7be44fbcdde313f6bc31b8978a93e28675449c4abfd357c7b45d779300
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04f27214f8f9f9bf6c0a54d2ae276af898dc4cd1a8a5e3782cb677b6562e8ccf
+  case: errors_einval_410

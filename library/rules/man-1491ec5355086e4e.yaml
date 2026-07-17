@@ -1,0 +1,46 @@
+# 合规检查：条件：No disk quota is found for the indicated user. Quotas have not been turned on for this filesystem；检查：调用 quotactl_fd(fd, op, id, addr)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1491EC5355086E4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ESRCH
+    summary: No disk quota is found for the indicated user. Quotas have not been turned on for this filesystem
+  action:
+    operation: invoke_syscall
+    syscall: quotactl_fd
+    arguments:
+    - fd
+    - op
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:33a843d194199973a465d3bc3f9da2cea7376a6729d6766a919128640a16f706
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:969d840735f013442363bae80d029a7e1670085167c5597c6d4fe5e5cb758d39
+  case: errors_esrch_187
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl_fd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:969d840735f013442363bae80d029a7e1670085167c5597c6d4fe5e5cb758d39
+  case: errors_esrch_187

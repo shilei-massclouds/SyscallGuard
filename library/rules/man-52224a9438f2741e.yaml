@@ -1,0 +1,45 @@
+# 合规检查：条件：( fchown ()) A low-level I/O error occurred while modifying the inode；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_52224A9438F2741E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: ( fchown ()) A low-level I/O error occurred while modifying the inode
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:52224a9438f2741e090cb0ce30c7ddc53b003ad53f69e5e55604bd45a76db6d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 231
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3365159fe5f22af35ce3490111f230e8a90022ac928d3e489815e2ef4a3a3d5
+  case: errors_eio_231
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 231
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3365159fe5f22af35ce3490111f230e8a90022ac928d3e489815e2ef4a3a3d5
+  case: errors_eio_231

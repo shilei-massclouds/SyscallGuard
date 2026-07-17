@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 2.6.17) System call was interrupted by a signal and will be restarted. (This can be seen only during a trace.)；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 ERESTARTNOINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EDD9FFA1EECA3B6B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ERESTARTNOINTR
+    summary: (since Linux 2.6.17) System call was interrupted by a signal and will be restarted. (This
+      can be seen only during a trace.)
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERESTARTNOINTR
+  errno:
+  - ERESTARTNOINTR
+semantic_hash: sha256:9c612ab5fb834829a0e6135de6a361aa5ce6cc3f4032fde6f53c988c6f6eac69
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1535
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5f660eaa6ce9839fab31393256baf0136d9c9338c42e08b949c95f5c967ace0
+  case: errors_erestartnointr_1535
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1535
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5f660eaa6ce9839fab31393256baf0136d9c9338c42e08b949c95f5c967ace0
+  case: errors_erestartnointr_1535

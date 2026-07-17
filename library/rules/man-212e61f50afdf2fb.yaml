@@ -1,0 +1,47 @@
+# 合规检查：条件：how.resolve contains either RESOLVE_IN_ROOT or RESOLVE_BENEATH , and the kernel could not ensure that a .. component didn't escape (due to a race condition...；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_212E61F50AFDF2FB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: how
+    predicate: documented_condition
+    value: EAGAIN
+    summary: how.resolve contains either RESOLVE_IN_ROOT or RESOLVE_BENEATH , and the kernel could not
+      ensure that a .. component didn't escape (due to a race condition...
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:212e61f50afdf2fbb9ad71a5b8f20c43679dc2d5d5af220bd2619122e67d02cd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3126bfb6ea7152509cc79a1cd10064629217f7599cce57d88fb0c8a58b1268d6
+  case: errors_eagain_419
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3126bfb6ea7152509cc79a1cd10064629217f7599cce57d88fb0c8a58b1268d6
+  case: errors_eagain_419

@@ -1,0 +1,38 @@
+# 合规检查：条件：The connection-mode socket was connected already but a recipient was specified. (Now either this error is returned, or the recipient specification is ignored.)；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EISCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FF7AC002AD46509D--ff7ac002ad46
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EISCONN
+    summary: The connection-mode socket was connected already but a recipient was specified. (Now either
+      this error is returned, or the recipient specification is ignored.)
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISCONN
+  errno:
+  - EISCONN
+semantic_hash: sha256:ff7ac002ad46509dc39fb4c516726049312896182bdfc918bf806176e8b5accb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1433c53754879a3d9ff7057451ddf34b11d8b547797cb7241d86bad752e976be
+  case: errors_eisconn_396

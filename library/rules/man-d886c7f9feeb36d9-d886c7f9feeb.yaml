@@ -1,0 +1,37 @@
+# 合规检查：条件：A module with this name is already loaded；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D886C7F9FEEB36D9--d886c7f9feeb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EEXIST
+    summary: A module with this name is already loaded
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:d886c7f9feeb36d9efc6951ba1038ccd1e55288ee76ea35969472ab43d59970e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:99dc3a759f66b05a56aaa28c92e5220dc2ac2aa750382da6d361831a09adda3a
+  case: errors_eexist_222

@@ -1,0 +1,42 @@
+# 合规检查：条件：The file referred to by fd is too large；检查：调用 init_module()；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F67F70C6CC37B637
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EFBIG
+    summary: The file referred to by fd is too large
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:0d79085f13513d7ae72debdce9d1b1e286b393092df42339e1db128f3fe26f57
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b29826677d6eabffc869d3a951ee25235d271b3fcf9dbed2f869046a9d608e95
+  case: errors_efbig_255
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b29826677d6eabffc869d3a951ee25235d271b3fcf9dbed2f869046a9d608e95
+  case: errors_efbig_255

@@ -1,0 +1,45 @@
+# 合规检查：条件：Search permission is denied for a component of the path prefix, or the named file is not writable by the user. (See also path_resolution (7).)；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4ACDAFA5048EFBA2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for a component of the path prefix, or the named file is not
+      writable by the user. (See also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:10ad298b348a0ced0fc4887a2250866a45076cb80546b8520a9af84fbaca4364
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e945277f1c2b57f6babfa66f81cbec8edc48ae42c3fe81509b8a9694caf6b7e2
+  case: errors_eacces_83
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e945277f1c2b57f6babfa66f81cbec8edc48ae42c3fe81509b8a9694caf6b7e2
+  case: errors_eacces_83

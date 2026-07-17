@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified protocol is not supported on this machine；检查：调用 socketpair(domain, type, protocol, sv)；预期：返回 -1，errno 为 EPROTONOSUPPORT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5FBA7D222FF2515B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: protocol
+    predicate: documented_condition
+    value: EPROTONOSUPPORT
+    summary: The specified protocol is not supported on this machine
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPROTONOSUPPORT
+  errno:
+  - EPROTONOSUPPORT
+semantic_hash: sha256:5fba7d222ff2515b8c4c0f9716ee8006d303e346d08cc6344018b5b93c331fc7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60db1107c4225d469e4f3318fbb27e0338a72e8a8a910941eb03c1659f8c6bb7
+  case: errors_eprotonosupport_69
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60db1107c4225d469e4f3318fbb27e0338a72e8a8a910941eb03c1659f8c6bb7
+  case: errors_eprotonosupport_69

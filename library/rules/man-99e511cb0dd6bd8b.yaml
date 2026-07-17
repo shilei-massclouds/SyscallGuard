@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 mq_notify(mqdes, sevp)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_99E511CB0DD6BD8B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - mqdes
+    - sevp
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:99e511cb0dd6bd8b224daab95ea0ae26fca0128463f3cea9ecd9cdd5f0470ff9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 118
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a9847b315339cf571a1ef48bae166a8c6e29a5f613b79a014801d89e36fac328
+  case: return_value_118
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_notify
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 118
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a9847b315339cf571a1ef48bae166a8c6e29a5f613b79a014801d89e36fac328
+  case: return_value_118

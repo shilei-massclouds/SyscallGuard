@@ -1,0 +1,47 @@
+# 合规检查：条件：( readlinkat ()) path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 readlinkat(dirfd, path, bufsiz, bufsiz)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5377D1E23AC59611
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( readlinkat ()) path is relative and dirfd is a file descriptor referring to a file other
+      than a directory
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dirfd
+    - path
+    - bufsiz
+    - bufsiz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:5377d1e23ac596114225dcd8da4661ddc77442ffe08717dbcbae26861660f919
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3141ab8a9110aae39e5518eeefc784e560788ad88e123144e60e74a7d75e1102
+  case: errors_enotdir_176
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3141ab8a9110aae39e5518eeefc784e560788ad88e123144e60e74a7d75e1102
+  case: errors_enotdir_176

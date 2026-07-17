@@ -1,0 +1,41 @@
+# 合规检查：条件：MAP_FIXED_NOREPLACE was specified in flags , and the range covered by addr and length clashes with an existing mapping；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ECC4567FF2E48872--ecc4567ff2e4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: length
+    predicate: invalid_value
+    value: EEXIST
+    summary: MAP_FIXED_NOREPLACE was specified in flags , and the range covered by addr and length clashes
+      with an existing mapping
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:ecc4567ff2e4887243c91d14825a26aecd0c18273ab33380781f91cdae1327a7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 521
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3369a67ba73b659cfdd5ac78b31e1cac0ebd340eb28291d35ad7efa13f736e44
+  case: errors_eexist_521

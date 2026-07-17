@@ -1,0 +1,46 @@
+# 合规检查：条件：IPC_CREAT and IPC_EXCL were specified in semflg , but a semaphore set already exists for key；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_812E503676DD9D23
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: EEXIST
+    summary: IPC_CREAT and IPC_EXCL were specified in semflg , but a semaphore set already exists for
+      key
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:812e503676dd9d237b9caa2979586d88f057b0eb575eea456022d88009256b51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c0c761ce6c1e8c4bc12bc7e1bdb0eeb58b5394b2e4f0f8ef08fc020521db23c
+  case: errors_eexist_144
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c0c761ce6c1e8c4bc12bc7e1bdb0eeb58b5394b2e4f0f8ef08fc020521db23c
+  case: errors_eexist_144

@@ -1,0 +1,36 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D6A0A0D5C10A5F7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:7d6a0a0d5c10a5f72127a815e77686eeb1fb04a102cc6c9cddbaf5c3fed383c8
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:24dd1a869285fd3643960cf3fd5ea872a4407a5c30e4713004d226173d8627ab
+  case: errors_enfile_419

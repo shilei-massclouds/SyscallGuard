@@ -1,0 +1,45 @@
+# 合规检查：条件：The call was made without sufficient privilege (without the CAP_SYS_ADMIN capability)；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CF5613665D9E86B3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The call was made without sufficient privilege (without the CAP_SYS_ADMIN capability)
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:cf5613665d9e86b33ef2b94d24a6ced32e735815a5ce179be3b4902e2e83f25e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1060
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5a43e81b4a8ff2bae54e7058c96b950ee3b577b4fa06c7a0f1a175b9058d225
+  case: errors_eperm_1060
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1060
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5a43e81b4a8ff2bae54e7058c96b950ee3b577b4fa06c7a0f1a175b9058d225
+  case: errors_eperm_1060

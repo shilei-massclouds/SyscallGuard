@@ -1,0 +1,35 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 realpath(".", NULL)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E2AC7688287A2F9C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: realpath
+    arguments:
+    - '"."'
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:e2ac7688287a2f9c853dec7eae2fbc8f1f0a73a30d57f8566b7f51ce417e31da
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/realpath/realpath01.c
+  line: 33
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9bace61bedf7ef0a7e8a8204d1b262185e7a6e79e73f9757b4b26cf8e11ede07
+  case: realpath01_33_raw_0

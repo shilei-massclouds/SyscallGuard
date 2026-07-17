@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the file descriptor specified in cl_args.cgroup refers to a version 2 cgroup in...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D72A3E318D01D054
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: cl_args
+    predicate: invalid_or_wrong_type
+    value: EBUSY
+    summary: ( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the file descriptor
+      specified in cl_args.cgroup refers to a version 2 cgroup in...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:d72a3e318d01d0543a3e3acff86450f24643675e98c8e54917867ca4b5766347
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:85c9b490ce93649b3ef0201b3b48e6382cd991fa769aeaeb1e9e51e1711ee1fc
+  case: errors_ebusy_1217
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:85c9b490ce93649b3ef0201b3b48e6382cd991fa769aeaeb1e9e51e1711ee1fc
+  case: errors_ebusy_1217

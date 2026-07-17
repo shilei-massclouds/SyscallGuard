@@ -37,4 +37,20 @@ sources:
   line: 54
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
+  case: openat202_54_3_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat202.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
   case: openat202_54_6
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat202.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
+  case: openat202_54_6_0

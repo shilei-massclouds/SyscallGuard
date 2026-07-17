@@ -1,0 +1,46 @@
+# 合规检查：条件：Search permission is denied for one of the directories in the path prefix of path . (See also path_resolution (7).)；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CD82C633B5326E19
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for one of the directories in the path prefix of path . (See
+      also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:cd82c633b5326e190882ee55ffe32a2f77f184de4f57d5fb06fe5a8e89e2b311
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:baf9beeaf3ea9617cb99b5b84418e333b6600160aaca0182f9c4b8909532d4fe
+  case: errors_eacces_407
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:baf9beeaf3ea9617cb99b5b84418e333b6600160aaca0182f9c4b8909532d4fe
+  case: errors_eacces_407

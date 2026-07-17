@@ -1,0 +1,47 @@
+# 合规检查：条件：filesystemtype not configured in the kernel；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_509E7404D69FD1DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: filesystemtype
+    predicate: documented_condition
+    value: ENODEV
+    summary: filesystemtype not configured in the kernel
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:509e7404d69fd1df681bf29e4df8ea66166736d5a8a776cd00599e39eb0bd883
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 788
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36fc152df212326ba9634c7f2a99b6bc62ee9b5d4b9c90ad14aa79633946c2d2
+  case: errors_enodev_788
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 788
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36fc152df212326ba9634c7f2a99b6bc62ee9b5d4b9c90ad14aa79633946c2d2
+  case: errors_enodev_788

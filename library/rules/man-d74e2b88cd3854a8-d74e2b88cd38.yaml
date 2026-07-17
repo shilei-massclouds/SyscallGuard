@@ -1,0 +1,36 @@
+# 合规检查：条件：path is too long；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D74E2B88CD3854A8--d74e2b88cd38
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:d74e2b88cd3854a8308d8a8f9cbdcd1f8b8c47bcddae03162a355961caa2492d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 251
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:73bb3af657c3cdf1ba9221bbc72456f90fcbcad05b9bfabc1de190cb6bd6bf00
+  case: errors_enametoolong_251

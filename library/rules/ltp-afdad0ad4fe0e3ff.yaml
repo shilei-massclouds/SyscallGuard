@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:87f4f028a280614d946fb478b45b5a47e49c4a3ca7bc3c6cbe5df5e1a710cfc1
   case: munlock01_33_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/munlock/munlock01.c
+  line: 33
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:87f4f028a280614d946fb478b45b5a47e49c4a3ca7bc3c6cbe5df5e1a710cfc1
+  case: munlock01_33_1_0

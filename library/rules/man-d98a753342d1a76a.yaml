@@ -1,0 +1,46 @@
+# 合规检查：条件：It can also be returned if an SELinux policy denied a connection (for example, if there is a policy saying that an HTTP proxy can only connect to ports...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D98A753342D1A76A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: It can also be returned if an SELinux policy denied a connection (for example, if there is
+      a policy saying that an HTTP proxy can only connect to ports...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d98a753342d1a76aa5d6d8d4412ff80127937ead547da40659afc19d1f9a24c3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b0596291e80ba2d311da201b19d03da92c4a77e879ac99f70893fd2fe8b9e49b
+  case: errors_eacces_107
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b0596291e80ba2d311da201b19d03da92c4a77e879ac99f70893fd2fe8b9e49b
+  case: errors_eacces_107

@@ -1,0 +1,45 @@
+# 合规检查：条件：The user hard limit on memory that can be allocated for pipes has been reached and the caller is not privileged; see pipe (7)；检查：调用 pipe2(pipefd, flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9CE9FA3B8753B4D9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: ENFILE
+    summary: The user hard limit on memory that can be allocated for pipes has been reached and the caller
+      is not privileged; see pipe (7)
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:9ce9fa3b8753b4d9ce267ef9dcdd375454cea49b6ca4d2e550ab60748a6031cf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cf8f5f4b15b1d0770242f3869ad0ec2900398402b59a2629d9f3afe0ff79df0f
+  case: errors_enfile_171
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cf8f5f4b15b1d0770242f3869ad0ec2900398402b59a2629d9f3afe0ff79df0f
+  case: errors_enfile_171

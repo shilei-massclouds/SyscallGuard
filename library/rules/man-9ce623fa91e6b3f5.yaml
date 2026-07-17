@@ -1,0 +1,47 @@
+# 合规检查：条件：The size of smbuf is too small to contain either the smbuf.fs_type , smbuf.mnt_root , or smbuf.mnt_point . Allocate a larger buffer and retry the call；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9CE623FA91E6B3F5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: smbuf
+    predicate: invalid_value
+    value: EOVERFLOW
+    summary: The size of smbuf is too small to contain either the smbuf.fs_type , smbuf.mnt_root , or
+      smbuf.mnt_point . Allocate a larger buffer and retry the call
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:9ce623fa91e6b3f5161c5d5914404139636ad7f94387c5e3c4efddc645189ab1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 438
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:898d20b4c96815d3097e8c9bae26c2d3806e6966d78274acbc8e1135277f964c
+  case: errors_eoverflow_438
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 438
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:898d20b4c96815d3097e8c9bae26c2d3806e6966d78274acbc8e1135277f964c
+  case: errors_eoverflow_438

@@ -1,0 +1,44 @@
+# 合规检查：条件：The argument length is larger than the maximum file size. (XSI)；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_68B1C3935C4667C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: length
+    predicate: invalid_value
+    value: EFBIG
+    summary: The argument length is larger than the maximum file size. (XSI)
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:447ba29aeb21b30431382ed6c554b9be841034de471a986dd9aa5f74c8831f04
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 94
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d23b242499b77a568f27a022e29663ca5cf62910d697ab1ee15680b759cd9692
+  case: errors_efbig_94
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 94
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d23b242499b77a568f27a022e29663ca5cf62910d697ab1ee15680b759cd9692
+  case: errors_efbig_94

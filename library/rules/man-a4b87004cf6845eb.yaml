@@ -1,0 +1,46 @@
+# 合规检查：条件：IPC_STAT is attempted, and the GID or UID value is too large to be stored in the structure pointed to by buf；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A4B87004CF6845EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: buf
+    predicate: insufficient_permission
+    value: EOVERFLOW
+    summary: IPC_STAT is attempted, and the GID or UID value is too large to be stored in the structure
+      pointed to by buf
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:a4b87004cf6845ebf3deeaad1f1adcd394528ae995378d9ea2520b8ede3781da
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b94f1440afd2cb1f6f6866efe0a8b3cf9643ebdedb33a7c0fe2fce2a1ae7137
+  case: errors_eoverflow_416
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b94f1440afd2cb1f6f6866efe0a8b3cf9643ebdedb33a7c0fe2fce2a1ae7137
+  case: errors_eoverflow_416

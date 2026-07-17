@@ -1,0 +1,46 @@
+# 合规检查：条件：shmid is not a valid identifier, or op is not a valid operation. Or: for a SHM_STAT or SHM_STAT_ANY operation, the index value specified in shmid referred...；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1D7057F3EF0B65DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: shmid
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'shmid is not a valid identifier, or op is not a valid operation. Or: for a SHM_STAT or SHM_STAT_ANY
+      operation, the index value specified in shmid referred...'
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1d7057f3ef0b65dff0178ff81a3d1098ddb7d6a8ffea36734db36b1bac2e0a90
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 392
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:082f29e74562ce21139b4fc3afd5652794f3bc176d77d6984c438325200251e7
+  case: errors_einval_392
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 392
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:082f29e74562ce21139b4fc3afd5652794f3bc176d77d6984c438325200251e7
+  case: errors_einval_392

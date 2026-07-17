@@ -1,0 +1,35 @@
+# 合规检查：条件：Data was written to a file on NFS or another filesystem which does not allocate space at the time of a write (2) system call, and some previous write failed...；检查：调用 sync()；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5182EE044E596F56--5182ee044e59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: Data was written to a file on NFS or another filesystem which does not allocate space at
+      the time of a write (2) system call, and some previous write failed...
+  action:
+    operation: invoke_syscall
+    syscall: sync
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:5182ee044e596f56a8e0b2245db2b718dc7ae75b66b4acd801ac6a8e81cb84c9
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0b2bd5853ff989f643fa92d3b3380a4ede47e45f19a4e393b259156097f0ecd2
+  case: errors_edquot_75

@@ -1,0 +1,37 @@
+# 合规检查：条件：clockid was CLOCK_REALTIME_ALARM or CLOCK_BOOTTIME_ALARM but the caller did not have the CAP_WAKE_ALARM capability. timerfd_settime () and timerfd_gettime...；检查：调用 timerfd_create(clockid, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CBA3D40918F39277--cba3d40918f3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: clockid
+    predicate: insufficient_permission
+    value: EPERM
+    summary: clockid was CLOCK_REALTIME_ALARM or CLOCK_BOOTTIME_ALARM but the caller did not have the
+      CAP_WAKE_ALARM capability. timerfd_settime () and timerfd_gettime...
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_create
+    arguments:
+    - clockid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:cba3d40918f39277bad26f0b5bc21e39d2a8e56e6a6b66dc6b00d88d1ffd097d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 429
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e70eaa8acccb58452e61479348d33f75b16c3e4a94b323503c8e77f6a3760e60
+  case: errors_eperm_429

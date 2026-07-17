@@ -1,0 +1,37 @@
+# 合规检查：条件：new_value.it_value is negative; or new_value.it_value.tv_nsec is negative or greater than 999,999,999；检查：调用 timer_gettime(timerid, curr_value)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E35105F4A5A6E12D--e35105f4a5a6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: new_value.it_value is negative; or new_value.it_value.tv_nsec is negative or greater than
+      999,999,999
+  action:
+    operation: invoke_syscall
+    syscall: timer_gettime
+    arguments:
+    - timerid
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e35105f4a5a6e12db70f34f7c56a20456e84929b3e2d21c1d0fdb512d903fc97
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e1874527658b0e80d3597344ec72eb41a63e64bf475d6507d938e80247944ca
+  case: errors_einval_168

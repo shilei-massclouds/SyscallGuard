@@ -1,0 +1,43 @@
+# 合规检查：条件：Any waiters []. uaddr field does not point to a valid object that is, the address is not aligned appropriately for the specified FUTEX2_SIZE_ *；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_678D8AD64978C2CA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: Any waiters []. uaddr field does not point to a valid object that is, the address is not
+      aligned appropriately for the specified FUTEX2_SIZE_ *
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:678d8ad64978c2ca26f87a5a1229465d2b21b8c0726771c1ddaa58bdc4364d94
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d2793c272e0c6c5a27db381904a838b7fea9764425fcd0b9458879b1413ae24
+  case: errors_einval_195
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d2793c272e0c6c5a27db381904a838b7fea9764425fcd0b9458879b1413ae24
+  case: errors_einval_195

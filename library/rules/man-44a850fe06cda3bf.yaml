@@ -1,0 +1,47 @@
+# 合规检查：条件：pidfd doesn't refer to the calling process, and info.si_code is invalid (see rt_sigqueueinfo (2))；检查：调用 pidfd_send_signal(pidfd, sig, info, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_44A850FE06CDA3BF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pidfd
+    predicate: documented_condition
+    value: EPERM
+    summary: pidfd doesn't refer to the calling process, and info.si_code is invalid (see rt_sigqueueinfo
+      (2))
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - sig
+    - info
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:44a850fe06cda3bf04b2845bc5cb7c3c987e88d3fbb2f30b67b5653fc0ed3c01
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2aafc08c825672b0fcc10c4598fce591531c7d361779c60badde328e92b2e8fb
+  case: errors_eperm_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_send_signal
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2aafc08c825672b0fcc10c4598fce591531c7d361779c60badde328e92b2e8fb
+  case: errors_eperm_169

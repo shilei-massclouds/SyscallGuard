@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A19562071A63C4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EPERM
+    summary: oldpath is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:2a19562071a63c4ecf7aa706af54accd048652c80cab3a9080cd06bef9432da8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff15580a420052b23f9fcd1bbe1f8f7f95cd3afeec3be1f92c9d58f6b23e94d0
+  case: errors_eperm_245
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff15580a420052b23f9fcd1bbe1f8f7f95cd3afeec3be1f92c9d58f6b23e94d0
+  case: errors_eperm_245

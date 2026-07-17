@@ -1,0 +1,46 @@
+# 合规检查：条件：mask contains IN_MASK_CREATE and path refers to a file already being watched by the same fd；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8D6CC9127F1C081F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EEXIST
+    summary: mask contains IN_MASK_CREATE and path refers to a file already being watched by the same
+      fd
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:8d6cc9127f1c081fb31745c098e26bb22124b18bfaeb8bf98fe629bdc02ccafa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02d5aae281692b282564b4d1f8a669fccc9a1b3125cb5a872e21afbe9d45be93
+  case: errors_eexist_75
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02d5aae281692b282564b4d1f8a669fccc9a1b3125cb5a872e21afbe9d45be93
+  case: errors_eexist_75

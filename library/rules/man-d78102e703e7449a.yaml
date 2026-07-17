@@ -1,0 +1,46 @@
+# 合规检查：条件：( utimensat ()) path is too long；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D78102E703E7449A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: ( utimensat ()) path is too long
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:d78102e703e7449ac10ee32dab38b25752c4c6c62ea6158335ddf3d23be3ab5c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8642604ee90d8d2d649b0cf78352638034a4b90402cab85beeee3082bc7b0e31
+  case: errors_enametoolong_324
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8642604ee90d8d2d649b0cf78352638034a4b90402cab85beeee3082bc7b0e31
+  case: errors_enametoolong_324

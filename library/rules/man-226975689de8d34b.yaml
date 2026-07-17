@@ -1,0 +1,48 @@
+# 合规检查：条件：The memory described by local_iov is outside the caller's accessible address space；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_226975689DE8D34B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: local_iov
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The memory described by local_iov is outside the caller's accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:013e8e08fa3e1392742a13215b00369b533ce8c76f1723c9e4d52e1586e58db8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:912090fb324887af083cd25d1086ddefd772ce8a2c7f8460521dfe419d2ed292
+  case: errors_efault_212
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:912090fb324887af083cd25d1086ddefd772ce8a2c7f8460521dfe419d2ed292
+  case: errors_efault_212

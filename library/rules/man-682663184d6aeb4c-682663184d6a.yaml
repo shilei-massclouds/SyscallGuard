@@ -1,0 +1,39 @@
+# 合规检查：条件：The caller does not have the CAP_DAC_READ_SEARCH capability；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_682663184D6AEB4C--682663184d6a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the CAP_DAC_READ_SEARCH capability
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:682663184d6aeb4cb975fb21166b3735dc9a82bf6693d7bd7d1bf9752a37c090
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 430
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:781233ec9a4965adda360fd5567e9c99bcd95a3170fc12e3f9e8d3a59b6ea1b6
+  case: errors_eperm_430

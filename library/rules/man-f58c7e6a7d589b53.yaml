@@ -1,0 +1,47 @@
+# 合规检查：条件：mode is FALLOC_FL_INSERT_RANGE and the range specified by offset reaches or passes the end of the file；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F58C7E6A7D589B53
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mode
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode is FALLOC_FL_INSERT_RANGE and the range specified by offset reaches or passes the end
+      of the file
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f58c7e6a7d589b53de27799636e588031c04825320b25df171ec0ea90c5db120
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 350
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c6414bf2ac6118862932b36095cf60b2586076332e66b6a8150e0ff48c85f915
+  case: errors_einval_350
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 350
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c6414bf2ac6118862932b36095cf60b2586076332e66b6a8150e0ff48c85f915
+  case: errors_einval_350

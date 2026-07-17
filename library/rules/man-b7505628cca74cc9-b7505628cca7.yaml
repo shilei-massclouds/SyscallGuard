@@ -1,0 +1,37 @@
+# 合规检查：条件：The documented ENOBUFS condition applies.；检查：调用 accept(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENOBUFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7505628CCA74CC9--b7505628cca7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOBUFS
+    summary: The documented ENOBUFS condition applies.
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOBUFS
+  errno:
+  - ENOBUFS
+semantic_hash: sha256:b7505628cca74cc95e4922583f1c530545497141bada2274e69fa2cfd7e5ded3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1bfe971cf608d5868475b1054fb6f70279a5c70713992f38cf912903aef25ae3
+  case: errors_enobufs_220

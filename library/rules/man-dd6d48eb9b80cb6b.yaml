@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 pipe2(pipefd, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DD6D48EB9B80CB6B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:dd6d48eb9b80cb6b2d5fe9d47fc4810243c093bd9b8659332800977b9a134923
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 135
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:4fb3936af8a8ee80b8a678a60e946a92ae7a444e74e74646fd6f5ff7c393f52b
+  case: return_value_135
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 135
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:4fb3936af8a8ee80b8a678a60e946a92ae7a444e74e74646fd6f5ff7c393f52b
+  case: return_value_135

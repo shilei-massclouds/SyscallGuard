@@ -1,0 +1,46 @@
+# 合规检查：条件：rule_attr was not a valid address；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C3AAE9EA7D50D806
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: rule_attr
+    predicate: documented_condition
+    value: EFAULT
+    summary: rule_attr was not a valid address
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c3aae9ea7d50d806f5dea642fda66f8e0f7886e239f89d6d7a48d3453b0c3016
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be5a11ecca3e9540b93d28e64c8fc63b6602ede9d13f6c585cb03ade1bce5560
+  case: errors_efault_155
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be5a11ecca3e9540b93d28e64c8fc63b6602ede9d13f6c585cb03ade1bce5560
+  case: errors_efault_155

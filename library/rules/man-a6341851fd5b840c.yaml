@@ -1,0 +1,47 @@
+# 合规检查：条件：There was an attempt to read from or write to an invalid area in the tracer's or the tracee's memory, probably because the area wasn't mapped or accessible....；检查：调用 ptrace(op, pid, addr, data)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A6341851FD5B840C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: There was an attempt to read from or write to an invalid area in the tracer's or the tracee's
+      memory, probably because the area wasn't mapped or accessible....
+  action:
+    operation: invoke_syscall
+    syscall: ptrace
+    arguments:
+    - op
+    - pid
+    - addr
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:a6341851fd5b840ca2b7c3db24791832ea714a5eb252e972c4d1a3f1b69d03ef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6f733d00af30b81396c7ad399b327ed87cb0cb672c1c9d8f08cce295e7157666
+  case: errors_efault_2432
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ptrace
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6f733d00af30b81396c7ad399b327ed87cb0cb672c1c9d8f08cce295e7157666
+  case: errors_efault_2432

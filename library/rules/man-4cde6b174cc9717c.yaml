@@ -1,0 +1,46 @@
+# 合规检查：条件：( faccessat ()) Invalid flag specified in flags；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4CDE6B174CC9717C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( faccessat ()) Invalid flag specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4cde6b174cc9717c76a21f2a50f7795f6f0fa2623c6f8867d73eb80ecf06a599
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:399f76a91704695bc3431de0cd041d5c706e81f77ae87a9a4516ceae685fd9a2
+  case: errors_einval_238
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:399f76a91704695bc3431de0cd041d5c706e81f77ae87a9a4516ceae685fd9a2
+  case: errors_einval_238

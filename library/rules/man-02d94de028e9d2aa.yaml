@@ -1,0 +1,44 @@
+# 合规检查：条件：The system call is not yet implemented (only on rather old kernels)；检查：调用 sched_rr_get_interval(pid, tp)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_02D94DE028E9D2AA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: The system call is not yet implemented (only on rather old kernels)
+  action:
+    operation: invoke_syscall
+    syscall: sched_rr_get_interval
+    arguments:
+    - pid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:02d94de028e9d2aadce720e5a77d117af054800b16d50507d2eceb06196aeec4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 58
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c34991dfb44b347f788977644d52390b6d7c6e625396d4302359489b6b55b90
+  case: errors_enosys_58
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_rr_get_interval
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 58
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c34991dfb44b347f788977644d52390b6d7c6e625396d4302359489b6b55b90
+  case: errors_enosys_58

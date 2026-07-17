@@ -1,0 +1,45 @@
+# 合规检查：条件：The target process or process group does not exist. Note that an existing process might be a zombie, a process that has terminated execution, but has not...；检查：调用 kill(pid, sig)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B40E9995A7563644
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: The target process or process group does not exist. Note that an existing process might be
+      a zombie, a process that has terminated execution, but has not...
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - pid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:b40e9995a7563644ee331563f7ee3ab641ed62ba2e572340a1ea7f702f09ab71
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0cf20dd346780fc08f9e416df269dcf6af311e8e4ee5d3191021ee25c9b492a8
+  case: errors_esrch_111
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0cf20dd346780fc08f9e416df269dcf6af311e8e4ee5d3191021ee25c9b492a8
+  case: errors_esrch_111

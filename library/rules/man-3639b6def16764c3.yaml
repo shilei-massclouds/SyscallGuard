@@ -1,0 +1,45 @@
+# 合规检查：条件：The file descriptor specified in the first iocb is invalid；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3639B6DEF16764C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The file descriptor specified in the first iocb is invalid
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:3639b6def16764c3a1de87f6507843f838092c5b49fb8cfa47ecb31318bf6233
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a43684f871c4b5e6cdf6675714163b68f555d33dfbbf4d14ab0b443e12e5696
+  case: errors_ebadf_260
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a43684f871c4b5e6cdf6675714163b68f555d33dfbbf4d14ab0b443e12e5696
+  case: errors_ebadf_260

@@ -1,0 +1,47 @@
+# 合规检查：条件：The argument op has the value IPC_SET or IPC_RMID but the effective user ID of the calling process is not the creator (as found in sem_perm.cuid ) or the...；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8D8F7FBF6D6DC598
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: op
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The argument op has the value IPC_SET or IPC_RMID but the effective user ID of the calling
+      process is not the creator (as found in sem_perm.cuid ) or the...
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8d8f7fbf6d6dc5981893dcf008195cd78484cd2be269127e6a20a6bae86e5a57
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65c5db9fae81cef49e03c106765b26538342fa13d4ac4b6b555268052fc68ce3
+  case: errors_eperm_466
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65c5db9fae81cef49e03c106765b26538342fa13d4ac4b6b555268052fc68ce3
+  case: errors_eperm_466

@@ -1,0 +1,46 @@
+# 合规检查：条件：The caller did not have the CAP_SYS_ADMIN capability in its user namespace, or had not set no_new_privs before using SECCOMP_SET_MODE_FILTER；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BE74B0D21973DAEC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The caller did not have the CAP_SYS_ADMIN capability in its user namespace, or had not set
+      no_new_privs before using SECCOMP_SET_MODE_FILTER
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:be74b0d21973daecfa7f765d37067b4f38de4207b0a1063e18f9cff01b73aa93
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 813
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:83257902ca45368c9f5e2eeb719b57c59c8c6615e69f97c51ba9f69cc5208842
+  case: errors_eacces_813
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 813
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:83257902ca45368c9f5e2eeb719b57c59c8c6615e69f97c51ba9f69cc5208842
+  case: errors_eacces_813

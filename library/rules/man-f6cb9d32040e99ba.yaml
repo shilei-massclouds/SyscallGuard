@@ -1,0 +1,43 @@
+# 合规检查：条件：A component of path is not a directory；检查：调用 chroot(path)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6CB9D32040E99BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of path is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:f6cb9d32040e99ba94bc763eb811bd6525692b756fc3d04af406dcbe6c69a122
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d81e2910dd5f13864e63849d079a89dc8dcb6d88e52f450205233961b3c55880
+  case: errors_enotdir_128
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d81e2910dd5f13864e63849d079a89dc8dcb6d88e52f450205233961b3c55880
+  case: errors_enotdir_128

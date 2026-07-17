@@ -1,0 +1,47 @@
+# 合规检查：条件：The target file fd does not support epoll . This error can occur if fd refers to, for example, a regular file or a directory；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F101B1F166BED529
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EPERM
+    summary: The target file fd does not support epoll . This error can occur if fd refers to, for example,
+      a regular file or a directory
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f101b1f166bed5291f9ccccab387b0507767a3799274a7e30584c78e8e69d535
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df477b1b84814b8b26d7d1ceabe89aa1dea58b3ee10448f9ddc66330aba8b758
+  case: errors_eperm_364
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df477b1b84814b8b26d7d1ceabe89aa1dea58b3ee10448f9ddc66330aba8b758
+  case: errors_eperm_364

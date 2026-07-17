@@ -1,0 +1,36 @@
+# 合规检查：条件：buf or path points to an invalid address；检查：调用 fstatfs(fd, buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_48B52042FE3DEA4C--48b52042fe3d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: buf
+    predicate: documented_path_condition
+    value: EFAULT
+    summary: buf or path points to an invalid address
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - fd
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:48b52042fe3dea4c79cdb23586ab2f4ba57bdd843a4d6ce78e97b56d366a929a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstatfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e354a6d98a7e45d39ab46609d8d1cfe1b35e862a612df504c5eeec5d3c8f743
+  case: errors_efault_234

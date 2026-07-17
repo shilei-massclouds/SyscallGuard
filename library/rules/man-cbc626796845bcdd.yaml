@@ -1,0 +1,43 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 memfd_secret(flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CBC626796845BCDD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: memfd_secret
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:cbc626796845bcdd22cada00d3531169bb04cc0c338c92c6d24e12e62cf1acac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_secret.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8867dc93900460c72432e1c79b362c7ce14d506e69029c867a4e03b802a55751
+  case: errors_emfile_118
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_secret
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_secret.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8867dc93900460c72432e1c79b362c7ce14d506e69029c867a4e03b802a55751
+  case: errors_emfile_118

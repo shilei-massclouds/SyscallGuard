@@ -1,0 +1,46 @@
+# 合规检查：条件：The fixture creates TEMP_FILE as a regular file.、The fixture sets TEMP_FILE mode to FILE_MODE.；检查：调用 utime(TEMP_FILE, &utbuf)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8C5755D366EB8CD2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEMP_FILE as a regular file.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: FILE_MODE
+    summary: The fixture sets TEMP_FILE mode to FILE_MODE.
+  action:
+    operation: invoke_syscall
+    syscall: utime
+    arguments:
+    - TEMP_FILE
+    - '&utbuf'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:8c5755d366eb8cd2b36b06a482907e8233aed897127ab92829b13a920aaac7d7
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime01.c
+  line: 36
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:d7b5e35be0a0e1ccff8f439b0a00d6f2340cb45f242d8a9eeb571f0d940435cb
+  case: utime01_36_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime02.c
+  line: 53
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:6be7e4ab09c8641bd83684aa7a44beba3e1b7b75b65a88fdad57789b5347ebe1
+  case: utime02_53_raw_0

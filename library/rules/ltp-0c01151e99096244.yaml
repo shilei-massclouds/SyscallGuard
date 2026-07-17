@@ -1,0 +1,42 @@
+# 合规检查：条件：The file descriptor is invalid.、The argument is a userspace buffer.；检查：调用 pwrite64(fd, buf, BS, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0C01151E99096244
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: pwrite64
+    arguments:
+    - fd
+    - buf
+    - BS
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0c01151e99096244ffb2d2ce3187b4104e413d19ec507b5c02235cf46b5cc4cc
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwrite/pwrite02.c
+  line: 71
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f7f21450155385f4e484eb2dabc81023fd09f6b24faf2424ec296127b9c5f7d8
+  case: pwrite02_71_1_0

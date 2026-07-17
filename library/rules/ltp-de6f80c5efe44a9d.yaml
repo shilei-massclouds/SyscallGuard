@@ -29,8 +29,24 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup202.c
+  line: 84
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:235955f246f3baab6699b6be81a176b833b696f282f22d0ceebcfbe5bee42b3b
+  case: dup202_84_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/dup2/dup207.c
   line: 57
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:a161a94338f75695611ad35e9ba5cbfcf2d197399d3ed33ef8282f8c4afb292c
   case: dup207_57_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup207.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a161a94338f75695611ad35e9ba5cbfcf2d197399d3ed33ef8282f8c4afb292c
+  case: dup207_57_raw_0

@@ -1,0 +1,39 @@
+# 合规检查：条件：The argument sockfd is not a valid file descriptor；检查：调用 getsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3C8DF737F5522AFF--3c8df737f552
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The argument sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:3c8df737f5522affc3c2503deedc04059db5c9e3b786c466a7405c1addf3831c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c1a353d946fb97a2321e628a29330c3644c3bddec1d683e01df6c58c5cf88075
+  case: errors_ebadf_108

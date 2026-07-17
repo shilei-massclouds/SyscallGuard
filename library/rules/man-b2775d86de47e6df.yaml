@@ -1,0 +1,45 @@
+# 合规检查：条件：CLONE_NEWUSER was specified in the flags mask, but the kernel was not configured with the CONFIG_USER_NS option；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B2775D86DE47E6DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWUSER was specified in the flags mask, but the kernel was not configured with the
+      CONFIG_USER_NS option
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d1016df1a79bcdf598da46cc9c837623c9b1ba221a035c038c5dc93e9c7ec86e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1367
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:87a505d0884ef3b53c8af6e44cbf840c141be3a6eed9d100ecb435338e4307e9
+  case: errors_einval_1367
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1367
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:87a505d0884ef3b53c8af6e44cbf840c141be3a6eed9d100ecb435338e4307e9
+  case: errors_einval_1367

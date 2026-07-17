@@ -1,0 +1,41 @@
+# 合规检查：条件：The receive was interrupted by delivery of a signal before any data was available; see signal (7)；检查：调用 recvfrom(sockfd, size, size, flags, src_addr, addrlen)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F33BEC5B79C322F4--f33bec5b79c3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The receive was interrupted by delivery of a signal before any data was available; see signal
+      (7)
+  action:
+    operation: invoke_syscall
+    syscall: recvfrom
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - src_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:f33bec5b79c322f4700f6a7e7ca9a6d5cd80b83d22c97054cada22b4ed8740ff
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvfrom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93d32760d71d4ccd22788ff55e98d007896510d7e9c2b3380ae313c5d0fb7ba8
+  case: errors_eintr_466

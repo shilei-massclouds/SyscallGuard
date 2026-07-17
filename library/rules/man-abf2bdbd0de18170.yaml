@@ -1,0 +1,44 @@
+# 合规检查：条件：The call was interrupted by a signal; see signal (7)；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ABF2BDBD0DE18170
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The call was interrupted by a signal; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:0e62fa6777c8a1eb0ecff128922df038664f7e28df5cfe5a236fe43d18d21be9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a35287b815363a4c3a8b05362d4f5b2646c0a21ebc5e0ba4913f4b6a20e1a8c6
+  case: errors_eintr_240
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a35287b815363a4c3a8b05362d4f5b2646c0a21ebc5e0ba4913f4b6a20e1a8c6
+  case: errors_eintr_240

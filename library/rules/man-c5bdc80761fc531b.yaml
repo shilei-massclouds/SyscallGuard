@@ -1,0 +1,48 @@
+# 合规检查：条件：The value specified by maxnode is less than the number of node IDs supported by the system. Or flags specified values other than MPOL_F_NODE or MPOL_F_ADDR...；检查：调用 get_mempolicy(mode, ULONG_WIDTH, maxnode, addr, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C5BDC80761FC531B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: maxnode
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value specified by maxnode is less than the number of node IDs supported by the system.
+      Or flags specified values other than MPOL_F_NODE or MPOL_F_ADDR...
+  action:
+    operation: invoke_syscall
+    syscall: get_mempolicy
+    arguments:
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - addr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c5bdc80761fc531b6d44ff0ae0aa60f9a9301b8c28ca96faef830cb911a63a0d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_mempolicy.2
+  line: 179
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6612be0b2e64abc9f1b77ac9c97d9e39e1ed9814a1b5d4d2ef8d997861cc8d12
+  case: errors_einval_179
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: get_mempolicy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_mempolicy.2
+  line: 179
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6612be0b2e64abc9f1b77ac9c97d9e39e1ed9814a1b5d4d2ef8d997861cc8d12
+  case: errors_einval_179

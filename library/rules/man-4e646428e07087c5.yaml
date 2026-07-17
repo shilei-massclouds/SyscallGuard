@@ -1,0 +1,45 @@
+# 合规检查：条件：path was too long；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4E646428E07087C5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path was too long
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:4e646428e07087c52ea253692fa32c41965b1cf4b2cfcc36326b47ce87837e22
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5428423d90fe407e5d7caf9d554cc4dbe1abbdc3bf0984148019d3bce29bc130
+  case: errors_enametoolong_166
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5428423d90fe407e5d7caf9d554cc4dbe1abbdc3bf0984148019d3bce29bc130
+  case: errors_enametoolong_166

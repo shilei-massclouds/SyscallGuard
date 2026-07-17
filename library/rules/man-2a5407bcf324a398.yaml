@@ -1,0 +1,48 @@
+# 合规检查：条件：A signal occurred before any data was transmitted; see signal (7)；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A5407BCF324A398
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: A signal occurred before any data was transmitted; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:8d7835a58f6f87c4fa7a84be22db3e06730c3e19ae21747edc71fe5499cf3c85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c95958921639eda7c4c5fe83e4643b3196fab8fe7c6a4e2aa65e5bd847b6c642
+  case: errors_eintr_388
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c95958921639eda7c4c5fe83e4643b3196fab8fe7c6a4e2aa65e5bd847b6c642
+  case: errors_eintr_388

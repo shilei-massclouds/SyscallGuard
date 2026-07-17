@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:2323b0c8c76b130457901d472003c43518497dfd55d203b089d56a8ab29d4b3b
   case: open_by_handle_at02_78_3
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+  line: 78
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2323b0c8c76b130457901d472003c43518497dfd55d203b089d56a8ab29d4b3b
+  case: open_by_handle_at02_78_3_0

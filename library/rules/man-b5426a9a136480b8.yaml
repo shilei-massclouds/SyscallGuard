@@ -1,0 +1,47 @@
+# 合规检查：条件：The command given by cmd is not valid；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B5426A9A136480B8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: cmd
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: The command given by cmd is not valid
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:b5426a9a136480b864e34d5459a4bb746b33d5af983f44263c29ff6ac542b937
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 485
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93ca04c5be3fd7210f7783bf619b8b629d607a1bbd0d673a1e57ea3f2f702736
+  case: errors_eopnotsupp_485
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 485
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93ca04c5be3fd7210f7783bf619b8b629d607a1bbd0d673a1e57ea3f2f702736
+  case: errors_eopnotsupp_485

@@ -1,0 +1,48 @@
+# 合规检查：条件：oldpath is a relative pathname and olddirfd refers to a directory that has been deleted, or newpath is a relative pathname and newdirfd refers to a...；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2CA8EAC0B30FA577
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: olddirfd
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: oldpath is a relative pathname and olddirfd refers to a directory that has been deleted,
+      or newpath is a relative pathname and newdirfd refers to a...
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:2ca8eac0b30fa57706a4750d89a6f32fbbaa4dbcce53d26e2c24fcfe98e9e230
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8dc69db9ea800f269db33b17411eec6f9f4e2ed63ba9befa48160260b088ae4b
+  case: errors_enoent_306
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8dc69db9ea800f269db33b17411eec6f9f4e2ed63ba9befa48160260b088ae4b
+  case: errors_enoent_306

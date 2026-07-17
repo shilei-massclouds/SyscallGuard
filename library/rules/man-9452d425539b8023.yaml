@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified address family is not supported on this machine；检查：调用 socketpair(domain, type, protocol, sv)；预期：返回 -1，errno 为 EAFNOSUPPORT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9452D425539B8023
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAFNOSUPPORT
+    summary: The specified address family is not supported on this machine
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAFNOSUPPORT
+  errno:
+  - EAFNOSUPPORT
+semantic_hash: sha256:9452d425539b802321ed45714ff13d6c1fd7bedd7ab201adab57f734dcbf8d04
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff07d9e718eee88f0d5f44da7371c16f4f23878e5379efeff1063f352f99161b
+  case: errors_eafnosupport_52
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 52
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff07d9e718eee88f0d5f44da7371c16f4f23878e5379efeff1063f352f99161b
+  case: errors_eafnosupport_52

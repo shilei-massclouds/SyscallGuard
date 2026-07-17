@@ -1,0 +1,48 @@
+# 合规检查：条件：The group was initialized without FAN_REPORT_FID but one or more event types specified in the mask require it；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BC15177D0740DECA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: mask
+    predicate: documented_condition
+    value: EINVAL
+    summary: The group was initialized without FAN_REPORT_FID but one or more event types specified in
+      the mask require it
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bc15177d0740decac89c5ca873accea47933c1e72232a096a280ddf382a4a8b3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 668
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de83b2be234f62aa21ab772abca63fde58dfe201e866f3209a92a99c8342b2f3
+  case: errors_einval_668
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 668
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de83b2be234f62aa21ab772abca63fde58dfe201e866f3209a92a99c8342b2f3
+  case: errors_einval_668

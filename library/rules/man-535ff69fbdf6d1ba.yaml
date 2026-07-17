@@ -1,0 +1,46 @@
+# 合规检查：条件：The total number of bytes in the environment ( envp ) and argument list ( argv ) is too large, an argument or environment string is too long, or the full...；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_535FF69FBDF6D1BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: argv
+    predicate: invalid_value
+    value: E2BIG
+    summary: The total number of bytes in the environment ( envp ) and argument list ( argv ) is too large,
+      an argument or environment string is too long, or the full...
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:535ff69fbdf6d1ba9df8a766538292b9554c53f923bc4b390a72aed142c17562
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d874a794edf895d04094e5b858966484100ebbfee73b600e1012c4783a0897a9
+  case: errors_e2big_432
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d874a794edf895d04094e5b858966484100ebbfee73b600e1012c4783a0897a9
+  case: errors_e2big_432

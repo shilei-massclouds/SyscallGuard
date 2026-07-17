@@ -1,0 +1,46 @@
+# 合规检查：条件：The CPU affinity mask of the thread specified by pid does not include all CPUs in the system (see sched_setaffinity (2))；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_13E06375AFCB0967
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: EPERM
+    summary: The CPU affinity mask of the thread specified by pid does not include all CPUs in the system
+      (see sched_setaffinity (2))
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:24e48f18eda9a1694838cd9d5d568b4efb46f73762dc6a46fba8b4d8458db16c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 454
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b57b5269ce8f04bd66268d6a6e7bf3320168ef34e661c553645e231b060b82e
+  case: errors_eperm_454
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 454
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b57b5269ce8f04bd66268d6a6e7bf3320168ef34e661c553645e231b060b82e
+  case: errors_eperm_454

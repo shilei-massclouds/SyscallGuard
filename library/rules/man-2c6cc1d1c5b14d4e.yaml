@@ -1,0 +1,47 @@
+# 合规检查：条件：The file descriptor sockfd does not refer to a socket；检查：调用 setsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2C6CC1D1C5B14D4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: ENOTSOCK
+    summary: The file descriptor sockfd does not refer to a socket
+  action:
+    operation: invoke_syscall
+    syscall: setsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:adcd952026a6096d9dd391dc7a8c304834916b87c906531a7fb6ad0215565699
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3f31a36c379c338bf4a0e2dc87fd4aab06bdd1a25f941ba8d0a902011c32bc3c
+  case: errors_enotsock_137
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3f31a36c379c338bf4a0e2dc87fd4aab06bdd1a25f941ba8d0a902011c32bc3c
+  case: errors_enotsock_137

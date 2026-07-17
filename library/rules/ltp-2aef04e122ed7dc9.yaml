@@ -1,0 +1,35 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 pathconf(abs_path, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2AEF04E122ED7DC9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: pathconf
+    arguments:
+    - abs_path
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2aef04e122ed7dc906f6edf09aaac0ef4592eef7ac760bf28e0c4dcbf8011b7b
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a8ca298ba98e8d8fc1d3559917b8109efed8e4fd325fe09ae6b5c74491fea1fe
+  case: pathconf02_58_3_0

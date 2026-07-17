@@ -1,0 +1,47 @@
+# 合规检查：条件：The size of the string (including the terminating null byte) specified in callout_info exceeded the system page size；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C1B7540CF853BA57
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: callout_info
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: The size of the string (including the terminating null byte) specified in callout_info exceeded
+      the system page size
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c1b7540cf853ba576a03fca93e6951af6557d33cf772d3c565b632deb30469cb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 404
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f63692f06d1f739e46f6083d416b12f2c318181cd7ae0b3df76ebe8a106c2749
+  case: errors_einval_404
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 404
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f63692f06d1f739e46f6083d416b12f2c318181cd7ae0b3df76ebe8a106c2749
+  case: errors_einval_404

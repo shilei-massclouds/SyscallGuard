@@ -1,0 +1,42 @@
+# 合规检查：条件：The caller does not have CAP_SYS_ADMIN in the user namespace；检查：调用 listmount()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EA7409F3B348F3BE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EPERM
+    summary: The caller does not have CAP_SYS_ADMIN in the user namespace
+  action:
+    operation: invoke_syscall
+    syscall: listmount
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ea7409f3b348f3be7d54fb4f5217167267d9bda3254187d1e24bf1489173f756
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 82
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:39ff5eccce061ce409e5ecd394babb6195ff88ffc7cd110ecfa5d44b8f89f3de
+  case: errors_eperm_82
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 82
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:39ff5eccce061ce409e5ecd394babb6195ff88ffc7cd110ecfa5d44b8f89f3de
+  case: errors_eperm_82

@@ -1,0 +1,33 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 dup(oldfd)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_18D7BFF5ED1AAF47--18d7bff5ed1a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - oldfd
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:18d7bff5ed1aaf473ee5738a69d7a13f2ec2ad7276dfbd2186e8dab051745cf0
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 137
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:e067fd8236428df7e39fa77585afe105d8e453f0bcf8739449d99022a33c6c5a
+  case: return_value_137

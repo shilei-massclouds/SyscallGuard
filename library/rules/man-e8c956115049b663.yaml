@@ -1,0 +1,45 @@
+# 合规检查：条件：The caller attempted to use capset () to modify the capabilities of a thread other than itself, but lacked sufficient privilege. For kernels supporting VFS...；检查：调用 capset(hdrp, datap)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8C956115049B663
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller attempted to use capset () to modify the capabilities of a thread other than itself,
+      but lacked sufficient privilege. For kernels supporting VFS...
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e8c956115049b663055f0eb5653117fb636d8df361c7581b8e9d78439f8ed0fa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 221
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e605f10f877c6a12d52f87ec1c50733c79ce5b8b1894ca3799a267535685a741
+  case: errors_eperm_221
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 221
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e605f10f877c6a12d52f87ec1c50733c79ce5b8b1894ca3799a267535685a741
+  case: errors_eperm_221

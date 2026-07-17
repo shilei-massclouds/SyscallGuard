@@ -1,0 +1,43 @@
+# 合规检查：条件：buf is not valid；检查：调用 uname(buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DB49E539DD5F962B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: buf
+    predicate: documented_condition
+    value: EFAULT
+    summary: buf is not valid
+  action:
+    operation: invoke_syscall
+    syscall: uname
+    arguments:
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:db49e539dd5f962b5854c5434c3a19e9ba56dde56e8e1bd9c10ae6d2801b63f0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/uname.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f8906441c264e7674500cd8ff6052fbc61005c824008928c69c97730361bf3d
+  case: errors_efault_54
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: uname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/uname.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f8906441c264e7674500cd8ff6052fbc61005c824008928c69c97730361bf3d
+  case: errors_efault_54

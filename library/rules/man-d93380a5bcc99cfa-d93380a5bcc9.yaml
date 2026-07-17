@@ -1,0 +1,38 @@
+# 合规检查：条件：The calling process does not have the required permissions for the requested attach type, and does not have the CAP_IPC_OWNER capability in the user...；检查：调用 shmat(shmid, shmaddr, shmflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D93380A5BCC99CFA--d93380a5bcc9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The calling process does not have the required permissions for the requested attach type,
+      and does not have the CAP_IPC_OWNER capability in the user...
+  action:
+    operation: invoke_syscall
+    syscall: shmat
+    arguments:
+    - shmid
+    - shmaddr
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d93380a5bcc99cfa24375703260c02def793613782139843fbdbafe7ab73f429
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b97fe234319abfdf7234857a897b231bee2271d66be12986cc06e60a2f15db0
+  case: errors_eacces_154

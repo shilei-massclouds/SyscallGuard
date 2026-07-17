@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 unshare(flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F78F49354EA2C4DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:f78f49354ea2c4dd4fc8efc5efbe2dcec9980cb76e4b7bb182a1c864a217dcec
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 290
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ab9d2d0ec5fc0cbeb23af9f165fec9bf0fdf548d3f33c39de1514500e938ecd5
+  case: return_value_290
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 290
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ab9d2d0ec5fc0cbeb23af9f165fec9bf0fdf548d3f33c39de1514500e938ecd5
+  case: return_value_290

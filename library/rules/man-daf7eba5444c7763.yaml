@@ -1,0 +1,46 @@
+# 合规检查：条件：addr is not a multiple of PAGESIZE; or any bit other than MS_ASYNC | MS_INVALIDATE | MS_SYNC is set in flags ; or both MS_SYNC and MS_ASYNC are set in flags；检查：调用 msync(length, length, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAF7EBA5444C7763
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: addr is not a multiple of PAGESIZE; or any bit other than MS_ASYNC | MS_INVALIDATE | MS_SYNC
+      is set in flags ; or both MS_SYNC and MS_ASYNC are set in flags
+  action:
+    operation: invoke_syscall
+    syscall: msync
+    arguments:
+    - length
+    - length
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:daf7eba5444c7763bd5a7ef4f1acbef2b5b0e647ecfabbc138bedfb6f7a7174b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c8a1e93aa6afa63d534ea09eebb4aa926f28b2df3ef748ce63d3515b41ac82b
+  case: errors_einval_70
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c8a1e93aa6afa63d534ea09eebb4aa926f28b2df3ef748ce63d3515b41ac82b
+  case: errors_einval_70

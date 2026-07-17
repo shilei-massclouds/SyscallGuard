@@ -1,0 +1,46 @@
+# 合规检查：条件：No matching key was found；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D9AD1FA5307C06CC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOKEY
+    summary: No matching key was found
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:d9ad1fa5307c06cc8aa26d468f59b30b51299a0e082a9a2b607028fde457486d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 418
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:97f7b078209c85dff3d7e59ed85e2714b3db175ba3ec67a00da22bc221528cfc
+  case: errors_enokey_418
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 418
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:97f7b078209c85dff3d7e59ed85e2714b3db175ba3ec67a00da22bc221528cfc
+  case: errors_enokey_418

@@ -1,0 +1,44 @@
+# 合规检查：条件：An attempt was made to set buf.status to a value other than those listed above；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_015E54306EC1E211
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: buf
+    predicate: invalid_value
+    value: EINVAL
+    summary: An attempt was made to set buf.status to a value other than those listed above
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c435a8677e12bed6013f5a51621479ce26a59e847a2658feec072206b11d475d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dfc2875e902b7a39d7b697f307bd60ee4178903b58ea3bb364b8122fe55ccdec
+  case: errors_einval_484
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dfc2875e902b7a39d7b697f307bd60ee4178903b58ea3bb364b8122fe55ccdec
+  case: errors_einval_484

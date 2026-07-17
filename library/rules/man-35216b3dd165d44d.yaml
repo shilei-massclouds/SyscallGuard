@@ -1,0 +1,43 @@
+# 合规检查：条件：The documented EROFS condition applies.；检查：调用 fsync(fd)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_35216B3DD165D44D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EROFS
+    summary: The documented EROFS condition applies.
+  action:
+    operation: invoke_syscall
+    syscall: fsync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:49648e38d270b861d9f847199f0bbbbb967213341802794613e1e2d7ca5d6223
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34d0982cf13351ac857230dfe541ac06143a53493d9da0912ea25a4334b2cc7f
+  case: errors_erofs_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34d0982cf13351ac857230dfe541ac06143a53493d9da0912ea25a4334b2cc7f
+  case: errors_erofs_123

@@ -1,0 +1,42 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.、The file descriptor is invalid.；检查：调用 request_key("type", (char *)(-1), NULL, KEY_SPEC_PROCESS_KEYRING)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4F41926D0ED26FBA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - '"type"'
+    - (char *)(-1)
+    - 'NULL'
+    - KEY_SPEC_PROCESS_KEYRING
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:4f41926d0ed26fba8b8800522aa9bff32aab67d19a03350b28c3563117a3279d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key06.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:179243aab1148dde47c259cacb83ad441b4a9f0a1f7490f34b8246bf7982ee79
+  case: request_key06_41_1_0

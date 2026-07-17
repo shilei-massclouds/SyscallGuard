@@ -1,0 +1,46 @@
+# 合规检查：条件：While blocked in this system call, the thread caught a signal; see signal (7)；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6A789985BDC500A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While blocked in this system call, the thread caught a signal; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:519f074394b514303422d0cb8cadb3f7e2c870016c5afc3c7d86c7ae9bae3a50
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 322
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:311b4937987ea9b4879be9f94d6b4adf7a4882d311c973fc3a7146bd96f5492f
+  case: errors_eintr_322
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 322
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:311b4937987ea9b4879be9f94d6b4adf7a4882d311c973fc3a7146bd96f5492f
+  case: errors_eintr_322

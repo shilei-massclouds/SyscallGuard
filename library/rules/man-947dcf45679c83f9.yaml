@@ -1,0 +1,47 @@
+# 合规检查：条件：An invalid flag was specified in flags；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_947DCF45679C83F9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid flag was specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:947dcf45679c83f94e78830f8fa72ded68509361b0f5d81ab2370c8177c8754c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a9ebc96929db6c382e54a1c73a76769fbbef9958a2704b43688288a65ec58512
+  case: errors_einval_451
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a9ebc96929db6c382e54a1c73a76769fbbef9958a2704b43688288a65ec58512
+  case: errors_einval_451

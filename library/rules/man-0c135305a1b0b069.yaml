@@ -1,0 +1,45 @@
+# 合规检查：条件：linkpath is on a read-only filesystem；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0C135305A1B0B069
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: linkpath
+    predicate: documented_path_condition
+    value: EROFS
+    summary: linkpath is on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:0c135305a1b0b069341469bdb19168ffe7cb1fe655a1e33b5b690ee14d07960b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a306e4dff1fcdee0c5aa108bc3eb05f4db7615fb56dea1458062a8bc0b8b7485
+  case: errors_erofs_212
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a306e4dff1fcdee0c5aa108bc3eb05f4db7615fb56dea1458062a8bc0b8b7485
+  case: errors_erofs_212

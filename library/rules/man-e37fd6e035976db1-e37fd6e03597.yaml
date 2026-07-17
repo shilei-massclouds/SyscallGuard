@@ -1,0 +1,39 @@
+# 合规检查：条件：attr.sched_flags contains SCHED_FLAG_UTIL_CLAMP_MIN or SCHED_FLAG_UTIL_CLAMP_MAX , and attr.sched_util_min or attr.sched_util_max are out of bounds；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E37FD6E035976DB1--e37fd6e03597
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: attr
+    predicate: invalid_value
+    value: EINVAL
+    summary: attr.sched_flags contains SCHED_FLAG_UTIL_CLAMP_MIN or SCHED_FLAG_UTIL_CLAMP_MAX , and attr.sched_util_min
+      or attr.sched_util_max are out of bounds
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e37fd6e035976db19706f82e5dde63c2f0aaa9c2054c948ad5e2a98cb0e2acd3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 433
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f4afbc61e97e3881529d8d7b975f1dc37045a421f2adff75b111af4541f41973
+  case: errors_einval_433

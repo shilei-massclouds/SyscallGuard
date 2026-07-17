@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_NEWUSER was specified in the flags mask, but either the effective user ID or the effective group ID of the caller does not have a mapping in the...；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B8030FC30CABD8CE--b8030fc30cab
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EPERM
+    summary: CLONE_NEWUSER was specified in the flags mask, but either the effective user ID or the effective
+      group ID of the caller does not have a mapping in the...
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b8030fc30cabd8ce5bfab47f66a1304db11c43f4049f0e768f31a3d1d0fc2a60
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47d094d0651d76bfa6f59df5c8f9dfb2dc7051dc5c0acc87cae7a743b5a0fb41
+  case: errors_eperm_1509

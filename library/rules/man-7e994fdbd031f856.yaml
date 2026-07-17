@@ -1,0 +1,45 @@
+# 合规检查：条件：IPC_CREAT and IPC_EXCL were specified in msgflg , but a message queue already exists for key；检查：调用 msgget(key, msgflg)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7E994FDBD031F856
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: EEXIST
+    summary: IPC_CREAT and IPC_EXCL were specified in msgflg , but a message queue already exists for
+      key
+  action:
+    operation: invoke_syscall
+    syscall: msgget
+    arguments:
+    - key
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:7e994fdbd031f856d3a2f68d00d717cee23b4b98c82ca3076bd4081caff64868
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff759f9a0abab55eda3c5562baf0273459f2f847b4a9ca37a32fe46789a71336
+  case: errors_eexist_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff759f9a0abab55eda3c5562baf0273459f2f847b4a9ca37a32fe46789a71336
+  case: errors_eexist_134

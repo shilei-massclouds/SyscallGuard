@@ -1,0 +1,46 @@
+# 合规检查：条件：IPC_STAT or SHM_STAT is requested and shm_perm.mode does not allow read access for shmid , and the calling process does not have the CAP_IPC_OWNER...；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33AFD2637D6F2143
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: shmid
+    predicate: invalid_value
+    value: EACCES
+    summary: IPC_STAT or SHM_STAT is requested and shm_perm.mode does not allow read access for shmid
+      , and the calling process does not have the CAP_IPC_OWNER...
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:33afd2637d6f2143544132a78b28a8591cb06ca0b4f1c2d4744f046fc0b43e0f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 365
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c019591bb9319734cb27d9d75bc00339e283ecd372d54f57084a552d0aa6602a
+  case: errors_eacces_365
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 365
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c019591bb9319734cb27d9d75bc00339e283ecd372d54f57084a552d0aa6602a
+  case: errors_eacces_365

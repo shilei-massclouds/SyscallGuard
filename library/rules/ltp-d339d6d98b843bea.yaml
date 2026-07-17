@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 mkdirat(fd_invalid, relpath, 0600)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D339D6D98B843BEA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd_invalid
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - fd_invalid
+    - relpath
+    - '0600'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:d339d6d98b843bea5e8f72fd45e9f0d779a8d63db958e0e4b0963f71d3ff33f7
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat01.c
+  line: 67
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1896af747353699e778da51e1c39135aa3cbdabc7f87ea859440f589725aa2d8
+  case: mkdirat01_67_4_0

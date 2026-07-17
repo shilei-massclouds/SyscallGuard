@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:3bb0af4fe790117fe11592c1290ac1600525be25d1ab54e19eba19626827664b
   case: signalfd01_52_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/signalfd/signalfd01.c
+  line: 52
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:3bb0af4fe790117fe11592c1290ac1600525be25d1ab54e19eba19626827664b
+  case: signalfd01_52_raw_0

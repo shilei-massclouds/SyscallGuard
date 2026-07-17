@@ -1,0 +1,40 @@
+# 合规检查：条件：The value of a bufsz field in one of the segments entries exceeds the value in the corresponding memsz field；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3D7E29C9D2B37AE7--3d7e29c9d2b3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value of a bufsz field in one of the segments entries exceeds the value in the corresponding
+      memsz field
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3d7e29c9d2b37ae73e0f0aa1278c2ae8c35328112f1917137c445e30dc8c04da
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 270
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:350992b63440ab7dfd49ce9d0f059a9646e50ec547987547358dafb530d773d1
+  case: errors_einval_270

@@ -1,0 +1,44 @@
+# 合规检查：条件：Could not find a process with the ID specified in pid；检查：调用 setrlimit(resource, rlim)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6CC937051236B8B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: Could not find a process with the ID specified in pid
+  action:
+    operation: invoke_syscall
+    syscall: setrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:76e1311e4211e59f7b935ed05ff58e73c090994e5028becd8c44497b39bc4f06
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61d19b5f4800ef0d999db1b7f689962022159f5ea91b601e0a5eed5f053cc75d
+  case: errors_esrch_509
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61d19b5f4800ef0d999db1b7f689962022159f5ea91b601e0a5eed5f053cc75d
+  case: errors_esrch_509

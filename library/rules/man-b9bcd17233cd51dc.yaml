@@ -1,0 +1,42 @@
+# 合规检查：条件：The buffer was not valid；检查：调用 lookup_dcookie()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B9BCD17233CD51DC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: The buffer was not valid
+  action:
+    operation: invoke_syscall
+    syscall: lookup_dcookie
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:b9bcd17233cd51dc9b4e69c8d6ec65966fec908d5ae32e19c63b1de436150530
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 46
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66337a84a229fe82d8e7d3f922ea6074173bd8ae6e54efa9284c0632c4b83499
+  case: errors_efault_46
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lookup_dcookie
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 46
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66337a84a229fe82d8e7d3f922ea6074173bd8ae6e54efa9284c0632c4b83499
+  case: errors_efault_46

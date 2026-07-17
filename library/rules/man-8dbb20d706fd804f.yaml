@@ -1,0 +1,46 @@
+# 合规检查：条件：(for MADV_SOFT_OFFLINE ) Any pages within the specified address range could not be offlined. This might occur if the page is currently in use or locked；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DBB20D706FD804F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EBUSY
+    summary: (for MADV_SOFT_OFFLINE ) Any pages within the specified address range could not be offlined.
+      This might occur if the page is currently in use or locked
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:8dbb20d706fd804fa7e27e71fc99cacc285de35c7208550756c5a9a42d62b188
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 815
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:518a5c20d33e71c89a75cfda5659a0338f24e2fea5134b306e71631a5c49cd9c
+  case: errors_ebusy_815
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 815
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:518a5c20d33e71c89a75cfda5659a0338f24e2fea5134b306e71631a5c49cd9c
+  case: errors_ebusy_815

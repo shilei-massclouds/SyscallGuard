@@ -1,0 +1,37 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_080B5B5A8F037D7E--080b5b5a8f03
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:080b5b5a8f037d7e659db86629b0f5acb98b415d4bc3f47aa8327d1284cd36db
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 230
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:995f09713b5b5f75686c59055d3d6504fbba0876f7bd5e03212f323684071da6
+  case: return_value_230

@@ -1,0 +1,45 @@
+# 合规检查：条件：addr to addr + length contained unmapped memory；检查：调用 mincore(length, length, vec)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F87099158C84F948
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: length
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: addr to addr + length contained unmapped memory
+  action:
+    operation: invoke_syscall
+    syscall: mincore
+    arguments:
+    - length
+    - length
+    - vec
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:f87099158c84f948693e169a9465d31b07b38629b4a926c876d531d48d7bda61
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:214f74d57f077614c25a9fa5371cad8d52169f76eb951a639b1394cfb83d7725
+  case: errors_enomem_106
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mincore
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:214f74d57f077614c25a9fa5371cad8d52169f76eb951a639b1394cfb83d7725
+  case: errors_enomem_106

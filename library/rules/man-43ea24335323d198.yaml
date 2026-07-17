@@ -1,0 +1,46 @@
+# 合规检查：条件：Both req.mnt_ns_id and req.mnt_ns_fd were set；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_43EA24335323D198
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: req
+    predicate: documented_condition
+    value: EINVAL
+    summary: Both req.mnt_ns_id and req.mnt_ns_fd were set
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:43ea24335323d198d73d0bab6c3e0fb511bc5914be650679ff6456348b2f46c0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8224d9185b6548000f6e7d516e530508e695dab31e57ef523852188137836ac
+  case: errors_einval_416
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8224d9185b6548000f6e7d516e530508e695dab31e57ef523852188137836ac
+  case: errors_einval_416

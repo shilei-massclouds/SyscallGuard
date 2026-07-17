@@ -1,0 +1,35 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 dup(oldfd)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7BCF7728F4DF44F4--7bcf7728f4df
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - oldfd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:7bcf7728f4df44f4fd38292a205cc364acbca06d379d1a9ca5260eee9d55b61d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8dec19ad4b2585eb26684430a85f250b603f7b45389c5cff68680585410992e9
+  case: errors_enomem_191

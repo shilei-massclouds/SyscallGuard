@@ -1,0 +1,44 @@
+# 合规检查：条件：Invalid arguments: param is NULL or pid is negative；检查：调用 sched_setparam(pid, param)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED8DFFBCDDB66B38
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: pid
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: 'Invalid arguments: param is NULL or pid is negative'
+  action:
+    operation: invoke_syscall
+    syscall: sched_setparam
+    arguments:
+    - pid
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3e7767289cffc76ddf40aff49d3e0216b1c1cdc3f983605be117f6a09a9ba701
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:85fc201aebcee6dd376fdf59d48f0a028468d15a53fa04c98ceb11db283873de
+  case: errors_einval_88
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setparam
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:85fc201aebcee6dd376fdf59d48f0a028468d15a53fa04c98ceb11db283873de
+  case: errors_einval_88

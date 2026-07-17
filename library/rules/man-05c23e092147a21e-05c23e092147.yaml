@@ -1,0 +1,35 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 chdir(path)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05C23E092147A21E--05c23e092147
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: chdir
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:05c23e092147a21ec9bf5d55e3144fee5ebbd032b04efa2168ee225a85a95fba
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d2edc7e417c123eaa78b6fa6a2da8210acf795dd9fc4ac51064436938e9f184
+  case: errors_efault_60

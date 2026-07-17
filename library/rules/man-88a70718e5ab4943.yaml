@@ -1,0 +1,44 @@
+# 合规检查：条件：Permission to read or search a component of the filename was denied；检查：调用 getcwd(size, size)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_88A70718E5AB4943
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: Permission to read or search a component of the filename was denied
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:88a70718e5ab49438847d3465467c942e9437732c85088b841f6b3daaa38d111
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 142
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:712afb67de7136b6e3e94cc8209ac2c7d2b025a668bb926ea77db88fbcff56f6
+  case: errors_eacces_142
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcwd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 142
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:712afb67de7136b6e3e94cc8209ac2c7d2b025a668bb926ea77db88fbcff56f6
+  case: errors_eacces_142

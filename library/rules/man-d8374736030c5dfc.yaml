@@ -1,0 +1,36 @@
+# 合规检查：条件：The named attribute does not exist；检查：调用 lremovexattr(path, name)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D8374736030C5DFC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: The named attribute does not exist
+  action:
+    operation: invoke_syscall
+    syscall: lremovexattr
+    arguments:
+    - path
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:d8374736030c5dfc73ef9a74af9e17fa8d08ac996256404c882dc08e747d45ad
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lremovexattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f473ef0baa10c08cb4732d11113c660bf55a3a59fdf3bcc3eb7e6d08652619a
+  case: errors_enodata_67

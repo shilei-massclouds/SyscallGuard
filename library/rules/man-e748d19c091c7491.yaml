@@ -1,0 +1,47 @@
+# 合规检查：条件：fd does not refer to a filesystem configuration context or filesystem instance；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E748D19C091C7491
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd does not refer to a filesystem configuration context or filesystem instance
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e748d19c091c749148de9eb4194b038feefc7640235b0f60d33855fe71fda240
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0bb3ab2ba109664d2ab0b1513028307c611014328dc5f954041f2f941c6f4d1
+  case: errors_einval_423
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0bb3ab2ba109664d2ab0b1513028307c611014328dc5f954041f2f941c6f4d1
+  case: errors_einval_423

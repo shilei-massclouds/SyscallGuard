@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 pidfd_send_signal(pidfd, sig, info, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EEF5626873AA6B76
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - sig
+    - info
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:eef5626873aa6b768a151a20c49eae6fd689b63849090b4b983506ae9ae3bdca
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 142
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b49440f1796319fca54d9295cf7dd216225fdb1c54547c18f240597c70d03bfe
+  case: return_value_142
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_send_signal
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 142
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:b49440f1796319fca54d9295cf7dd216225fdb1c54547c18f240597c70d03bfe
+  case: return_value_142

@@ -1,0 +1,45 @@
+# 合规检查：条件：(Internet domain sockets) The socket referred to by sockfd had not previously been bound to an address and, upon attempting to bind it to an ephemeral port,...；检查：调用 listen(sockfd, backlog)；预期：返回 -1，errno 为 EADDRINUSE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E746A35445D2FFB4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: sockfd
+    predicate: documented_condition
+    value: EADDRINUSE
+    summary: (Internet domain sockets) The socket referred to by sockfd had not previously been bound
+      to an address and, upon attempting to bind it to an ephemeral port,...
+  action:
+    operation: invoke_syscall
+    syscall: listen
+    arguments:
+    - sockfd
+    - backlog
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRINUSE
+  errno:
+  - EADDRINUSE
+semantic_hash: sha256:e746a35445d2ffb4a170caca05a1adc82e92573124f58eafcf55e80d019b4421
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c4e1f579b079b24fed8a941e0ad21746b2e0fc93b207469ce29c4680de30009a
+  case: errors_eaddrinuse_54
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c4e1f579b079b24fed8a941e0ad21746b2e0fc93b207469ce29c4680de30009a
+  case: errors_eaddrinuse_54

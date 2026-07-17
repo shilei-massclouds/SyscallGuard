@@ -1,0 +1,39 @@
+# 合规检查：条件：The file descriptor sockfd does not refer to a socket；检查：调用 getsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2C6CC1D1C5B14D4E--2c6cc1d1c5b1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: ENOTSOCK
+    summary: The file descriptor sockfd does not refer to a socket
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:2c6cc1d1c5b14d4e5d254614ef0c6c72568e3785e3f2bd3536e352ce2eda01b9
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f4850f8ed364d28d9104683657a68afd112caa61efa8b7bb772733dd30b62c1
+  case: errors_enotsock_137

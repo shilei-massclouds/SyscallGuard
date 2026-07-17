@@ -1,0 +1,45 @@
+# 合规检查：条件：Could not allocate memory for recvmsg ()；检查：调用 recvmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05BDBAF2B17488EC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Could not allocate memory for recvmsg ()
+  action:
+    operation: invoke_syscall
+    syscall: recvmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:05bdbaf2b17488ec0f385d690b860d83d08dd475ad1285b70d49585da667b3f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 476
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:087d5de49eba20f2494744b49d3b48b75e163c6f7aa8f35c931146cf56b4c70b
+  case: errors_enomem_476
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 476
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:087d5de49eba20f2494744b49d3b48b75e163c6f7aa8f35c931146cf56b4c70b
+  case: errors_enomem_476

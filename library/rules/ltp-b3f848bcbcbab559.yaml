@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:4d564c7278da7d711a4e54217bd2abd99d6ecfae47ed8c727f6806de4b660536
   case: epoll_wait04_26_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+  line: 26
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:4d564c7278da7d711a4e54217bd2abd99d6ecfae47ed8c727f6806de4b660536
+  case: epoll_wait04_26_raw_0

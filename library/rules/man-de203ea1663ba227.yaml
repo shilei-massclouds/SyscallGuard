@@ -1,0 +1,42 @@
+# 合规检查：条件：(Linux 2.4 and earlier) the calling process tried to lock more than half of RAM；检查：调用 munlockall()；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DE203EA1663BA227
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: (Linux 2.4 and earlier) the calling process tried to lock more than half of RAM
+  action:
+    operation: invoke_syscall
+    syscall: munlockall
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:88a486ac0cc54a9f86448088945514abd5a5e009cb822a03c621f8967b0dcbdf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 242
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89a8727d57291a435f192b3c33eb1b7a855185f490d0901da2d0df58bb0df0ec
+  case: errors_enomem_242
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 242
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89a8727d57291a435f192b3c33eb1b7a855185f490d0901da2d0df58bb0df0ec
+  case: errors_enomem_242

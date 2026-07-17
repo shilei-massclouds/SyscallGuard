@@ -1,0 +1,37 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 faccessat2(atcwd_fd, bad_path, R_OK, 0)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E81373866A3C5AB3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - atcwd_fd
+    - bad_path
+    - R_OK
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:e81373866a3c5ab3a596675ac5683df6313d8307efa82d7ec6b78f61d965cf0c
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat202.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0262ed12557dd2d6095de58479d0eb81b4a91dd7482f6906003a8476c80134a5
+  case: faccessat202_65_0_0

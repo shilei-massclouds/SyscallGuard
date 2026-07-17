@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_710B13DF5F84CD08
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:710b13df5f84cd08ee6e1ff0981a048f20bdb0aff920faddff97720d366cdab1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 152
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0ac2a023f649d8ce29b9f1e8cf6129ab40eb52b499888e0f7f0c5db23046f761
+  case: return_value_152
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 152
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0ac2a023f649d8ce29b9f1e8cf6129ab40eb52b499888e0f7f0c5db23046f761
+  case: return_value_152

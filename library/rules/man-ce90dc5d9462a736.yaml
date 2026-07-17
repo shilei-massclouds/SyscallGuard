@@ -1,0 +1,47 @@
+# 合规检查：条件：An attempt was made to bind mount an unbindable mount；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CE90DC5D9462A736
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An attempt was made to bind mount an unbindable mount
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ce90dc5d9462a736b5866486f5cbf018a07778150726e3a53cfb2adaa2c1da83
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 757
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:425850d96050c2729574bc6d268809e3bdfd2ac956192ae1797b950feae3f9cf
+  case: errors_einval_757
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 757
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:425850d96050c2729574bc6d268809e3bdfd2ac956192ae1797b950feae3f9cf
+  case: errors_einval_757

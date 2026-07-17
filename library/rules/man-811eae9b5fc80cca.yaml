@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to an existing directory, O_TMPFILE and one of O_WRONLY or O_RDWR were specified in flags , but this kernel version does not provide the...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_811EAE9B5FC80CCA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: path refers to an existing directory, O_TMPFILE and one of O_WRONLY or O_RDWR were specified
+      in flags , but this kernel version does not provide the...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:811eae9b5fc80ccae49cba7f34709518be028bb4f59500d2caba3896d623565a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:84a9fd5ab9c979f889f2673f01d16020de43a2cb6fc4dc1011ef38dfc65d64c9
+  case: errors_eisdir_1113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:84a9fd5ab9c979f889f2673f01d16020de43a2cb6fc4dc1011ef38dfc65d64c9
+  case: errors_eisdir_1113

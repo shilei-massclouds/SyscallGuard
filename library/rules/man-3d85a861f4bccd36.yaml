@@ -1,0 +1,45 @@
+# 合规检查：条件：addr is not a multiple of the page size；检查：调用 mincore(length, length, vec)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3D85A861F4BCCD36
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: addr is not a multiple of the page size
+  action:
+    operation: invoke_syscall
+    syscall: mincore
+    arguments:
+    - length
+    - length
+    - vec
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3d85a861f4bccd36d5f56283bb36d7a6a60b00e78af3749f52c9e0f301726b77
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad5876225668c096b9f268d73462093ff2ce085d50ab9a8555ab6835372c0552
+  case: errors_einval_90
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mincore
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mincore.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad5876225668c096b9f268d73462093ff2ce085d50ab9a8555ab6835372c0552
+  case: errors_einval_90

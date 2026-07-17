@@ -1,0 +1,41 @@
+# 合规检查：条件：The socket is associated with a connection-oriented protocol and has not been connected (see connect (2) and accept (2))；检查：调用 recvfrom(sockfd, size, size, flags, src_addr, addrlen)；预期：返回 -1，errno 为 ENOTCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7A41CF99723D3017--7a41cf99723d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTCONN
+    summary: The socket is associated with a connection-oriented protocol and has not been connected (see
+      connect (2) and accept (2))
+  action:
+    operation: invoke_syscall
+    syscall: recvfrom
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - src_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTCONN
+  errno:
+  - ENOTCONN
+semantic_hash: sha256:7a41cf99723d3017d20d3d1073732f4be2e155351b87ddf314339ec58547c0ab
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvfrom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 480
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a9ed8e8d44d2188af0496b3bcd642ecd9c3fea38b5b3e2e438602b9a944fea68
+  case: errors_enotconn_480

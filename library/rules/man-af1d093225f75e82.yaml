@@ -1,0 +1,43 @@
+# 合规检查：条件：timerid is not a valid timer ID；检查：调用 timer_delete(timerid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AF1D093225F75E82
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timerid
+    predicate: documented_condition
+    value: EINVAL
+    summary: timerid is not a valid timer ID
+  action:
+    operation: invoke_syscall
+    syscall: timer_delete
+    arguments:
+    - timerid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:af1d093225f75e82ca0aa65cd8a7665ef9c04e7e9e605b0ba70a468bd1912a09
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_delete.2
+  line: 43
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ea0403e63c437b456f007bcb772239208fedb2b0fe84b01a33aeb56b2e63d0
+  case: errors_einval_43
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_delete
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_delete.2
+  line: 43
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ea0403e63c437b456f007bcb772239208fedb2b0fe84b01a33aeb56b2e63d0
+  case: errors_einval_43

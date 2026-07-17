@@ -1,0 +1,45 @@
+# 合规检查：条件：No memory could be allocated for segment overhead；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9CC0EE7106975DEB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: No memory could be allocated for segment overhead
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:9cc0ee7106975deb9ee54ca683d6a5ddfc3fc6baf0dc08fbb6209c34dd756cc4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 236
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:663b094b329b1d8bbade27a3f842da368094472c2fddec0f3c0eb47f84429733
+  case: errors_enomem_236
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 236
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:663b094b329b1d8bbade27a3f842da368094472c2fddec0f3c0eb47f84429733
+  case: errors_enomem_236

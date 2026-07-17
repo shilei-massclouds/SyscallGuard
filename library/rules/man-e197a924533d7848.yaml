@@ -1,0 +1,45 @@
+# 合规检查：条件：The MAP_HUGETLB flag was specified, but the caller was not privileged (did not have the CAP_IPC_LOCK capability) and is not a member of the...；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E197A924533D7848
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The MAP_HUGETLB flag was specified, but the caller was not privileged (did not have the CAP_IPC_LOCK
+      capability) and is not a member of the...
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8fc0d00245705d763debaa2ff2dd181f3c1650425a229d730c6ed10eee7c2f3b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 614
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6958c810857196061d735b23b2c7b831e71391ba76cbbe6006a426b75fdc2526
+  case: errors_eperm_614
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 614
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6958c810857196061d735b23b2c7b831e71391ba76cbbe6006a426b75fdc2526
+  case: errors_eperm_614

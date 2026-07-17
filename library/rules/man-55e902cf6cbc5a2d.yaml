@@ -1,0 +1,45 @@
+# 合规检查：条件：mask contains IN_ONLYDIR and path is not a directory；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_55E902CF6CBC5A2D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: mask contains IN_ONLYDIR and path is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:55e902cf6cbc5a2d5991b4dc2400c79161ce398fe6373a3cb22914b921a803d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:936e14592b7056ce42529e7403fe8c3f6f7d53863ada3c941a6fc8705f172bf4
+  case: errors_enotdir_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:936e14592b7056ce42529e7403fe8c3f6f7d53863ada3c941a6fc8705f172bf4
+  case: errors_enotdir_116

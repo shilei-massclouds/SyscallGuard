@@ -1,0 +1,43 @@
+# 合规检查：条件：Disk space was exhausted while synchronizing；检查：调用 syncfs(fd)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_72BC35B6D1A7488F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: Disk space was exhausted while synchronizing
+  action:
+    operation: invoke_syscall
+    syscall: syncfs
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:4f49e0113846a66adcca1d61f7891ffcd37278032d647444a4713f6c63559919
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2991ae0ae0ee039c89c08afe82293eb1dafefba784459424324d4189dc356c6c
+  case: errors_enospc_70
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syncfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2991ae0ae0ee039c89c08afe82293eb1dafefba784459424324d4189dc356c6c
+  case: errors_enospc_70

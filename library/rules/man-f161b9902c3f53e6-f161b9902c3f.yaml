@@ -1,0 +1,34 @@
+# 合规检查：条件：fd is not a valid file descriptor；检查：调用 sync()；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F161B9902C3F53E6--f161b9902c3f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: sync
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f161b9902c3f53e6e3729e226f897755174bc018a54c8024c1a1406c87218b03
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:794e8bfcbb799c1f2c111e6c5f5e2f9f39252bbba6f435e33f4e6772a70d75cb
+  case: errors_ebadf_61

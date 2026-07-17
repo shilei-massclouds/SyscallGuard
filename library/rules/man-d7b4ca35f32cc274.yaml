@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 io_cancel(ctx_id, iocb, result)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D7B4CA35F32CC274
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: io_cancel
+    arguments:
+    - ctx_id
+    - iocb
+    - result
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d7b4ca35f32cc274e230574524cea06ab1c7440e8eadf611f360d6e7a123a145
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 45
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:12e49c266cd65fb3014061193cf20d21460b73c191712ea620fab5737ffb5ea1
+  case: return_value_45
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_cancel
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 45
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:12e49c266cd65fb3014061193cf20d21460b73c191712ea620fab5737ffb5ea1
+  case: return_value_45

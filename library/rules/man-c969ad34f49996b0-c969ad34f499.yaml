@@ -1,0 +1,35 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sched_getaffinity(pid, cpusetsize, mask)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C969AD34F49996B0--c969ad34f499
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sched_getaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:c969ad34f49996b03dbfb44b0edeb55d2e6efceb90cc0a6601d08cf73c216303
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 83
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:3e09579d5a72ac530d70dafc1a077820e28463726d98535d0f88ab9cf23c2d94
+  case: return_value_83

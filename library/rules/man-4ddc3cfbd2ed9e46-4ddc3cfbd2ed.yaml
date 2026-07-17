@@ -1,0 +1,37 @@
+# 合规检查：条件：While blocked waiting to complete, the call was interrupted by a signal handler; see fcntl (2) and signal (7)；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4DDC3CFBD2ED9E46--4ddc3cfbd2ed
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While blocked waiting to complete, the call was interrupted by a signal handler; see fcntl
+      (2) and signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:4ddc3cfbd2ed9e467357a46c1840f33b78d345c51f4bedda57151e3ff6611199
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:05752567a76ba429364304b4d361e8a1bc7225d00eab8a390a7938ca5a1cb502
+  case: errors_eintr_105

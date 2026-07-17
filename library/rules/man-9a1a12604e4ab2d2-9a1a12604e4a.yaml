@@ -1,0 +1,37 @@
+# 合规检查：条件：The named file resides on a read-only filesystem；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9A1A12604E4AB2D2--9a1a12604e4a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: The named file resides on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:9a1a12604e4ab2d2b7b057a2a25b27578bf2544737837e479471deb39712eebd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 268
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af1b5873f45439d965b258151cf345d8ef95db0f8cddd5f0e345a2febf4a0dd6
+  case: errors_erofs_268

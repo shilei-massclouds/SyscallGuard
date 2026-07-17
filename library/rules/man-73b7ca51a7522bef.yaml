@@ -1,0 +1,44 @@
+# 合规检查：条件：An invalid pointer is passed for ctx_idp；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73B7CA51A7522BEF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: ctx_idp
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: An invalid pointer is passed for ctx_idp
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:73b7ca51a7522befcfae716860adda45837e6eb3ce9f5044100a9403df0bb1d0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e0be2004e4b524b20d764616f55302b4a980c7ac0d37f8e02c1c831f5895ab2
+  case: errors_efault_61
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e0be2004e4b524b20d764616f55302b4a980c7ac0d37f8e02c1c831f5895ab2
+  case: errors_efault_61

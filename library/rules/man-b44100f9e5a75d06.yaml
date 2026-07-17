@@ -1,0 +1,44 @@
+# 合规检查：条件：CLONE_NEWUSER was specified in flags , but either the effective user ID or the effective group ID of the caller does not have a mapping in the parent...；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B44100F9E5A75D06
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EPERM
+    summary: CLONE_NEWUSER was specified in flags , but either the effective user ID or the effective
+      group ID of the caller does not have a mapping in the parent...
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b44100f9e5a75d06bd2b4f7382e32d125e6ee81b29b046b0edbc8c61249f383b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa44706a38e5a887955be7ad399a835c780f9c48114f79ecdc9a2d82d476b08c
+  case: errors_eperm_398
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa44706a38e5a887955be7ad399a835c780f9c48114f79ecdc9a2d82d476b08c
+  case: errors_eperm_398

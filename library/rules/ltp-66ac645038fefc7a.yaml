@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:46b9814ab857b5eee0e8c64717d57abbd5c5e2b263a2682630b39b395616563e
   case: swapon03_100_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/swapon/swapon03.c
+  line: 100
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:46b9814ab857b5eee0e8c64717d57abbd5c5e2b263a2682630b39b395616563e
+  case: swapon03_100_raw_0

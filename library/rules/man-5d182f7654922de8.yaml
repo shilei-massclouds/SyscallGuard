@@ -1,0 +1,44 @@
+# 合规检查：条件：BSD process accounting has not been enabled when the operating system kernel was compiled. The kernel configuration parameter controlling this feature is...；检查：调用 acct(path)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5D182F7654922DE8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: BSD process accounting has not been enabled when the operating system kernel was compiled.
+      The kernel configuration parameter controlling this feature is...
+  action:
+    operation: invoke_syscall
+    syscall: acct
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:5d182f7654922de86e14ce98b21f6d1bdc20bdc1a81a599c8807d96b459811c1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 91
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7720fd2fd4897a23cd0bc5847ff01a6442c0de5f9a0cd4dc6ba412a00114a2c7
+  case: errors_enosys_91
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: acct
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 91
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7720fd2fd4897a23cd0bc5847ff01a6442c0de5f9a0cd4dc6ba412a00114a2c7
+  case: errors_enosys_91

@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:e11f38ec591918d515ceb38b9bb295d05f2eb34248f1b131035cbac053b40949
   case: madvise12_55_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise12.c
+  line: 55
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:e11f38ec591918d515ceb38b9bb295d05f2eb34248f1b131035cbac053b40949
+  case: madvise12_55_raw_0

@@ -1,0 +1,47 @@
+# 合规检查：条件：The caller does not have the required privileges；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_28F9F6A703D7EFDD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the required privileges
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:28f9f6a703d7efdd7c7fc5730e05dec69c63622e984b41896bb181672e166a85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 828
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:398e31ac9ee50c09c0b106baa58e655de340c3b55747f8eab8a4693902d3c391
+  case: errors_eperm_828
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 828
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:398e31ac9ee50c09c0b106baa58e655de340c3b55747f8eab8a4693902d3c391
+  case: errors_eperm_828

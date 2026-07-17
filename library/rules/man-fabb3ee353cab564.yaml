@@ -1,0 +1,46 @@
+# 合规检查：条件：( readlinkat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 readlinkat(dirfd, path, bufsiz, bufsiz)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FABB3EE353CAB564
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( readlinkat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dirfd
+    - path
+    - bufsiz
+    - bufsiz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:fabb3ee353cab5640528d2777178cba5c5be36a0b4d7f1c7ff596971b3b4f38a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:88715c503747c4aa006ccc18448ab0bf8f3c46392102c26a6e78ed8e06ce9d2f
+  case: errors_ebadf_131
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:88715c503747c4aa006ccc18448ab0bf8f3c46392102c26a6e78ed8e06ce9d2f
+  case: errors_ebadf_131

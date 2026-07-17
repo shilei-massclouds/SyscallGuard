@@ -1,0 +1,45 @@
+# 合规检查：条件：The sum of the iov_len values overflows an ssize_t value；检查：调用 writev(fd, iov, iovcnt)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DFE42730FCD2612D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The sum of the iov_len values overflows an ssize_t value
+  action:
+    operation: invoke_syscall
+    syscall: writev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:07416346720b3fa189781fae130746ffdc6872abd48ae3c50da10f5df84370ed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:887e0afba9729518f0ebad65c63337849d285900e5b19fdc37f6967b96492ebe
+  case: errors_einval_376
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:887e0afba9729518f0ebad65c63337849d285900e5b19fdc37f6967b96492ebe
+  case: errors_einval_376

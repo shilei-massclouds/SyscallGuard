@@ -1,0 +1,46 @@
+# 合规检查：条件：An invalid signal was specified. This will also be generated if an attempt is made to change the action for SIGKILL or SIGSTOP , which cannot be caught or...；检查：调用 rt_sigaction(signum, act, oldact)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_61EBE054E176BE82
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An invalid signal was specified. This will also be generated if an attempt is made to change
+      the action for SIGKILL or SIGSTOP , which cannot be caught or...
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigaction
+    arguments:
+    - signum
+    - act
+    - oldact
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:61ebe054e176be827474191cf2270ee9c3b9491136749a47a748540778423816
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaction.2
+  line: 977
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9bfb9cf2f2722d3f99b500d305679c7f802dd00a6055f4cf03243f57cffc138a
+  case: errors_einval_977
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigaction
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaction.2
+  line: 977
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9bfb9cf2f2722d3f99b500d305679c7f802dd00a6055f4cf03243f57cffc138a
+  case: errors_einval_977

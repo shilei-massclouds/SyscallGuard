@@ -1,0 +1,45 @@
+# 合规检查：条件：The caller does not have the CAP_DAC_READ_SEARCH capability；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_682663184D6AEB4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the CAP_DAC_READ_SEARCH capability
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:d38f7678cc27c081bd5a5c93b17ee381765e8fd7dbd66e668f995485227b42ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 430
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c5619c0513e9f10dd810a01a4ea594d42451eedd853454687550f20ec88a650e
+  case: errors_eperm_430
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 430
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c5619c0513e9f10dd810a01a4ea594d42451eedd853454687550f20ec88a650e
+  case: errors_eperm_430

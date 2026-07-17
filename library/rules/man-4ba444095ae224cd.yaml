@@ -1,0 +1,47 @@
+# 合规检查：条件：( fchownat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4BA444095AE224CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( fchownat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:4ba444095ae224cdb6b46c86252dc879848926f842fb3eef380e1e8d5eae9d19
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c6029b476a9fed7b8f9656597382bb7bb6949c4f5741179fa02580b1cb9da3f2
+  case: errors_ebadf_213
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c6029b476a9fed7b8f9656597382bb7bb6949c4f5741179fa02580b1cb9da3f2
+  case: errors_ebadf_213

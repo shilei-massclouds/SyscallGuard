@@ -1,0 +1,48 @@
+# 合规检查：条件：One of the target nodes is not allowed by the current cpuset；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2178BF34327B5121
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: One of the target nodes is not allowed by the current cpuset
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:2178bf34327b5121af9768972022a157e297caa1b634131ef44f4402e6c74d96
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d4e03aa3c26dbd375ebe6fb6787e98f60c725ffd4fdcd5d92d09033ffb390bf
+  case: errors_eacces_180
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d4e03aa3c26dbd375ebe6fb6787e98f60c725ffd4fdcd5d92d09033ffb390bf
+  case: errors_eacces_180

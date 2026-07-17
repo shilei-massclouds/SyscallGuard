@@ -1,0 +1,48 @@
+# 合规检查：条件：mountflags includes MS_SHARED , MS_PRIVATE , MS_SLAVE , or MS_UNBINDABLE and also includes a flag other than MS_REC or MS_SILENT；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C8D13C5ADE5FF682
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mountflags
+    predicate: invalid_value
+    value: EINVAL
+    summary: mountflags includes MS_SHARED , MS_PRIVATE , MS_SLAVE , or MS_UNBINDABLE and also includes
+      a flag other than MS_REC or MS_SILENT
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c8d13c5ade5ff6823f76688f38586c89a9bffe07273073fd8308ef6b656c6845
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 744
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d060ee57ff04698f4ec43b9d34db6fdae9442178402fd433801bcc67752ad82
+  case: errors_einval_744
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 744
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d060ee57ff04698f4ec43b9d34db6fdae9442178402fd433801bcc67752ad82
+  case: errors_einval_744

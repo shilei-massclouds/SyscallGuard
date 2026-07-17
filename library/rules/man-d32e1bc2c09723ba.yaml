@@ -1,0 +1,50 @@
+# 合规检查：条件：Part or all of the memory range specified by nodemask and maxnode points outside your accessible address space. Or, there was an unmapped hole in the...；检查：调用 mbind(size, size, size, mode, ULONG_WIDTH, maxnode, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D32E1BC2C09723BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: maxnode
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Part or all of the memory range specified by nodemask and maxnode points outside your accessible
+      address space. Or, there was an unmapped hole in the...
+  action:
+    operation: invoke_syscall
+    syscall: mbind
+    arguments:
+    - size
+    - size
+    - size
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d32e1bc2c09723ba10a235397db6c664a34b11ccb36f0f56e41e6d8b0b71be95
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 378
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a9dcf6b2f8d342aa178e533ef6c812d88fc94f48530556ef592a19557f475220
+  case: errors_efault_378
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mbind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 378
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a9dcf6b2f8d342aa178e533ef6c812d88fc94f48530556ef592a19557f475220
+  case: errors_efault_378

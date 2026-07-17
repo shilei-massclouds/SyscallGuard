@@ -1,0 +1,47 @@
+# 合规检查：条件：Search permission is denied for one of the directories in the path prefix of path . (See also path_resolution (7).)；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_23180C38C934A465
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for one of the directories in the path prefix of path . (See
+      also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:639282bf8353817074740d0a32695e9ca0d296fd7615f0520f6afdb9418d0e4a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff9a2f614a0311cebb1289a3a517c3cf33e774abb311d361d3922e9022e972ea
+  case: errors_eacces_220
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff9a2f614a0311cebb1289a3a517c3cf33e774abb311d361d3922e9022e972ea
+  case: errors_eacces_220

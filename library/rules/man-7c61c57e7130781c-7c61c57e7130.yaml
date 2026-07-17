@@ -1,0 +1,37 @@
+# 合规检查：条件：The file descriptor sockfd does not refer to a socket；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C61C57E7130781C--7c61c57e7130
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: ENOTSOCK
+    summary: The file descriptor sockfd does not refer to a socket
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:7c61c57e7130781c7dbe760e6680fd1d889d654070a8d065d7fa41bc6890f05e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8ce6345e3c64fc47a3936c587a27ac9d5d609d420402a0315cd3a64a5edd8e4
+  case: errors_enotsock_422

@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 4.9; beforehand EUSERS ) CLONE_NEWUSER was specified in flags , and the call would cause the limit on the number of nested user namespaces to...；检查：调用 unshare(flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33C1D82A6838B634
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: (since Linux 4.9; beforehand EUSERS ) CLONE_NEWUSER was specified in flags , and the call
+      would cause the limit on the number of nested user namespaces to...
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:33c1d82a6838b634b0e51c0607e38e714246dfafc783ec253a90df064a95d1b7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 373
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:635e37e3db8ffbee888ad3f343b1c63a88dd2ec36ef9effaece4a4300176f839
+  case: errors_enospc_373
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 373
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:635e37e3db8ffbee888ad3f343b1c63a88dd2ec36ef9effaece4a4300176f839
+  case: errors_enospc_373

@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to an executable image which is currently being executed and write access was requested；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_873728C9D1BA408C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ETXTBSY
+    summary: path refers to an executable image which is currently being executed and write access was
+      requested
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:873728c9d1ba408cbf22610585ba29731f36894f20fccb60b71c6d8fdefd1d7c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3831aaa397c574ed07b5001d6b335792c20dee676a6206720986438da4c3fa5
+  case: errors_etxtbsy_1272
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3831aaa397c574ed07b5001d6b335792c20dee676a6206720986438da4c3fa5
+  case: errors_etxtbsy_1272

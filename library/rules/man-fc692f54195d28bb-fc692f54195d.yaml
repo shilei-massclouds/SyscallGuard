@@ -1,0 +1,37 @@
+# 合规检查：条件：Some bit in the flags argument is inappropriate for the socket type；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FC692F54195D28BB--fc692f54195d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: Some bit in the flags argument is inappropriate for the socket type
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:fc692f54195d28bbe15eceb3776b4f5de65a5d62b0431541764c945c4a98024b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 427
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:15c47fffa0116e60331a171f09302051c49c30948e3ec0c751397e6e6dd27abc
+  case: errors_eopnotsupp_427

@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 timer_create(clockid, sevp, timerid)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7A0588957618E854
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: timer_create
+    arguments:
+    - clockid
+    - sevp
+    - timerid
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:7a0588957618e8546817bd3c9300ffa8b6a640a51053b85e88e7c0cc3f1ed86e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 188
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ee53602833af2bd51bbeeddd31035d739fe8d766d3660622bb607d9bc9b0e63e
+  case: return_value_188
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 188
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ee53602833af2bd51bbeeddd31035d739fe8d766d3660622bb607d9bc9b0e63e
+  case: return_value_188

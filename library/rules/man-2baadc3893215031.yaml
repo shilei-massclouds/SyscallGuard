@@ -1,0 +1,47 @@
+# 合规检查：条件：The requested access to the file is not allowed, or search permission is denied for one of the directories in the path prefix of path , or the file did not...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2BAADC3893215031
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: The requested access to the file is not allowed, or search permission is denied for one of
+      the directories in the path prefix of path , or the file did not...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:2baadc38932150319542e75602ad879e3c317b68eca3defa5e18b35f357616c3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 982
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:99f70d505f7cfcbc4e39bb145c73c01ebdaaad18d1f5a3c94d2fb5c1deae2dbf
+  case: errors_eacces_982
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 982
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:99f70d505f7cfcbc4e39bb145c73c01ebdaaad18d1f5a3c94d2fb5c1deae2dbf
+  case: errors_eacces_982

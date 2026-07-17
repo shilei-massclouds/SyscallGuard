@@ -1,0 +1,39 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 sendto(sockfd, NULL, 1, 0, (struct sockaddr *) &sa, sizeof(sa))；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4C4EE05D029C81F3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: struct
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - 'NULL'
+    - '1'
+    - '0'
+    - (struct sockaddr *) &sa
+    - sizeof(sa)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:4c4ee05d029c81f367d321941d0c1b5706ea9b7b846ac0866f16f0fc45b954fa
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendto/sendto02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a7ad0d63c091c6c53b5a02fe3ca145eca007e2ad02bcebdeeb4dc602a51c0dac
+  case: sendto02_57_raw_0

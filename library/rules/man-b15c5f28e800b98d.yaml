@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getsockname(sockfd, addr, addrlen)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B15C5F28E800B98D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:b15c5f28e800b98df98b4768145bb3629727c99725070e0e2c336e3686169b4e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 37
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ec4820cb5f97955a7f36a4c7dbe7b4827d1adf40aea9616a08c18afbdc3a8c51
+  case: return_value_37
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 37
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:ec4820cb5f97955a7f36a4c7dbe7b4827d1adf40aea9616a08c18afbdc3a8c51
+  case: return_value_37

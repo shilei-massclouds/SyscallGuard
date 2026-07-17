@@ -1,0 +1,48 @@
+# 合规检查：条件：The socket is not connection-mode, and no peer address is set；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EDESTADDRREQ。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2EF91B98B0EB3C01
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EDESTADDRREQ
+    summary: The socket is not connection-mode, and no peer address is set
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDESTADDRREQ
+  errno:
+  - EDESTADDRREQ
+semantic_hash: sha256:6184c238bd1166f08e1bda4de2fbadfadaabb0f2a4f7935f7daaf1cebe046ae0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:46f1a66f76dfdf479374ea810118891831bc16268b77e297005649a7bea7bcd8
+  case: errors_edestaddrreq_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:46f1a66f76dfdf479374ea810118891831bc16268b77e297005649a7bea7bcd8
+  case: errors_edestaddrreq_382

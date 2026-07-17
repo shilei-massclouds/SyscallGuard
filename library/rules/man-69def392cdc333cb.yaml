@@ -1,0 +1,45 @@
+# 合规检查：条件：A connect () on a stream socket found no one listening on the remote address；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ECONNREFUSED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_69DEF392CDC333CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECONNREFUSED
+    summary: A connect () on a stream socket found no one listening on the remote address
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECONNREFUSED
+  errno:
+  - ECONNREFUSED
+semantic_hash: sha256:69def392cdc333cb98e645ded2f2aebb8628cfd832a6bedaf77057ad0232273a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ee744dde07024f97709094d82d48a922413618b28f28a0e821569922cac213f
+  case: errors_econnrefused_147
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ee744dde07024f97709094d82d48a922413618b28f28a0e821569922cac213f
+  case: errors_econnrefused_147

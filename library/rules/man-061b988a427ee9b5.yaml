@@ -1,0 +1,49 @@
+# 合规检查：条件：An attempt was made to write a range that exceeds the allowed maximum file size. The maximum file size differs between filesystem implementations and can be...；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_061B988A427EE9B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EFBIG
+    summary: An attempt was made to write a range that exceeds the allowed maximum file size. The maximum
+      file size differs between filesystem implementations and can be...
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:061b988a427ee9b54642efc139d3c779c5fc4b0046840c9ba327b04525a09773
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc1f4859e03310164ab62c72cbe6ef3c6b03ec28cef8b1eb046edeeb46769197
+  case: errors_efbig_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc1f4859e03310164ab62c72cbe6ef3c6b03ec28cef8b1eb046edeeb46769197
+  case: errors_efbig_112

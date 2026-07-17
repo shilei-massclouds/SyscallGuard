@@ -1,0 +1,40 @@
+# 合规检查：条件：liovcnt or riovcnt is too large；检查：调用 process_vm_readv(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9F137E9A314E991F--9f137e9a314e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: liovcnt
+    predicate: documented_condition
+    value: EINVAL
+    summary: liovcnt or riovcnt is too large
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_readv
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9f137e9a314e991f76ca005115b60abfa72350caf0598c2838a4cf9dfa6064ba
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7395391117551d31e2012038e192d21a490a104d0ff10f2b2575de2d3ab6c3d0
+  case: errors_einval_238

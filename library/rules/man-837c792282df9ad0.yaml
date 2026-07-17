@@ -1,0 +1,42 @@
+# 合规检查：条件：fd does not refer to an open file；检查：调用 init_module()；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_837C792282DF9AD0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOEXEC
+    summary: fd does not refer to an open file
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:a28d63cb6aab61eb566c394dba072acfa4aa7a27af4c8f2dd627d01b11049b51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 270
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af2a36b398ca33efe83a4bfa882b21afa3d32bd7906b6e8799b0b8964dbf79a8
+  case: errors_enoexec_270
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 270
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af2a36b398ca33efe83a4bfa882b21afa3d32bd7906b6e8799b0b8964dbf79a8
+  case: errors_enoexec_270

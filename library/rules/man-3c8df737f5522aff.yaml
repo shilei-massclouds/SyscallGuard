@@ -1,0 +1,47 @@
+# 合规检查：条件：The argument sockfd is not a valid file descriptor；检查：调用 setsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3C8DF737F5522AFF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The argument sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: setsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b5819d80dba8ca7bff98d641fcb99d754dcf1d425f1d043a00b3b66f46d3ea5b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de1868dc44a4958a77038108c913f0676c7c26dd6fea9dcbb5dc4dd46d0cab5
+  case: errors_ebadf_108
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de1868dc44a4958a77038108c913f0676c7c26dd6fea9dcbb5dc4dd46d0cab5
+  case: errors_ebadf_108

@@ -1,0 +1,42 @@
+# 合规检查：条件：Out of memory (i.e., kernel memory)；检查：调用 listmount()；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_186BA8EB037F385B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory (i.e., kernel memory)
+  action:
+    operation: invoke_syscall
+    syscall: listmount
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:186ba8eb037f385bda0aec4e557b1bf280404f79fa0fb715bc7bf8dd892d9139
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d6bd925b488e5511255c407d0f01629a4e05ef426142edc1ed80695c78b081d3
+  case: errors_enomem_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d6bd925b488e5511255c407d0f01629a4e05ef426142edc1ed80695c78b081d3
+  case: errors_enomem_112

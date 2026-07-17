@@ -1,0 +1,47 @@
+# 合规检查：条件：( fchmodat ()) path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_03A1619903E49673
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( fchmodat ()) path is relative and dirfd is a file descriptor referring to a file other
+      than a directory
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:03a1619903e49673fdc26b2f3b4900f239cf9b3dbbacdd4e23b2e23e409967df
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82e9891a56a32bbc05d2dedb95fb9486deaf3e7f5d39cc811f2e525272a6cd2e
+  case: errors_enotdir_292
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82e9891a56a32bbc05d2dedb95fb9486deaf3e7f5d39cc811f2e525272a6cd2e
+  case: errors_enotdir_292

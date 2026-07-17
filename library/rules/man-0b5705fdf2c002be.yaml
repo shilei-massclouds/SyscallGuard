@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned if the specified event is invalid. There are many possible reasons for this. A not-exhaustive list: sample_freq is higher than the maximum setting;...；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0B5705FDF2C002BE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: 'Returned if the specified event is invalid. There are many possible reasons for this. A
+      not-exhaustive list: sample_freq is higher than the maximum setting;...'
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0b5705fdf2c002be25d9b286a904e3ad9f4dafd4e84144472d32bdc5fd7661d7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3805
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f01c784c8759f0fdda70a9dd15986e33d3775beef8378789d2c844cce4938d87
+  case: errors_einval_3805
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3805
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f01c784c8759f0fdda70a9dd15986e33d3775beef8378789d2c844cce4938d87
+  case: errors_einval_3805

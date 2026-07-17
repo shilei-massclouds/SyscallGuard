@@ -1,0 +1,46 @@
+# 合规检查：条件：fd was created via a call to timerfd_create (2) and the wrong size buffer was given to read (); see timerfd_create (2) for further information；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2934B962DD728396
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd was created via a call to timerfd_create (2) and the wrong size buffer was given to read
+      (); see timerfd_create (2) for further information
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2934b962dd72839682d6dd026c6fcf2ac75a5af3d451536dcb56524bfa2229b7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96d642f9b1b412c096087609110be97f6cbba6cea9e97d6218795d2edaa6f8af
+  case: errors_einval_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96d642f9b1b412c096087609110be97f6cbba6cea9e97d6218795d2edaa6f8af
+  case: errors_einval_126

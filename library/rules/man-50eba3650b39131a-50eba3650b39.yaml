@@ -1,0 +1,38 @@
+# 合规检查：条件：SCHED_DEADLINE admission control failure, see sched (7)；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_50EBA3650B39131A--50eba3650b39
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: SCHED_DEADLINE admission control failure, see sched (7)
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:50eba3650b39131a78ef6901c36740ac7232e06b37c3c45951752218d6ddfa9d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b04869ec1cb1988507a5ba899e659e5a8846f524ca84de4160a37e0fe369d89
+  case: errors_ebusy_407

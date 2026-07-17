@@ -1,0 +1,46 @@
+# 合规检查：条件：A semaphore set has to be created but the system limit for the maximum number of semaphore sets ( SEMMNI ), or the system wide maximum number of semaphores...；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B183F712297ADDB0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: A semaphore set has to be created but the system limit for the maximum number of semaphore
+      sets ( SEMMNI ), or the system wide maximum number of semaphores...
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:b183f712297addb01970fe6fa384b7bd75313cb7734f73129c091d7e8624fa14
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1026595a0f6b05ce642a5fca342f6b92e1b721322fc057f5a62e5b17bdd0b323
+  case: errors_enospc_181
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1026595a0f6b05ce642a5fca342f6b92e1b721322fc057f5a62e5b17bdd0b323
+  case: errors_enospc_181

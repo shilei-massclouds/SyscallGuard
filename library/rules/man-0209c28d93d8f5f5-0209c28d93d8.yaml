@@ -1,0 +1,38 @@
+# 合规检查：条件：The affinity bit mask mask contains no processors that are currently physically on the system and permitted to the thread according to any restrictions that...；检查：调用 sched_getaffinity(pid, cpusetsize, mask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0209C28D93D8F5F5--0209c28d93d8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: mask
+    predicate: documented_condition
+    value: EINVAL
+    summary: The affinity bit mask mask contains no processors that are currently physically on the system
+      and permitted to the thread according to any restrictions that...
+  action:
+    operation: invoke_syscall
+    syscall: sched_getaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0209c28d93d8f5f5e91a336954b4af7981e3270842a5501193decd4ee444d4d6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dd685bb4ff477027fcccab368779681c9aae8829ebd29a3d4fd05fdcc77acd01
+  case: errors_einval_98

@@ -1,0 +1,45 @@
+# 合规检查：条件：Too many symbolic links were encountered in translating path；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_631222516EE8AD45
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in translating path
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:631222516ee8ad45fe099a17505df4276d43583710bad81a3d4b2594638eb59c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 161
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d30807ed245723d7a580e1f8acaaf44b548e582ba2eba4ce654a516e1817d5f
+  case: errors_eloop_161
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 161
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d30807ed245723d7a580e1f8acaaf44b548e582ba2eba4ce654a516e1817d5f
+  case: errors_eloop_161

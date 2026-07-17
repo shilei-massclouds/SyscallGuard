@@ -1,0 +1,37 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 lsetxattr(path, name, size, size, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8A1D7EAFA0E22D7F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: lsetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:8a1d7eafa0e22d7f01f2d29fdd4f2dd44a91e10871a1e409a0388a4883361aea
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 95
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:63654b140aeb76d49008325138c6a6e5d84768229e86a219d57e7f2e052e4299
+  case: return_value_95

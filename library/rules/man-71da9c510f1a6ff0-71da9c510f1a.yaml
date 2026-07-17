@@ -1,0 +1,38 @@
+# 合规检查：条件：Invalid shmid value, unaligned (i.e., not page-aligned and SHM_RND was not specified) or invalid shmaddr value, or can't attach segment at shmaddr , or...；检查：调用 shmat(shmid, shmaddr, shmflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_71DA9C510F1A6FF0--71da9c510f1a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: shmid
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid shmid value, unaligned (i.e., not page-aligned and SHM_RND was not specified) or
+      invalid shmaddr value, or can't attach segment at shmaddr , or...
+  action:
+    operation: invoke_syscall
+    syscall: shmat
+    arguments:
+    - shmid
+    - shmaddr
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:71da9c510f1a6ff031fadb989161f2eeda82b2f93cb8fcca2b44a154d1a35860
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32297f3c87a755f75aa8d9a7b3aad36e478701deb8b551f2e501e5636c428a54
+  case: errors_einval_164

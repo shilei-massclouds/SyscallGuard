@@ -1,0 +1,37 @@
+# 合规检查：条件：The caller attempted to set a lower nice value (i.e., a higher process priority), but did not have the required privilege (on Linux: did not have the...；检查：调用 getpriority(which, who)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C1EE9766212D328D--c1ee9766212d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: 'The caller attempted to set a lower nice value (i.e., a higher process priority), but did
+      not have the required privilege (on Linux: did not have the...'
+  action:
+    operation: invoke_syscall
+    syscall: getpriority
+    arguments:
+    - which
+    - who
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:c1ee9766212d328dc2924fd5f64869e0781c05864e49546031964a41f19fafe4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getpriority
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4863228a4ac5dc14fda329dc1f40894afd6deaf3d377390f3a093ffadc1ccf3f
+  case: errors_eacces_109

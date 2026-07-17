@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:eac069bc9aa5223b0bd7c8b751f63d7aa33bdb418d239ba0dd82be980f37dd97
   case: eventfd01_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/eventfd/eventfd01.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:eac069bc9aa5223b0bd7c8b751f63d7aa33bdb418d239ba0dd82be980f37dd97
+  case: eventfd01_28_raw_0

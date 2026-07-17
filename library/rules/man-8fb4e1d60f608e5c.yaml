@@ -1,0 +1,45 @@
+# 合规检查：条件：path refers to a file on a read-only filesystem；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8FB4E1D60F608E5C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EROFS
+    summary: path refers to a file on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:8fb4e1d60f608e5cd708d9e6e2beda44511021447e484361648239a859065c9e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 204
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1af8623ac8874a80ca442beb22c167c617353c76a1fee4d85336815acbc19dd5
+  case: errors_erofs_204
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 204
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1af8623ac8874a80ca442beb22c167c617353c76a1fee4d85336815acbc19dd5
+  case: errors_erofs_204

@@ -1,0 +1,44 @@
+# 合规检查：条件：Another socket is already listening on the same port；检查：调用 listen(sockfd, backlog)；预期：返回 -1，errno 为 EADDRINUSE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D6FA62852543E52E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EADDRINUSE
+    summary: Another socket is already listening on the same port
+  action:
+    operation: invoke_syscall
+    syscall: listen
+    arguments:
+    - sockfd
+    - backlog
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRINUSE
+  errno:
+  - EADDRINUSE
+semantic_hash: sha256:d6fa62852543e52e90475d257162187a3e6c5774bec41d41bb214c5daf2add90
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 51
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5c2171133269d0146bf3fc1ad9fd8219f657613593f45d28bb6e13d3c3839847
+  case: errors_eaddrinuse_51
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 51
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5c2171133269d0146bf3fc1ad9fd8219f657613593f45d28bb6e13d3c3839847
+  case: errors_eaddrinuse_51

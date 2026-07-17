@@ -1,0 +1,37 @@
+# 合规检查：条件：Bad memory address. hdrp must not be NULL. datap may be NULL only when the user is trying to determine the preferred capability version format supported by...；检查：调用 capget(hdrp, datap)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_980D102A668B4ABA--980d102a668b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: hdrp
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Bad memory address. hdrp must not be NULL. datap may be NULL only when the user is trying
+      to determine the preferred capability version format supported by...
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:980d102a668b4aba3c76f49256f347ada236b0f0fbe1aaaf99ecdd6bfc9ba620
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c896e69084551d4e95f391411382d9ad43b41230819aa1d1184168a2e49c5269
+  case: errors_efault_192

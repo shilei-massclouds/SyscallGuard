@@ -1,0 +1,45 @@
+# 合规检查：条件：The call would change the caller's real UID (i.e., ruid does not match the caller's real UID), but there was a temporary failure allocating the necessary...；检查：调用 setreuid(ruid, euid)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3C065C38444E3DD3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: ruid
+    predicate: insufficient_permission
+    value: EAGAIN
+    summary: The call would change the caller's real UID (i.e., ruid does not match the caller's real
+      UID), but there was a temporary failure allocating the necessary...
+  action:
+    operation: invoke_syscall
+    syscall: setreuid
+    arguments:
+    - ruid
+    - euid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:5ee374b914723293cc6da14d9135b9fcc814c7d0ff1fb9cb19619c0c97e04b6d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2115452e510f49eb766e44128228a316972cd91f1a0ec8f85b576c5219acafc6
+  case: errors_eagain_70
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setreuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2115452e510f49eb766e44128228a316972cd91f1a0ec8f85b576c5219acafc6
+  case: errors_eagain_70

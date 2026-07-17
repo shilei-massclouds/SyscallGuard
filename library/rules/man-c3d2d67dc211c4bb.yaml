@@ -1,0 +1,45 @@
+# 合规检查：条件：new_root or put_old is on the current root mount. (This error covers the pathological case where new_root is / .)；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C3D2D67DC211C4BB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: new_root
+    predicate: documented_path_condition
+    value: EBUSY
+    summary: new_root or put_old is on the current root mount. (This error covers the pathological case
+      where new_root is / .)
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:c3d2d67dc211c4bb4b146d688f9abc119a0b81345ef46dde3bf5752e6c25927f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bdfe882373ef26a997e9025a97d8b93a9288ec6eecd5dad94075f67e5c3bcfe4
+  case: errors_ebusy_105
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bdfe882373ef26a997e9025a97d8b93a9288ec6eecd5dad94075f67e5c3bcfe4
+  case: errors_ebusy_105

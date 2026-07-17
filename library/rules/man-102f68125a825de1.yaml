@@ -1,0 +1,48 @@
+# 合规检查：条件：Another Fast Open is in progress；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EALREADY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_102F68125A825DE1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EALREADY
+    summary: Another Fast Open is in progress
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EALREADY
+  errno:
+  - EALREADY
+semantic_hash: sha256:97b22710281bf0d77620f290dafadf19cad68b4c3655752944edd1dce55c7ab4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 372
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e22042f7f97e130810173d2cf87c8554bdd21ed986316719bf8c6b7d1102197
+  case: errors_ealready_372
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 372
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e22042f7f97e130810173d2cf87c8554bdd21ed986316719bf8c6b7d1102197
+  case: errors_ealready_372

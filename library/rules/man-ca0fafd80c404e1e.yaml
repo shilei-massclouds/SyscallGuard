@@ -1,0 +1,46 @@
+# 合规检查：条件：An attempt was made to set an invalid option；检查：调用 ptrace(op, pid, addr, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CA0FAFD80C404E1E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An attempt was made to set an invalid option
+  action:
+    operation: invoke_syscall
+    syscall: ptrace
+    arguments:
+    - op
+    - pid
+    - addr
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ca0fafd80c404e1eaa450c8067058d1e1e241d9448b35401e7476495096bc00b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2443
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54872e5d9817fc357de6dc442d75cf929ca8de070206529b74c881dc4f764efc
+  case: errors_einval_2443
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ptrace
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2443
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54872e5d9817fc357de6dc442d75cf929ca8de070206529b74c881dc4f764efc
+  case: errors_einval_2443

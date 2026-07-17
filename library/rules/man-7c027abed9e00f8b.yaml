@@ -1,0 +1,45 @@
+# 合规检查：条件：The value in the aio_reqprio field is invalid；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C027ABED9E00F8B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value in the aio_reqprio field is invalid
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7c027abed9e00f8be4c52f752cdce876dcb4a47fe0a66287fcd262d3d8eba4aa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 289
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e78383f15ca8ad8b7ff6910070ff15941b6cea45b33cfdaf7a9c44a564e8e4c
+  case: errors_einval_289
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 289
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e78383f15ca8ad8b7ff6910070ff15941b6cea45b33cfdaf7a9c44a564e8e4c
+  case: errors_einval_289

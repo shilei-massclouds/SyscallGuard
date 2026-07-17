@@ -1,0 +1,43 @@
+# 合规检查：条件：CLONE_THREAD , CLONE_SIGHAND , or CLONE_VM was specified in flags , and the caller is multithreaded；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_301D9E6109729551
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_THREAD , CLONE_SIGHAND , or CLONE_VM was specified in flags , and the caller is multithreaded
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:301d9e6109729551bc4d1c91ea33a80e3f3dcb311ef9ab7ae0eaa99b1e543d42
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 299
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d502771f894c67988b515cddee95777d96794a33e1a1f0bac90c641df42e8e5
+  case: errors_einval_299
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 299
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d502771f894c67988b515cddee95777d96794a33e1a1f0bac90c641df42e8e5
+  case: errors_einval_299

@@ -1,0 +1,39 @@
+# 合规检查：条件：Another crash kernel is already being loaded or a crash kernel is already in use；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5DA5389EECD6E4CF--5da5389eecd6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: Another crash kernel is already being loaded or a crash kernel is already in use
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:5da5389eecd6e4cfcbd396784f4364ea6618067c5825c42b123e1ae0e0b131a0
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 262
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c17e3c710fc74d559170407591cde8132ee5aede21342e10f784b08d1458aab0
+  case: errors_ebusy_262

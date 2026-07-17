@@ -1,0 +1,44 @@
+# 合规检查：条件：A process with process ID pid exists, but it is not in the same session as the calling process, and the implementation considers this an error；检查：调用 getsid(pid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E7C8A6A2E17934DA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: pid
+    predicate: documented_state_condition
+    value: EPERM
+    summary: A process with process ID pid exists, but it is not in the same session as the calling process,
+      and the implementation considers this an error
+  action:
+    operation: invoke_syscall
+    syscall: getsid
+    arguments:
+    - pid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e7c8a6a2e17934dac50c52ac7313f2837c67d9e903eb6bb798fea6ef3bfc44d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsid.2
+  line: 48
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ad2c15790f19bad422afd06f7c2f2e1ed222826cf929da4900ed8bd808d4aab
+  case: errors_eperm_48
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsid.2
+  line: 48
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ad2c15790f19bad422afd06f7c2f2e1ed222826cf929da4900ed8bd808d4aab
+  case: errors_eperm_48

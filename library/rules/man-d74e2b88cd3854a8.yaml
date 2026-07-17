@@ -1,0 +1,46 @@
+# 合规检查：条件：path is too long；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D74E2B88CD3854A8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:913f62c40dc8776a4eead49312c565c2aca284399f07d38c14b7860c13786b25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 251
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f199737bbfb8d06a2849db33641aedb6d953576e0ee15b7f58faac0a0d0f44fe
+  case: errors_enametoolong_251
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 251
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f199737bbfb8d06a2849db33641aedb6d953576e0ee15b7f58faac0a0d0f44fe
+  case: errors_enametoolong_251

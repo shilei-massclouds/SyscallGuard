@@ -1,0 +1,46 @@
+# 合规检查：条件：The message text length is greater than msgsz and MSG_NOERROR isn't specified in msgflg；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_41C9898038029FC7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgsz
+    predicate: documented_condition
+    value: E2BIG
+    summary: The message text length is greater than msgsz and MSG_NOERROR isn't specified in msgflg
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:6a9c3fa1bb5d61ccbff76fab33f1c04cb677294a98886814153f7baea4511c20
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 368
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe40afd0f50eb4fe7c2954b40d61e013c918a5d20ec0fd7c227a4757e9d984e0
+  case: errors_e2big_368
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 368
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe40afd0f50eb4fe7c2954b40d61e013c918a5d20ec0fd7c227a4757e9d984e0
+  case: errors_e2big_368

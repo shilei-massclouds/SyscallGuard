@@ -1,0 +1,45 @@
+# 合规检查：条件：The caller was not privileged (did not have the CAP_SYS_MODULE capability), or module unloading is disabled (see /proc/sys/kernel/modules_disabled in proc (5))；检查：调用 delete_module(name, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E420BC3DD1FDF5D1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller was not privileged (did not have the CAP_SYS_MODULE capability), or module unloading
+      is disabled (see /proc/sys/kernel/modules_disabled in proc (5))
+  action:
+    operation: invoke_syscall
+    syscall: delete_module
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e420bc3dd1fdf5d1551e984b1232e81ef668a7b06209a8bad76c9ebbd8b5e182
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38e4d6f48edf878aa90c29bf91e55a3bb67417cc54a60127438c00123482bbe2
+  case: errors_eperm_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: delete_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38e4d6f48edf878aa90c29bf91e55a3bb67417cc54a60127438c00123482bbe2
+  case: errors_eperm_141

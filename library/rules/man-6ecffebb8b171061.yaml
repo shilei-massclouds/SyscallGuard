@@ -1,0 +1,46 @@
+# 合规检查：条件：cstat or cstat_range point to an invalid address；检查：调用 cachestat(fd, cstat_range, cstat, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6ECFFEBB8B171061
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: cstat_range
+    predicate: invalid_value
+    value: EFAULT
+    summary: cstat or cstat_range point to an invalid address
+  action:
+    operation: invoke_syscall
+    syscall: cachestat
+    arguments:
+    - fd
+    - cstat_range
+    - cstat
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:6ecffebb8b1710617f5adcc6f725deaa5f4a1415f5f5f90f0e9cabddaca314db
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/cachestat.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1193ff80770bd307c468921d9fa346c3817ebcc6c577c2cbba52f585032809
+  case: errors_efault_85
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: cachestat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/cachestat.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1193ff80770bd307c468921d9fa346c3817ebcc6c577c2cbba52f585032809
+  case: errors_efault_85

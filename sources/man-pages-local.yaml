@@ -1,0 +1,6 @@
+source_id: man-pages-local
+adapter: man_pages
+location: /home/cloud/gitLinux/man-pages
+linux_location: /home/cloud/gitStudy/linux-6.12.37
+arch: riscv64
+default_count: all

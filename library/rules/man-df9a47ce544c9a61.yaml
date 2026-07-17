@@ -1,0 +1,46 @@
+# 合规检查：条件：Search permission is denied for one of the directories in the path prefix of path . (See also path_resolution (7).)；检查：调用 fspick(dirfd, path, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DF9A47CE544C9A61
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for one of the directories in the path prefix of path . (See
+      also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: fspick
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:df9a47ce544c9a6175babc185ee90f4d3b2e9ed2fd337f67936725f748a15dc8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df375042e2053c1514f6ecfcb1752e26866ddf484e293b577d46b982a8fa244e
+  case: errors_eacces_220
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fspick
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df375042e2053c1514f6ecfcb1752e26866ddf484e293b577d46b982a8fa244e
+  case: errors_eacces_220

@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 dup3(oldfd, newfd, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_18D7BFF5ED1AAF47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:4454bd97dc6161682e2a880a54bc0337601e7403abb23f9c67f17a712a06bc4e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 137
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:24a18a67617f80274b03690ccf7d3fe6bcd35c41d69bcfe8d084de086ee40e21
+  case: return_value_137
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 137
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:24a18a67617f80274b03690ccf7d3fe6bcd35c41d69bcfe8d084de086ee40e21
+  case: return_value_137

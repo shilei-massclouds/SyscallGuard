@@ -1,0 +1,44 @@
+# 合规检查：条件：Insufficient memory；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2630118F3E221335
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient memory
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:2630118f3e2213350963010a714ba858b2ebfc9c3d50efa20994a3faaa51730c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4136936ce632001deb06dd0275f7d7c5691a16e07b0ae63188cc7a6ba41aeeac
+  case: errors_enomem_243
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4136936ce632001deb06dd0275f7d7c5691a16e07b0ae63188cc7a6ba41aeeac
+  case: errors_enomem_243

@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:d094b4e335227178d9e13050ecba3396b1a9a0cdccad9f2a7396d98613de5ff7
   case: wait01_17_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/wait/wait01.c
+  line: 17
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:d094b4e335227178d9e13050ecba3396b1a9a0cdccad9f2a7396d98613de5ff7
+  case: wait01_17_raw_0

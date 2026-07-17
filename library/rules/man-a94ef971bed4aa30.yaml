@@ -1,0 +1,44 @@
+# 合规检查：条件：Either ss or old_ss is not NULL and points to an area outside of the process's address space；检查：调用 sigaltstack(ss, old_ss)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A94EF971BED4AA30
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: ss
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Either ss or old_ss is not NULL and points to an area outside of the process's address space
+  action:
+    operation: invoke_syscall
+    syscall: sigaltstack
+    arguments:
+    - ss
+    - old_ss
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:a94ef971bed4aa306d22cfdfc98f359a039d1e1ae5f55c84be3f13d8be4e04a6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5ba306dd367d3f88076a27d9695122c1752ee730d7f08bd94432187a98ff2af6
+  case: errors_efault_202
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sigaltstack
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5ba306dd367d3f88076a27d9695122c1752ee730d7f08bd94432187a98ff2af6
+  case: errors_efault_202

@@ -1,0 +1,47 @@
+# 合规检查：条件：Returned when the event involves a feature not supported by the current CPU；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E0617C1CEDD245DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: cpu
+    predicate: documented_condition
+    value: ENODEV
+    summary: Returned when the event involves a feature not supported by the current CPU
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:e0617c1cedd245df02ce538c5625580470839ee88fe5f1af7060d0305daeb0b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3838
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:623bb74bd5e6003381d43abe4ed23509b97a44cb91852b2d7f16a3058196745f
+  case: errors_enodev_3838
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3838
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:623bb74bd5e6003381d43abe4ed23509b97a44cb91852b2d7f16a3058196745f
+  case: errors_enodev_3838

@@ -1,0 +1,46 @@
+# 合规检查：条件：The socket is nonblocking and the connection cannot be completed immediately. (UNIX domain sockets failed with EAGAIN instead.) It is possible to select (2)...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EINPROGRESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CD32ED6371DC7BD8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINPROGRESS
+    summary: The socket is nonblocking and the connection cannot be completed immediately. (UNIX domain
+      sockets failed with EAGAIN instead.) It is possible to select (2)...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINPROGRESS
+  errno:
+  - EINPROGRESS
+semantic_hash: sha256:cd32ed6371dc7bd8c181e89b315636cd22d2e00c31bcf43f4aebdb2309ac50a3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d0cb27e90c8ba0e30380a19f153ccc4769b0df10106be797bb72bc4b67f303b
+  case: errors_einprogress_155
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d0cb27e90c8ba0e30380a19f153ccc4769b0df10106be797bb72bc4b67f303b
+  case: errors_einprogress_155

@@ -1,0 +1,46 @@
+# 合规检查：条件：An invalid event type was specified along with EPOLLEXCLUSIVE in events；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1D94CC28DA4FE0E2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: event
+    predicate: documented_condition
+    value: EINVAL
+    summary: An invalid event type was specified along with EPOLLEXCLUSIVE in events
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1d94cc28da4fe0e2522d91cca4e31ed64c24d2ea7a32c4a9dc0a7128ba2be7a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 298
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:495f0b1fe02d83dca8e5c86b2a0f76ca8c24457d767e873e4fd9496fd3c81dcf
+  case: errors_einval_298
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 298
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:495f0b1fe02d83dca8e5c86b2a0f76ca8c24457d767e873e4fd9496fd3c81dcf
+  case: errors_einval_298

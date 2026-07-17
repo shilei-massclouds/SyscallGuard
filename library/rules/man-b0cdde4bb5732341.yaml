@@ -1,0 +1,46 @@
+# 合规检查：条件：The user does not have permission to access the shared memory segment, and does not have the CAP_IPC_OWNER capability in the user namespace that governs its...；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B0CDDE4BB5732341
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The user does not have permission to access the shared memory segment, and does not have
+      the CAP_IPC_OWNER capability in the user namespace that governs its...
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:b0cdde4bb5732341d084fc7b056c4e9ca2e1cdedd1e6ccdb85e110145851fab2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 194
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c21c5531530462022687800fc388d2fdac168e45e1152c8435c8162f9972ccc
+  case: errors_eacces_194
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 194
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c21c5531530462022687800fc388d2fdac168e45e1152c8435c8162f9972ccc
+  case: errors_eacces_194

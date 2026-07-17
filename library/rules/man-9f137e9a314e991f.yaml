@@ -1,0 +1,48 @@
+# 合规检查：条件：liovcnt or riovcnt is too large；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9F137E9A314E991F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: liovcnt
+    predicate: documented_condition
+    value: EINVAL
+    summary: liovcnt or riovcnt is too large
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a7900736987c926934ec660c52ab547bed18029a0b70fc8e86fcc57ebe730132
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed87a2a49b0a797b205189239c33a11a879b6e69fa2e795e2a79da0778e67d74
+  case: errors_einval_238
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed87a2a49b0a797b205189239c33a11a879b6e69fa2e795e2a79da0778e67d74
+  case: errors_einval_238

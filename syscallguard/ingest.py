@@ -9,7 +9,7 @@ from typing import Any, Iterable
 
 import yaml
 
-from .adapters.ltp import LtpAdapter
+from .adapters import LtpAdapter, ManPagesAdapter
 from .common import (
     SCHEMA_VERSION,
     SyscallGuardError,
@@ -109,25 +109,45 @@ def resolve_syscalls(value: str | None) -> list[str] | None:
 
 def require_descriptor(
     path: Path, root: Path
-) -> tuple[dict[str, Any], Path, str, LtpAdapter]:
+) -> tuple[dict[str, Any], Path, str, Any]:
     descriptor = load_mapping(path)
     source_id = descriptor.get("source_id")
     if not isinstance(source_id, str) or not source_id:
         raise SyscallGuardError(f"source descriptor must define source_id: {path}")
     adapter_name = descriptor.get("adapter")
-    if adapter_name != "ltp":
-        raise SyscallGuardError(f"unsupported source adapter: {adapter_name!r}")
     location_value = descriptor.get("location")
     if not isinstance(location_value, str) or not location_value:
         raise SyscallGuardError(f"source descriptor must define location: {path}")
     location = Path(location_value).expanduser().resolve()
     if not location.is_dir():
         raise SyscallGuardError(f"source location does not exist: {location}")
-    snapshot_hash = repository_snapshot_hash(location)
-    rules_path = root / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
-    if not rules_path.is_file():
-        rules_path = repo_root() / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
-    return descriptor, location, snapshot_hash, LtpAdapter(location, rules_path)
+    if adapter_name == "ltp":
+        snapshot_hash = repository_snapshot_hash(location)
+        rules_path = root / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
+        if not rules_path.is_file():
+            rules_path = (
+                repo_root() / "sources" / "adapters" / "ltp" / "recognition-rules.yaml"
+            )
+        adapter: Any = LtpAdapter(location, rules_path)
+    elif adapter_name == "man_pages":
+        linux_value = descriptor.get("linux_location")
+        if not isinstance(linux_value, str) or not linux_value:
+            raise SyscallGuardError(
+                f"man_pages source descriptor must define linux_location: {path}"
+            )
+        linux_location = Path(linux_value).expanduser().resolve()
+        if not linux_location.is_dir():
+            raise SyscallGuardError(
+                f"Linux ABI source location does not exist: {linux_location}"
+            )
+        arch = descriptor.get("arch", "riscv64")
+        if not isinstance(arch, str) or not arch:
+            raise SyscallGuardError(f"man_pages source descriptor has invalid arch: {path}")
+        adapter = ManPagesAdapter(location, linux_location, arch)
+        snapshot_hash = adapter.snapshot_hash
+    else:
+        raise SyscallGuardError(f"unsupported source adapter: {adapter_name!r}")
+    return descriptor, location, snapshot_hash, adapter
 
 
 def _report_source_id(report: dict[str, Any]) -> str | None:
@@ -267,9 +287,12 @@ def _rule_files(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
     return result
 
 
-def _source_identity(source: dict[str, Any]) -> tuple[str, str, int, str, str]:
+def _source_identity(
+    source: dict[str, Any]
+) -> tuple[str, str, str, int, str, str]:
     return (
         str(source.get("source_id", "")),
+        str(source.get("syscall", "")),
         str(source.get("file", "")),
         int(source.get("line", 0) or 0),
         str(source.get("recognizer_id", "")),
@@ -286,6 +309,7 @@ def _provenance(
     return {
         "source_id": descriptor["source_id"],
         "source_type": descriptor["adapter"],
+        "syscall": normalized.get("syscall"),
         "source_snapshot_hash": source_snapshot_hash,
         "file": source.get("file"),
         "line": source.get("line"),
@@ -377,10 +401,11 @@ def _merge_rules(
                         or _source_identity(row) != identity
                     ]
                     staged[prior_rule_id] = (prior_path, detached, "sources_updated")
+                prefix = "MAN_" if descriptor.get("adapter") == "man_pages" else "LTP_"
                 preferred = (
                     str(explicit)
                     if isinstance(explicit, str) and explicit
-                    else "LTP_" + semantic_hash.split(":", 1)[1][:16].upper()
+                    else prefix + semantic_hash.split(":", 1)[1][:16].upper()
                 )
                 rule_id = preferred
                 if (
@@ -461,7 +486,12 @@ def _condition_text(semantics: dict[str, Any]) -> str:
         "INVALID_FD": "文件描述符无效",
     }
     if preconditions:
-        return "、".join(names.get(str(item), str(item)) for item in preconditions)
+        return "、".join(
+            str(item.get("summary"))
+            if isinstance(item, dict) and item.get("summary")
+            else names.get(str(item), str(item))
+            for item in preconditions
+        )
     arguments = semantics.get("action", {}).get("arguments", [])
     if "fd_closed" in arguments:
         return "文件描述符已经关闭"
@@ -683,6 +713,10 @@ def run_ingest(
     syscalls: str | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
+    existing_index_path = root / "library/syscalls.yaml"
+    existing_index = (
+        load_mapping(existing_index_path) if existing_index_path.is_file() else {}
+    )
     if count is not None and syscalls is not None:
         raise SyscallGuardError("count and syscalls are mutually exclusive")
     requested_syscalls = resolve_syscalls(syscalls)
@@ -761,15 +795,24 @@ def run_ingest(
                 and row.get("evidence_hash") not in normalized_hashes
             )
         ]
+        adapter_reason = result.get("reason")
         if unresolved:
             outcome = "no_rules"
             reason = "unresolved_evidence"
         elif not normalized:
             outcome = "no_rules"
-            reason = "no_evidence" if not raw else "zero_rules"
+            reason = (
+                str(adapter_reason)
+                if isinstance(adapter_reason, str) and adapter_reason
+                else "no_evidence" if not raw else "zero_rules"
+            )
         else:
             outcome = "formed_rules"
-            reason = "all_evidence_resolved"
+            reason = (
+                str(adapter_reason)
+                if isinstance(adapter_reason, str) and adapter_reason
+                else "all_evidence_resolved"
+            )
             publishable_rows.extend(row for row in normalized if isinstance(row, dict))
         extracted[syscall] = {
             "item": item,
@@ -810,6 +853,11 @@ def run_ingest(
                 "evidence_count": len(result["raw"]),
                 "unresolved_evidence_count": result["unresolved_count"],
                 "reason": result["reason"],
+                **(
+                    {"documentation_status": result["item"]["documentation_status"]}
+                    if isinstance(result["item"].get("documentation_status"), str)
+                    else {}
+                ),
             }
         )
 
@@ -869,6 +917,61 @@ def run_ingest(
             for syscall, rule_map in sorted(syscall_rules.items())
         },
     }
+    old_active: dict[str, set[str]] = {}
+    for syscall, rule_rows in existing_index.get("syscalls", {}).items():
+        if not isinstance(syscall, str) or not isinstance(rule_rows, list):
+            continue
+        old_active[syscall] = {
+            str(row.get("rule_id"))
+            for row in rule_rows
+            if isinstance(row, dict) and isinstance(row.get("rule_id"), str)
+        }
+    new_active = {
+        syscall: set(rule_map)
+        for syscall, rule_map in syscall_rules.items()
+    }
+    inactive_by_rule: dict[str, dict[str, Any]] = {}
+    prior_inactive = existing_index.get("inactive_rules", [])
+    if isinstance(prior_inactive, list):
+        for row in prior_inactive:
+            if not isinstance(row, dict) or not isinstance(row.get("rule_id"), str):
+                continue
+            inactive_by_rule[row["rule_id"]] = dict(row)
+    for syscall, old_ids in old_active.items():
+        for rule_id in sorted(old_ids - new_active.get(syscall, set())):
+            row = inactive_by_rule.setdefault(
+                rule_id,
+                {
+                    "rule_id": rule_id,
+                    "path": f"library/rules/{slug(rule_id)}.yaml",
+                    "original_syscalls": [],
+                    "reason": "source_no_longer_forms_rule",
+                },
+            )
+            owners = row.get("original_syscalls", [])
+            owners = list(owners) if isinstance(owners, list) else []
+            if syscall not in owners:
+                owners.append(syscall)
+            row["original_syscalls"] = sorted(set(str(item) for item in owners))
+            replacements = sorted(new_active.get(syscall, set()))
+            if replacements:
+                row["reason"] = "semantic_replaced"
+                row["replacement_rule_ids"] = replacements
+    active_ids = {rule_id for ids in new_active.values() for rule_id in ids}
+    for rule_id in list(inactive_by_rule):
+        row = inactive_by_rule[rule_id]
+        old_owners = set(row.get("original_syscalls", []))
+        currently_owned = {
+            syscall for syscall, ids in new_active.items() if rule_id in ids
+        }
+        remaining = sorted(old_owners - currently_owned)
+        if not remaining and rule_id in active_ids:
+            del inactive_by_rule[rule_id]
+        else:
+            row["original_syscalls"] = remaining or sorted(old_owners)
+    syscall_index["inactive_rules"] = [
+        inactive_by_rule[key] for key in sorted(inactive_by_rule)
+    ]
     index_path = root / "library" / "syscalls.yaml"
     updates.append((index_path, syscall_index))
     try:

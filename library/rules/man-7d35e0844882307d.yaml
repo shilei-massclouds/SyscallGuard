@@ -1,0 +1,47 @@
+# 合规检查：条件：The filesystem containing oldpath and newpath does not support the creation of hard links；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D35E0844882307D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EPERM
+    summary: The filesystem containing oldpath and newpath does not support the creation of hard links
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:7d35e0844882307d0b51dc69743309112bbc5c21469228bb6b0769a80ad182d0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 233
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2706fde4cb9e8c46a24041dcda4d6712c2be1af6c54e215feaec593d494ccb3
+  case: errors_eperm_233
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 233
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2706fde4cb9e8c46a24041dcda4d6712c2be1af6c54e215feaec593d494ccb3
+  case: errors_eperm_233

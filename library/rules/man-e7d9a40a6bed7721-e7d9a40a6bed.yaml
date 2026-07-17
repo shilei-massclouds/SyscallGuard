@@ -1,0 +1,36 @@
+# 合规检查：条件：The operation was prevented by a file seal; see fcntl (2)；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E7D9A40A6BED7721--e7d9a40a6bed
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The operation was prevented by a file seal; see fcntl (2)
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e7d9a40a6bed77218a65fa6a2bad8588513f1fa161979d9927dc80b1487cc53f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f78edaca14beac5d3702903623f4c1679e3c5782e8fbc99faad89327026c9860
+  case: errors_eperm_143

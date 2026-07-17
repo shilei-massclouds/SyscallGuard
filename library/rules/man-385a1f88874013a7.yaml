@@ -1,0 +1,44 @@
+# 合规检查：条件：or EINVAL fd is not open for writing；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_385A1F88874013A7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: or EINVAL fd is not open for writing
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b92ac65ceca7e80439a7fc965ecfec728c33aa42b7b1c9c2b5f299b2094ead79
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cfe068df3e8138ed3522a4f09a6fe9437a6afc115a677ea09ed4957adc277e4a
+  case: errors_ebadf_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cfe068df3e8138ed3522a4f09a6fe9437a6afc115a677ea09ed4957adc277e4a
+  case: errors_ebadf_165

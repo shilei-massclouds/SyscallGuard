@@ -1,0 +1,46 @@
+# 合规检查：条件：A component of the path prefix is not a directory；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2BCAD8270951AF76
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:60291eca2690d9b896e61c0ffaed96a1da4e09e19da7d1048b7f4922a68c1c4d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 289
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:904576a80b41b6aa3371c6bbb729be68a9da380363fa05290f1c7b9dad9ba261
+  case: errors_enotdir_289
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 289
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:904576a80b41b6aa3371c6bbb729be68a9da380363fa05290f1c7b9dad9ba261
+  case: errors_enotdir_289

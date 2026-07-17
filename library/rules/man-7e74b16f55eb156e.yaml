@@ -1,0 +1,45 @@
+# 合规检查：条件：The addr argument points to memory not in a valid part of the process address space；检查：调用 getsockname(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7E74B16F55EB156E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: addr
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The addr argument points to memory not in a valid part of the process address space
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7e74b16f55eb156ebbd6770cf28908594b0518d8bce1fe842250ceb46fb9edb1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 47
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6f3c3eb296979278a725ffcd5e0a2a6786360020b84353f529a51989d88bf354
+  case: errors_efault_47
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 47
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6f3c3eb296979278a725ffcd5e0a2a6786360020b84353f529a51989d88bf354
+  case: errors_efault_47

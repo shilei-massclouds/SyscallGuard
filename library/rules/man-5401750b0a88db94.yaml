@@ -1,0 +1,47 @@
+# 合规检查：条件：While blocked waiting to complete an open of a slow device (e.g., a FIFO; see fifo (7)), the call was interrupted by a signal handler; see signal (7)；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5401750B0A88DB94
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While blocked waiting to complete an open of a slow device (e.g., a FIFO; see fifo (7)),
+      the call was interrupted by a signal handler; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:5401750b0a88db9411bb99d326d16e3292aeb0d291a4fea3c125a14e7029db25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1047
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6168451f4911dca7f145306a97139fa1cfc8b045a183c9f78038dbd1eb275487
+  case: errors_eintr_1047
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1047
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6168451f4911dca7f145306a97139fa1cfc8b045a183c9f78038dbd1eb275487
+  case: errors_eintr_1047

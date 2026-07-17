@@ -1,0 +1,47 @@
+# 合规检查：条件：Too many symbolic links encountered when resolving one of from_path or to_path；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F5BC4836CD9E73F2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: from_path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links encountered when resolving one of from_path or to_path
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:f5bc4836cd9e73f26df89051c7076f5755ad74c360d494178b6b3b2b58d08b47
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 459
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cbb1d865691fc1bcf15f617eac0b4e2f60f3e4083746df0091cb5caf9b2aba8f
+  case: errors_eloop_459
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 459
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cbb1d865691fc1bcf15f617eac0b4e2f60f3e4083746df0091cb5caf9b2aba8f
+  case: errors_eloop_459

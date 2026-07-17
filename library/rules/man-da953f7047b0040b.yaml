@@ -1,0 +1,46 @@
+# 合规检查：条件：A nonexistent interface was requested or the requested address was not local. The following errors are specific to UNIX domain ( AF_UNIX ) sockets:；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EADDRNOTAVAIL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA953F7047B0040B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EADDRNOTAVAIL
+    summary: 'A nonexistent interface was requested or the requested address was not local. The following
+      errors are specific to UNIX domain ( AF_UNIX ) sockets:'
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRNOTAVAIL
+  errno:
+  - EADDRNOTAVAIL
+semantic_hash: sha256:da953f7047b0040babd1fbc80e21bad9d0d1e03dcd1a33e3748ea2f04425597f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54153efd9c3236984e5361c85fda548e0b35c1375623d6563064378b63e24fbf
+  case: errors_eaddrnotavail_143
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54153efd9c3236984e5361c85fda548e0b35c1375623d6563064378b63e24fbf
+  case: errors_eaddrnotavail_143

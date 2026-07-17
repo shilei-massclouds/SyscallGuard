@@ -1,0 +1,46 @@
+# 合规检查：条件：flags specifies an invalid bit; or offset or nbytes is invalid；检查：调用 sync_file_range(fd, offset, nbytes, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EDC99BF259AB196D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: offset
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags specifies an invalid bit; or offset or nbytes is invalid
+  action:
+    operation: invoke_syscall
+    syscall: sync_file_range
+    arguments:
+    - fd
+    - offset
+    - nbytes
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:edc99bf259ab196d2bdbf8a58f94287ba4e5670a17749d1866bd1dcaca65d859
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50f4074de249f48b22d0c4f3c4f6f50f7640cc6b1263446e5b32bc6a33c78a78
+  case: errors_einval_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50f4074de249f48b22d0c4f3c4f6f50f7640cc6b1263446e5b32bc6a33c78a78
+  case: errors_einval_134

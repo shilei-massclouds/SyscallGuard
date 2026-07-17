@@ -1,0 +1,45 @@
+# 合规检查：条件：path points outside of the process's accessible address space；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EFBA9CA2760DA6B8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside of the process's accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:efba9ca2760da6b8da59e494c821bf6f038bb5c311b7214f2f4e492ffd37d106
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7a9705f7871835001264861b8e01e3d83f4f08036d8b010094b3467623dee5e8
+  case: errors_efault_84
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7a9705f7871835001264861b8e01e3d83f4f08036d8b010094b3467623dee5e8
+  case: errors_efault_84

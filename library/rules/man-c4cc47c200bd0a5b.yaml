@@ -1,0 +1,48 @@
+# 合规检查：条件：One of the values of key , value , and/or aux were set to a non-zero value when cmd required that they be zero (or NULL)；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C4CC47C200BD0A5B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: cmd
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: One of the values of key , value , and/or aux were set to a non-zero value when cmd required
+      that they be zero (or NULL)
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c4cc47c200bd0a5bf8941b7e99a56b98b7d6b33979cd29f64e4c2ada1de15a96
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 429
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:047296e28914e1fc11b00521c72c89c813ce4e633e52883f8f5539e1a24f181d
+  case: errors_einval_429
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 429
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:047296e28914e1fc11b00521c72c89c813ce4e633e52883f8f5539e1a24f181d
+  case: errors_einval_429

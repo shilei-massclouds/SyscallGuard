@@ -1,0 +1,47 @@
+# 合规检查：条件：An invalid value was passed in flags or mask , or fanotify_fd was not an fanotify file descriptor；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B27964BE47C0BFAF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fanotify_fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: An invalid value was passed in flags or mask , or fanotify_fd was not an fanotify file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b27964be47c0bfaf8f027af99627ecf1029b462ab16afcf22bf09b18e57ba2d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 650
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:116eb7aefda653140d11e78e6c4ac2b88153ab53e57517eddffa40b33b1e0f1e
+  case: errors_einval_650
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 650
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:116eb7aefda653140d11e78e6c4ac2b88153ab53e57517eddffa40b33b1e0f1e
+  case: errors_einval_650

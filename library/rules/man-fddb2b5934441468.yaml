@@ -1,0 +1,45 @@
+# 合规检查：条件：The per-process limit on the number of open file and message queue descriptors has been reached (see the description of RLIMIT_NOFILE in getrlimit (2))；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FDDB2B5934441468
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EMFILE
+    summary: The per-process limit on the number of open file and message queue descriptors has been reached
+      (see the description of RLIMIT_NOFILE in getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:fddb2b59344414688c16bbb499ac1f38f03b1d27f84a15e3d754def0a0e54aaf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:37c69740b819abdcd4126305983032a83de7b136c8a70fd407a7eda447542382
+  case: errors_emfile_213
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:37c69740b819abdcd4126305983032a83de7b136c8a70fd407a7eda447542382
+  case: errors_emfile_213

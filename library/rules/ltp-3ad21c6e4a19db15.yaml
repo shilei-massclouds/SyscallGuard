@@ -1,0 +1,33 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 ulimit(UL_GETFSIZE, -1)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3AD21C6E4A19DB15
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: ulimit
+    arguments:
+    - UL_GETFSIZE
+    - '-1'
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:3ad21c6e4a19db154e7b70d9c4f31cd477c5a278e6bb533c98e426116fa7d4f1
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ulimit/ulimit01.c
+  line: 20
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:a1b81f29839994c84b922cc68c113c2fc96b423906f4c85a571acd022e2202ba
+  case: ulimit01_20_raw_0

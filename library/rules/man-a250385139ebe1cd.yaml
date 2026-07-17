@@ -1,0 +1,47 @@
+# 合规检查：条件：The sum of the iov_len values of iovec overflows a ssize_t value；检查：调用 process_madvise(pidfd, n, n, advice, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A250385139EBE1CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The sum of the iov_len values of iovec overflows a ssize_t value
+  action:
+    operation: invoke_syscall
+    syscall: process_madvise
+    arguments:
+    - pidfd
+    - n
+    - n
+    - advice
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a250385139ebe1cdabc19704c395daf08544039eeb39c8d2ee8a2569871150f1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:552ede0bcbe84c0321fa08ff10d6a3cd8b949adc0ec0eb2efe6ba41d4fd065fa
+  case: errors_einval_153
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:552ede0bcbe84c0321fa08ff10d6a3cd8b949adc0ec0eb2efe6ba41d4fd065fa
+  case: errors_einval_153

@@ -1,0 +1,46 @@
+# 合规检查：条件：operation specified SECCOMP_SET_MODE_FILTER , but the filter program pointed to by args was not valid or the length of the filter program was zero or...；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_49C1DB44E2DAB242
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: operation
+    predicate: invalid_value
+    value: EINVAL
+    summary: operation specified SECCOMP_SET_MODE_FILTER , but the filter program pointed to by args was
+      not valid or the length of the filter program was zero or...
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:49c1db44e2dab2421c21dbfa8fa5b60be1fa2694d828a0a6a73ffba6a0c83026
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 854
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b02991bc462696c31b5eec2012d66e24aadda1fc9fbd7192f42da19adc08ccc9
+  case: errors_einval_854
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 854
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b02991bc462696c31b5eec2012d66e24aadda1fc9fbd7192f42da19adc08ccc9
+  case: errors_einval_854

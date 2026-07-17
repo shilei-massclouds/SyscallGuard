@@ -1,0 +1,46 @@
+# 合规检查：条件：IPC_SET or IPC_RMID is attempted, and the effective user ID of the calling process is not that of the creator (found in shm_perm.cuid ), or the owner (found...；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F83B0A4E5E26AC60
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: IPC_SET or IPC_RMID is attempted, and the effective user ID of the calling process is not
+      that of the creator (found in shm_perm.cuid ), or the owner (found...
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f83b0a4e5e26ac60621f38f964404895b91d3a4e0e3e76694fe353396b3af979
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ac2d4e71c9966e3f76290166ddd5a8bb6ae6b4fbf9df3dd3ccf7c4a9447f892d
+  case: errors_eperm_422
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ac2d4e71c9966e3f76290166ddd5a8bb6ae6b4fbf9df3dd3ccf7c4a9447f892d
+  case: errors_eperm_422

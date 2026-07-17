@@ -1,0 +1,38 @@
+# 合规检查：条件：Not enough free memory. This often means that the memory allocation is limited by the socket buffer limits, not by the system memory；检查：调用 accept(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C81F46F598B15888--c81f46f598b1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Not enough free memory. This often means that the memory allocation is limited by the socket
+      buffer limits, not by the system memory
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:c81f46f598b15888194eb9a21ec14a07b4a442edcfb47e07b968c9157a8ceae8
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:77ee3d002bb9a22a76e7ee4404751e3e2be5af56325a3a7c6511c879d01a5bdb
+  case: errors_enomem_222

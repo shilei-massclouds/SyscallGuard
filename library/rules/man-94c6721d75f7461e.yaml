@@ -1,0 +1,47 @@
+# 合规检查：条件：The calling process does not have read permission on the message queue, and does not have the CAP_IPC_OWNER capability in the user namespace that governs...；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_94C6721D75F7461E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The calling process does not have read permission on the message queue, and does not have
+      the CAP_IPC_OWNER capability in the user namespace that governs...
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:a7f6a8ffb8bb8d36facf1b0f5325f7e16b5f3ae6ef310de2709239461a3d2a48
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:08371a426485f7c5a12849393916ebe24cb402127f5e327852747dc9112bd18f
+  case: errors_eacces_376
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:08371a426485f7c5a12849393916ebe24cb402127f5e327852747dc9112bd18f
+  case: errors_eacces_376

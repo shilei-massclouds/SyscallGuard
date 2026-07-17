@@ -1,0 +1,38 @@
+# 合规检查：条件：special is not a block device；检查：调用 quotactl(op, special, id, addr)；预期：返回 -1，errno 为 ENOTBLK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A33EE6CC9BA82AC--2a33ee6cc9ba
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: special
+    predicate: documented_condition
+    value: ENOTBLK
+    summary: special is not a block device
+  action:
+    operation: invoke_syscall
+    syscall: quotactl
+    arguments:
+    - op
+    - special
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTBLK
+  errno:
+  - ENOTBLK
+semantic_hash: sha256:2a33ee6cc9ba82ace75f54e049dadece02116337903e64e01de62e80910d6f82
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:35dda6045b282092da728f46d5770019f2ae37eff9455c1ede2b61f294901dc8
+  case: errors_enotblk_178

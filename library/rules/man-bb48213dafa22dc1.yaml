@@ -1,0 +1,45 @@
+# 合规检查：条件：CLONE_NEWPID was specified in the flags mask, but the kernel was not configured with the CONFIG_PID_NS option；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BB48213DAFA22DC1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWPID was specified in the flags mask, but the kernel was not configured with the
+      CONFIG_PID_NS option
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bc345b85e8d51079be0a11edaf3647961fa28d3a47c069e605d936c5ec6aedd0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1358
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f38baa8b53d2dc6b3456c120143ab5246bff61e4916544bfd133a96f1bfd7159
+  case: errors_einval_1358
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1358
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f38baa8b53d2dc6b3456c120143ab5246bff61e4916544bfd133a96f1bfd7159
+  case: errors_einval_1358

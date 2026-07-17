@@ -1,0 +1,45 @@
+# 合规检查：条件：The process's maximum number of mappings would have been exceeded. This error can also occur for munmap (), when unmapping a region in the middle of an...；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_236FC0F4338CB201
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: The process's maximum number of mappings would have been exceeded. This error can also occur
+      for munmap (), when unmapping a region in the middle of an...
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:236fc0f4338cb201acf2daf2690d009be3a58241b7bf38394295122f6e0f9677
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 567
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b82dcd70690cc3f158caad6c781ddb50c5399268aec6b8384cad21c1be09fa07
+  case: errors_enomem_567
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 567
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b82dcd70690cc3f158caad6c781ddb50c5399268aec6b8384cad21c1be09fa07
+  case: errors_enomem_567

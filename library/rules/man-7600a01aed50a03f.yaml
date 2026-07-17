@@ -1,0 +1,47 @@
+# 合规检查：条件：The named file is a FIFO, but memory for the FIFO buffer can't be allocated because the per-user hard limit on memory allocation for pipes has been reached...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7600A01AED50A03F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The named file is a FIFO, but memory for the FIFO buffer can't be allocated because the per-user
+      hard limit on memory allocation for pipes has been reached...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:7600a01aed50a03fb222616a2f5b3e41f2cc20bf8b80b442d39d2d956e930a64
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65d658b6717ec9569a421120656c9daabf6bb7fcdedf93b3bcc5d8f3e4378805
+  case: errors_enomem_1185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65d658b6717ec9569a421120656c9daabf6bb7fcdedf93b3bcc5d8f3e4378805
+  case: errors_enomem_1185

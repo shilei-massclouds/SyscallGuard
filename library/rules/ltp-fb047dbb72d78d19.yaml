@@ -29,8 +29,24 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock03.c
+  line: 68
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:29286b7df289c106f73cf14786398261ccdf5b216819003761cc58984213cfcb
+  case: flock03_68_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/flock/flock06.c
   line: 28
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:fdddb18461cfa66f19393ff7e21be133dffbf69848534d7e399e5564552087cf
   case: flock06_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock06.c
+  line: 28
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fdddb18461cfa66f19393ff7e21be133dffbf69848534d7e399e5564552087cf
+  case: flock06_28_raw_0

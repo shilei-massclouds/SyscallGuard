@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) The kernel does not support some functionality requested in this clone3 () call: The size argument is larger than what the kernel...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FBB235142BCAC411
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: E2BIG
+    summary: '( clone3 () only) The kernel does not support some functionality requested in this clone3
+      () call: The size argument is larger than what the kernel...'
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:fbb235142bcac41115ae4ced152d3a2baea16876213e0a4d99f965e94c542f85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07441c8f7c8da24e7c8dff1af8e53111d8bf59aee21270a0eb9b4003ac588ee1
+  case: errors_e2big_1192
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07441c8f7c8da24e7c8dff1af8e53111d8bf59aee21270a0eb9b4003ac588ee1
+  case: errors_e2big_1192

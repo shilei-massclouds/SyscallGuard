@@ -1,0 +1,47 @@
+# 合规检查：条件：O_NONBLOCK | O_WRONLY is set, the named file is a FIFO, and no process has the FIFO open for reading；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENXIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_35EBB612CF0B3882
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENXIO
+    summary: O_NONBLOCK | O_WRONLY is set, the named file is a FIFO, and no process has the FIFO open
+      for reading
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENXIO
+  errno:
+  - ENXIO
+semantic_hash: sha256:35ebb612cf0b3882979b5b2f9d8bf309308652e675d94818cd4a319a96b5fb2e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1218
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f1e9c8052d4be1a26ea15e1654113bf74c94eadceb3deae7fe5a87b32a52483
+  case: errors_enxio_1218
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1218
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f1e9c8052d4be1a26ea15e1654113bf74c94eadceb3deae7fe5a87b32a52483
+  case: errors_enxio_1218

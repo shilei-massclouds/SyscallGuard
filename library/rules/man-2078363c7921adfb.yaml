@@ -1,0 +1,46 @@
+# 合规检查：条件：Nonblocking I/O has been selected using O_NONBLOCK and the write would block；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2078363C7921ADFB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: Nonblocking I/O has been selected using O_NONBLOCK and the write would block
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:2078363c7921adfb74910170a76bb7ac22609c06195d77d3fd66a948d9cc95ec
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:556a394a49047414ee0bdb8aef8fa364678cbff5b522e65f019be16c2cada083
+  case: errors_eagain_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:556a394a49047414ee0bdb8aef8fa364678cbff5b522e65f019be16c2cada083
+  case: errors_eagain_116

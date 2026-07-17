@@ -1,0 +1,36 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 write(inv_fd, buf, sizeof(buf))；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_6E631BC61A5CEE12
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - inv_fd
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:6e631bc61a5cee12cba6a6b3566fd41d0363a89284e7548f6853805eeb785574
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/write/write05.c
+  line: 60
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e7b3dbb454b1ee2865963f284d1bde20f06f5186403f6aa5be955fa3aea9d7ce
+  case: write05_60_0_0

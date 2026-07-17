@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:aa0d45c46d2ec975a28d37ad8250117d659d61b55cd3ec5f79846673bb0cee75
   case: wait403_29_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/wait4/wait403.c
+  line: 29
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:aa0d45c46d2ec975a28d37ad8250117d659d61b55cd3ec5f79846673bb0cee75
+  case: wait403_29_raw_0

@@ -1,0 +1,34 @@
+# 合规检查：条件：The documented ENOSPC condition applies.；检查：调用 sync()；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5351B902D09A2DFE--5351b902d09a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSPC
+    summary: The documented ENOSPC condition applies.
+  action:
+    operation: invoke_syscall
+    syscall: sync
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:5351b902d09a2dfe63fa0c6fb5e2ffea2bbba6a0b790b41cad6ef9706ded9817
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 73
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:09fa06a2acf50777314cc2776e68718e305daabb56d9405847c7cc3bc89d0178
+  case: errors_enospc_73

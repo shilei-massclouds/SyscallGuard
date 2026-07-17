@@ -1,0 +1,43 @@
+# 合规检查：条件：info is not a valid address；检查：调用 sysinfo(info)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AA342D41284C8043
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: info
+    predicate: documented_condition
+    value: EFAULT
+    summary: info is not a valid address
+  action:
+    operation: invoke_syscall
+    syscall: sysinfo
+    arguments:
+    - info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:aa342d41284c8043d915da6854ed2b0e955869fcfe7c5817201881a5f10e609b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sysinfo.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50380416bf1e934bf6b14d48d7ce377585d26266bc5123e648819d46579664c4
+  case: errors_efault_84
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sysinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sysinfo.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50380416bf1e934bf6b14d48d7ce377585d26266bc5123e648819d46579664c4
+  case: errors_efault_84

@@ -1,0 +1,47 @@
+# 合规检查：条件：Invalid msqid value, or nonpositive mtype value, or invalid msgsz value (less than 0 or greater than the system value MSGMAX )；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_527A0D84E9FF86AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: msqid
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid msqid value, or nonpositive mtype value, or invalid msgsz value (less than 0 or greater
+      than the system value MSGMAX )
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d552f328dbd025d0504f9bdc4bd27f309d6395ba87143118a1ac6f907c681bd4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63d1905382b66ffcfda88584147c297a88d8d5efb2b70e430b8280fa14c62c49
+  case: errors_einval_349
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63d1905382b66ffcfda88584147c297a88d8d5efb2b70e430b8280fa14c62c49
+  case: errors_einval_349

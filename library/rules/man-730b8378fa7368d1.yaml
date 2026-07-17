@@ -1,0 +1,48 @@
+# 合规检查：条件：The size of the string (including the terminating null byte) specified in type or description exceeded the limit (32 bytes and 4096 bytes respectively)；检查：调用 add_key(type, description, size, size, keyring)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_730B8378FA7368D1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: type
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: The size of the string (including the terminating null byte) specified in type or description
+      exceeded the limit (32 bytes and 4096 bytes respectively)
+  action:
+    operation: invoke_syscall
+    syscall: add_key
+    arguments:
+    - type
+    - description
+    - size
+    - size
+    - keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:730b8378fa7368d1dbcc28f9f8efb107cc6141713cede804741595780266c4b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e576801be24b9d8cb991f9cdbc5351d2cf432b9939c26c8b107dcb2609418a82
+  case: errors_einval_166
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: add_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e576801be24b9d8cb991f9cdbc5351d2cf432b9939c26c8b107dcb2609418a82
+  case: errors_einval_166

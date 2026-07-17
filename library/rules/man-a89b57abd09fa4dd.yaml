@@ -1,0 +1,48 @@
+# 合规检查：条件：Mounting a read-only filesystem was attempted without giving the MS_RDONLY flag. See EACCES , above；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A89B57ABD09FA4DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: Mounting a read-only filesystem was attempted without giving the MS_RDONLY flag. See EACCES
+      , above
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:a89b57abd09fa4ddffd0e922ef981b42ddf786871dc1055b6eb666a67ebf0385
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 847
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca2808d2a6800498a4d2e4847a6b1d7e9fd052ac18a60acc3dbc0ca7ab87808b
+  case: errors_erofs_847
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 847
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca2808d2a6800498a4d2e4847a6b1d7e9fd052ac18a60acc3dbc0ca7ab87808b
+  case: errors_erofs_847

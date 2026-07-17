@@ -1,0 +1,48 @@
+# 合规检查：条件：flags contains FAN_MARK_IGNORE , but does not contain FAN_MARK_IGNORED_SURV_MODIFY , and dirfd and path specify a directory；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5ED210431E5E5D7B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: flags
+    predicate: invalid_or_wrong_type
+    value: EISDIR
+    summary: flags contains FAN_MARK_IGNORE , but does not contain FAN_MARK_IGNORED_SURV_MODIFY , and
+      dirfd and path specify a directory
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:5ed210431e5e5d7b82a4a8cca588758c7d75d94474bfb99d77e930c1e06c57d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 686
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51a06eab85f9c975d7d0244332856cc0f5fdcd0d8a5e3badc49113a5ab1ff71b
+  case: errors_eisdir_686
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 686
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51a06eab85f9c975d7d0244332856cc0f5fdcd0d8a5e3badc49113a5ab1ff71b
+  case: errors_eisdir_686

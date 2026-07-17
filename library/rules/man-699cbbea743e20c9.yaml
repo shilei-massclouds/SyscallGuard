@@ -1,0 +1,46 @@
+# 合规检查：条件：( ppoll ()) The timeout value expressed in *tmo_p is invalid (negative)；检查：调用 ppoll(fds, nfds, tmo_p, sigmask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_699CBBEA743E20C9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: tmo_p
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( ppoll ()) The timeout value expressed in *tmo_p is invalid (negative)
+  action:
+    operation: invoke_syscall
+    syscall: ppoll
+    arguments:
+    - fds
+    - nfds
+    - tmo_p
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:699cbbea743e20c950a511cc3099603731baf4a5f0f65392984e286d679b48f6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 359
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7850eda6e8990399603f12e68a79bc45a33b51fa13d56140af7f45e005af8652
+  case: errors_einval_359
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ppoll
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 359
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7850eda6e8990399603f12e68a79bc45a33b51fa13d56140af7f45e005af8652
+  case: errors_einval_359

@@ -1,0 +1,47 @@
+# 合规检查：条件：op is invalid, or an attempt was made to read from or write to an invalid area in the tracer's or the tracee's memory, or there was a word-alignment...；检查：调用 ptrace(op, pid, addr, data)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_41242F466A0DCCD5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: op
+    predicate: unavailable_or_exhausted
+    value: EIO
+    summary: op is invalid, or an attempt was made to read from or write to an invalid area in the tracer's
+      or the tracee's memory, or there was a word-alignment...
+  action:
+    operation: invoke_syscall
+    syscall: ptrace
+    arguments:
+    - op
+    - pid
+    - addr
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:41242f466a0dccd5184f3a26fb7a02537bd7d680d6831524ca0493df593b2b11
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2446
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f66271cf07707ed8113213178140a732f7beea0e182947044dbc7b4b929143e0
+  case: errors_eio_2446
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ptrace
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2446
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f66271cf07707ed8113213178140a732f7beea0e182947044dbc7b4b929143e0
+  case: errors_eio_2446

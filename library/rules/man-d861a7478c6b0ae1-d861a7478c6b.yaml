@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 capget(hdrp, datap)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D861A7478C6B0AE1--d861a7478c6b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:d861a7478c6b0ae187785e531318e19c088da79597f31e08f7ec5e7f41648493
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 173
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:235bb3bc0cdb2532ef912ec4096ee0bd8dad93dd7cde199ef148a7387f0e4ed5
+  case: return_value_173

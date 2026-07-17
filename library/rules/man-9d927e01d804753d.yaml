@@ -1,0 +1,46 @@
+# 合规检查：条件：The buffer specified by size and attr is larger than the kernel structure, and one or more of the excess bytes is nonzero；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9D927E01D804753D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: attr
+    predicate: invalid_value
+    value: E2BIG
+    summary: The buffer specified by size and attr is larger than the kernel structure, and one or more
+      of the excess bytes is nonzero
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:07707b0234fd72b75dfafb797087b62895be8c5070b25fc4bb21c2db78fb3551
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 399
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d2e92f844f602818a7e121c1533090c7f175a7daae55af89579e33996c2e948
+  case: errors_e2big_399
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 399
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d2e92f844f602818a7e121c1533090c7f175a7daae55af89579e33996c2e948
+  case: errors_e2big_399

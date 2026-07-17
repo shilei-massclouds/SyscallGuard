@@ -1,0 +1,46 @@
+# 合规检查：条件：WNOHANG was not set and an unblocked signal or a SIGCHLD was caught; see signal (7)；检查：调用 waitid(idtype, id, infop, options)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9897C2A7108BFB4A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: WNOHANG was not set and an unblocked signal or a SIGCHLD was caught; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: waitid
+    arguments:
+    - idtype
+    - id
+    - infop
+    - options
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:9897c2a7108bfb4a29a736547595dacfabc7771defa87932d7153a4f20e3324d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e4e53c4ebd1106ad4c1655a8819e9815515f21be161195c1dcc97f5c7faef70
+  case: errors_eintr_428
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: waitid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e4e53c4ebd1106ad4c1655a8819e9815515f21be161195c1dcc97f5c7faef70
+  case: errors_eintr_428

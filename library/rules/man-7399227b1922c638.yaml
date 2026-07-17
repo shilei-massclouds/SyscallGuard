@@ -1,0 +1,44 @@
+# 合规检查：条件：op is invalid；检查：调用 flock(fd, op)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7399227B1922C638
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: EINVAL
+    summary: op is invalid
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7399227b1922c638a2e4030cfe9958bd48cbfabf2872eee9ece495dea618f105
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:58672f62db75674d080c568d4fe6e6f7057c5d78fffbd594a23a85cd54828734
+  case: errors_einval_108
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:58672f62db75674d080c568d4fe6e6f7057c5d78fffbd594a23a85cd54828734
+  case: errors_einval_108

@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned if the perf_event_attr size value is too small (smaller than PERF_ATTR_SIZE_VER0 ), too big (larger than the page size), or larger than the kernel...；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_09FBBE5A1DA918C2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: E2BIG
+    summary: Returned if the perf_event_attr size value is too small (smaller than PERF_ATTR_SIZE_VER0
+      ), too big (larger than the page size), or larger than the kernel...
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:09fbbe5a1da918c2a60e355420286303247b6a09697e33713ba11ac294e15449
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3748
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f53a3e6e6af7a56df57c671b7b283ca5f18f339df76ced25457c490153daed0d
+  case: errors_e2big_3748
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3748
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f53a3e6e6af7a56df57c671b7b283ca5f18f339df76ced25457c490153daed0d
+  case: errors_e2big_3748

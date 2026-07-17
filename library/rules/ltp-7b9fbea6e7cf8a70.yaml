@@ -28,7 +28,23 @@ sources:
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/gethostid/gethostid01.c
+  line: 36
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:5c8ff7c5a39dd104ad9cb70aab46ce92cd396e30b86af4e2384378df76655cef
+  case: gethostid01_36_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gethostid/gethostid01.c
   line: 49
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:b5c261dd2822dce2c434119b7ae30e1854a7a5634bdcf2239865f3127a70d9d2
   case: gethostid01_49_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gethostid/gethostid01.c
+  line: 49
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b5c261dd2822dce2c434119b7ae30e1854a7a5634bdcf2239865f3127a70d9d2
+  case: gethostid01_49_raw_0

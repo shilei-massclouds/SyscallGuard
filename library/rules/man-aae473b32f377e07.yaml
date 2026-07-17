@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , and populating (prefaulting) page tables failed because a SIGBUS would have been generated on actual...；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AAE473B32F377E07
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: advice
+    predicate: documented_condition
+    value: EFAULT
+    summary: advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , and populating (prefaulting) page tables
+      failed because a SIGBUS would have been generated on actual...
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:aae473b32f377e077c60114ebbbf11de2655ceb4ec105f73d66d1cc592cad661
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 822
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:20b0fcca56c43dc3efef20f2f07c29fd4c7e0545f7e1746d6ea77598928a7cda
+  case: errors_efault_822
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 822
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:20b0fcca56c43dc3efef20f2f07c29fd4c7e0545f7e1746d6ea77598928a7cda
+  case: errors_efault_822

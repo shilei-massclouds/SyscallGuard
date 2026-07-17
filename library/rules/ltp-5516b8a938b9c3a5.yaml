@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:dbf0afa0a21a7d1e16b9c2f1e214a77a4a48704a9da014c3d8472fa7104bbadd
   case: uname01_21_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/uname/uname01.c
+  line: 21
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:dbf0afa0a21a7d1e16b9c2f1e214a77a4a48704a9da014c3d8472fa7104bbadd
+  case: uname01_21_raw_0

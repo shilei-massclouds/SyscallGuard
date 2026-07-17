@@ -1,0 +1,37 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 readlinkat(dir_fd, TEST_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_835C2BD8D8081213
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - TEST_FILE
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:835c2bd8d80812139bb8e9980d6dee609760731c95cf6b00b1901d5c02c20642
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_1_0

@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to a nonexistent directory, O_TMPFILE and one of O_WRONLY or O_RDWR were specified in flags , but this kernel version does not provide the...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6426642A757EA481
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path refers to a nonexistent directory, O_TMPFILE and one of O_WRONLY or O_RDWR were specified
+      in flags , but this kernel version does not provide the...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:6426642a757ea4817d3cde952150adc13b88a80fb54d8e2501eedfb00c94971a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a919b4c451abc1d00d4100358d482e42c87b82f6420c0074b53ce4cb010669ee
+  case: errors_enoent_1171
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a919b4c451abc1d00d4100358d482e42c87b82f6420c0074b53ce4cb010669ee
+  case: errors_enoent_1171

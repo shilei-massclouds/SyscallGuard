@@ -1,0 +1,43 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 userfaultfd(flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CD270898CA52F79A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: userfaultfd
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:cd270898ca52f79a7b8daa94922535fc1679caf3bdff79c73742e4e089b8030d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/userfaultfd.2
+  line: 772
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b46c8dca791235ff37c269b79187252b4571dd7be354fec5eca49edc5ce2d19
+  case: errors_emfile_772
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: userfaultfd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/userfaultfd.2
+  line: 772
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b46c8dca791235ff37c269b79187252b4571dd7be354fec5eca49edc5ce2d19
+  case: errors_emfile_772

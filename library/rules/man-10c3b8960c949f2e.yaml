@@ -1,0 +1,46 @@
+# 合规检查：条件：whence is not valid. Or: the resulting file offset would be negative, or beyond the end of a seekable device；检查：调用 lseek(fd, offset, whence)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_10C3B8960C949F2E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: offset
+    predicate: documented_condition
+    value: EINVAL
+    summary: 'whence is not valid. Or: the resulting file offset would be negative, or beyond the end
+      of a seekable device'
+  action:
+    operation: invoke_syscall
+    syscall: lseek
+    arguments:
+    - fd
+    - offset
+    - whence
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:10c3b8960c949f2e72ea1373e01c75a16e0b69be088926f1a25711e3ebe03e1d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:05bd6af5ce970545ada672655e5bc7ee44eaeed217d6bbd2df1e0d063218758c
+  case: errors_einval_166
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lseek
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:05bd6af5ce970545ada672655e5bc7ee44eaeed217d6bbd2df1e0d063218758c
+  case: errors_einval_166

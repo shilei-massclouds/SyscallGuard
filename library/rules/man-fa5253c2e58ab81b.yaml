@@ -1,0 +1,44 @@
+# 合规检查：条件：The socket is not of a type that supports the listen () operation；检查：调用 listen(sockfd, backlog)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FA5253C2E58AB81B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: The socket is not of a type that supports the listen () operation
+  action:
+    operation: invoke_syscall
+    syscall: listen
+    arguments:
+    - sockfd
+    - backlog
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:fa5253c2e58ab81b1d4b568eccafbb576e82504bfbcf99362a0dff1c5a7a4302
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 77
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:24b6d1d013a55e989bc9b7184318898599a946aeb26ea1d74acdf73b1e5f64a7
+  case: errors_eopnotsupp_77
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 77
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:24b6d1d013a55e989bc9b7184318898599a946aeb26ea1d74acdf73b1e5f64a7
+  case: errors_eopnotsupp_77

@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 4.9) One of the values in the flags mask specified the creation of a new user namespace, but doing so would have caused the limit defined by...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6A89B7937BC73BAC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: (since Linux 4.9) One of the values in the flags mask specified the creation of a new user
+      namespace, but doing so would have caused the limit defined by...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:49dc6f203c09ed91025f205e85a44d11ee81cb09ac284458161d0519fad26b01
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b91ec8384a86f7272d78d5df24f63e4b53e5e241815172dafe9a0883a8e9df5
+  case: errors_enospc_1473
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b91ec8384a86f7272d78d5df24f63e4b53e5e241815172dafe9a0883a8e9df5
+  case: errors_enospc_1473

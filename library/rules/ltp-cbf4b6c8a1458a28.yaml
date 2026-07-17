@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:5baef1ec8b4cee336f88d2f738219c4af158dd10e27319caa51b2e7b1d904038
   case: close_range02_60_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/close_range/close_range02.c
+  line: 60
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5baef1ec8b4cee336f88d2f738219c4af158dd10e27319caa51b2e7b1d904038
+  case: close_range02_60_raw_0

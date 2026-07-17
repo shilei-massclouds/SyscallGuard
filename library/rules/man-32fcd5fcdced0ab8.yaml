@@ -1,0 +1,47 @@
+# 合规检查：条件：The argument op has the value SETALL or SETVAL and the value to which semval is to be set (for some semaphore of the set) is less than 0 or greater than the...；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_32FCD5FCDCED0AB8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: op
+    predicate: invalid_value
+    value: ERANGE
+    summary: The argument op has the value SETALL or SETVAL and the value to which semval is to be set
+      (for some semaphore of the set) is less than 0 or greater than the...
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:32fcd5fcdced0ab8bed8009aa8b8055d30e0a38b702b9aa46655ac19dbb20e57
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:29f2842d78a258b5a35407351aec7c41b4547b188621dbdcde3d71486bad1c35
+  case: errors_erange_484
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:29f2842d78a258b5a35407351aec7c41b4547b188621dbdcde3d71486bad1c35
+  case: errors_erange_484

@@ -1,0 +1,41 @@
+# 合规检查：条件：The MAP_HUGETLB flag was specified, but the caller was not privileged (did not have the CAP_IPC_LOCK capability) and is not a member of the...；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E197A924533D7848--e197a924533d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The MAP_HUGETLB flag was specified, but the caller was not privileged (did not have the CAP_IPC_LOCK
+      capability) and is not a member of the...
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e197a924533d78483604c179f67017e485740c57e4012099fbca7baa737a9efe
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 614
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ed215db1d6e5b5203f9907e80d99c7790a88a9fec7480e82f210a8d11993367
+  case: errors_eperm_614

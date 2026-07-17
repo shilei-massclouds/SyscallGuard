@@ -1,0 +1,46 @@
+# 合规检查：条件：( accept4 ()) invalid value in flags；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DBDBE6B60DA2FFE8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( accept4 ()) invalid value in flags
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dbdbe6b60da2ffe8b2d0d9d8202089102d11b440249a454891b7e98ccbf83cb3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 209
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae45ab5a44f0b327f6b5c14c8e2cc9642b505f38d16e13c5c7cc357a7854bb44
+  case: errors_einval_209
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 209
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae45ab5a44f0b327f6b5c14c8e2cc9642b505f38d16e13c5c7cc357a7854bb44
+  case: errors_einval_209

@@ -1,0 +1,45 @@
+# 合规检查：条件：(for MADV_COLLAPSE ) Could not charge hugepage to cgroup: cgroup limit exceeded；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26D2EF1E86A41A65
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EBUSY
+    summary: '(for MADV_COLLAPSE ) Could not charge hugepage to cgroup: cgroup limit exceeded'
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:26d2ef1e86a41a656bb21738e338aa03732a3deac989766f7e1399736ae53e78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 810
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5cf59daf56dd80bc0cf3b5466f3b4c5b992792970f30c7a143033fb97fc86f37
+  case: errors_ebusy_810
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 810
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5cf59daf56dd80bc0cf3b5466f3b4c5b992792970f30c7a143033fb97fc86f37
+  case: errors_ebusy_810

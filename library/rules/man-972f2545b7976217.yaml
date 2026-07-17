@@ -1,0 +1,44 @@
+# 合规检查：条件：The system has insufficient memory to start swapping；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_972F2545B7976217
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The system has insufficient memory to start swapping
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:969279bbdbaa2036f521b6222c88312ed0a7b08cf1f8353b309d23c62fab51a8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d38370d1f57dd4eea791c60a7cb0821d78bc2ecb39e8d1cd2c698267a3a33d7
+  case: errors_enomem_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d38370d1f57dd4eea791c60a7cb0821d78bc2ecb39e8d1cd2c698267a3a33d7
+  case: errors_enomem_126

@@ -1,0 +1,45 @@
+# 合规检查：条件：Temporary error during kernel allocation of timer structures；检查：调用 timer_create(clockid, sevp, timerid)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_202FE92E9610C89C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: Temporary error during kernel allocation of timer structures
+  action:
+    operation: invoke_syscall
+    syscall: timer_create
+    arguments:
+    - clockid
+    - sevp
+    - timerid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:202fe92e9610c89c8cc6af076c78184ad87ae2ce1afc3952ab3239aede9a8077
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e65eb1a9bd97a22824162ccd62509ffd59d3ac16498be78e0f8c54d72bdd4a83
+  case: errors_eagain_196
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e65eb1a9bd97a22824162ccd62509ffd59d3ac16498be78e0f8c54d72bdd4a83
+  case: errors_eagain_196

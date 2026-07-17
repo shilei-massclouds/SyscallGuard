@@ -1,0 +1,42 @@
+# 合规检查：条件：The fixture creates "symlink" as a symbolic link.、The argument is a userspace buffer.；检查：调用 lgetxattr("symlink", SECURITY_KEY1, buf, size)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A8C7B3D7AF1FA55E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates "symlink" as a symbolic link.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - '"symlink"'
+    - SECURITY_KEY1
+    - buf
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:a8c7b3d7af1fa55e1453aba6520bebc3625c5fb11368c58ba5a66a7ab339dd38
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
+  line: 79
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:cab2a9c38c2bba420b48169eb17f015f423f049beb92dcd5f9443b28584893f5
+  case: lgetxattr01_79_raw_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F0A09B89CC3A3A9D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:f0a09b89cc3a3a9dac94c1bf6ae32f0db1c586a639fe902a8b80dbe6641da276
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 624
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0eb9f073887aa9a6cbaf3faeb2ace062606a0bebcf3ac75cf3dc5d01c1870302
+  case: return_value_624
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 624
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0eb9f073887aa9a6cbaf3faeb2ace062606a0bebcf3ac75cf3dc5d01c1870302
+  case: return_value_624

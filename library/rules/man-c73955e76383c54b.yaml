@@ -1,0 +1,43 @@
+# 合规检查：条件：The user limit on the total number of inotify instances has been reached；检查：调用 inotify_init1(flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C73955E76383C54B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EMFILE
+    summary: The user limit on the total number of inotify instances has been reached
+  action:
+    operation: invoke_syscall
+    syscall: inotify_init1
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:c73955e76383c54b824ea20af85890b5762ed22527c89196a6dc653631f13227
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_init.2
+  line: 68
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b78625fd820afebea8c5fbaa3e5f5024620751807cb309bbde6039d49a9e4242
+  case: errors_emfile_68
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_init1
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_init.2
+  line: 68
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b78625fd820afebea8c5fbaa3e5f5024620751807cb309bbde6039d49a9e4242
+  case: errors_emfile_68

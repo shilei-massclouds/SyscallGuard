@@ -1,0 +1,44 @@
+# 合规检查：条件：size was negative or too large；检查：调用 setdomainname(size, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_968D07C7039689E5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: size was negative or too large
+  action:
+    operation: invoke_syscall
+    syscall: setdomainname
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:968d07c7039689e56f444d642d58d2627cf5570c9fb49d87d6174715532b082e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdomainname.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d19fa8228fe0159fb6dcb3048822cb6134dabd5d18d86787659270c95b6b04a
+  case: errors_einval_80
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setdomainname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdomainname.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d19fa8228fe0159fb6dcb3048822cb6134dabd5d18d86787659270c95b6b04a
+  case: errors_einval_80

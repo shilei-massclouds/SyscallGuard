@@ -1,0 +1,37 @@
+# 合规检查：条件：An attempt was made to add a capability to the permitted set, or to set a capability in the effective set that is not in the permitted set；检查：调用 capget(hdrp, datap)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C8819A3B768226EC--c8819a3b7682
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: An attempt was made to add a capability to the permitted set, or to set a capability in the
+      effective set that is not in the permitted set
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:c8819a3b768226ec8436ba35412d0d24d0c3d2f9c3a655ea516481267953c23f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 203
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecb09b72386beebd1c9affa541fcdcbce2a9a86bd192b8af2131287084ecde99
+  case: errors_eperm_203

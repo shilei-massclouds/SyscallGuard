@@ -1,0 +1,46 @@
+# 合规检查：条件：The given event mask contains no valid events; or mask contains both IN_MASK_ADD and IN_MASK_CREATE ; or fd is not an inotify file descriptor；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1EE2F3F643D23CEA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: The given event mask contains no valid events; or mask contains both IN_MASK_ADD and IN_MASK_CREATE
+      ; or fd is not an inotify file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1ee2f3f643d23ceaf953c0817fd1987a169ef012d63c5df73a58e0141ccfd915
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c890ab514dc6a8c14528ed7d0b046bea1c76e323d4f4394738136330dfd58f8
+  case: errors_einval_88
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c890ab514dc6a8c14528ed7d0b046bea1c76e323d4f4394738136330dfd58f8
+  case: errors_einval_88

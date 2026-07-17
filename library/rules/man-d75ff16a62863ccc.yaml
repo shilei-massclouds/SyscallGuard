@@ -1,0 +1,43 @@
+# 合规检查：条件：The documented ENOSPC condition applies.；检查：调用 fsync(fd)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D75FF16A62863CCC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSPC
+    summary: The documented ENOSPC condition applies.
+  action:
+    operation: invoke_syscall
+    syscall: fsync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:f30d90b8dba98dcc9389bb08a08520e474d15119b42315272221999c493a37e4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9556c41e8ee876d50c14454c036e151341c5b425b7631028cccfb64fc9a9abbf
+  case: errors_enospc_130
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9556c41e8ee876d50c14454c036e151341c5b425b7631028cccfb64fc9a9abbf
+  case: errors_enospc_130

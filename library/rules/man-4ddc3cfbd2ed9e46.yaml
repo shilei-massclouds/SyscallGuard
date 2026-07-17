@@ -1,0 +1,45 @@
+# 合规检查：条件：While blocked waiting to complete, the call was interrupted by a signal handler; see fcntl (2) and signal (7)；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4DDC3CFBD2ED9E46
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While blocked waiting to complete, the call was interrupted by a signal handler; see fcntl
+      (2) and signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:ff43dfa6e6696e744ff6d18a446fe4dfb998e06599aff15341eb2ac2a8a11548
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9aaf8cf63af79742c9d1cab5a6d5d313297362cb13ef95e73ca552d680976d7e
+  case: errors_eintr_105
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9aaf8cf63af79742c9d1cab5a6d5d313297362cb13ef95e73ca552d680976d7e
+  case: errors_eintr_105

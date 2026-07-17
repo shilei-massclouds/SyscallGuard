@@ -1,0 +1,36 @@
+# 合规检查：条件：new_value , old_value , or curr_value is not a valid pointer；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_003CD3763A978D04
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: curr_value
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: new_value , old_value , or curr_value is not a valid pointer
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:003cd3763a978d044fa49e9fb91fbb72f2908672d8e9f9b645e152e51143acd9
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eeade4e805e777a4def6dbeb7e0d1ce9747d852373a8b06ad97f89ee4fa9b323
+  case: errors_efault_448

@@ -1,0 +1,42 @@
+# 合规检查：条件：(Not on Linux) addr was not a multiple of the page size；检查：调用 munlockall()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_02DBDB23A5B5EB06
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: (Not on Linux) addr was not a multiple of the page size
+  action:
+    operation: invoke_syscall
+    syscall: munlockall
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3ddccc3ec2e7198d69b75a0c713fb4cbd6708c2b7561501b3c205aad9c839af3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d50e8b4eb8caf97f5796d2f9666afeacb344fad8d3afb86dee65b79b5f73e4a
+  case: errors_einval_208
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d50e8b4eb8caf97f5796d2f9666afeacb344fad8d3afb86dee65b79b5f73e4a
+  case: errors_einval_208

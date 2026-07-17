@@ -1,0 +1,46 @@
+# 合规检查：条件：(Internet domain sockets) The port number was specified as zero in the socket address structure, but, upon attempting to bind to an ephemeral port, it was...；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EADDRINUSE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8FA4B2BD0621C33E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EADDRINUSE
+    summary: (Internet domain sockets) The port number was specified as zero in the socket address structure,
+      but, upon attempting to bind to an ephemeral port, it was...
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRINUSE
+  errno:
+  - EADDRINUSE
+semantic_hash: sha256:8fa4b2bd0621c33e06476b5a4d09ce0cee10090a44a7ab8b18b0d5c98c778d2f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d95bdd01887905009f5c0628751069a381f2d00e75f1249f4afb8f2641603898
+  case: errors_eaddrinuse_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d95bdd01887905009f5c0628751069a381f2d00e75f1249f4afb8f2641603898
+  case: errors_eaddrinuse_113

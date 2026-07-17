@@ -1,0 +1,48 @@
+# 合规检查：条件：The mount that is to be ID mapped is not a detached mount; that is, the mount has not previously been visible in a mount namespace；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4C7F584C3157F6A1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The mount that is to be ID mapped is not a detached mount; that is, the mount has not previously
+      been visible in a mount namespace
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4c7f584c3157f6a1fb24cc32ef67a0e919b27115d1d829f8da297bdf1dda9bc2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 481
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a73afb30f21c2c011f35e2f45065e178c6df39cdc67d6aefdfdd27292dad99b8
+  case: errors_einval_481
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 481
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a73afb30f21c2c011f35e2f45065e178c6df39cdc67d6aefdfdd27292dad99b8
+  case: errors_einval_481

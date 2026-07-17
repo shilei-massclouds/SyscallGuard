@@ -1,0 +1,47 @@
+# 合规检查：条件：The specified file descriptor refers to a pipe or FIFO. ( ESPIPE is the error specified by POSIX, but before Linux 2.6.16, Linux returned EINVAL in this case.)；检查：调用 fadvise64(fd, offset, size, advice)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1E7A18D70D0A3428
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ESPIPE
+    summary: The specified file descriptor refers to a pipe or FIFO. ( ESPIPE is the error specified by
+      POSIX, but before Linux 2.6.16, Linux returned EINVAL in this case.)
+  action:
+    operation: invoke_syscall
+    syscall: fadvise64
+    arguments:
+    - fd
+    - offset
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:1e7a18d70d0a342890bc3285f89a9b6f38791bd5cc59e4657f05e14c1221f73f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d149547ad7e60f53b0df83c2885f4ffb0e22f481ea5b391370f40bd50d241df5
+  case: errors_espipe_145
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fadvise64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d149547ad7e60f53b0df83c2885f4ffb0e22f481ea5b391370f40bd50d241df5
+  case: errors_espipe_145

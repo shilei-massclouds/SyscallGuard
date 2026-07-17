@@ -1,0 +1,46 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F66662B26012AD7D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:6c894e14b30d919d444397c637b318e15214eec87738ec0a21fe0532a162f749
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 259
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f24dea5a31ad7abd8a93c9ae46f0f74f221cc5e82d173eda8f8e2544b6d5046
+  case: errors_enomem_259
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 259
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f24dea5a31ad7abd8a93c9ae46f0f74f221cc5e82d173eda8f8e2544b6d5046
+  case: errors_enomem_259

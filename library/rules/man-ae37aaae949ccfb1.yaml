@@ -1,0 +1,46 @@
+# 合规检查：条件：which is not one of ITIMER_REAL , ITIMER_VIRTUAL , or ITIMER_PROF ; or (since Linux 2.6.22) one of the tv_usec fields in the structure pointed to by...；检查：调用 setitimer(which, new_value, old_value)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AE37AAAE949CCFB1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: which
+    predicate: documented_condition
+    value: EINVAL
+    summary: which is not one of ITIMER_REAL , ITIMER_VIRTUAL , or ITIMER_PROF ; or (since Linux 2.6.22)
+      one of the tv_usec fields in the structure pointed to by...
+  action:
+    operation: invoke_syscall
+    syscall: setitimer
+    arguments:
+    - which
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3f428a1231e1e2097a0576e7803d8c19c8e8e8285f01b2fa8ad0fcb8c579fff4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66c9779296e0efee3efc66deec8f1b06ee72dc6aebc062efe0fbf131c3925654
+  case: errors_einval_145
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setitimer
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66c9779296e0efee3efc66deec8f1b06ee72dc6aebc062efe0fbf131c3925654
+  case: errors_einval_145

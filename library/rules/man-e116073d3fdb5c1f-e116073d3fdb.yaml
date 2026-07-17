@@ -1,0 +1,33 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 chdir(path)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E116073D3FDB5C1F--e116073d3fdb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: chdir
+    arguments:
+    - path
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:e116073d3fdb5c1f7c6e2b179a1672c11a4ae049e36444ff6119e152187a88bf
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 44
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a963e7e8674b2b290488b12a79a11975d8d1c82bb279e259c0550d6c928bb46f
+  case: return_value_44

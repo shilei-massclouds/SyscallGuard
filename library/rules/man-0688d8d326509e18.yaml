@@ -1,0 +1,46 @@
+# 合规检查：条件：I/O error；检查：调用 sync_file_range(fd, offset, nbytes, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0688D8D326509E18
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: I/O error
+  action:
+    operation: invoke_syscall
+    syscall: sync_file_range
+    arguments:
+    - fd
+    - offset
+    - nbytes
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:0688d8d326509e18e757e0583553e6b7dba61eb3aeec51bff7c7d623f57b69e7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07b1436d77d848813d872658b0ae5403ffb4cbcfb56e39b49abf8d4b0a42b40e
+  case: errors_eio_143
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07b1436d77d848813d872658b0ae5403ffb4cbcfb56e39b49abf8d4b0a42b40e
+  case: errors_eio_143

@@ -1,0 +1,46 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled；检查：调用 lgetxattr(path, name, size, size)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ECDB44F1A6E7CCDF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:a4bd9c2a7969035799927f7694203679d1c0947cdf9aaa7c3a477695a92628b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b3c549af25ac301a72d7b0d4930fd94d112cc16f9a347265af7f9278c3bc4c5
+  case: errors_enotsup_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b3c549af25ac301a72d7b0d4930fd94d112cc16f9a347265af7f9278c3bc4c5
+  case: errors_enotsup_112

@@ -1,0 +1,47 @@
+# 合规检查：条件：Returned if the attr pointer points at an invalid memory address；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_272928C5A15DAF8C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: attr
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Returned if the attr pointer points at an invalid memory address
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:272928c5a15daf8c771ac396a29feed1a231b430b0eb8967b5bbf9f58eab6094
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3796
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e182f294dee74cf2ddb9994a100cd718eedac0d107115a6a09e68b0891a9193c
+  case: errors_efault_3796
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3796
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e182f294dee74cf2ddb9994a100cd718eedac0d107115a6a09e68b0891a9193c
+  case: errors_efault_3796

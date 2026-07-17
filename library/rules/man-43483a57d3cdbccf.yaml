@@ -1,0 +1,46 @@
+# 合规检查：条件：The kernel does not support sleeping against this clockid；检查：调用 clock_nanosleep(clockid, flags, t, remain)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_43483A57D3CDBCCF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: clockid
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: The kernel does not support sleeping against this clockid
+  action:
+    operation: invoke_syscall
+    syscall: clock_nanosleep
+    arguments:
+    - clockid
+    - flags
+    - t
+    - remain
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:43483a57d3cdbccf337d27834b23167894e7adcbf67845492eec13959f20a0e7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af42dacfc2e54825fb507c4bb30a8451e67d9abf798117ee7d134dba2075191e
+  case: errors_enotsup_171
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 171
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af42dacfc2e54825fb507c4bb30a8451e67d9abf798117ee7d134dba2075191e
+  case: errors_enotsup_171

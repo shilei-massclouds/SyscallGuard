@@ -1,0 +1,37 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 epoll_ctl(epfd, -1, fd[1], &events[1])；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B41BE95567D414C7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - '-1'
+    - fd[1]
+    - '&events[1]'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b41be95567d414c705f43179cd8a4bb3315fb1fb54b2f998f6998f9ea1d78991
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+  line: 85
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b451ce6499a718fc05056a4260e9a1d863dea4510c97220819b18818d349773
+  case: epoll_ctl02_85_3_0

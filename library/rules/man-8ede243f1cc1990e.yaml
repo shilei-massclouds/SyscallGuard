@@ -1,0 +1,46 @@
+# 合规检查：条件：There was insufficient kernel memory to create the timer；检查：调用 timerfd_settime(fd, flags, new_value, old_value)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8EDE243F1CC1990E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: There was insufficient kernel memory to create the timer
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_settime
+    arguments:
+    - fd
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:68bac5aa1c68828d1e0e882f7657231ec08284275f5ab9f06a743748d0dfbc32
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 426
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a4e13dd6465f1ce66d9c4e0959977010ff28f19cbb03ef1ba75d49dd1de3636
+  case: errors_enomem_426
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 426
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a4e13dd6465f1ce66d9c4e0959977010ff28f19cbb03ef1ba75d49dd1de3636
+  case: errors_enomem_426

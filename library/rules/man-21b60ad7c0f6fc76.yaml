@@ -1,0 +1,46 @@
+# 合规检查：条件：path is too long；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_21B60AD7C0F6FC76
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:4e6ff2f3c45e8d70ee4e0bcf1aba183e16aad5e339e9351eac46eaf09ba94e1c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51096105f1c3a50fbbed610395c40f5385d8139866bb7d69bf947a2bc15658fd
+  case: errors_enametoolong_250
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51096105f1c3a50fbbed610395c40f5385d8139866bb7d69bf947a2bc15658fd
+  case: errors_enametoolong_250

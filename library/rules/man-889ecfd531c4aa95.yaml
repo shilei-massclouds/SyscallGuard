@@ -1,0 +1,44 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix. (See also path_resolution (7).)；检查：调用 chroot(path)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_889ECFD531C4AA95
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix. (See also path_resolution
+      (7).)
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:889ecfd531c4aa95a0c4bd04ba6cf35fa19236ea0f57f8e4b399ba0f7dca63b9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b089318fd231b434d35b3a48846a404570ee81044114dde929c6723c0a0691a9
+  case: errors_eacces_100
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b089318fd231b434d35b3a48846a404570ee81044114dde929c6723c0a0691a9
+  case: errors_eacces_100

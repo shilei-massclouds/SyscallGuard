@@ -1,0 +1,45 @@
+# 合规检查：条件：Too many symbolic links encountered when resolving path；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1276F0CF91F8B2F4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links encountered when resolving path
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:1276f0cf91f8b2f4c95fa1063650e9fca1bb0865d34b6a29f038e433b49c6246
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:547e018aae84179958398509d2eb29c948e9ec3b2ae789abc70b930754205cc0
+  case: errors_eloop_432
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:547e018aae84179958398509d2eb29c948e9ec3b2ae789abc70b930754205cc0
+  case: errors_eloop_432

@@ -1,0 +1,50 @@
+# 合规检查：条件：The fixture creates DNAME_RW"/"FNAME_R as a regular file.、The caller lacks a permission required by the operation.、The fixture sets DNAME_RW"/"FNAME_R mode to 0444.、The test drops privileges and invokes the syscall as nobody.；检查：调用 access(DNAME_RW"/"FNAME_R, W_OK)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4E728F2B93D7AF55
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates DNAME_RW"/"FNAME_R as a regular file.
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0444'
+    summary: The fixture sets DNAME_RW"/"FNAME_R mode to 0444.
+  - kind: credential
+    subject: caller
+    predicate: effective_identity
+    value: nobody
+    summary: The test drops privileges and invokes the syscall as nobody.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - DNAME_RW"/"FNAME_R
+    - W_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:4e728f2b93d7af55240306a95c13a1452a8c1cad3b10b4058a39dfcd6ac5a50a
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access01.c
+  line: 240
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:b834c6ba29606e4d86f81d1e1c42ecf8c44e6d2f0a79123666c291cf56ecb614
+  case: access01_240_128_0

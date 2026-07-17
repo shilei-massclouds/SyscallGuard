@@ -1,0 +1,45 @@
+# 合规检查：条件：( symlinkat ()) linkpath is relative but newdirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A9BEB19AB03CA0AD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: newdirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( symlinkat ()) linkpath is relative but newdirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:a9beb19ab03ca0ad5bb00ee15bc80af1b13b4fafa3db640dc214c9b223905f0f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca264751f554fe243c37c65641b305e5d2e70471a653402ecb9c0bc1ed4431cc
+  case: errors_ebadf_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca264751f554fe243c37c65641b305e5d2e70471a653402ecb9c0bc1ed4431cc
+  case: errors_ebadf_141

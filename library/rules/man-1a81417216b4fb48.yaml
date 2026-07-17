@@ -1,0 +1,46 @@
+# 合规检查：条件：The FUTEX_CLOCK_REALTIME option was specified in op , but the accompanying operation was neither FUTEX_WAIT_BITSET (2const), FUTEX_WAIT_REQUEUE_PI (2const),...；检查：调用 futex(uaddr, op, arg3)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1A81417216B4FB48
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: ENOSYS
+    summary: The FUTEX_CLOCK_REALTIME option was specified in op , but the accompanying operation was
+      neither FUTEX_WAIT_BITSET (2const), FUTEX_WAIT_REQUEUE_PI (2const),...
+  action:
+    operation: invoke_syscall
+    syscall: futex
+    arguments:
+    - uaddr
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:1a81417216b4fb484e8e07c9081fbe0ce3b36d6b58d8e23cb832a004f6c61225
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:166b43c2c801d9f6f0cb9683027ca6adc115571707ac427990dcdb789a3ab47b
+  case: errors_enosys_503
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:166b43c2c801d9f6f0cb9683027ca6adc115571707ac427990dcdb789a3ab47b
+  case: errors_enosys_503

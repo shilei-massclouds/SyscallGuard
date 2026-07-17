@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_FREE or MADV_WIPEONFORK but the specified address range includes file, Huge TLB, MAP_SHARED , or VM_PFNMAP ranges；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F721C542DC63BD62
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: advice
+    predicate: invalid_value
+    value: EINVAL
+    summary: advice is MADV_FREE or MADV_WIPEONFORK but the specified address range includes file, Huge
+      TLB, MAP_SHARED , or VM_PFNMAP ranges
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f721c542dc63bd625acdf5f26aa9a7c3b4f3ac5331ab587dc9d4c8d2a6209c78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 879
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:308c78196700606b898456378db13ff30785375b2a3ed97746fb890f74d4b3d6
+  case: errors_einval_879
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 879
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:308c78196700606b898456378db13ff30785375b2a3ed97746fb890f74d4b3d6
+  case: errors_einval_879

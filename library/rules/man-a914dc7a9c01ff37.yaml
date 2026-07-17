@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A914DC7A9C01FF37
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:c3d0c70acc1f911977d86624571c6a805f45b2397f4bac34b28c34e3bba91187
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 232
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:2e43b1721917a7d88e7aae4a644cda15217bbd37f6407f8a79c7b8448a8c8dc6
+  case: return_value_232
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 232
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:2e43b1721917a7d88e7aae4a644cda15217bbd37f6407f8a79c7b8448a8c8dc6
+  case: return_value_232

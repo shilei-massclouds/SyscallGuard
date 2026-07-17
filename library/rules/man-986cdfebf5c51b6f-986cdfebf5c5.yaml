@@ -1,0 +1,39 @@
+# 合规检查：条件：The caller does not have the CAP_SYS_BOOT capability；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_986CDFEBF5C51B6F--986cdfebf5c5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the CAP_SYS_BOOT capability
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:986cdfebf5c51b6ff7af0442ffd5488a156bb2d32d31d6773e6ae10db582d2dd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 310
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a52bac995bc7f9467750ccd6d8eb1d76f8fc10054d5b37f2d6928f9ff56f69ea
+  case: errors_eperm_310

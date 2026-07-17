@@ -1,0 +1,45 @@
+# 合规检查：条件：addrlen is wrong, or addr is not a valid address for this socket's domain；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2883CA6859B011D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: addr
+    predicate: documented_condition
+    value: EINVAL
+    summary: addrlen is wrong, or addr is not a valid address for this socket's domain
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2883ca6859b011d40af529bfc8d0cd49e53c666f30e9a891d0b49f5dfbd8d1c1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6021225bec92d123d6f7ee99fb20160eabca15710c57c420ffb349b1e74f6818
+  case: errors_einval_132
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6021225bec92d123d6f7ee99fb20160eabca15710c57c420ffb349b1e74f6818
+  case: errors_einval_132

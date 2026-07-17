@@ -1,0 +1,48 @@
+# 合规检查：条件：A bind operation ( MS_BIND ) was requested where source referred a mount namespace magic link (i.e., a /proc/ pid /ns/mnt magic link or a bind mount to such...；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8AA6A5D0F506569F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: source
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: A bind operation ( MS_BIND ) was requested where source referred a mount namespace magic
+      link (i.e., a /proc/ pid /ns/mnt magic link or a bind mount to such...
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8aa6a5d0f506569fcf4cf27f43500ec0e391128666a35fdad7cfd63f27700f68
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 719
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fed82a05d0482256af7bc0000b09dd26597e0e91ffdb1bb8173084cfd9e8fde
+  case: errors_einval_719
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 719
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fed82a05d0482256af7bc0000b09dd26597e0e91ffdb1bb8173084cfd9e8fde
+  case: errors_einval_719

@@ -1,0 +1,46 @@
+# 合规检查：条件：fd refers to a pipe or FIFO；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C55E90828803FC17
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ESPIPE
+    summary: fd refers to a pipe or FIFO
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:c55e90828803fc17ca4d185af5904c54f70f1830119d63c18874f4b14d4579d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89611ab5b74893d5360a11b8a4e47c9f97257a763758eb7d2e410ab867faed01
+  case: errors_espipe_453
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89611ab5b74893d5360a11b8a4e47c9f97257a763758eb7d2e410ab867faed01
+  case: errors_espipe_453

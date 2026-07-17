@@ -32,3 +32,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:9811c98d48e4ab0296eaee65e16806c66b165d063057612e65ff7bba29d725c0
   case: mmap08_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mmap/mmap08.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9811c98d48e4ab0296eaee65e16806c66b165d063057612e65ff7bba29d725c0
+  case: mmap08_28_raw_0

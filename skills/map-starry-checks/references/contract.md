@@ -5,6 +5,7 @@
 ```text
 $映射规则
 $映射规则 syscalls=mmap,close
+$映射规则 coverage=static-only
 ```
 
 在任何 prepare 之前，先要求用户在目标 Starry 仓库自行创建并 checkout 一个专用分支，再明确回复
@@ -16,6 +17,9 @@ $映射规则 syscalls=mmap,close
 `runs/mapping-*/report.md` 是唯一增量状态；没有历史报告的规则视为新增。报告元数据必须携带
 当前规则库全部规则，状态只能是 `covered`、`needs_review`、`unsupported` 或 `pending`。
 `covered` 通过 `static_check_refs` 和 `dynamic_test_refs` 的组合表达静态、动态或共同覆盖。
+Preparation 和 report 必须保存 `coverage_mode`。默认 `full` 保持原行为；`static-only` 禁止新
+staged dynamic test、dynamic ref 和 asset，只允许静态检查进入 execution scope。需要运行时
+夹具的规则标记 `needs_review` 和 `deferred: dynamic_test`；切回 `full` 时必须重新 pending。
 
 以下情况重新处理：规则版本变化；引用检查/测试变化或消失；相关 Starry 文件、符号或 helper
 变化/消失；目标仓库身份或描述符变化；`needs_review`/`unsupported` 遇到新的目标内容快照。

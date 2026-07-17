@@ -1,0 +1,45 @@
+# 合规检查：条件：( dup3 ()) oldfd was equal to newfd；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9BC94E6BD25C05E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: oldfd
+    predicate: documented_condition
+    value: EINVAL
+    summary: ( dup3 ()) oldfd was equal to newfd
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9bc94e6bd25c05e12b4495102575eb27a9d617116c52c0fe32bc96ccf6993130
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1f37c9c36b9db7a02d07bd902c4b6ad9160d4c06297e107c076e084016097e4d
+  case: errors_einval_178
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1f37c9c36b9db7a02d07bd902c4b6ad9160d4c06297e107c076e084016097e4d
+  case: errors_einval_178

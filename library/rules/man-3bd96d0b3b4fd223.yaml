@@ -1,0 +1,45 @@
+# 合规检查：条件：The buffer specified by size and attr is too small；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3BD96D0B3B4FD223
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: attr
+    predicate: invalid_value
+    value: E2BIG
+    summary: The buffer specified by size and attr is too small
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:b99e25062e067ded7bd3756f620bb97290a968f04c6ccc21c8095e5ae2bc3ed7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 380
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cb2ed91132d8b508000f23364564763e2822b10d682e6ffe2f6e2ee673e2209d
+  case: errors_e2big_380
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 380
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cb2ed91132d8b508000f23364564763e2822b10d682e6ffe2f6e2ee673e2209d
+  case: errors_e2big_380

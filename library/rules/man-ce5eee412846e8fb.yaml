@@ -1,0 +1,44 @@
+# 合规检查：条件：CLONE_THREAD was specified in the flags mask, but CLONE_SIGHAND was not. (Since Linux 2.5.35.)；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CE5EEE412846E8FB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_THREAD was specified in the flags mask, but CLONE_SIGHAND was not. (Since Linux 2.5.35.)
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:944b4169dc9c9d73e66058c3f6e3eadf2f71575f59f18b19fc6d41d9994bd509
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e57832863bf38207ea41a54f000efd2ac8ee9157a60919ac17132fb44fc7902e
+  case: errors_einval_1249
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e57832863bf38207ea41a54f000efd2ac8ee9157a60919ac17132fb44fc7902e
+  case: errors_einval_1249

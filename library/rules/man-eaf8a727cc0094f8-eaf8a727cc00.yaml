@@ -1,0 +1,37 @@
+# 合规检查：条件：The head of the robust futex list can't be stored at the location head；检查：调用 get_robust_list(pid, head_ptr, sizep)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EAF8A727CC0094F8--eaf8a727cc00
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: The head of the robust futex list can't be stored at the location head
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - pid
+    - head_ptr
+    - sizep
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:eaf8a727cc0094f870f64bfb01e66016f43002ee132f5614ace3e24122a53d9d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: get_robust_list
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0795acc5b09ab1e7a4e77bfe2c16a469bd37e84788a4a9e36101fbd330f7dc5a
+  case: errors_efault_109

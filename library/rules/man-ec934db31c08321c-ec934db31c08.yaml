@@ -1,0 +1,35 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 chdir(path)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EC934DB31C08321C--ec934db31c08
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: chdir
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:ec934db31c08321c9819009492c300b825b7318ac478a08cf4c9dea2c5bd64f7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 64
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d5c49ce9eae7202e7f84672f66add533d09d374f2de62ee7a422675e04ef8b2
+  case: errors_eio_64

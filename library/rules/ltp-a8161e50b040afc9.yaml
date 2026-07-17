@@ -1,0 +1,55 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.、The fixture sets TEMP_FILE mode to 0700.、The fixture creates TEMP_DIR as a directory.、The fixture creates TEMP_FILE as a regular file.、The fixture sets TEMP_DIR mode to 00770.；检查：调用 rename(TEMP_DIR, TEMP_FILE)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A8161E50B040AFC9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0700'
+    summary: The fixture sets TEMP_FILE mode to 0700.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: directory
+    summary: The fixture creates TEMP_DIR as a directory.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEMP_FILE as a regular file.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '00770'
+    summary: The fixture sets TEMP_DIR mode to 00770.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_DIR
+    - TEMP_FILE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:a8161e50b040afc901541fe93f3f64fb35e489237a2d2aa0c6693c9d635473a0
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename07.c
+  line: 30
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:714f932c068292bb02f9c9192e29bc451971bac9f3418db69f6e229d00789c02
+  case: rename07_30_raw_0

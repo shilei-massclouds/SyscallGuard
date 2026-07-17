@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 swapon(path, swapflags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_84AFF3A4A1AE1FFD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:8d98e277f507cbd0753fcbf6c2dd96f5bdbe3ec278cf8f3db53b571610f0c2e2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 85
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d6dcd32c2c1e3a6d414ba2fc368f375ddc15eb39f29f650521117b0f7dac262f
+  case: return_value_85
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 85
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d6dcd32c2c1e3a6d414ba2fc368f375ddc15eb39f29f650521117b0f7dac262f
+  case: return_value_85

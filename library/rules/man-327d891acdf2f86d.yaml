@@ -1,0 +1,44 @@
+# 合规检查：条件：An I/O error occurred while reading from the filesystem；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_327D891ACDF2F86D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred while reading from the filesystem
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:38968088d902527121d830ef2ca5c4311247bf901d7021d5a4bc9f4b7aa8bf67
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be5a03a8cc0d3133ad53fec18f02a40e3b897203725a4e9b71c629c9689782e3
+  case: errors_eio_245
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:be5a03a8cc0d3133ad53fec18f02a40e3b897203725a4e9b71c629c9689782e3
+  case: errors_eio_245

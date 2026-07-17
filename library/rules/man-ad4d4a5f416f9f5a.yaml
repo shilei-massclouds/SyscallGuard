@@ -1,0 +1,44 @@
+# 合规检查：条件：The queue exists, but the caller does not have permission to open it in the specified mode；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD4D4A5F416F9F5A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The queue exists, but the caller does not have permission to open it in the specified mode
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:ad4d4a5f416f9f5a3e42238fc9d0e3af5f2a4655feed5b57b15479ceee372518
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c176bf3ad832038c735c4664487b022d30866cd5775dc95f869336a32c364095
+  case: errors_eacces_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c176bf3ad832038c735c4664487b022d30866cd5775dc95f869336a32c364095
+  case: errors_eacces_154

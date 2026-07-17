@@ -1,0 +1,38 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix. (See also path_resolution (7).)；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_845BEFF99463578F--845beff99463
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix. (See also path_resolution
+      (7).)
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:845beff99463578fb0ee71e1f38bdd70efcbdcaeb2e80acfca813e6f0330dc81
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 203
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:425a60fe7d182e06f727fd7bcdaf58aea81edcacc1b38ceaee3338e0eaaeaf80
+  case: errors_eacces_203

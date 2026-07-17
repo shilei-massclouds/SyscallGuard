@@ -1,0 +1,47 @@
+# 合规检查：条件：flags contains RENAME_NOREPLACE and newpath already exists；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DF108DD14D05A4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: newpath
+    predicate: documented_path_condition
+    value: EEXIST
+    summary: flags contains RENAME_NOREPLACE and newpath already exists
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:8df108dd14d05a4e632b5302f6976b913b972226e78ba5a59b79089984a53274
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 443
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:977680f453935dbb599537c76ef5cc7f7bffeb03bcfdc35d8ebd6f5d3a96b77e
+  case: errors_eexist_443
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 443
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:977680f453935dbb599537c76ef5cc7f7bffeb03bcfdc35d8ebd6f5d3a96b77e
+  case: errors_eexist_443

@@ -1,0 +1,47 @@
+# 合规检查：条件：msg_len was less than the mq_msgsize attribute of the message queue；检查：调用 mq_timedreceive(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EMSGSIZE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BFC49E23D6364C40
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: msg_len
+    predicate: invalid_value
+    value: EMSGSIZE
+    summary: msg_len was less than the mq_msgsize attribute of the message queue
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedreceive
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMSGSIZE
+  errno:
+  - EMSGSIZE
+semantic_hash: sha256:bfc49e23d6364c405998b773609640be8d55b7d9c19f4eca68015300524f5c9e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67f2f248203c6df21d113007a3e0d7bc2cee85a3324eff21d3d0f094ce3d798c
+  case: errors_emsgsize_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedreceive
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67f2f248203c6df21d113007a3e0d7bc2cee85a3324eff21d3d0f094ce3d798c
+  case: errors_emsgsize_123

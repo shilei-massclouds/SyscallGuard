@@ -1,0 +1,46 @@
+# 合规检查：条件：An attempt was made to write a file that exceeds the implementation-defined maximum file size or the process's file size limit, or to write at a position...；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0B80140A5428B618
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFBIG
+    summary: An attempt was made to write a file that exceeds the implementation-defined maximum file
+      size or the process's file size limit, or to write at a position...
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:0b80140a5428b6188c40f393f97a2117b4908f1e1d8477171e801b8e842036ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bbcdd2bd20d83a707d0cb6d3da2bdc7cbde55c05fcac6803034d0fd0230585e7
+  case: errors_efbig_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bbcdd2bd20d83a707d0cb6d3da2bdc7cbde55c05fcac6803034d0fd0230585e7
+  case: errors_efbig_154

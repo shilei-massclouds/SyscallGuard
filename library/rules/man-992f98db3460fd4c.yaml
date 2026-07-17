@@ -1,0 +1,46 @@
+# 合规检查：条件：Too many symbolic links were encountered in resolving path；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_992F98DB3460FD4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in resolving path
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:992f98db3460fd4c0e6366f3ec4e7d3e255f21b444c9dbd09ce26bf8eefb3cc7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16a0f2b4f8c3b665f4335d80e5527b5817659ebf722336820fa0bcc0929d1d6f
+  case: errors_eloop_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16a0f2b4f8c3b665f4335d80e5527b5817659ebf722336820fa0bcc0929d1d6f
+  case: errors_eloop_190

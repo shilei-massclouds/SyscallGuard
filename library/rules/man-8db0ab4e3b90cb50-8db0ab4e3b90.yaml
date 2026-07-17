@@ -1,0 +1,40 @@
+# 合规检查：条件：(since Linux 2.6.12) length was 0；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: length
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 2.6.12) length was 0
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8db0ab4e3b90cb5034fa16053963c87b696afd01c42ca53f05b3f82f4a75bf18
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 539
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc65ab66e2fc66cf832c4c3486cf457f554fa64db2d2d34f12ffdb2c37055d09
+  case: errors_einval_539

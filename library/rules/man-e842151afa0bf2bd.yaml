@@ -1,0 +1,47 @@
+# 合规检查：条件：Where O_CREAT is specified, the file does not exist, and the user's quota of disk blocks or inodes on the filesystem has been exhausted；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E842151AFA0BF2BD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: Where O_CREAT is specified, the file does not exist, and the user's quota of disk blocks
+      or inodes on the filesystem has been exhausted
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:e842151afa0bf2bd8f980277bf062d270b18bcee0b41050e3dd592d4e80625ae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1027
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a81f220c294f590d84a3f6ef27b2b1f4dbe95050ea8449bff7e331052fc3b89
+  case: errors_edquot_1027
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1027
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a81f220c294f590d84a3f6ef27b2b1f4dbe95050ea8449bff7e331052fc3b89
+  case: errors_edquot_1027

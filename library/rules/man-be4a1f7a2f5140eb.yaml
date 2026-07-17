@@ -1,0 +1,44 @@
+# 合规检查：条件：The O_CREAT flag was not specified in oflag , and no queue with this name exists；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BE4A1F7A2F5140EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: name
+    predicate: documented_state_condition
+    value: ENOENT
+    summary: The O_CREAT flag was not specified in oflag , and no queue with this name exists
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:be4a1f7a2f5140eb591a347f868972983e3977f1246f0dedfe43a65b5cb80b47
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1766c28215afea3e5ba5c5dc7e04a6ef26cd02295d4a5fb4d98cf5a331d9dc85
+  case: errors_enoent_229
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1766c28215afea3e5ba5c5dc7e04a6ef26cd02295d4a5fb4d98cf5a331d9dc85
+  case: errors_enoent_229

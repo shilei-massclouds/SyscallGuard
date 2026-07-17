@@ -1,0 +1,47 @@
+# 合规检查：条件：An extension that this kernel does not support was specified in how . (See the Extensibility section of NOTES for more detail on how extensions are handled.)；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_20D644B5C57002F8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: how
+    predicate: documented_condition
+    value: E2BIG
+    summary: An extension that this kernel does not support was specified in how . (See the Extensibility
+      section of NOTES for more detail on how extensions are handled.)
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:20d644b5c57002f8f9a01c63b435ec8724a85d57a37542925b90f7baa854a723
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 412
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9002f865d238711517203ead5c21a169b8f8792771dd0f7373c9b6fbabc3fe5
+  case: errors_e2big_412
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 412
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9002f865d238711517203ead5c21a169b8f8792771dd0f7373c9b6fbabc3fe5
+  case: errors_e2big_412

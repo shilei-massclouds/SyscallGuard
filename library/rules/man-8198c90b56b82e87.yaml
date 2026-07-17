@@ -1,0 +1,44 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 pipe2(pipefd, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8198C90B56B82E87
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:8198c90b56b82e87c9a6dd79908c8a656055753494007090358877e4bcc230f1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d199f67c8dd1caa35964d62a6dc0b2bc0e80fdbe7c3afe85c44f180bcbcd5b23
+  case: errors_emfile_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d199f67c8dd1caa35964d62a6dc0b2bc0e80fdbe7c3afe85c44f180bcbcd5b23
+  case: errors_emfile_165

@@ -1,0 +1,46 @@
+# 合规检查：条件：The named attribute does not exist, or the process has no access to this attribute；检查：调用 lgetxattr(path, name, size, size)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C8BA7357083E4F2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: The named attribute does not exist, or the process has no access to this attribute
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:598695286f5b752b7fdfa7681b11790d3ec4d801024bbad528a5327b4099150e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 103
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8780c497cb3cf04599deb525533960338f406872faf0d309a56d932c9a392339
+  case: errors_enodata_103
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 103
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8780c497cb3cf04599deb525533960338f406872faf0d309a56d932c9a392339
+  case: errors_enodata_103

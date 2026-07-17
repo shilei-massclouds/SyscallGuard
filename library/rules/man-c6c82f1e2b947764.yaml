@@ -1,0 +1,45 @@
+# 合规检查：条件：A directory component in path does not exist or is a dangling symbolic link；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C6C82F1E2B947764
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A directory component in path does not exist or is a dangling symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:c6c82f1e2b9477641f29171789e570818d6ecc003fd1b4a136a76870a6fc1a05
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a14064294500c3612a0403e7b05dae754c513637ab44f2cf00d55c51d4f8a98
+  case: errors_enoent_104
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a14064294500c3612a0403e7b05dae754c513637ab44f2cf00d55c51d4f8a98
+  case: errors_enoent_104

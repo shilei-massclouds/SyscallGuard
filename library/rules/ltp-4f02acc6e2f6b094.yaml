@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:32b2d16c748a4731ef2f71997f8ad43ae88fc6eebcb4179f5bb7ed02c5c4854f
   case: dup205_42_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup205.c
+  line: 42
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:32b2d16c748a4731ef2f71997f8ad43ae88fc6eebcb4179f5bb7ed02c5c4854f
+  case: dup205_42_raw_0

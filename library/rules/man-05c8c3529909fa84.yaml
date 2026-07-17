@@ -1,0 +1,46 @@
+# 合规检查：条件：The glibc wrapper function for getrandom () determined that the underlying kernel does not implement this system call；检查：调用 getrandom(size, size, flags)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05C8C3529909FA84
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: The glibc wrapper function for getrandom () determined that the underlying kernel does not
+      implement this system call
+  action:
+    operation: invoke_syscall
+    syscall: getrandom
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:05c8c3529909fa846565407d3f8cf8be8c6e37dff51ebfe1c2aed5e7b3f58be2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8128f697720a57737d583b2a03cf9c98bb26ecf517b97fb3cdb8e2d289233ea
+  case: errors_enosys_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrandom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8128f697720a57737d583b2a03cf9c98bb26ecf517b97fb3cdb8e2d289233ea
+  case: errors_enosys_154

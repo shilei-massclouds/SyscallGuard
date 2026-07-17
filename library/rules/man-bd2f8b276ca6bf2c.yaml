@@ -1,0 +1,47 @@
+# 合规检查：条件：The calling process does not have the permissions required to perform the specified semaphore operations, and does not have the CAP_IPC_OWNER capability in...；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BD2F8B276CA6BF2C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The calling process does not have the permissions required to perform the specified semaphore
+      operations, and does not have the CAP_IPC_OWNER capability in...
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:dd1d20b63767c341220a5a9191f7972f099859290c2a6faf4d05da7d184faddd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 290
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a60092656c1186fd7de6b8ea51a6bca668049828460c3dd04419a706902e4409
+  case: errors_eacces_290
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 290
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a60092656c1186fd7de6b8ea51a6bca668049828460c3dd04419a706902e4409
+  case: errors_eacces_290

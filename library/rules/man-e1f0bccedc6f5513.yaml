@@ -1,0 +1,46 @@
+# 合规检查：条件：The wait was interrupted by a signal handler; see signal (7). (This handler was for a signal other than one of those in set .)；检查：调用 rt_sigtimedwait(set, info, timeout)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E1F0BCCEDC6F5513
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: set
+    predicate: documented_condition
+    value: EINTR
+    summary: The wait was interrupted by a signal handler; see signal (7). (This handler was for a signal
+      other than one of those in set .)
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigtimedwait
+    arguments:
+    - set
+    - info
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:e1f0bccedc6f5513b936b98c12f3f56f4d06eb16a651a8228b9427424ba54809
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:060430e160a94cf63e4d69f01613b6233c42f3f6dba1b5a6540d3d4a1793b6e4
+  case: errors_eintr_106
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigtimedwait
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:060430e160a94cf63e4d69f01613b6233c42f3f6dba1b5a6540d3d4a1793b6e4
+  case: errors_eintr_106

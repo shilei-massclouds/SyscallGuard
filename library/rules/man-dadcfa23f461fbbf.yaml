@@ -1,0 +1,47 @@
+# 合规检查：条件：epfd is not an epoll file descriptor, or fd is the same as epfd , or the requested operation op is not supported by this interface；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DADCFA23F461FBBF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: epfd is not an epoll file descriptor, or fd is the same as epfd , or the requested operation
+      op is not supported by this interface
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dadcfa23f461fbbf9a88ff1f9b10e85b6e1e7dac4e37ca8986fc8e414a12fa89
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 285
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ac27492b98c2d58d7dfedb538748556aac94824a8b89e1db12df1ed737f37ed
+  case: errors_einval_285
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 285
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ac27492b98c2d58d7dfedb538748556aac94824a8b89e1db12df1ed737f37ed
+  case: errors_einval_285

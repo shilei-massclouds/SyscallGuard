@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fstat(fd, statbuf)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DFDB86CEA63B78D3--dfdb86cea63b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:dfdb86cea63b78d3cb728258ccdd4e501fa440f02735ef246d17fdbc5044d250
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 215
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:31480b3a71606a266e50a64714eb9a0b5e38dd51d12a3590d9b6d552bed32da6
+  case: return_value_215

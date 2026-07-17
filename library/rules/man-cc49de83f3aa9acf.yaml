@@ -1,0 +1,42 @@
+# 合规检查：条件：flags is invalid; or, in Linux 2.6.26 or earlier, flags is nonzero；检查：调用 signalfd4()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC49DE83F3AA9ACF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is invalid; or, in Linux 2.6.26 or earlier, flags is nonzero
+  action:
+    operation: invoke_syscall
+    syscall: signalfd4
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:cc49de83f3aa9acfc73f1168f0b78549b22355bf4d19a6744fd689b2f783bd2a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/signalfd.2
+  line: 316
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94465b1d17ac8794350123549b86c6ca5f456773c8c8de0330e66649390b51c3
+  case: errors_einval_316
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: signalfd4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/signalfd.2
+  line: 316
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94465b1d17ac8794350123549b86c6ca5f456773c8c8de0330e66649390b51c3
+  case: errors_einval_316

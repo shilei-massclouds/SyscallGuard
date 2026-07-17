@@ -1,0 +1,37 @@
+# 合规检查：条件：The semaphore set doesn't exist, or semid is less than zero, or nsops has a nonpositive value；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D345FDC972306DD2--d345fdc97230
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: semid
+    predicate: invalid_value
+    value: EINVAL
+    summary: The semaphore set doesn't exist, or semid is less than zero, or nsops has a nonpositive value
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d345fdc972306dd256c3acc3672204593ac26a15b1c979ad5a0429b5ec47b9d4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 328
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:afa5d4758066c16f600fb14927211632fbbdbcb55c093268de484b9ceb7bae89
+  case: errors_einval_328

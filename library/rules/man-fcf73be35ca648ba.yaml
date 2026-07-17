@@ -1,0 +1,44 @@
+# 合规检查：条件：( statfs ()) The file referred to by path does not exist；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FCF73BE35CA648BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: ( statfs ()) The file referred to by path does not exist
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:fcf73be35ca648ba0ca07b42ee0a5c85f2be6f8828f59c34f2dd26bf56c48b69
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 258
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7392e97394529be201f9f4057a918e4a123d7246b77a83ce13ca4437d19dc3bd
+  case: errors_enoent_258
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 258
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7392e97394529be201f9f4057a918e4a123d7246b77a83ce13ca4437d19dc3bd
+  case: errors_enoent_258

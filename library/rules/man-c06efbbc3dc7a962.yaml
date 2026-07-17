@@ -1,0 +1,44 @@
+# 合规检查：条件：There is not enough space left on the device for extending the file size to the given length；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C06EFBBC3DC7A962
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: length
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: There is not enough space left on the device for extending the file size to the given length
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:41db1bbc9a406cd4b8dc069d4a60ac13f2be24503af4f4afc4f47778c5f029a9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:946fcb8be324ed7c0aa862ce0eb577700bfd6717be8d0e9799a7faa5ca32d530
+  case: errors_enospc_100
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:946fcb8be324ed7c0aa862ce0eb577700bfd6717be8d0e9799a7faa5ca32d530
+  case: errors_enospc_100

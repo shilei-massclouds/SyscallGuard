@@ -1,0 +1,41 @@
+# 合规检查：条件：Both CLONE_NEWIPC and CLONE_SYSVSEM were specified in the flags mask；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2F625C55BE32E5FD--2f625c55be32
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both CLONE_NEWIPC and CLONE_SYSVSEM were specified in the flags mask
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2f625c55be32e5fdd9329ba4b2f379ab454d7f4210121abd6b1b290a91241497
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1297
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ecc78a4eaed934620497ca5c7c2b4e434085004f6ce53d35ccfa680d216c242
+  case: errors_einval_1297

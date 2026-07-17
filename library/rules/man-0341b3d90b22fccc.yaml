@@ -1,0 +1,44 @@
+# 合规检查：条件：CLONE_NEWUTS was specified in flags , but the kernel was not configured with the CONFIG_UTS_NS option；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0341B3D90B22FCCC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWUTS was specified in flags , but the kernel was not configured with the CONFIG_UTS_NS
+      option
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0341b3d90b22fcccc66041359c491f1c6d300c853f9b24be64888591fc5b96fa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 342
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32b1b967cc61443c2cadbfa28256856762ab10a1aec1fa75e1afb270f2633c7c
+  case: errors_einval_342
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 342
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32b1b967cc61443c2cadbfa28256856762ab10a1aec1fa75e1afb270f2633c7c
+  case: errors_einval_342

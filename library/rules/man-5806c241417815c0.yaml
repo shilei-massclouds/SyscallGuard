@@ -1,0 +1,43 @@
+# 合规检查：条件：Any waiters []. flags field does not contain exactly one size flag, or it contains an unsupported one；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5806C241417815C0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: Any waiters []. flags field does not contain exactly one size flag, or it contains an unsupported
+      one
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5806c241417815c0b67ce2229b529adc5ad5a7d93e4260e099878b099cec1a6b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 231
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ade4c3c76f1306c058054d82008c818ef12dc383b05b82a90c2875ce02b729b3
+  case: errors_einval_231
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 231
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ade4c3c76f1306c058054d82008c818ef12dc383b05b82a90c2875ce02b729b3
+  case: errors_einval_231

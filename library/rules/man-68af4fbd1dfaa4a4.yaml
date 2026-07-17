@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned on many (but not all) architectures when an unsupported exclude_hv , exclude_idle , exclude_user , or exclude_kernel setting is specified. It can...；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_68AF4FBD1DFAA4A4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: Returned on many (but not all) architectures when an unsupported exclude_hv , exclude_idle
+      , exclude_user , or exclude_kernel setting is specified. It can...
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:68af4fbd1dfaa4a4efee4d681a0415bfac891548f95720c5ff1117dde97fa1ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3883
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:875e5a7ae06fcf6a6b1689744438112d277203a5abd838bee755f5ab00d58c33
+  case: errors_eperm_3883
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3883
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:875e5a7ae06fcf6a6b1689744438112d277203a5abd838bee755f5ab00d58c33
+  case: errors_eperm_3883

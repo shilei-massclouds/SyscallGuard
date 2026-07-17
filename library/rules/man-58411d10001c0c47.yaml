@@ -1,0 +1,43 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 close(fd)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_58411D10001C0C47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:58411d10001c0c473338b634c9add4cf7c4ecce7c67614a280b5e923625f4593
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f9ae7eed7cca45c04b4e2e4e13cd04096eff8b77f4da14ac44675178ec226577
+  case: errors_eio_65
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 65
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f9ae7eed7cca45c04b4e2e4e13cd04096eff8b77f4da14ac44675178ec226577
+  case: errors_eio_65

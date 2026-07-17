@@ -1,0 +1,44 @@
+# 合规检查：条件：io_setup () is not implemented on this architecture；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_062878027C124D38
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: io_setup () is not implemented on this architecture
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:062878027c124d38f3ad4181b3ecda04f107596bfb7eae3a658b5b697cf6fe12
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:799ede439a652fd6f106056a45dd827206aa2445a07d3f4763f0d98ab16145ea
+  case: errors_enosys_79
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 79
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:799ede439a652fd6f106056a45dd827206aa2445a07d3f4763f0d98ab16145ea
+  case: errors_enosys_79

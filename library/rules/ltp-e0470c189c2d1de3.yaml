@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:8913c254406aed15f27c37fcca7eec6e4be86d48991a4bd201b7430514e88d85
   case: set_robust_list01_127_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/set_robust_list/set_robust_list01.c
+  line: 127
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:8913c254406aed15f27c37fcca7eec6e4be86d48991a4bd201b7430514e88d85
+  case: set_robust_list01_127_raw_0

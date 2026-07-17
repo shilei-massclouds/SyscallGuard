@@ -1,0 +1,46 @@
+# 合规检查：条件：While the process was sleeping to receive a message, the message queue was removed；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9536A31C78C4468C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIDRM
+    summary: While the process was sleeping to receive a message, the message queue was removed
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:15bbc0f8f79c52143900b4d83f5ebb613be2321d753d783cbecb46a2b8c7b2fa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 387
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe31c5e2386e06e3d359702c0f1da88105fea2aa66e401457c1b93165c27bed2
+  case: errors_eidrm_387
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 387
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe31c5e2386e06e3d359702c0f1da88105fea2aa66e401457c1b93165c27bed2
+  case: errors_eidrm_387

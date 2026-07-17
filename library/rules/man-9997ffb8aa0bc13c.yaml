@@ -1,0 +1,44 @@
+# 合规检查：条件：The underlying filesystem of the specified file does not support memory mapping；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9997FFB8AA0BC13C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENODEV
+    summary: The underlying filesystem of the specified file does not support memory mapping
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:4c031882d9d770efa06d0c3dfb0008eff8591d21c5512a92756cc6be916ca5db
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 560
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3088f967d4f9f63f54885ad24a4d487abc28d5c450f47a2049919b89173f9fa6
+  case: errors_enodev_560
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 560
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3088f967d4f9f63f54885ad24a4d487abc28d5c450f47a2049919b89173f9fa6
+  case: errors_enodev_560

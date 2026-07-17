@@ -1,0 +1,42 @@
+# 合规检查：条件：The file referred to by fd is not opened for reading；检查：调用 init_module()；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9DA524ED947C6C91
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The file referred to by fd is not opened for reading
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:3be3799eb0d28f945c368a5d63f8493426c9ec76fb9d6668f03e6a6c85ff0dc1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:83c58672e6c4cb2418acfd0f728ae4e4826ac47c6158601dd398c2577271a6d5
+  case: errors_ebadf_250
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:83c58672e6c4cb2418acfd0f728ae4e4826ac47c6158601dd398c2577271a6d5
+  case: errors_ebadf_250

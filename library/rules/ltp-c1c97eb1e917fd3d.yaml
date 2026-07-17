@@ -1,0 +1,47 @@
+# 合规检查：条件：The file descriptor is invalid.、The fixture creates FILENAME as a regular file.、The fixture sets FILENAME mode to 0640.；检查：调用 fchmodat2(fd_invalid, FILENAME, 0777, 0)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C1C97EB1E917FD3D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd_invalid
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates FILENAME as a regular file.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0640'
+    summary: The fixture sets FILENAME mode to 0640.
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat2
+    arguments:
+    - fd_invalid
+    - FILENAME
+    - '0777'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c1c97eb1e917fd3d56d403eaf0f0b9890b663872f78a31af0487f6a0cf92b5f7
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmodat2/fchmodat2_02.c
+  line: 39
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:10819e46274d98cea031bc94af7e0eb3ac95ac99f5a06ac22fb9bea1aae8e595
+  case: fchmodat2_02_39_0_0

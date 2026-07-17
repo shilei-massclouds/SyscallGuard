@@ -1,0 +1,45 @@
+# 合规检查：条件：The iocb specified was not canceled；检查：调用 io_cancel(ctx_id, iocb, result)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BB3D8A84A281D347
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: iocb
+    predicate: documented_condition
+    value: EAGAIN
+    summary: The iocb specified was not canceled
+  action:
+    operation: invoke_syscall
+    syscall: io_cancel
+    arguments:
+    - ctx_id
+    - iocb
+    - result
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:bb3d8a84a281d34787498891396ce145ca86a2d77763a75bd484f8cfc6740fe9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5899fe80a030431e7119e6233dc234f697da4e65b4e9670f0a36caaf1e05f8b3
+  case: errors_eagain_54
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_cancel
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5899fe80a030431e7119e6233dc234f697da4e65b4e9670f0a36caaf1e05f8b3
+  case: errors_eagain_54

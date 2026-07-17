@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getrlimit(resource, rlim)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26E6F2EB17CEE086--26e6f2eb17ce
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:26e6f2eb17cee08609086e35d6b91804043167781f2a7d9b14a63097d9a1cb7c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 468
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:bf8d5e22770a1c079ff2bc4139e0274605ea9444268e8bdc11cb53575c1782c3
+  case: return_value_468

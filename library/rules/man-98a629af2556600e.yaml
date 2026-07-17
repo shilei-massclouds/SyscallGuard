@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98A629AF2556600E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:a4d6bb3d4666100397f7311a4e1eb188e9ab758b5c355c773ace2128958df3a1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 141
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:374174514702412ad6848c09807d8b094f9338d52822f3bf3e0dbb0dfb5e6229
+  case: return_value_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 141
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:374174514702412ad6848c09807d8b094f9338d52822f3bf3e0dbb0dfb5e6229
+  case: return_value_141

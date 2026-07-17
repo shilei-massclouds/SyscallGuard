@@ -1,0 +1,38 @@
+# 合规检查：条件：The decompressor sanity checks failed, while loading a compressed module with flag MODULE_INIT_COMPRESSED_FILE set；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D61333A8FF3612C6--d61333a8ff36
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The decompressor sanity checks failed, while loading a compressed module with flag MODULE_INIT_COMPRESSED_FILE
+      set
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d61333a8ff3612c6d5672f03dd7efb3394552923379b5fffdbf106587fd6a483
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bf9fffbe032dd31bdc07ddc4ce9b04c0f2403b79d6c2a10b1062230a793cb5bb
+  case: errors_einval_264

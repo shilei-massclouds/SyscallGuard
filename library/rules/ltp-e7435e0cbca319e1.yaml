@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:2c9298663ca5f98774c1a79ebb6b6757565756e6fe826ffe244c4209c1719741
   case: epoll_create01_25_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_create/epoll_create01.c
+  line: 25
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:2c9298663ca5f98774c1a79ebb6b6757565756e6fe826ffe244c4209c1719741
+  case: epoll_create01_25_raw_0

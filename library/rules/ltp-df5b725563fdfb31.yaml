@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:5f7547e0797f3702e5fcec6adc2af791ee9ff462d9bc4b351cf0617b191490e2
   case: waitid04_29_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid04.c
+  line: 29
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:5f7547e0797f3702e5fcec6adc2af791ee9ff462d9bc4b351cf0617b191490e2
+  case: waitid04_29_raw_0

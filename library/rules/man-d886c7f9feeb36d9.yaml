@@ -1,0 +1,42 @@
+# 合规检查：条件：A module with this name is already loaded；检查：调用 init_module()；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D886C7F9FEEB36D9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EEXIST
+    summary: A module with this name is already loaded
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:0fd52ed98102882d8afecd23780babd9f8811f0371f175312bbecc94d36acbbf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38f5c9d7ce91e42a710c67600fd00456617c04b27979dd4cd76a8f7a89b65578
+  case: errors_eexist_222
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38f5c9d7ce91e42a710c67600fd00456617c04b27979dd4cd76a8f7a89b65578
+  case: errors_eexist_222

@@ -1,0 +1,46 @@
+# 合规检查：条件：A connection has been aborted；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 ECONNABORTED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9CC26FBE27A0B0D1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECONNABORTED
+    summary: A connection has been aborted
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECONNABORTED
+  errno:
+  - ECONNABORTED
+semantic_hash: sha256:2f9eec3e7ace017a447dd8c8fe9c7282fb805e111b90a99d8cfc102585e8d60a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d38f52e6054f6074456529862991e6210018846790633c4b28d2d3c58e6e070
+  case: errors_econnaborted_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d38f52e6054f6074456529862991e6210018846790633c4b28d2d3c58e6e070
+  case: errors_econnaborted_190

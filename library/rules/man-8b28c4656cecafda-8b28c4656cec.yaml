@@ -1,0 +1,36 @@
+# 合规检查：条件：fd is not a valid file descriptor；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8B28C4656CECAFDA--8b28c4656cec
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:8b28c4656cecafda5e8e9693bb1b077435a13b52e64826d0980b21fb507964f2
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 161
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:278baf32a839b6384e5371661de92cf8e102be9bd62f79b40be1bbd994023d01
+  case: errors_ebadf_161

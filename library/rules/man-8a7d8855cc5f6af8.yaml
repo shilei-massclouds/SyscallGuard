@@ -1,0 +1,46 @@
+# 合规检查：条件：The requested entropy was not available, and getrandom () would have blocked if the GRND_NONBLOCK flag was not set；检查：调用 getrandom(size, size, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8A7D8855CC5F6AF8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EAGAIN
+    summary: The requested entropy was not available, and getrandom () would have blocked if the GRND_NONBLOCK
+      flag was not set
+  action:
+    operation: invoke_syscall
+    syscall: getrandom
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:8a7d8855cc5f6af80ae6fdb4ebf9fb6b6c959b58ccc14b77981c89b6bbe49fea
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9aa16a62c73b47bfd535730847b1e90f95bb4b93a80af28a5c5c8044522fa59e
+  case: errors_eagain_127
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrandom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9aa16a62c73b47bfd535730847b1e90f95bb4b93a80af28a5c5c8044522fa59e
+  case: errors_eagain_127

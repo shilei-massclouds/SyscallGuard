@@ -1,0 +1,42 @@
+# 合规检查：条件：flags was not 0；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_51133E60F6CD5764
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags was not 0
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:51133e60f6cd5764957e841da3a24f5e22e2c343a20cb27838ec5ae1796bf3fb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:febe855a181a3c2e17819f53a0a4836a6912e18b0f763d914c801a11511175f7
+  case: errors_einval_202
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:febe855a181a3c2e17819f53a0a4836a6912e18b0f763d914c801a11511175f7
+  case: errors_einval_202

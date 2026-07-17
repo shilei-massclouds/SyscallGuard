@@ -1,0 +1,37 @@
+# 合规检查：条件：fd does not refer to an open file；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_837C792282DF9AD0--837c792282df
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ENOEXEC
+    summary: fd does not refer to an open file
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:837c792282df9ad00277cd17f9de5db9490c04751810b86d491ec95e5e47243f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 270
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:39d4af0101676b3e1d6a29dfe93a62226aeee4b768ba768ecc005d20108a7005
+  case: errors_enoexec_270

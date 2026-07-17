@@ -1,0 +1,35 @@
+# 合规检查：条件：Path resolution encounters a symlink loop.；检查：调用 access(sname1, R_OK)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E8D2C5525DC42DD1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - sname1
+    - R_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:e8d2c5525dc42dd1ee5b8c011f94425e704c8f059b8ca040f716e54b8105bac5
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access04.c
+  line: 66
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:bccd5b82a0f931294b3ccfe9f727c641c4fd575588e33aeea6a7da8e1182c3e7
+  case: access04_66_4_0

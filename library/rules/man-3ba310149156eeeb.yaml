@@ -1,0 +1,43 @@
+# 合规检查：条件：target is not a mount point；检查：调用 umount2(target)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3BA310149156EEEB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: target
+    predicate: documented_condition
+    value: EINVAL
+    summary: target is not a mount point
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3ba310149156eeeb6e537d42e7c1adce90c495e54d7cb974a9d220c5958905f5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f73005f32ddfd8d5072d353b1a4ef863ef9c750de8deac4ca42394c0d2cd7e95
+  case: errors_einval_120
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f73005f32ddfd8d5072d353b1a4ef863ef9c750de8deac4ca42394c0d2cd7e95
+  case: errors_einval_120

@@ -1,0 +1,46 @@
+# 合规检查：条件：nsems is less than 0 or greater than the limit on the number of semaphores per semaphore set ( SEMMSL )；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C0EBB91F1057DA24
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: nsems
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: nsems is less than 0 or greater than the limit on the number of semaphores per semaphore
+      set ( SEMMSL )
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c0ebb91f1057da24b9e37a5a8de3b08c16b39d31dfc05e5931b61aa69fae4afa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d06548c0b5db4b9050ef27d256b16b55e64e9a624b8088dd40418c71f4ce3da
+  case: errors_einval_156
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d06548c0b5db4b9050ef27d256b16b55e64e9a624b8088dd40418c71f4ce3da
+  case: errors_einval_156

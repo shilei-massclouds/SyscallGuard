@@ -1,0 +1,46 @@
+# 合规检查：条件：Insufficient memory to create a key；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_13EBCA9DECC049A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient memory to create a key
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:13ebca9decc049a933378c3e7ee4fc199b82892650ec847b86107e39aeda6552
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 421
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e7b9f2109a0f2c62b3cf09626bc86a00e0d09ba686eef00b151664b2287eaa8
+  case: errors_enomem_421
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 421
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e7b9f2109a0f2c62b3cf09626bc86a00e0d09ba686eef00b151664b2287eaa8
+  case: errors_enomem_421

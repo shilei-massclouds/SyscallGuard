@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_THREAD was specified in the flags mask, but the current process previously called unshare (2) with the CLONE_NEWPID flag or used setns (2) to...；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD364C9DA3606DD0--fd364c9da360
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_THREAD was specified in the flags mask, but the current process previously called unshare
+      (2) with the CLONE_NEWPID flag or used setns (2) to...
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fd364c9da3606dd0bf9db129ec06d87aa05e983e7a62e3607f0170a101520bf3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1266
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:142b6f07d72812a5aa8b541766937d3ffe9198ed6e059d31f596a71ab359853d
+  case: errors_einval_1266

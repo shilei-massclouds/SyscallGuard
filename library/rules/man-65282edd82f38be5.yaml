@@ -1,0 +1,46 @@
+# 合规检查：条件：The file is a UNIX domain socket；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENXIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_65282EDD82F38BE5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENXIO
+    summary: The file is a UNIX domain socket
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENXIO
+  errno:
+  - ENXIO
+semantic_hash: sha256:65282edd82f38be546215238ba901ef9ee508c5bd12be7456b249f02bb6a888b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1226
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c7d33d7175c937ab594188a9c62f478dd486e7e8a33e386cdfb2544a6c3892f8
+  case: errors_enxio_1226
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1226
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c7d33d7175c937ab594188a9c62f478dd486e7e8a33e386cdfb2544a6c3892f8
+  case: errors_enxio_1226

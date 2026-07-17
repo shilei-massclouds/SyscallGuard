@@ -1,0 +1,39 @@
+# 合规检查：条件：kernel_fd or initrd_fd is not a valid file descriptor；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8D43E194EA5A4EA4--8d43e194ea5a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: kernel_fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: kernel_fd or initrd_fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:8d43e194ea5a4ea4b985b5f97b01acbb53f0ee327aed734f6fb9977ddaf79e59
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 256
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9f5f2254cb5b7a60da3810d1ec9ec5f1c280b5fd63cd8679a55f75718313c34
+  case: errors_ebadf_256

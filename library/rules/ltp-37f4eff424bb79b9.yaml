@@ -1,0 +1,35 @@
+# 合规检查：条件：The caller lacks a permission required by the operation.；检查：调用 setpgid(child_pid, getppid())；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_37F4EFF424BB79B9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - child_pid
+    - getppid()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:37f4eff424bb79b9fe2f999a6002ad74361f799b1876a12953dd4fccd13aa004
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpgid/setpgid03.c
+  line: 56
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:27ce47719314ad70721393103edbe654fba5260efa6713f60ab649b72f209a15
+  case: setpgid03_56_raw_0

@@ -1,0 +1,37 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 cachestat(fd, cs_range_null, cs, 0)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2722827BC58E04CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: cachestat
+    arguments:
+    - fd
+    - cs_range_null
+    - cs
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2722827bc58e04cd95d2e1065331bde64de61eef567af97baf3f31f98a5d0c2d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat03.c
+  line: 47
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a64b48a50df72f6694e757feae2e300dca56c869cfe56f74040f2951024365c1
+  case: cachestat03_47_1_0

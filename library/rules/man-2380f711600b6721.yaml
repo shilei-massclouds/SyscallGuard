@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 set_mempolicy(mode, nodemask, maxnode)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2380F711600B6721
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: set_mempolicy
+    arguments:
+    - mode
+    - nodemask
+    - maxnode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:2380f711600b6721140810804524f59dc9b28ee91d9dd9132571fbf055920ceb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 335
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f1ede78408f4787faa99e9a26d5042572244c0e58cd79a03f86e66b8b1a92979
+  case: errors_enomem_335
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: set_mempolicy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 335
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f1ede78408f4787faa99e9a26d5042572244c0e58cd79a03f86e66b8b1a92979
+  case: errors_enomem_335

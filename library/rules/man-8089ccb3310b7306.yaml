@@ -1,0 +1,46 @@
+# 合规检查：条件：EPOLLEXCLUSIVE was specified in event and fd refers to an epoll instance；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8089CCB3310B7306
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: EPOLLEXCLUSIVE was specified in event and fd refers to an epoll instance
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8089ccb3310b730697fc4128b5781e8e2201ccdbdfe8de5587c4ac11cbb01f05
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 323
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e68f632ed17202605e79707796e7915a1ecd7703739121b732b7a63faa2ec2f2
+  case: errors_einval_323
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 323
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e68f632ed17202605e79707796e7915a1ecd7703739121b732b7a63faa2ec2f2
+  case: errors_einval_323

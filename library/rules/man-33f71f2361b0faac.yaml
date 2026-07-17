@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 setreuid(ruid, euid)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33F71F2361B0FAAC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: setreuid
+    arguments:
+    - ruid
+    - euid
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:37d5dbe651042b7de66f78d0ec02a9bc3e985ab48aaf405534e0ca9dab4ffb40
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 58
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:e0f1ecad4b1f5d2f11c64ac4a639691505ffd1eec53e45cebf61365d95e953a4
+  case: return_value_58
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setreuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 58
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:e0f1ecad4b1f5d2f11c64ac4a639691505ffd1eec53e45cebf61365d95e953a4
+  case: return_value_58

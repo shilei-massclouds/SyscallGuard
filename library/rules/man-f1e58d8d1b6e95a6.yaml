@@ -1,0 +1,46 @@
+# 合规检查：条件：Invalid value in flags；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F1E58D8D1B6E95A6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid value in flags
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f1e58d8d1b6e95a6f44c55a554ffb8ebff8c7fd163241391a44ca1def6bf3180
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11f7cb1a069a1038d7099e9bea834c0e79ad3f266a43da77623b2e8f85b24fb9
+  case: errors_einval_292
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11f7cb1a069a1038d7099e9bea834c0e79ad3f266a43da77623b2e8f85b24fb9
+  case: errors_einval_292

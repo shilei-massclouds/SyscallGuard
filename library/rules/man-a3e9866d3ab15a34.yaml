@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) One (or more) of the PIDs specified in set_tid already exists in the corresponding PID namespace；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A3E9866D3AB15A34
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EEXIST
+    summary: ( clone3 () only) One (or more) of the PIDs specified in set_tid already exists in the corresponding
+      PID namespace
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:a3e9866d3ab15a34fde630a086f4c0a784434c41b933df7e58dd64b80cff6a36
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33d5bfd77b353b54e945d59168a6d8dce2046bfbaebfb30e9f7e06f5e7ab4a45
+  case: errors_eexist_1225
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33d5bfd77b353b54e945d59168a6d8dce2046bfbaebfb30e9f7e06f5e7ab4a45
+  case: errors_eexist_1225

@@ -1,0 +1,40 @@
+# 合规检查：条件：The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC is specified, this maximum is given by the...；检查：调用 preadv2(fd, iov, iovcnt, offset, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A832C347A254AB7F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: iovcnt
+    predicate: documented_condition
+    value: EINVAL
+    summary: The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC
+      is specified, this maximum is given by the...
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a832c347a254ab7ff56e7651ad704aba870b43e00a2800b7d5e63842fd02c5bd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: preadv2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe19576468eefdb06088aebd062d662dfdb550ccbb0661352b29099115430dfe
+  case: errors_einval_393

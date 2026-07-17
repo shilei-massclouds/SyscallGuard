@@ -1,0 +1,44 @@
+# 合规检查：条件：The caller is multithreaded and tried to join a new user namespace；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F127E1A1ED64AD5E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The caller is multithreaded and tried to join a new user namespace
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f127e1a1ed64ad5eb54a73a797a3c79d9d0e50f3cbf3c9798ab3c988760bde51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 294
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:142523fb642ec7b83217d67cc785b2b04368f18e1c99304b48cd41a0cf52f365
+  case: errors_einval_294
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 294
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:142523fb642ec7b83217d67cc785b2b04368f18e1c99304b48cd41a0cf52f365
+  case: errors_einval_294

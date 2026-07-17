@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:179243aab1148dde47c259cacb83ad441b4a9f0a1f7490f34b8246bf7982ee79
   case: request_key06_41_3
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key06.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:179243aab1148dde47c259cacb83ad441b4a9f0a1f7490f34b8246bf7982ee79
+  case: request_key06_41_3_0

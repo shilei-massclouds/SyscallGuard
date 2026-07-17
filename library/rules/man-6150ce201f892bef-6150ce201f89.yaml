@@ -1,0 +1,41 @@
+# 合规检查：条件：The prot argument asks for PROT_EXEC but the mapped area belongs to a file on a filesystem that was mounted no-exec；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6150CE201F892BEF--6150ce201f89
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: prot
+    predicate: documented_state_condition
+    value: EPERM
+    summary: The prot argument asks for PROT_EXEC but the mapped area belongs to a file on a filesystem
+      that was mounted no-exec
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:6150ce201f892bef5760f06248a3b9fb900dc07558f8d15ec95a27bbd59cdc33
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 600
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f143fbb55c82e54324f28747f856576ca7af981458a29865c813c802ace0559b
+  case: errors_eperm_600

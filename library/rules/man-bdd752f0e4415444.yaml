@@ -1,0 +1,50 @@
+# 合规检查：条件：MPOL_MF_STRICT was specified and an existing page was already on a node that does not follow the policy; or MPOL_MF_MOVE or MPOL_MF_MOVE_ALL was specified...；检查：调用 mbind(size, size, size, mode, ULONG_WIDTH, maxnode, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BDD752F0E4415444
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: MPOL_MF_STRICT was specified and an existing page was already on a node that does not follow
+      the policy; or MPOL_MF_MOVE or MPOL_MF_MOVE_ALL was specified...
+  action:
+    operation: invoke_syscall
+    syscall: mbind
+    arguments:
+    - size
+    - size
+    - size
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:bdd752f0e4415444103fb9998e9d794f26151741a97adf341fdc160b7d1adc33
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 437
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02d5ba16b0bbba44e7e8531a9da99e8c296c75cf2abf6ad5c2a24a95edd4543a
+  case: errors_eio_437
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mbind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 437
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02d5ba16b0bbba44e7e8531a9da99e8c296c75cf2abf6ad5c2a24a95edd4543a
+  case: errors_eio_437

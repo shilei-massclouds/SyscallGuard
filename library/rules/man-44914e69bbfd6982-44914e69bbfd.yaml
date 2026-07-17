@@ -1,0 +1,36 @@
+# 合规检查：条件：The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_44914E69BBFD6982--44914e69bbfd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:44914e69bbfd6982396e0ed7ca08bb368d4367918db75b4cd3025fc5d071b43c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 312
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f1ec00bfa9042a7086f99dc9ae986e6085079bcab11c3424444e81c62f619c05
+  case: errors_eperm_312

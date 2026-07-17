@@ -1,0 +1,40 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB7C10EB67834424--fb7c10eb6783
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:fb7c10eb678344240bb6f73ba9e2ddcdc51a79c89b530d90808d21b54b37a42d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 552
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66638ce2a2dd9ba1dbb5a4dfcb4d534f6ace544804590ca18ef1c1186e1c46ea
+  case: errors_enfile_552

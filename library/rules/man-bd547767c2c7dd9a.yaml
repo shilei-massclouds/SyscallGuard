@@ -1,0 +1,47 @@
+# 合规检查：条件：A path argument is an empty string, but cmd is not \%FSCONFIG_SET_PATH_EMPTY；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BD547767C2C7DD9A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: cmd
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A path argument is an empty string, but cmd is not \%FSCONFIG_SET_PATH_EMPTY
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:bd547767c2c7dd9ae3b160414b547a11dcf36caa519eff85985dd41602553e9a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 464
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a5d8008b8328d06cf9b7263e507daece1d28bc45f17c3fed72321bafe34ddf7
+  case: errors_enoent_464
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 464
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5a5d8008b8328d06cf9b7263e507daece1d28bc45f17c3fed72321bafe34ddf7
+  case: errors_enoent_464

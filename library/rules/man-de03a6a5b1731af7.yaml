@@ -1,0 +1,44 @@
+# 合规检查：条件：flags contained none of MAP_PRIVATE , MAP_SHARED , or MAP_SHARED_VALIDATE；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DE03A6A5B1731AF7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags contained none of MAP_PRIVATE , MAP_SHARED , or MAP_SHARED_VALIDATE
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:300c22946a04ea098fc478b1f60aa75d57c364b52348e8473f66d5d7cde07a78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 544
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2aa216e493cc4c48e39d893219e1011f9bbe61db7f2869a923b1ab318b2e8b05
+  case: errors_einval_544
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 544
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2aa216e493cc4c48e39d893219e1011f9bbe61db7f2869a923b1ab318b2e8b05
+  case: errors_einval_544

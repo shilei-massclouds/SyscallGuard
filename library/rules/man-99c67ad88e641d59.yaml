@@ -1,0 +1,47 @@
+# 合规检查：条件：epfd is not a valid file descriptor；检查：调用 epoll_pwait2(epfd, n, n, timeout, sigmask)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_99C67AD88E641D59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: epfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: epoll_pwait2
+    arguments:
+    - epfd
+    - n
+    - n
+    - timeout
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:62a3d14fa38470e9016d620a6d474b842fe55243621ec55e8b2bd7e0df9250ff
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e92319c9197df03bc44986d708faeb88d124589a9a6b1d65e22f5fcf1066f49f
+  case: errors_ebadf_187
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_pwait2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e92319c9197df03bc44986d708faeb88d124589a9a6b1d65e22f5fcf1066f49f
+  case: errors_ebadf_187

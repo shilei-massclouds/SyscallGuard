@@ -1,0 +1,43 @@
+# 合规检查：条件：( swapoff ()) path is not currently a swap area；检查：调用 swapoff(path)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05B0FC46D68F4F6D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: ( swapoff ()) path is not currently a swap area
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:05b0fc46d68f4f6d0dafecf445b0aa79223816a04c1a2b7535c2d40458d4b97b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60bcbeae20d554c3a168734238fbd39e530079367498e639445e824b5d9767a2
+  case: errors_einval_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60bcbeae20d554c3a168734238fbd39e530079367498e639445e824b5d9767a2
+  case: errors_einval_113

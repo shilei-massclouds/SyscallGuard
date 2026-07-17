@@ -1,0 +1,48 @@
+# 合规检查：条件：One of the target nodes is not online；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_030D3A5D9EC1271B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODEV
+    summary: One of the target nodes is not online
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:030d3a5d9ec1271bf3769ddf21f61681fbeb0db7336221c2bf6a4555c465c7fe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3b2f4bd330d4ab314223fff5cbef5084efbb4a312d83561b6edd67c4586fa9e
+  case: errors_enodev_195
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3b2f4bd330d4ab314223fff5cbef5084efbb4a312d83561b6edd67c4586fa9e
+  case: errors_enodev_195

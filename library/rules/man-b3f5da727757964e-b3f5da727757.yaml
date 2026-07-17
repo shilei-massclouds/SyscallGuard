@@ -1,0 +1,41 @@
+# 合规检查：条件：On 32-bit architecture together with the large file extension (i.e., using 64-bit off_t ): the number of pages used for length plus number of pages used for...；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B3F5DA727757964E--b3f5da727757
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: length
+    predicate: documented_condition
+    value: EOVERFLOW
+    summary: 'On 32-bit architecture together with the large file extension (i.e., using 64-bit off_t
+      ): the number of pages used for length plus number of pages used for...'
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:b3f5da727757964e5cb89fd334e90dd306e7100a0492e18bb471330551bdb86a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 588
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b4915d0f36124ae4ea1e55e2918a96e18b6e9e736ba81d29e403a74f4927de6
+  case: errors_eoverflow_588

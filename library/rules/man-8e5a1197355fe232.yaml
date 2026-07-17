@@ -1,0 +1,45 @@
+# 合规检查：条件：No signal in set became pending within the timeout period specified to sigtimedwait ()；检查：调用 rt_sigtimedwait(set, info, timeout)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8E5A1197355FE232
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: set
+    predicate: documented_condition
+    value: EAGAIN
+    summary: No signal in set became pending within the timeout period specified to sigtimedwait ()
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigtimedwait
+    arguments:
+    - set
+    - info
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:8e5a1197355fe232112a97021b133c1358fc351dfeb5ba4477c8b3346d8f464d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cea5513d5131b089ae2ebef351e72ec81f6ab3f4324786fe2734deeba80fcd2d
+  case: errors_eagain_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigtimedwait
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cea5513d5131b089ae2ebef351e72ec81f6ab3f4324786fe2734deeba80fcd2d
+  case: errors_eagain_98

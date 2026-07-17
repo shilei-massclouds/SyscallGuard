@@ -1,0 +1,45 @@
+# 合规检查：条件：The argument sockfd is an invalid file descriptor；检查：调用 recvmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B623C916A0D0C52B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The argument sockfd is an invalid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: recvmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:87e0697b998f4d72b7510ed98fedbd420fcdddf64dfc93634e8de582974f91bc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1054418a27e9089d248837c6eb4626fcc3ee00cfdbd785c5e1ca3706fdc7f6cd
+  case: errors_ebadf_453
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1054418a27e9089d248837c6eb4626fcc3ee00cfdbd785c5e1ca3706fdc7f6cd
+  case: errors_ebadf_453

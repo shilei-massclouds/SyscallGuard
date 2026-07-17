@@ -1,0 +1,44 @@
+# 合规检查：条件：name was too long. (The limit is 249 bytes, excluding the terminating null byte.)；检查：调用 memfd_create(name, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_67ECA3FB50D80BAF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: name
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: name was too long. (The limit is 249 bytes, excluding the terminating null byte.)
+  action:
+    operation: invoke_syscall
+    syscall: memfd_create
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:67eca3fb50d80bafa77df16282f3438f9c9c4920b7fd07decae94b227fe61da6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc69feecd8eb7a1a1eed3c1a0c0da5df17f32c489323be479d5b9eab7afa590a
+  case: errors_einval_168
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc69feecd8eb7a1a1eed3c1a0c0da5df17f32c489323be479d5b9eab7afa590a
+  case: errors_einval_168

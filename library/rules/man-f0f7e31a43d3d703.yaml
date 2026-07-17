@@ -1,0 +1,47 @@
+# 合规检查：条件：The parent directory does not allow write permission to the process, or one of the directories in the path prefix of path did not allow search permission....；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F0F7E31A43D3D703
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: The parent directory does not allow write permission to the process, or one of the directories
+      in the path prefix of path did not allow search permission....
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:f0f7e31a43d3d70309281308aec1a3e6151f71d88ab58cc6263f8dd07a0c52b2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e99a24794b5da9489d2c2fa0420729849cd742e349991709ff1594cd274e446f
+  case: errors_eacces_153
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e99a24794b5da9489d2c2fa0420729849cd742e349991709ff1594cd274e446f
+  case: errors_eacces_153

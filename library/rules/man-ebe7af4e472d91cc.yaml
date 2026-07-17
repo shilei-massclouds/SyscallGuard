@@ -1,0 +1,43 @@
+# 合规检查：条件：path was too long；检查：调用 acct(path)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EBE7AF4E472D91CC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path was too long
+  action:
+    operation: invoke_syscall
+    syscall: acct
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:ebe7af4e472d91cc661997b1c0cd594a4888d42466521785a96f981eff72aea6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a93835e2a799c9ae036ad2b104b3dff1670244f790e46dd22dd374c30252a100
+  case: errors_enametoolong_76
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: acct
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/acct.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a93835e2a799c9ae036ad2b104b3dff1670244f790e46dd22dd374c30252a100
+  case: errors_enametoolong_76

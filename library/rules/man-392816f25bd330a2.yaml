@@ -1,0 +1,45 @@
+# 合规检查：条件：The socket structure address is outside the user's address space；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_392816F25BD330A2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The socket structure address is outside the user's address space
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:392816f25bd330a2b56467326a64e62e3fac1facf59a1a5b96c34a73901b9e82
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 152
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d8f49440692f82582886e22bf36a706edbd268abb58b1aae33ab4af444a795e
+  case: errors_efault_152
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 152
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d8f49440692f82582886e22bf36a706edbd268abb58b1aae33ab4af444a795e
+  case: errors_efault_152

@@ -1,0 +1,35 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 getcwd(NULL, (size_t)-1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9FAB1B9A02F7CAF0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - 'NULL'
+    - (size_t)-1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:9fab1b9a02f7caf0f9f96bd9a0b1efb08afa7559b459359619d27241e8c5beaf
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getcwd/getcwd01.c
+  line: 48
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1a7750a0a5f83d0c9ecdf042ca651c6a72696958ce394845c941af9f74a28657
+  case: getcwd01_48_1_0

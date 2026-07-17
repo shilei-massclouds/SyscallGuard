@@ -1,0 +1,46 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9FD2A586602BFF5C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:c780e76b776d6fda08acdcfaf7cab23482f2697d31849170f7849770b57d34eb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0021c1a4642008e4b262a93834298320e63465a2094476be09c2bafd4cf9e66f
+  case: errors_eio_243
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0021c1a4642008e4b262a93834298320e63465a2094476be09c2bafd4cf9e66f
+  case: errors_eio_243

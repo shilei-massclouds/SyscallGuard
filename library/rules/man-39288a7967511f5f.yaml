@@ -1,0 +1,47 @@
+# 合规检查：条件：Too many symbolic links were encountered in resolving path；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_39288A7967511F5F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in resolving path
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:35669d539dcfc779177ccacc5693eb475dd85dda5b5bf78424c806ef19598a5b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:114a86d7f25857a9a27afbfff2bb806e3112cc40b5930a0ef53397f28ed11448
+  case: errors_eloop_235
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:114a86d7f25857a9a27afbfff2bb806e3112cc40b5930a0ef53397f28ed11448
+  case: errors_eloop_235

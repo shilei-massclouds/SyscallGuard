@@ -1,0 +1,44 @@
+# 合规检查：条件：size is negative or, for sethostname (), size is larger than the maximum allowed size；检查：调用 sethostname(name, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA06B43ED3D9DBBC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: size is negative or, for sethostname (), size is larger than the maximum allowed size
+  action:
+    operation: invoke_syscall
+    syscall: sethostname
+    arguments:
+    - name
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:da06b43ed3d9dbbc3baa4d137c27c73d6d10ff2ca57f477db761b7b388b41eef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:040dcd9766a97e8edea748fcc4b59a1d9c828bbd08065bd580f690cf6a20df62
+  case: errors_einval_80
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sethostname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:040dcd9766a97e8edea748fcc4b59a1d9c828bbd08065bd580f690cf6a20df62
+  case: errors_einval_80

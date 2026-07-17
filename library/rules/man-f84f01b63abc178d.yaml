@@ -1,0 +1,43 @@
+# 合规检查：条件：Bad magic numbers or op；检查：调用 reboot(op)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F84F01B63ABC178D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: EINVAL
+    summary: Bad magic numbers or op
+  action:
+    operation: invoke_syscall
+    syscall: reboot
+    arguments:
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f84f01b63abc178d1fe5bc1fa49113ceabd5237e70e1ce2ad10aa7debb586f7a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/reboot.2
+  line: 221
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:856a51a2fc5fc20f2e45556d32aac80f3d2a7dc4e427a9d54e2a7360eac11a02
+  case: errors_einval_221
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: reboot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/reboot.2
+  line: 221
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:856a51a2fc5fc20f2e45556d32aac80f3d2a7dc4e427a9d54e2a7360eac11a02
+  case: errors_einval_221

@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified handle is not valid for opening a file. This error will occur if, for example, the file has been deleted. This error can also occur if the...；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 ESTALE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E36D0C88FF32C0FC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: handle
+    predicate: documented_condition
+    value: ESTALE
+    summary: The specified handle is not valid for opening a file. This error will occur if, for example,
+      the file has been deleted. This error can also occur if the...
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESTALE
+  errno:
+  - ESTALE
+semantic_hash: sha256:8f065b64ada66c588ade04e5da6237ab6b5ecea914edf2d6d9cf73361669b3fa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 435
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7de0f32bdfc82d29c862dbba3405ebfc707c599b658e0e4a6467688d6d6c17e
+  case: errors_estale_435
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 435
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7de0f32bdfc82d29c862dbba3405ebfc707c599b658e0e4a6467688d6d6c17e
+  case: errors_estale_435

@@ -1,0 +1,47 @@
+# 合规检查：条件：Returned if attempting to attach to a process that does not exist；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0CB3AC538D6FF417
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: Returned if attempting to attach to a process that does not exist
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:0cb3ac538d6ff4171b9716f257d4b62044b8e4388bfc12038ec09e55f1d4fefb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3899
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b6d9aeecf4621fbf8676ab5e05e82770e513af6fe55e14992f1684eb08eb017
+  case: errors_esrch_3899
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3899
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1b6d9aeecf4621fbf8676ab5e05e82770e513af6fe55e14992f1684eb08eb017
+  case: errors_esrch_3899

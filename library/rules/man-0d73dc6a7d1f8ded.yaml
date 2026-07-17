@@ -1,0 +1,44 @@
+# 合规检查：条件：Too many processes are already running; see fork (2)；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0D73DC6A7D1F8DED
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: Too many processes are already running; see fork (2)
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:d1f0f30a771a25bf2c4a50e102193108dc01816ee2ad04704b99d80baf8c66cc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01953a2646b9d70ce074bba875e52c020c94c8f4b802a22b48906439e74958fc
+  case: errors_eagain_1212
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01953a2646b9d70ce074bba875e52c020c94c8f4b802a22b48906439e74958fc
+  case: errors_eagain_1212

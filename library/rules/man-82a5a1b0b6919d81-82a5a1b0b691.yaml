@@ -1,0 +1,39 @@
+# 合规检查：条件：attr.sched_policy is SCHED_DEADLINE , and the deadline scheduling parameters in attr are invalid；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_82A5A1B0B6919D81--82a5a1b0b691
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: attr
+    predicate: documented_condition
+    value: EINVAL
+    summary: attr.sched_policy is SCHED_DEADLINE , and the deadline scheduling parameters in attr are
+      invalid
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:82a5a1b0b6919d81d68d062db929c5226b61fbade7acecddad5c7ff6d725daf3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 425
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6650633488e32e9911470530ca7983564a52a3ca95666002bfc83584a58529bb
+  case: errors_einval_425

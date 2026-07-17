@@ -1,0 +1,47 @@
+# 合规检查：条件：For some operation the value of sem_num is less than 0 or greater than or equal to the number of semaphores in the set；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAFD5BBDE8A57BCE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EFBIG
+    summary: For some operation the value of sem_num is less than 0 or greater than or equal to the number
+      of semaphores in the set
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:dddea6e2f9d705aab800472d209230fad3ee402199ac90ba46e724f4a6b61be9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 313
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:22df5d711be928b960cdfe19ce8e83f286b05f4ce67ed91f99046222739da159
+  case: errors_efbig_313
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 313
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:22df5d711be928b960cdfe19ce8e83f286b05f4ce67ed91f99046222739da159
+  case: errors_efbig_313

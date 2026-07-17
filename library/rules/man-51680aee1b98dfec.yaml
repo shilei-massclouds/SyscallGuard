@@ -1,0 +1,47 @@
+# 合规检查：条件：The limit imposed by /proc/sys/fs/epoll/max_user_watches was encountered while trying to register ( EPOLL_CTL_ADD ) a new file descriptor on an epoll...；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_51680AEE1B98DFEC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOSPC
+    summary: The limit imposed by /proc/sys/fs/epoll/max_user_watches was encountered while trying to
+      register ( EPOLL_CTL_ADD ) a new file descriptor on an epoll...
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:51680aee1b98dfecd88a94e78d21366cc72bdbcc609d9d9f70f0fa8460258ab4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 354
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:293c077c837809d1d912cf3ebdff3fa902111b86746f5477702f3dabde7c4c26
+  case: errors_enospc_354
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 354
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:293c077c837809d1d912cf3ebdff3fa902111b86746f5477702f3dabde7c4c26
+  case: errors_enospc_354

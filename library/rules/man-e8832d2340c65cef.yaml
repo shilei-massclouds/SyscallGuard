@@ -1,0 +1,46 @@
+# 合规检查：条件：The argument op has the value IPC_SET or IPC_RMID , but the effective user ID of the calling process is not the creator (as found in msg_perm.cuid ) or the...；检查：调用 msgctl(msqid, op, buf)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8832D2340C65CEF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: op
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The argument op has the value IPC_SET or IPC_RMID , but the effective user ID of the calling
+      process is not the creator (as found in msg_perm.cuid ) or the...
+  action:
+    operation: invoke_syscall
+    syscall: msgctl
+    arguments:
+    - msqid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e8832d2340c65ceff5e001b5b9c1dcfb5a1d36de4811bde6b8504b4d63675adb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 353
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98b021a69a1d822dd65f92a7d1ff72228935e53f23c3e78e9a43813bdc9f9118
+  case: errors_eperm_353
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 353
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98b021a69a1d822dd65f92a7d1ff72228935e53f23c3e78e9a43813bdc9f9118
+  case: errors_eperm_353

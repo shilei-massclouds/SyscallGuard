@@ -1,0 +1,43 @@
+# 合规检查：条件：target is locked; see mount_namespaces (7)；检查：调用 umount2(target)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9C92528E1F8DF9C9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: target
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: target is locked; see mount_namespaces (7)
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9c92528e1f8df9c90077c3812e9c4d3400b0660ca6f3c3760ac432c4477dc435
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a32ddfb0a7c3b6656ac90adb353cf86f903f38a3798c1f86446f90773a978e78
+  case: errors_einval_124
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a32ddfb0a7c3b6656ac90adb353cf86f903f38a3798c1f86446f90773a978e78
+  case: errors_einval_124

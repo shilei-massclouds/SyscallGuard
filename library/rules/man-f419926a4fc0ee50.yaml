@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling thread does not have appropriate privileges；检查：调用 sched_setscheduler(pid, policy, param)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F419926A4FC0EE50
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling thread does not have appropriate privileges
+  action:
+    operation: invoke_syscall
+    syscall: sched_setscheduler
+    arguments:
+    - pid
+    - policy
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:9992954e4d3f202a9bc636faa481caaa7a5fc088131bef14b16031898b1a9f62
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 152
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8215a38fcedea04232a9eb2f13c63902788c0c91a9e8f250e0c2c980bf7d91d6
+  case: errors_eperm_152
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setscheduler
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 152
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8215a38fcedea04232a9eb2f13c63902788c0c91a9e8f250e0c2c980bf7d91d6
+  case: errors_eperm_152

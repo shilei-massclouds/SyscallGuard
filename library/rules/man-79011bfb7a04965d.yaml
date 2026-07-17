@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , but the specified address range includes ranges with insufficient permissions or special mappings, for...；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_79011BFB7A04965D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: advice
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , but the specified address range includes
+      ranges with insufficient permissions or special mappings, for...
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:79011bfb7a04965d2b6aaff4cd68cb53689f681561c49193a6e0484689a403b2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 891
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff7b45c22574f4c146db28ef385c20efe6b156198c49e409ee8537f778a2b579
+  case: errors_einval_891
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 891
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff7b45c22574f4c146db28ef385c20efe6b156198c49e409ee8537f778a2b579
+  case: errors_einval_891

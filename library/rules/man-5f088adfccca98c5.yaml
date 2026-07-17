@@ -1,0 +1,46 @@
+# 合规检查：条件：An attempt ( IPC_SET ) was made to increase msg_qbytes beyond the system parameter MSGMNB , but the caller is not privileged (Linux: does not have the...；检查：调用 msgctl(msqid, op, buf)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5F088ADFCCCA98C5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'An attempt ( IPC_SET ) was made to increase msg_qbytes beyond the system parameter MSGMNB
+      , but the caller is not privileged (Linux: does not have the...'
+  action:
+    operation: invoke_syscall
+    syscall: msgctl
+    arguments:
+    - msqid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:5f088adfccca98c5d6cec089d4a6f1a69e2b860872ceb836db043ec0c6a1fb07
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 371
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01e030e78187b9092dddb8d9acaf2b2b6820773a6ff32ce94a5c83f727c54f6c
+  case: errors_eperm_371
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 371
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01e030e78187b9092dddb8d9acaf2b2b6820773a6ff32ce94a5c83f727c54f6c
+  case: errors_eperm_371

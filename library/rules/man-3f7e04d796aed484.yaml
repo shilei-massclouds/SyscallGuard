@@ -1,0 +1,43 @@
+# 合规检查：条件：(since Linux 2.6.34) umount2 () was called with an invalid flag value in flags；检查：调用 umount2(target)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F7E04D796AED484
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: (since Linux 2.6.34) umount2 () was called with an invalid flag value in flags
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3f7e04d796aed484fbcc1ae50485f81d2ff7781087d32606701174e08a5486d0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca3e10675d83e27804b6b631b1cb3ecd9d74bda485159be3d57e407771b66855
+  case: errors_einval_139
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca3e10675d83e27804b6b631b1cb3ecd9d74bda485159be3d57e407771b66855
+  case: errors_einval_139

@@ -1,0 +1,47 @@
+# 合规检查：条件：The keyring has expired；检查：调用 add_key(type, description, size, size, keyring)；预期：返回 -1，errno 为 EKEYEXPIRED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A61F58E0C932730
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: keyring
+    predicate: documented_condition
+    value: EKEYEXPIRED
+    summary: The keyring has expired
+  action:
+    operation: invoke_syscall
+    syscall: add_key
+    arguments:
+    - type
+    - description
+    - size
+    - size
+    - keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYEXPIRED
+  errno:
+  - EKEYEXPIRED
+semantic_hash: sha256:2a61f58e0c9327308583a0437bd0a35e92f93c88204912c03981399c8979539a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b0985b0e8b0b00e0e2e4c288cca7b97e36f2bc02432c1bacc12ea60f680545a
+  case: errors_ekeyexpired_185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: add_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b0985b0e8b0b00e0e2e4c288cca7b97e36f2bc02432c1bacc12ea60f680545a
+  case: errors_ekeyexpired_185

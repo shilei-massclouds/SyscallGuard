@@ -1,0 +1,36 @@
+# 合规检查：条件：The caller does not have the CAP_SYS_ADMIN capability. Alternatively, the maximum number of swap files are already in use; see NOTES below；检查：调用 swapoff(path)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_52099F4FAACD68B6--52099f4faacd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the CAP_SYS_ADMIN capability. Alternatively, the maximum number
+      of swap files are already in use; see NOTES below
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:52099f4faacd68b6e7e78728f1ccfea1a045cb33487b05dc3344655e1cd58d80
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12f9c85dda7f52d3bce585808d9edcdb7d2ce1cdd1cf0f2441d4889f44733c8b
+  case: errors_eperm_129

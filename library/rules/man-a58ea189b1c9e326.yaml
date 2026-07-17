@@ -1,0 +1,46 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A58EA189B1C9E326
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:04b63d7158635ccef5d77f952c96a3da5f484a2709f71a077e6cb70248c668e0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 230
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:860b392d419fb0669da95702ac63fcc3d16ff55f225c263e9a8b536856f54bff
+  case: errors_efault_230
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 230
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:860b392d419fb0669da95702ac63fcc3d16ff55f225c263e9a8b536856f54bff
+  case: errors_efault_230

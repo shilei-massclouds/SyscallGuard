@@ -1,0 +1,37 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F3D996C7350329FC--f3d996c73503
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f3d996c7350329fcfc91cc99b09886f6f25caaa3a28c93493d5a9ad682f8a3e6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7c8dbf2d67879c162a547efdfa0b6340099f38a1f40304643bef0d1a653275e
+  case: errors_efault_222

@@ -1,0 +1,48 @@
+# 合规检查：条件：An offset was given for nonseekable device (e.g., a pipe)；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5AC1E4DF3AC54412
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An offset was given for nonseekable device (e.g., a pipe)
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5ac1e4df3ac54412b6c4d2f20cf5d4f974367a8227a77f90b2614c764fef8fe3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eae528d87f297f10c6f0043a128e3a3e6e2080ae98dfb5010f1022f5a97fcb9b
+  case: errors_einval_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eae528d87f297f10c6f0043a128e3a3e6e2080ae98dfb5010f1022f5a97fcb9b
+  case: errors_einval_165

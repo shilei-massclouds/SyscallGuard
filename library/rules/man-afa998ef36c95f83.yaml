@@ -1,0 +1,46 @@
+# 合规检查：条件：A remote host refused to allow the network connection (typically because it is not running the requested service)；检查：调用 recvmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 ECONNREFUSED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AFA998EF36C95F83
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECONNREFUSED
+    summary: A remote host refused to allow the network connection (typically because it is not running
+      the requested service)
+  action:
+    operation: invoke_syscall
+    syscall: recvmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECONNREFUSED
+  errno:
+  - ECONNREFUSED
+semantic_hash: sha256:ea263e31af6e92cb6f31d1134a62570f53ddba5fdc3cce2b0a0432909f280bd9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 458
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fb7ffb5292ed149bca289fcbb9ec31b0a585e156ffc8f5e6e90b4b6dbd57d27
+  case: errors_econnrefused_458
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 458
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fb7ffb5292ed149bca289fcbb9ec31b0a585e156ffc8f5e6e90b4b6dbd57d27
+  case: errors_econnrefused_458

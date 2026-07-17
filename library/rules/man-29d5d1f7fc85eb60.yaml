@@ -1,0 +1,45 @@
+# 合规检查：条件：The file or a script interpreter is not a regular file；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_29D5D1F7FC85EB60
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: The file or a script interpreter is not a regular file
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:29d5d1f7fc85eb60b8463dd4a432768993eb48bc4c61adb6327105f4bd2c5773
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f13cdadf45ff510c664b7c1f5ec53c0c1203014aab8370516a9acc9cf760566a
+  case: errors_eacces_451
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f13cdadf45ff510c664b7c1f5ec53c0c1203014aab8370516a9acc9cf760566a
+  case: errors_eacces_451

@@ -1,0 +1,43 @@
+# 合规检查：条件：There is no message queue with the given name；检查：调用 mq_unlink(name)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_91EE775821BB386C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: name
+    predicate: documented_condition
+    value: ENOENT
+    summary: There is no message queue with the given name
+  action:
+    operation: invoke_syscall
+    syscall: mq_unlink
+    arguments:
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:91ee775821bb386c893f733e8ad8458985d56fc8acd98d83c5c857b04f427075
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 41
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe7b873697aa2b81e229a77bafb64eee83bd08ea589f66de2b8446b9a1d1adf3
+  case: errors_enoent_41
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_unlink
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_unlink.3
+  line: 41
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe7b873697aa2b81e229a77bafb64eee83bd08ea589f66de2b8446b9a1d1adf3
+  case: errors_enoent_41

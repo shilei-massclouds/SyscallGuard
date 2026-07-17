@@ -1,0 +1,41 @@
+# 合规检查：条件：(since Linux 4.7) The process's RLIMIT_DATA limit, described in getrlimit (2), would have been exceeded；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F1968CF7CA69481--3f1968cf7ca6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: (since Linux 4.7) The process's RLIMIT_DATA limit, described in getrlimit (2), would have
+      been exceeded
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:3f1968cf7ca69481f53cfd3441915d617d7bf05af2fa716771f2e92360010e3b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 575
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d174e002745b6a663b17c8b5ec4e3000c5ed1f90557a13ee9f25fe9df913bd87
+  case: errors_enomem_575

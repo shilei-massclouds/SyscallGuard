@@ -1,0 +1,48 @@
+# 合规检查：条件：The source mount has MS_UNBINDABLE child mounts but the target path resides on a mount tree with shared mount propagation, which would otherwise cause the...；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26A01FBC336D2116
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The source mount has MS_UNBINDABLE child mounts but the target path resides on a mount tree
+      with shared mount propagation, which would otherwise cause the...
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:26a01fbc336d2116255faf69c03319d159585e5e96450148db43da795b612a4f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d31c01a0522a63eb7f2bc47b22529dd15ce6fcbe9540cdea3f3348c6f05ae027
+  case: errors_einval_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d31c01a0522a63eb7f2bc47b22529dd15ce6fcbe9540cdea3f3348c6f05ae027
+  case: errors_einval_444

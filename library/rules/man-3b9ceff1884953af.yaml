@@ -1,0 +1,45 @@
+# 合规检查：条件：size of the string (including the terminating null byte) specified in arg3 (the key type) or arg4 (the key description) exceeded the limit (32 bytes and...；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3B9CEFF1884953AF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: size of the string (including the terminating null byte) specified in arg3 (the key type)
+      or arg4 (the key description) exceeded the limit (32 bytes and...
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3b9ceff1884953af9e59efd4da92304f53bd48e20ebea4b79fdd7f2485e1365e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a6c8c84dafb5b738709213955aedce92a454bde0f2c5836a0d0d68eb0725168e
+  case: errors_einval_105
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a6c8c84dafb5b738709213955aedce92a454bde0f2c5836a0d0d68eb0725168e
+  case: errors_einval_105

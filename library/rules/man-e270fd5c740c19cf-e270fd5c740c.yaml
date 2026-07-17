@@ -1,0 +1,36 @@
+# 合规检查：条件：One or more of the target user or group IDs is not valid in this user namespace；检查：调用 setregid(rgid, egid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E270FD5C740C19CF--e270fd5c740c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: One or more of the target user or group IDs is not valid in this user namespace
+  action:
+    operation: invoke_syscall
+    syscall: setregid
+    arguments:
+    - rgid
+    - egid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e270fd5c740c19cff714c7904a6f0a5eeeeb61e570a1e9f8b0493aedf6ab4bd9
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setregid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e0e4b193d36968689c07ea4c1fada91d6aca05c5f7b54b5830e8464cad471f22
+  case: errors_einval_92

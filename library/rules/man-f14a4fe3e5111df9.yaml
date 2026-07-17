@@ -1,0 +1,45 @@
+# 合规检查：条件：An attempt was made to change the alternate signal stack while it was active (i.e., the thread was already executing on the current alternate signal stack)；检查：调用 sigaltstack(ss, old_ss)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F14A4FE3E5111DF9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: An attempt was made to change the alternate signal stack while it was active (i.e., the thread
+      was already executing on the current alternate signal stack)
+  action:
+    operation: invoke_syscall
+    syscall: sigaltstack
+    arguments:
+    - ss
+    - old_ss
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f14a4fe3e5111df980e998f917ac675e14977b2cc462b07bf3d34538ab33d53a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6430193901b56b61eb7254e2f3847d59bb9b76c1d7cc6f66c27a620e65e3e5d6
+  case: errors_eperm_223
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sigaltstack
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6430193901b56b61eb7254e2f3847d59bb9b76c1d7cc6f66c27a620e65e3e5d6
+  case: errors_eperm_223

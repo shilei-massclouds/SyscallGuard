@@ -1,0 +1,47 @@
+# 合规检查：条件：The major number of a block device parameter is out of range；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ENXIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BD984637492BE042
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: ENXIO
+    summary: The major number of a block device parameter is out of range
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENXIO
+  errno:
+  - ENXIO
+semantic_hash: sha256:bd984637492be0426f48c1c73fb0adeafedcf7c842cc99f586fb64383340060f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 490
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:514b9a49ad6701051cdede843ff98c91f21008415e95be743eb7020aaef3c5f1
+  case: errors_enxio_490
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 490
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:514b9a49ad6701051cdede843ff98c91f21008415e95be743eb7020aaef3c5f1
+  case: errors_enxio_490

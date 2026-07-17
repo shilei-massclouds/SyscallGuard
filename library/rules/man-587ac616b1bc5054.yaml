@@ -1,0 +1,44 @@
+# 合规检查：条件：The value of op is not recognized, or not supported on this system；检查：调用 prctl(op, arg2)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_587AC616B1BC5054
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: op
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value of op is not recognized, or not supported on this system
+  action:
+    operation: invoke_syscall
+    syscall: prctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:587ac616b1bc50542a73394f901adc95066d37ab9602230bf9948a08ee566f08
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/prctl.2
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1a2a6d813ef76eeb72ec38add27143ab3855f1362528f3e60576198d13d2a0
+  case: errors_einval_170
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/prctl.2
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e1a2a6d813ef76eeb72ec38add27143ab3855f1362528f3e60576198d13d2a0
+  case: errors_einval_170

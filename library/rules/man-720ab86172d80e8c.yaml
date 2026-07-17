@@ -1,0 +1,47 @@
+# 合规检查：条件：The specified process does not exist, or is not currently being traced by the caller, or is not stopped (for operations that require a stopped tracee)；检查：调用 ptrace(op, pid, addr, data)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_720AB86172D80E8C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: The specified process does not exist, or is not currently being traced by the caller, or
+      is not stopped (for operations that require a stopped tracee)
+  action:
+    operation: invoke_syscall
+    syscall: ptrace
+    arguments:
+    - op
+    - pid
+    - addr
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:720ab86172d80e8ccee1ea7ee4604f5ff28b2d71cf154ec1c65049b599d75a71
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e3ec7650473a7cc9efb6ab53d385731d8700ea20bbeafc26f04fe8959d3caa8
+  case: errors_esrch_2466
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ptrace
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ptrace.2
+  line: 2466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e3ec7650473a7cc9efb6ab53d385731d8700ea20bbeafc26f04fe8959d3caa8
+  case: errors_esrch_2466

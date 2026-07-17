@@ -1,0 +1,43 @@
+# 合规检查：条件：A pathname was longer than MAXPATHLEN；检查：调用 umount2(target)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D3F52F3AD07AF5B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: A pathname was longer than MAXPATHLEN
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:7d3f52f3ad07af5ba948453435bcb2ef8777b0dfe3fd88ab365d498b2c62bec2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:586149ea12a95c7663dce24fee5019c99eda8c160d96a9e5a57cc9a9094ca0e0
+  case: errors_enametoolong_144
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:586149ea12a95c7663dce24fee5019c99eda8c160d96a9e5a57cc9a9094ca0e0
+  case: errors_enametoolong_144

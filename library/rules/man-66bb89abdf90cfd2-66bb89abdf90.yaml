@@ -1,0 +1,40 @@
+# 合规检查：条件：No process with ID pid exists；检查：调用 process_vm_readv(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_66BB89ABDF90CFD2--66bb89abdf90
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: pid
+    predicate: documented_state_condition
+    value: ESRCH
+    summary: No process with ID pid exists
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_readv
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:66bb89abdf90cfd2a02e0ffaff10111c1be560bb01164c82e4875456314268ed
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0dc368ee885a2b6444c6d1733888a4de377120f221f6370458f19160c9775873
+  case: errors_esrch_253

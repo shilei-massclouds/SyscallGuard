@@ -1,0 +1,45 @@
+# 合规检查：条件：advice is MADV_REMOVE , but the specified address range is not a shared writable mapping；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D1D31517305B224C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: advice
+    predicate: invalid_value
+    value: EACCES
+    summary: advice is MADV_REMOVE , but the specified address range is not a shared writable mapping
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d1d31517305b224cc355684645f721e7475fc78fd9d7fa73f9ccaf9ac9d1aa36
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:019fd36365bbc388407ab822c89a014a2af14ec4edb99565bd3ba46c6494a10f
+  case: errors_eacces_798
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:019fd36365bbc388407ab822c89a014a2af14ec4edb99565bd3ba46c6494a10f
+  case: errors_eacces_798

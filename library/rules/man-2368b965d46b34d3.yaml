@@ -1,0 +1,43 @@
+# 合规检查：条件：path is too long；检查：调用 chroot(path)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2368B965D46B34D3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:2368b965d46b34d35e3854913af1f425b620fc76427a94e4485e53b5ff9f3a04
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6473ae09cdf1e1a7842663421c4ef623763405b81f3df42f6e97f4c384397c7b
+  case: errors_enametoolong_118
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6473ae09cdf1e1a7842663421c4ef623763405b81f3df42f6e97f4c384397c7b
+  case: errors_enametoolong_118

@@ -1,0 +1,45 @@
+# 合规检查：条件：No process was located using the which and who values specified；检查：调用 setpriority(which, who, prio)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_40E49256297343DC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: which
+    predicate: invalid_value
+    value: ESRCH
+    summary: No process was located using the which and who values specified
+  action:
+    operation: invoke_syscall
+    syscall: setpriority
+    arguments:
+    - which
+    - who
+    - prio
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:9331cee5bfa71f3f68757e09b06624059d3b21d1f8f0e257c0eb6d37462b64d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bf7f00a889722e70a8de25425e291fc079225b5088c8ed729d2e27ab87096084
+  case: errors_esrch_132
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpriority
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bf7f00a889722e70a8de25425e291fc079225b5088c8ed729d2e27ab87096084
+  case: errors_esrch_132

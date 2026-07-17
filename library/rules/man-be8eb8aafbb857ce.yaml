@@ -1,0 +1,48 @@
+# 合规检查：条件：fd_in is not open for reading; or fd_out is not open for writing；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BE8EB8AAFBB857CE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_in
+    predicate: documented_condition
+    value: EBADF
+    summary: fd_in is not open for reading; or fd_out is not open for writing
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:be8eb8aafbb857ce5cc405d26aa5515961fd600bbb28f37b5f31fc07370ccd7a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1365ef92707a26e3a7f3ca42e73d14ff45252acba8128c92dc0a7e208ba2966a
+  case: errors_ebadf_93
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1365ef92707a26e3a7f3ca42e73d14ff45252acba8128c92dc0a7e208ba2966a
+  case: errors_ebadf_93

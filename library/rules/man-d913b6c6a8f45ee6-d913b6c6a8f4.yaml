@@ -1,0 +1,36 @@
+# 合规检查：条件：path is an empty string and AT_EMPTY_PATH was not specified in flags；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D913B6C6A8F45EE6--d913b6c6a8f4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path is an empty string and AT_EMPTY_PATH was not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:d913b6c6a8f45ee674748646b3ed65a22a8001aae652f285a32a20a3888642c4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6780e786c723ba82c7314f07755816277ac6bde267332300f6bba147860bef9e
+  case: errors_enoent_260

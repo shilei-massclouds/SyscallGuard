@@ -1,0 +1,44 @@
+# 合规检查：条件：( fchmod ()) The file descriptor fd is not valid；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0CE22931C51803E9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( fchmod ()) The file descriptor fd is not valid
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:0ce22931c51803e9e1e0535236c44950beeb75d2e6a67be7a79c3fcd3437d7b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6432c4480c1d06e95cd5cfe06f73f89e7940287abbe42ced80103b509e042ed2
+  case: errors_ebadf_248
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6432c4480c1d06e95cd5cfe06f73f89e7940287abbe42ced80103b509e042ed2
+  case: errors_ebadf_248

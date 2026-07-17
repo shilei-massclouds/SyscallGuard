@@ -1,0 +1,38 @@
+# 合规检查：条件：The file specified by special or addr does not exist；检查：调用 quotactl(op, special, id, addr)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2ADDCC201D443910--2addcc201d44
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: special
+    predicate: documented_condition
+    value: ENOENT
+    summary: The file specified by special or addr does not exist
+  action:
+    operation: invoke_syscall
+    syscall: quotactl
+    arguments:
+    - op
+    - special
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:2addcc201d4439104378e45e89f657a346560e5775c3081a3e00bf4d2efc8f89
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 166
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0915b52b13148b22c5c4e6910c351991a486e7e5192dc0aa0fd5d96ba2a1e11f
+  case: errors_enoent_166

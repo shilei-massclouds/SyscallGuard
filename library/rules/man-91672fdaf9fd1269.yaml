@@ -1,0 +1,36 @@
+# 合规检查：条件：flags is invalid；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_91672FDAF9FD1269
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is invalid
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:91672fdaf9fd1269eebc205bcd28d2cb979cbe9e4db14e99b22d0a49f112eb50
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 471
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:adcddf46eb215924ed7a24b2839233d29fab5ea3eaafcc19964f0cd8004e6100
+  case: errors_einval_471

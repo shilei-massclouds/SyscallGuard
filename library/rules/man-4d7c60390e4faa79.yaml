@@ -1,0 +1,48 @@
+# 合规检查：条件：\%FSCONFIG_CMD_CREATE was attempted for a read-only filesystem without specifying the ' ro ' flag parameter；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4D7C60390E4FAA79
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EACCES
+    summary: \%FSCONFIG_CMD_CREATE was attempted for a read-only filesystem without specifying the ' ro
+      ' flag parameter
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:4d7c60390e4faa791cb28afe64ef2f18aad36fcda28ac04620b9be601758ed44
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 377
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c32db8150752b589216dd8b019fda03182ac21da43ea86a837c10d6f7c61c77
+  case: errors_eacces_377
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 377
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c32db8150752b589216dd8b019fda03182ac21da43ea86a837c10d6f7c61c77
+  case: errors_eacces_377

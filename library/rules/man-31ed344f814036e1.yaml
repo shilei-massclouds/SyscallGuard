@@ -1,0 +1,46 @@
+# 合规检查：条件：Write access to the directory containing path is not allowed for the process's effective UID, or one of the directories in path did not allow search...；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_31ED344F814036E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Write access to the directory containing path is not allowed for the process's effective
+      UID, or one of the directories in path did not allow search...
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:31ed344f814036e106594186307eaacc67ca745b4ab9a7a63c7b4702ced0f3eb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:873998331c27a0bc0f6eb5244321dd0097ecb1aecf28223577648784ff6c56ff
+  case: errors_eacces_131
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:873998331c27a0bc0f6eb5244321dd0097ecb1aecf28223577648784ff6c56ff
+  case: errors_eacces_131

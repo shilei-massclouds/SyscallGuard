@@ -1,0 +1,47 @@
+# 合规检查：条件：fds points outside the process's accessible address space. The array given as argument was not contained in the calling program's address space；检查：调用 ppoll(fds, nfds, tmo_p, sigmask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F3A4D21CCA9032B1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: fds
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: fds points outside the process's accessible address space. The array given as argument was
+      not contained in the calling program's address space
+  action:
+    operation: invoke_syscall
+    syscall: ppoll
+    arguments:
+    - fds
+    - nfds
+    - tmo_p
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f3a4d21cca9032b1036fae52e17e45a5234a574753a1e62aaecd85eed5002272
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 341
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2148a7979ef3e100fdef7a26788db3bdf42d79a59ffb0a9ed72fbfb2aa46e7aa
+  case: errors_efault_341
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ppoll
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 341
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2148a7979ef3e100fdef7a26788db3bdf42d79a59ffb0a9ed72fbfb2aa46e7aa
+  case: errors_efault_341

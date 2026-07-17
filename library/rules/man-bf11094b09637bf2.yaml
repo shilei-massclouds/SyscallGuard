@@ -1,0 +1,46 @@
+# 合规检查：条件：new_value , old_value , or curr_value is not a valid pointer；检查：调用 timer_settime(timerid, flags, new_value, old_value)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BF11094B09637BF2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: new_value
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: new_value , old_value , or curr_value is not a valid pointer
+  action:
+    operation: invoke_syscall
+    syscall: timer_settime
+    arguments:
+    - timerid
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2b2ef9f7e2eb2fbccb0fff6dd576e04bd1246d9058c80e0c42a28ee8d72cb876
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16ce2ed0154c6455e3a18029a03d209e73281a53d7fe79edbe30f539c042a426
+  case: errors_efault_153
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:16ce2ed0154c6455e3a18029a03d209e73281a53d7fe79edbe30f539c042a426
+  case: errors_efault_153

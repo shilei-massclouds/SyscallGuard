@@ -1,0 +1,37 @@
+# 合规检查：条件：shmid points to a removed identifier；检查：调用 shmat(shmid, shmaddr, shmflg)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_20340C4477D5D719--20340c4477d5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: shmid
+    predicate: documented_condition
+    value: EIDRM
+    summary: shmid points to a removed identifier
+  action:
+    operation: invoke_syscall
+    syscall: shmat
+    arguments:
+    - shmid
+    - shmaddr
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:20340c4477d5d71977b7db81e22a218e713fc3efa20209ac3681cf854cfaae57
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 160
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ee0d76c3d9970976527c243c5f9beb61f1096d36ac33a0f900f6f4f5f5857f48
+  case: errors_eidrm_160

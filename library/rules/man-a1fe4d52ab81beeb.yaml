@@ -1,0 +1,45 @@
+# 合规检查：条件：An unprivileged process tried to raise the hard limit; the CAP_SYS_RESOURCE capability is required to do this；检查：调用 setrlimit(resource, rlim)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1FE4D52AB81BEEB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: An unprivileged process tried to raise the hard limit; the CAP_SYS_RESOURCE capability is
+      required to do this
+  action:
+    operation: invoke_syscall
+    syscall: setrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e8686189eab59ca1448da866fef49fe239ec1b7592c1f981999f2d3eeeededed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e80e1dbe3b40d2a62be61c34a76b251417f1fb03785c2a97ed13ea327c932ff7
+  case: errors_eperm_489
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e80e1dbe3b40d2a62be61c34a76b251417f1fb03785c2a97ed13ea327c932ff7
+  case: errors_eperm_489

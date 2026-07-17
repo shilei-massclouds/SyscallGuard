@@ -1,0 +1,55 @@
+# 合规检查：条件：The fixture sets SRCFILE mode to PERMS.、The caller lacks a permission required by the operation.、The fixture sets DESTFILE mode to PERMS.、The fixture creates SRCFILE as a regular file.、The fixture creates DESTFILE as a regular file.；检查：调用 rename(SRCFILE, DESTFILE)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7ED6923454F08CDA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: PERMS
+    summary: The fixture sets SRCFILE mode to PERMS.
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: PERMS
+    summary: The fixture sets DESTFILE mode to PERMS.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates SRCFILE as a regular file.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates DESTFILE as a regular file.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - SRCFILE
+    - DESTFILE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:7ed6923454f08cda2b9eb955244f59aee556c7ef830534b7b38d8f3d8498c98a
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename09.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f3a7de76aeabbaa9c58827a08b63d81a3d594c7dd14c0630c79447a3b3f43336
+  case: rename09_49_raw_0

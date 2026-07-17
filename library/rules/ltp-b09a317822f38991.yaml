@@ -1,0 +1,45 @@
+# 合规检查：条件：The pathname exceeds the supported limit.、The fixture sets TEMP_FILE mode to 0700.、The fixture creates TEMP_FILE as a regular file.；检查：调用 rename(TEMP_FILE, long_name)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B09A317822F38991
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: length
+    value: too_long
+    summary: The pathname exceeds the supported limit.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0700'
+    summary: The fixture sets TEMP_FILE mode to 0700.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEMP_FILE as a regular file.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_FILE
+    - long_name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:b09a317822f38991f6ba3289e85b8f0b64e316a460d12752108a41baa255202d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename10.c
+  line: 37
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:785e20dac85583b9454c49d15667b385edcca12b594ff85101ba52fe9a3137e1
+  case: rename10_37_raw_0

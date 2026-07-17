@@ -1,0 +1,46 @@
+# 合规检查：条件：A semaphore set has to be created but the system does not have enough memory for the new data structure；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA4B1EEF45C908DE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: A semaphore set has to be created but the system does not have enough memory for the new
+      data structure
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:da4b1eef45c908debdd21e40eaed1b1b380bed800f9afa076f199c27dee7da44
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 177
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d57b4b33659ce534b50ea9654742312350aa64f4296536872a1b895eb0ca399
+  case: errors_enomem_177
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 177
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d57b4b33659ce534b50ea9654742312350aa64f4296536872a1b895eb0ca399
+  case: errors_enomem_177

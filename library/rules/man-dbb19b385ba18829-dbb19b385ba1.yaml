@@ -1,0 +1,36 @@
+# 合规检查：条件：No such thread；检查：调用 capget(hdrp, datap)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DBB19B385BA18829--dbb19b385ba1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: No such thread
+  action:
+    operation: invoke_syscall
+    syscall: capget
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:dbb19b385ba188293b27f8faf34dfb6132244b1514634b1962b5d1d3acc4f5f5
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:06122767d64a17443fb3b64c996c5bbe2362273abc58edb4f321e158e3f4d5f6
+  case: errors_esrch_240

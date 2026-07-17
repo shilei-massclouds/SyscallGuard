@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the file descriptor specified in cl_args.cgroup refers to a version 2 cgroup that...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6ACE70C9E2A3E819
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: cl_args
+    predicate: invalid_or_wrong_type
+    value: EOPNOTSUPP
+    summary: ( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the file descriptor
+      specified in cl_args.cgroup refers to a version 2 cgroup that...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:6ace70c9e2a3e8196a4d70b617294bda82106c85dc9d7ed325491a5d729ded00
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:03f492d6ae60a67c6faa00fa25c327d34551709721705df5275f5a51709d43e5
+  case: errors_eopnotsupp_1483
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:03f492d6ae60a67c6faa00fa25c327d34551709721705df5275f5a51709d43e5
+  case: errors_eopnotsupp_1483

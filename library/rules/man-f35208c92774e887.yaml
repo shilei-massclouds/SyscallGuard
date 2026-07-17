@@ -1,0 +1,45 @@
+# 合规检查：条件：An invalid flag value was specified in flags；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F35208C92774E887
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid flag value was specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f35208c92774e887f14692ac44f180bd0afae42900e2c65561f1e20d4f6a2bae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 233
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe26e85675f4d3b41ee72b8475b2639a3bb75fa6e9acfb7a2ab982bd657aeeb2
+  case: errors_einval_233
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 233
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe26e85675f4d3b41ee72b8475b2639a3bb75fa6e9acfb7a2ab982bd657aeeb2
+  case: errors_einval_233

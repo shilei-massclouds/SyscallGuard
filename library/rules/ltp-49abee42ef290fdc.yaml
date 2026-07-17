@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:f4320eb2b07c14a49f22661c0633806bdd52fb5beca9cfa30aec058496777370
   case: unshare01_47_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/unshare/unshare01.c
+  line: 47
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:f4320eb2b07c14a49f22661c0633806bdd52fb5beca9cfa30aec058496777370
+  case: unshare01_47_1_0

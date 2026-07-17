@@ -1,0 +1,49 @@
+# 合规检查：条件：SPLICE_F_NONBLOCK was specified in flags or one of the file descriptors had been marked as nonblocking ( O_NONBLOCK ) , and the operation would block；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_06EF9821B3C4C6BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: flags
+    predicate: invalid_or_wrong_type
+    value: EAGAIN
+    summary: SPLICE_F_NONBLOCK was specified in flags or one of the file descriptors had been marked as
+      nonblocking ( O_NONBLOCK ) , and the operation would block
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:06ef9821b3c4c6ba43751b4b69b9bd791693187f8f7bbfbdb3fa770c708b7f76
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 142
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d2aa6f9c3f0b8a6417b50a9b7b0ca596c810054f70f8f83af7ff30fbd7cb4db0
+  case: errors_eagain_142
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 142
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d2aa6f9c3f0b8a6417b50a9b7b0ca596c810054f70f8f83af7ff30fbd7cb4db0
+  case: errors_eagain_142

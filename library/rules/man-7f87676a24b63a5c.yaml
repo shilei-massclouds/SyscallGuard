@@ -1,0 +1,42 @@
+# 合规检查：条件：Any waiters []. __reserved field is not 0；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7F87676A24B63A5C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: Any waiters []. __reserved field is not 0
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7f87676a24b63a5c393afc20ff0c41340f04b85599c110e7a738748e883d3bfe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:972cbd41c37e85035a6a47a229564669028b566ee7df024ac5799939c5d5e273
+  case: errors_einval_237
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:972cbd41c37e85035a6a47a229564669028b566ee7df024ac5799939c5d5e273
+  case: errors_einval_237

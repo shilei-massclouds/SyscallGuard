@@ -1,0 +1,45 @@
+# 合规检查：条件：(before Linux 2.6.26) An attempt was made to set buf.offset to a value outside the permitted range. Before Linux 2.0, the permitted range was (-131072,...；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_17068E46E2A61A83
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: buf
+    predicate: invalid_value
+    value: EINVAL
+    summary: (before Linux 2.6.26) An attempt was made to set buf.offset to a value outside the permitted
+      range. Before Linux 2.0, the permitted range was (-131072,...
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:04702ef381036e2558610116bfffa030116d77b6a771c9eed0773fc78dba2a5a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 477
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b2a4da6306fb6ceb969aeb81096c2ec27c903548642554da764a2b57dd4279e
+  case: errors_einval_477
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 477
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b2a4da6306fb6ceb969aeb81096c2ec27c903548642554da764a2b57dd4279e
+  case: errors_einval_477

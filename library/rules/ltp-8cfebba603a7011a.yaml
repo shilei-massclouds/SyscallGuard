@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:302ad8118d4aeeb7431287a0b2e054d78411b836f03d6568082b438513f8db5c
   case: ssetmask01_121_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ssetmask/ssetmask01.c
+  line: 121
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:302ad8118d4aeeb7431287a0b2e054d78411b836f03d6568082b438513f8db5c
+  case: ssetmask01_121_raw_0

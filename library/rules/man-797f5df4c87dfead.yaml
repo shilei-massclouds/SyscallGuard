@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 msgctl(msqid, op, buf)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_797F5DF4C87DFEAD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: msgctl
+    arguments:
+    - msqid
+    - op
+    - buf
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:797f5df4c87dfead57d9cfc810bedf7caef1d63292f2a943edd7087896c6461c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 286
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8806c663f2edbc0fb0f8d762a82272cbfc786a5a099ed202750c0b88c128488e
+  case: return_value_286
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 286
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8806c663f2edbc0fb0f8d762a82272cbfc786a5a099ed202750c0b88c128488e
+  case: return_value_286

@@ -1,0 +1,44 @@
+# 合规检查：条件：No module by that name exists；检查：调用 delete_module(name, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2AFF520C77289514
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: name
+    predicate: documented_state_condition
+    value: ENOENT
+    summary: No module by that name exists
+  action:
+    operation: invoke_syscall
+    syscall: delete_module
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:2aff520c77289514a86b310ec68e5b8138116cfc517db5184d38def7d8cb713d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae44f140236d7d5f4f06bbb8dbf0f271431a042b92d21d612d649af5aee1bfca
+  case: errors_enoent_138
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: delete_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae44f140236d7d5f4f06bbb8dbf0f271431a042b92d21d612d649af5aee1bfca
+  case: errors_enoent_138

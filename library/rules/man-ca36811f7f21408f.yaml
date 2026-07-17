@@ -1,0 +1,46 @@
+# 合规检查：条件：Addresses in the specified range are not currently mapped, or are outside the address space of the process；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CA36811F7F21408F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: Addresses in the specified range are not currently mapped, or are outside the address space
+      of the process
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:ca36811f7f21408f68479d52f1ef6b9d56268c17a9c414dfae7b40817da73b9c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 931
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c0eff35dca8b234d760ddf36ea305964b33a84ae3bca2252fa37cbce07458de
+  case: errors_enomem_931
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 931
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c0eff35dca8b234d760ddf36ea305964b33a84ae3bca2252fa37cbce07458de
+  case: errors_enomem_931

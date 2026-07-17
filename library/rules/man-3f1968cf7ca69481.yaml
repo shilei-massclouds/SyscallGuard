@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 4.7) The process's RLIMIT_DATA limit, described in getrlimit (2), would have been exceeded；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F1968CF7CA69481
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: (since Linux 4.7) The process's RLIMIT_DATA limit, described in getrlimit (2), would have
+      been exceeded
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:d57cfe6327d21eeb653bfa12ccae4df091655cdabe672e2f73e994d992d33f25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 575
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8e117862f959405c2196e506dd4ce0141b05bbf3d2038d0d06a2681e6c26dfbf
+  case: errors_enomem_575
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 575
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8e117862f959405c2196e506dd4ce0141b05bbf3d2038d0d06a2681e6c26dfbf
+  case: errors_enomem_575

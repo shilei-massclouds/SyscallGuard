@@ -1,0 +1,48 @@
+# 合规检查：条件：An attempt was made to link to a /proc/self/fd/NN file corresponding to a file that has been deleted；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_37DB36BD0A08152C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOENT
+    summary: An attempt was made to link to a /proc/self/fd/NN file corresponding to a file that has been
+      deleted
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:37db36bd0a08152ce1e623907ecda593c33881d6647072f93976b8de19f51af1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 301
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c581254fff44339f049254ba044097557f1a2b578410fd57fd3038097c02375
+  case: errors_enoent_301
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 301
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c581254fff44339f049254ba044097557f1a2b578410fd57fd3038097c02375
+  case: errors_enoent_301

@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 timer_settime(timerid, flags, new_value, old_value)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C80C1CF2F5242D7B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: timer_settime
+    arguments:
+    - timerid
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:451ce5ef6efea28d3b8c886073379b642dfa28e995ca01328c86f0114d0cef56
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 143
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:138c0172da1bd5ad043460d446459fe3a9118d9ec6158526ae4e897264a6cc03
+  case: return_value_143
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 143
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:138c0172da1bd5ad043460d446459fe3a9118d9ec6158526ae4e897264a6cc03
+  case: return_value_143

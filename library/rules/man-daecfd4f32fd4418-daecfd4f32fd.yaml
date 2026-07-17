@@ -1,0 +1,36 @@
+# 合规检查：条件：A component of a pathname exceeded 255 characters, or an entire pathname exceeded 1023 characters；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAECFD4F32FD4418--daecfd4f32fd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: A component of a pathname exceeded 255 characters, or an entire pathname exceeded 1023 characters
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:daecfd4f32fd4418a16cfaa5a6cdf86413f1af0ff606e718bcac206c7726ac12
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:90d3a3352800f2702ac1fd72d76866a67f54ce4c14ee52303fb9812813ca0eef
+  case: errors_enametoolong_127

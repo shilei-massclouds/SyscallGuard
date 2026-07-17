@@ -1,0 +1,44 @@
+# 合规检查：条件：The clockid specified in a call to clock_settime () is not a settable clock；检查：调用 clock_settime(clockid, tp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_926273F22D577E3A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: clockid
+    predicate: documented_condition
+    value: EINVAL
+    summary: The clockid specified in a call to clock_settime () is not a settable clock
+  action:
+    operation: invoke_syscall
+    syscall: clock_settime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:926273f22d577e3ae78ba7461785339c88f99e5fbc9ec813df1adebc934e3827
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 302
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:169f83792c0200bcbbb53551b17479561b74b5be9773ff526ac478b7ef8c09df
+  case: errors_einval_302
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 302
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:169f83792c0200bcbbb53551b17479561b74b5be9773ff526ac478b7ef8c09df
+  case: errors_einval_302

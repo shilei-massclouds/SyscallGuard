@@ -1,0 +1,44 @@
+# 合规检查：条件：pipefd is not valid；检查：调用 pipe2(pipefd, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1115E878B4F50CF3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pipefd
+    predicate: documented_condition
+    value: EFAULT
+    summary: pipefd is not valid
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:1115e878b4f50cf36f15d4ead1bd50ea131bde28efdf9a461c7e207a8984bd76
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c77a8b75293e46af06cadf0b4eb26ff70d6330b30377c20f7e7d20b1c9f6c36
+  case: errors_efault_156
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c77a8b75293e46af06cadf0b4eb26ff70d6330b30377c20f7e7d20b1c9f6c36
+  case: errors_efault_156

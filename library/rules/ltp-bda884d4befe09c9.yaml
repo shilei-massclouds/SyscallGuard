@@ -1,0 +1,44 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 pwritev2(fd, wr_iovec, 1, -1, 0)；预期：{'kind': 'return_value', 'return': 'CHUNK'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BDA884D4BEFE09C9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd
+    - wr_iovec
+    - '1'
+    - '-1'
+    - '0'
+  expected_result:
+    kind: return_value
+    return: CHUNK
+  errno: []
+semantic_hash: sha256:bda884d4befe09c95ee33f53a800e8b869a9a19ea187abfdd48e0fef3171b86b
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev201.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e2c545ed4e8833d88f9c5028e6d41d46fd8d917573fe783d311115a0078b0d32
+  case: pwritev201_61_3_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev201.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e2c545ed4e8833d88f9c5028e6d41d46fd8d917573fe783d311115a0078b0d32
+  case: pwritev201_61_5_0

@@ -1,0 +1,44 @@
+# 合规检查：条件：The size argument is zero and buf is not a null pointer；检查：调用 getcwd(size, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AAA2AB163B724C66
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: size
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: The size argument is zero and buf is not a null pointer
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:aaa2ab163b724c6653203c31261876b74f707ff28f5853f0d59371e77c8165c6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a4b9cb6100ea08f598d3d3677ab43c5f9ed4d7d9963a9ea8ce3cffbbba75273e
+  case: errors_einval_149
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcwd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a4b9cb6100ea08f598d3d3677ab43c5f9ed4d7d9963a9ea8ce3cffbbba75273e
+  case: errors_einval_149

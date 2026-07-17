@@ -1,0 +1,43 @@
+# 合规检查：条件：The user ID specified in uid is not valid in this user namespace；检查：调用 setuid(uid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_70DFAE36C6B37CD3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: uid
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: The user ID specified in uid is not valid in this user namespace
+  action:
+    operation: invoke_syscall
+    syscall: setuid
+    arguments:
+    - uid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:70dfae36c6b37cd324479ee06fdd3101fde9699112d1ea8b45c35b43075de4ae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setuid.2
+  line: 87
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f7512ed573c617ed10bb9b68b75c692da8b52f13bd68f1006e0fd19d709373b
+  case: errors_einval_87
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setuid.2
+  line: 87
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f7512ed573c617ed10bb9b68b75c692da8b52f13bd68f1006e0fd19d709373b
+  case: errors_einval_87

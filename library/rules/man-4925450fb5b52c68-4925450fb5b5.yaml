@@ -1,0 +1,37 @@
+# 合规检查：条件：Invalid value for which or ioprio . Refer to the NOTES section for available scheduler classes and priority levels for ioprio；检查：调用 ioprio_get(which, who)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4925450FB5B52C68--4925450fb5b5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: which
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid value for which or ioprio . Refer to the NOTES section for available scheduler classes
+      and priority levels for ioprio
+  action:
+    operation: invoke_syscall
+    syscall: ioprio_get
+    arguments:
+    - which
+    - who
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4925450fb5b52c681a1f019c3e96fd33f540569d02d93204e4c35d405eb05f95
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioprio_get
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e21ddaedc11981094cc38787320126d6766eb2c18d694743768dddf981a46868
+  case: errors_einval_164

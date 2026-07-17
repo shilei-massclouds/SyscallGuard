@@ -1,0 +1,46 @@
+# 合规检查：条件：Part of all of the memory range specified by nodemask and maxnode points outside your accessible address space；检查：调用 set_mempolicy(mode, nodemask, maxnode)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D9499271E245B542
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: nodemask
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Part of all of the memory range specified by nodemask and maxnode points outside your accessible
+      address space
+  action:
+    operation: invoke_syscall
+    syscall: set_mempolicy
+    arguments:
+    - mode
+    - nodemask
+    - maxnode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d9499271e245b54278d077934ddcb9906c150db060c6839ad91b157e302bc862
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 285
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c17b01b10b446f6972918b02b1b242c6f2754a6b9994919ba441089e8e4fc1f
+  case: errors_efault_285
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: set_mempolicy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 285
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c17b01b10b446f6972918b02b1b242c6f2754a6b9994919ba441089e8e4fc1f
+  case: errors_efault_285

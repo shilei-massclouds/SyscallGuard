@@ -1,0 +1,48 @@
+# 合规检查：条件：sockfd is not a valid open file descriptor；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_31BEAACE7AC84003
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: sockfd is not a valid open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:9d2ee99e4c23afc9d53db84d725bdb6795417e63aeeeffb7d078eca61dca7d84
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 375
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7c0d66445907ed268ace78ad1327e619274e40a7ef871976f402865060ac1d6c
+  case: errors_ebadf_375
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 375
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7c0d66445907ed268ace78ad1327e619274e40a7ef871976f402865060ac1d6c
+  case: errors_ebadf_375

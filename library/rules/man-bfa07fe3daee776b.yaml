@@ -1,0 +1,47 @@
+# 合规检查：条件：The epoll slot addressed by idx2 is outside of the user's address space；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BFA07FE3DAEE776B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: idx2
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The epoll slot addressed by idx2 is outside of the user's address space
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:bfa07fe3daee776b7126a5ff893dd0877b50f45d58518359b1c1ee047d07e187
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36470e641c9dac1c9282a18b9c69b50c023ab528f1a0429b71bf682db8b02e33
+  case: errors_efault_255
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36470e641c9dac1c9282a18b9c69b50c023ab528f1a0429b71bf682db8b02e33
+  case: errors_efault_255

@@ -1,0 +1,38 @@
+# 合规检查：条件：addr or special is invalid；检查：调用 quotactl(op, special, id, addr)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9FD0FF5AD8750E16--9fd0ff5ad875
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: special
+    predicate: documented_condition
+    value: EFAULT
+    summary: addr or special is invalid
+  action:
+    operation: invoke_syscall
+    syscall: quotactl
+    arguments:
+    - op
+    - special
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:9fd0ff5ad8750e16cfbe90d19d76d29102d8ff386ea270c9512f993420acce3a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:734d93a96649d31e8dac09dc35b7f88c991051c19d0dc895576df306629d4aa1
+  case: errors_efault_154

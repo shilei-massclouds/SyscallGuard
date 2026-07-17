@@ -1,0 +1,46 @@
+# 合规检查：条件：The referenced socket is not of type SOCK_STREAM；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_663B3C3EEB98245D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: The referenced socket is not of type SOCK_STREAM
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:675f620de6b58c28d73a0ce953cec45ce5f7f0c4ef5378a6bf7e7d7c0611c085
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 232
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2eb189686ad908b2b85514deced2def7730d8708c17c3b7b6f99a9c98779d805
+  case: errors_eopnotsupp_232
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 232
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2eb189686ad908b2b85514deced2def7730d8708c17c3b7b6f99a9c98779d805
+  case: errors_eopnotsupp_232

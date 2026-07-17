@@ -1,0 +1,44 @@
+# 合规检查：条件：The current root is on the rootfs (initial ramfs) mount; see NOTES；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5735FF0B88004C71
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: The current root is on the rootfs (initial ramfs) mount; see NOTES
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5735ff0b88004c71ba28d65774523a61aacf5ff239eeff4fd2ea1746dd887e16
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dd219326099fd5f76c2275eddabb7075288b8f04679528e2356b82f3728fd3f5
+  case: errors_einval_143
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dd219326099fd5f76c2275eddabb7075288b8f04679528e2356b82f3728fd3f5
+  case: errors_einval_143

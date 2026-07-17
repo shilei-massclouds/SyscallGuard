@@ -1,0 +1,38 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9FD2A586602BFF5C--9fd2a586602b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:9fd2a586602bff5c37241ee66789e1457f49cdd497fab67c13e5a29f388d80fb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:042e23513e0ef2e09964d4e494355db6dbfc9f3c965e11fe192be52134bf12d8
+  case: errors_eio_243

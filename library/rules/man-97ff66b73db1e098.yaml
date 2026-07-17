@@ -1,0 +1,43 @@
+# 合规检查：条件：The calling process has insufficient privilege to call vhangup (); the CAP_SYS_TTY_CONFIG capability is required；检查：调用 vhangup()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_97FF66B73DB1E098
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process has insufficient privilege to call vhangup (); the CAP_SYS_TTY_CONFIG
+      capability is required
+  action:
+    operation: invoke_syscall
+    syscall: vhangup
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:97ff66b73db1e098526e92d934d818b2592900fbd95246beb2d514e1081ba0f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vhangup.2
+  line: 45
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:579e3497363e00eb7706384a641a59cedef53852a2048dbc1b85e126482a1324
+  case: errors_eperm_45
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: vhangup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vhangup.2
+  line: 45
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:579e3497363e00eb7706384a641a59cedef53852a2048dbc1b85e126482a1324
+  case: errors_eperm_45

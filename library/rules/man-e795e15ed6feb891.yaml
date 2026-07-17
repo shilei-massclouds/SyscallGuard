@@ -1,0 +1,48 @@
+# 合规检查：条件：Not enough memory was available to complete the operation. Possible causes are: The memory area cannot be expanded at the current virtual address, and the...；检查：调用 mremap(old_size, old_size, new_size, flags, new_address)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E795E15ED6FEB891
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: 'Not enough memory was available to complete the operation. Possible causes are: The memory
+      area cannot be expanded at the current virtual address, and the...'
+  action:
+    operation: invoke_syscall
+    syscall: mremap
+    arguments:
+    - old_size
+    - old_size
+    - new_size
+    - flags
+    - new_address
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:e795e15ed6feb891aea08771236bfad23510ff0d2a66dde9828c981e380fccdf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mremap.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ceaabfc09bbfc21a7fe156df65e381f2639673e0245b274bb57f0be729debaef
+  case: errors_enomem_349
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mremap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mremap.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ceaabfc09bbfc21a7fe156df65e381f2639673e0245b274bb57f0be729debaef
+  case: errors_enomem_349

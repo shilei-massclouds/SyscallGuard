@@ -1,0 +1,46 @@
+# 合规检查：条件：An I/O error occurred while reading from or writing to a filesystem；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC73B1B6B2EFAC08
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred while reading from or writing to a filesystem
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:cc73b1b6b2efac080d1677fb6b577f99d473951834e3fa6ae09a0496444d0fb4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 400
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aceac583eb67b59ebb8851c0e86f4297f0fb72ea26d657d0065821953bbffae2
+  case: errors_eio_400
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 400
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aceac583eb67b59ebb8851c0e86f4297f0fb72ea26d657d0065821953bbffae2
+  case: errors_eio_400

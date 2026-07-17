@@ -1,0 +1,43 @@
+# 合规检查：条件：A call to umount2 () specifying MNT_EXPIRE successfully marked an unbusy filesystem as expired；检查：调用 umount2(target)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_31D07EC9847501EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EAGAIN
+    summary: A call to umount2 () specifying MNT_EXPIRE successfully marked an unbusy filesystem as expired
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:31d07ec9847501ef65583c013cf8d12d90a143252bbedcb3b91539a6434a6d29
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b31b65d96410903b0a20799b1cc3b6c46d502f35318e993c7d93634c13158d2
+  case: errors_eagain_105
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 105
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b31b65d96410903b0a20799b1cc3b6c46d502f35318e993c7d93634c13158d2
+  case: errors_eagain_105

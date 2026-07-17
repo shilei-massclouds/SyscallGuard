@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 3.4) ( swapon ()) An invalid flag value was specified in swapflags；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F696D40CB02AF56B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: swapflags
+    predicate: invalid_value
+    value: EINVAL
+    summary: (since Linux 3.4) ( swapon ()) An invalid flag value was specified in swapflags
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f696d40cb02af56beeb8c7f6a9b7b30df9edc40b2ecca52ba32ff58387d0cb42
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0338a873df793bf6cf86c4f41d2c34dd433f7ae6ae4aad03a2b51f18a804db7
+  case: errors_einval_108
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0338a873df793bf6cf86c4f41d2c34dd433f7ae6ae4aad03a2b51f18a804db7
+  case: errors_einval_108

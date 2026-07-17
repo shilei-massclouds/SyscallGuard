@@ -1,0 +1,44 @@
+# 合规检查：条件：fd is not an open file descriptor；检查：调用 flock(fd, op)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FC5C3EC55A0B7777
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:fc5c3ec55a0b77779b697359e713115994a2a98a56f6ac47df82a692388937f6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41e5010e7a877fc725e0d1f0d9cc8c6dd7fd680b2a859e53b321a2e79b0a3e25
+  case: errors_ebadf_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41e5010e7a877fc725e0d1f0d9cc8c6dd7fd680b2a859e53b321a2e79b0a3e25
+  case: errors_ebadf_98

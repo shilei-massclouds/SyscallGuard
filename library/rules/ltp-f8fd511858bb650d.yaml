@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:7b8c75d88344c9478cdda181729d8e3aecd5678863a31bd70dbe307feb3b3b7b
   case: getsid02_20_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsid/getsid02.c
+  line: 20
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:7b8c75d88344c9478cdda181729d8e3aecd5678863a31bd70dbe307feb3b3b7b
+  case: getsid02_20_raw_0

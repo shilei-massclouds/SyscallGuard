@@ -1,0 +1,45 @@
+# 合规检查：条件：( sched_setparam ()) The caller does not have appropriate privileges (Linux: does not have the CAP_SYS_NICE capability)；检查：调用 sched_setparam(pid, param)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_09D1510C81523F39
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: '( sched_setparam ()) The caller does not have appropriate privileges (Linux: does not have
+      the CAP_SYS_NICE capability)'
+  action:
+    operation: invoke_syscall
+    syscall: sched_setparam
+    arguments:
+    - pid
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:09d1510c81523f3930502a83e1b192cff68e4a8ddb73cf26da51931be70b265b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b0318fb3814ec64a98963ba49d0852c9d93c3708d7df2c40453a61ff852d048e
+  case: errors_eperm_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setparam
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b0318fb3814ec64a98963ba49d0852c9d93c3708d7df2c40453a61ff852d048e
+  case: errors_eperm_102

@@ -1,0 +1,40 @@
+# 合规检查：条件：The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).) In addition, the errors documented in stat (2) can also occur；检查：调用 fsetxattr(fd, name, size, size, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BC03B820E6800CAE--bc03b820e680
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).) In addition,
+      the errors documented in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: fsetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:bc03b820e6800cae29cc0cc81974f5bf765b5117831ea1f817866d6a077fb6d4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d01359ea2010c1d266bd89bfcfb3ed489453d3c783922ff613cfff06019bd87
+  case: errors_eperm_128

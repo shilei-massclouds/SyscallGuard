@@ -1,0 +1,45 @@
+# 合规检查：条件：path refers to a directory. (This is the non-POSIX value returned since Linux 2.1.132.)；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E2B541F24026EF59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: path refers to a directory. (This is the non-POSIX value returned since Linux 2.1.132.)
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:e2b541f24026ef590f572c171c66281e1846424206ce452ecc22ec18063ff4a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa48c25fc5d79fd08519452ab3b7de83c6bccb087d27f8296bc1071c02e2ec2f
+  case: errors_eisdir_156
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 156
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa48c25fc5d79fd08519452ab3b7de83c6bccb087d27f8296bc1071c02e2ec2f
+  case: errors_eisdir_156

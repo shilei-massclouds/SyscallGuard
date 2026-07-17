@@ -1,0 +1,34 @@
+# 合规检查：条件：A pointer argument points to a location outside the accessible address space；检查：调用 prlimit64()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_15F4B6F35A48841A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: A pointer argument points to a location outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: prlimit64
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:15f4b6f35a48841a19a48af3588e8ce0d328faacfd824d6a1d761f6336288c0a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prlimit64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5cbeff654e60ba338f497cc9128282a60197446780bac51b9e2c9997c0f88d02
+  case: errors_efault_473

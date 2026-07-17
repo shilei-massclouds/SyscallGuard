@@ -1,0 +1,37 @@
+# 合规检查：条件：The RLIMIT_SIGPENDING resource limit was reached and sig is a real-time signal；检查：调用 tgkill(tgid, tid, sig)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_831FA4218199D0D4--831fa4218199
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: sig
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The RLIMIT_SIGPENDING resource limit was reached and sig is a real-time signal
+  action:
+    operation: invoke_syscall
+    syscall: tgkill
+    arguments:
+    - tgid
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:831fa4218199d0d45b8f6535336b07701ace14af7c53496eb5f11238c2816475
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tgkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 86
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:061917baf028a7f658f2d475786f607267366aa04c6ce286d82a3c90e4515c4f
+  case: errors_eagain_86

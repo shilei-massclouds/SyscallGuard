@@ -1,0 +1,48 @@
+# 合规检查：条件：The call was interrupted by a signal handler before either (1) any of the requested events occurred or (2) the timeout expired; see signal (7)；检查：调用 epoll_pwait2(epfd, n, n, timeout, sigmask)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4A06F3D62F31AFB4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timeout
+    predicate: documented_condition
+    value: EINTR
+    summary: The call was interrupted by a signal handler before either (1) any of the requested events
+      occurred or (2) the timeout expired; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: epoll_pwait2
+    arguments:
+    - epfd
+    - n
+    - n
+    - timeout
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:91fe46ba882fc740ca15ef21de5c2618197c4484e08c122aa9ea27cf05c058ac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a8c287a4d98dd743fd8110995a0b630965ba6d84be73387d35dd8c26fdd32f45
+  case: errors_eintr_196
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_pwait2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a8c287a4d98dd743fd8110995a0b630965ba6d84be73387d35dd8c26fdd32f45
+  case: errors_eintr_196

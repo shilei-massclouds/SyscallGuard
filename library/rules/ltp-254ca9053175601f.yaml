@@ -1,0 +1,38 @@
+# 合规检查：条件：The fixture sets FNAME_F mode to 0000.、The fixture creates FNAME_F as a regular file.；检查：调用 access(FNAME_F, F_OK)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_254CA9053175601F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0000'
+    summary: The fixture sets FNAME_F mode to 0000.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates FNAME_F as a regular file.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - FNAME_F
+    - F_OK
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:254ca9053175601f421f229369e98bbff012b18c71be180e04ce1892e64db74c
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2831bab9389bdd03f3e4f864361a021821c088da4ee15c573123237c43f4d84f
+  case: access02_58_0_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EFB3D4CAADB7B785
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:7b3daf9f9b5ad41f43f89aabd68c7b4ad7a08bb5bc2fab10e20f542cd80ba47a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 192
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:770ca81ae6e529fb489ef27adf4539008485305f5398f5ef5bcb6032be19f7b4
+  case: return_value_192
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 192
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:770ca81ae6e529fb489ef27adf4539008485305f5398f5ef5bcb6032be19f7b4
+  case: return_value_192

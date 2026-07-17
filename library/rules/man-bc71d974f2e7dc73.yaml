@@ -1,0 +1,47 @@
+# 合规检查：条件：The device containing the file has no room for the new directory entry；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BC71D974F2E7DC73
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOSPC
+    summary: The device containing the file has no room for the new directory entry
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:bc71d974f2e7dc7352173d4275e97ef4a6f5be561cb81d1247cd1db89405856b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bf278993a4973758346172104c057ba44a1ce7c2ced606dfda2792ba95b77e7c
+  case: errors_enospc_364
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 364
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bf278993a4973758346172104c057ba44a1ce7c2ced606dfda2792ba95b77e7c
+  case: errors_enospc_364

@@ -1,0 +1,42 @@
+# 合规检查：条件：The value contained within timeout is invalid；检查：调用 pselect6()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EFCD4E2987D78390
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value contained within timeout is invalid
+  action:
+    operation: invoke_syscall
+    syscall: pselect6
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:efcd4e2987d78390f8cf1a040987329512a401e263cc714804a34e3e54b6fd89
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 414
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:74dfc5d0557b67cc588589ca38301528ce1e627d275b535dd4b2c530720814ae
+  case: errors_einval_414
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pselect6
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 414
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:74dfc5d0557b67cc588589ca38301528ce1e627d275b535dd4b2c530720814ae
+  case: errors_einval_414

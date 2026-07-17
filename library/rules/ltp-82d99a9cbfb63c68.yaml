@@ -1,0 +1,38 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.；检查：调用 execveat(fd, TEST_REL_APP, argv, environ, 0)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_82D99A9CBFB63C68
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - fd
+    - TEST_REL_APP
+    - argv
+    - environ
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:82d99a9cbfb63c68833178831833414e9b518a6d6d3f078213e719f42965d630
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/execveat/execveat02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ef68674328fd1b436f1c23c8bd8e5b00842b2c8c45af6b7b0791d237a333b29
+  case: execveat02_57_3_0

@@ -1,0 +1,46 @@
+# 合规检查：条件：O_TMPFILE was specified in flags , but neither O_WRONLY nor O_RDWR was specified；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_846B9B763732424F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: O_TMPFILE was specified in flags , but neither O_WRONLY nor O_RDWR was specified
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:846b9b763732424fba1f8743ad38f5993de104a6fd9413c17ce28cb61d252f51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1069
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86930c4c63350b9c349dffb4da995d4d7382cd9fb35ba8ff7779874ad7869f8d
+  case: errors_einval_1069
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1069
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86930c4c63350b9c349dffb4da995d4d7382cd9fb35ba8ff7779874ad7869f8d
+  case: errors_einval_1069

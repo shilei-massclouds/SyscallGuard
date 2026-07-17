@@ -1,0 +1,46 @@
+# 合规检查：条件：operation included BPF_ABS , but the specified offset was not aligned to a 32-bit boundary or exceeded sizeof(struct seccomp_data)；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AB84286FEBD5DA77
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: operation
+    predicate: invalid_value
+    value: EINVAL
+    summary: operation included BPF_ABS , but the specified offset was not aligned to a 32-bit boundary
+      or exceeded sizeof(struct seccomp_data)
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ab84286febd5da77770a2f499534ed59ca8a3f0f6c0239b5947659445e8103f6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 841
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da60f66e706b1310c2ef3cff15e8ad1d3c351229cc04a561980c25fccdfd48d4
+  case: errors_einval_841
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 841
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da60f66e706b1310c2ef3cff15e8ad1d3c351229cc04a561980c25fccdfd48d4
+  case: errors_einval_841

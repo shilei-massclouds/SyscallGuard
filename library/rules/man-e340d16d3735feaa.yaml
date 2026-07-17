@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling process has too many open files to create more；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E340D16D3735FEAA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EMFILE
+    summary: The calling process has too many open files to create more
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:e340d16d3735feaa66646df77948fb37fd3d87b20a5c49110fe4b83182055582
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 436
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:414c1cafd6f594a452a3f61e0450a5cd5cf1976df70da1d0a85087c2cdae40b9
+  case: errors_emfile_436
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 436
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:414c1cafd6f594a452a3f61e0450a5cd5cf1976df70da1d0a85087c2cdae40b9
+  case: errors_emfile_436

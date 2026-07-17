@@ -1,0 +1,42 @@
+# 合规检查：条件：nfds is negative or exceeds the RLIMIT_NOFILE resource limit (see getrlimit (2))；检查：调用 pselect6()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_347E554BA8FC364F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: nfds is negative or exceeds the RLIMIT_NOFILE resource limit (see getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: pselect6
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:347e554ba8fc364f0579aaaeeadcfb87fee66eb7d5162b7d9c82fa4f22fb1e1d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8305ffeb61a8ac2b0ba5b376d9e773d5e06911fc4c360e011e2b88475bb6282
+  case: errors_einval_407
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pselect6
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8305ffeb61a8ac2b0ba5b376d9e773d5e06911fc4c360e011e2b88475bb6282
+  case: errors_einval_407

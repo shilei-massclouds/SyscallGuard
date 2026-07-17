@@ -1,0 +1,48 @@
+# 合规检查：条件：The program identified by dirfd and path requires the use of an interpreter program (such as a script starting with #!), but the file descriptor dirfd was...；检查：调用 execveat(dirfd, path, argv, envp, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7055A4E8C4DE46A4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOENT
+    summary: 'The program identified by dirfd and path requires the use of an interpreter program (such
+      as a script starting with #!), but the file descriptor dirfd was...'
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - dirfd
+    - path
+    - argv
+    - envp
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:7055a4e8c4de46a45ab75a459188be257300a92b81ece0b0cafb7a6ce8cb9738
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execveat.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:17ee011e04d904b741e46ddbe17b0911481fa421f7f6a23e52babc47d06e2f8d
+  case: errors_enoent_129
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execveat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execveat.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:17ee011e04d904b741e46ddbe17b0911481fa421f7f6a23e52babc47d06e2f8d
+  case: errors_enoent_129

@@ -1,0 +1,48 @@
+# 合规检查：条件：When changing mount propagation to MS_SHARED , a new peer group ID needs to be allocated for all mounts without a peer group ID set. This allocation failed...；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3974B6275AF8E0AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: When changing mount propagation to MS_SHARED , a new peer group ID needs to be allocated
+      for all mounts without a peer group ID set. This allocation failed...
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:3974b6275af8e0ab9a7d29e582c05496ee70d9cb3e91334925c5468ea8469c7e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 502
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e0176f663b42d9ea5464f009f4c33dd0097ba2198285ff1fff33c9ecb1e76e8
+  case: errors_enomem_502
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 502
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e0176f663b42d9ea5464f009f4c33dd0097ba2198285ff1fff33c9ecb1e76e8
+  case: errors_enomem_502

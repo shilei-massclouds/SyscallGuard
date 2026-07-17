@@ -1,0 +1,33 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 mlockall(flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F00524DADEC6CE8E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: mlockall
+    arguments:
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:f00524dadec6ce8e713e53c8abc5e51123dbdf15c37887fd1dccc4ffd11fd9b3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:dc0bced6fdf15ab454cce4a8b026af9639ed124bba31e95b737d187a600d20c1
+  case: return_value_165

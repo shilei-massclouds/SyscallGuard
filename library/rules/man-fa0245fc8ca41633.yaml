@@ -1,0 +1,48 @@
+# 合规检查：条件：The sum of the iov_len values of either local_iov or remote_iov overflows a ssize_t value；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FA0245FC8CA41633
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: local_iov
+    predicate: invalid_value
+    value: EINVAL
+    summary: The sum of the iov_len values of either local_iov or remote_iov overflows a ssize_t value
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f5fb13c124d485f1f453f12b33fbba7435ff391fbd7a0c5ba174964175b33c44
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da72a6bf1894c024c82bce354e20357a5fcbc68404954968c39824e0cabb3a56
+  case: errors_einval_223
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 223
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da72a6bf1894c024c82bce354e20357a5fcbc68404954968c39824e0cabb3a56
+  case: errors_einval_223

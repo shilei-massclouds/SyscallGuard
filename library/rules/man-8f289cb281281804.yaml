@@ -1,0 +1,46 @@
+# 合规检查：条件：The calling process does not have permission to send the signal to the target process；检查：调用 pidfd_send_signal(pidfd, sig, info, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8F289CB281281804
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have permission to send the signal to the target process
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - sig
+    - info
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8f289cb281281804d77ac36bc31419bd5bdc5098d6ae4eb46ef37af9be611dc9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ace0523ecf6a1b868805f4eb098e4bab5d2e593e2c2624d1292f7af39d2534d7
+  case: errors_eperm_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_send_signal
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ace0523ecf6a1b868805f4eb098e4bab5d2e593e2c2624d1292f7af39d2534d7
+  case: errors_eperm_165

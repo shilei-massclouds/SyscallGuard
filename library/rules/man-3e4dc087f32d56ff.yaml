@@ -1,0 +1,46 @@
+# 合规检查：条件：req or smbuf points to a location outside the process's accessible address space；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3E4DC087F32D56FF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: req
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: req or smbuf points to a location outside the process's accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:3e4dc087f32d56ff149d8b6d4741c249401f39dee5d60e2702692407ad0e8327
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 401
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3dc7fbfcf10b76294111c65ba1a31af5fa8acbc8c7946dbc8a9c29b309955f3e
+  case: errors_efault_401
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 401
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3dc7fbfcf10b76294111c65ba1a31af5fa8acbc8c7946dbc8a9c29b309955f3e
+  case: errors_efault_401

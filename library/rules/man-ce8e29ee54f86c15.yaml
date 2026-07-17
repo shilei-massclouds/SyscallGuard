@@ -1,0 +1,46 @@
+# 合规检查：条件：newfd is out of the allowed range for file descriptors (see the discussion of RLIMIT_NOFILE in getrlimit (2))；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CE8E29EE54F86C15
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: newfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: newfd is out of the allowed range for file descriptors (see the discussion of RLIMIT_NOFILE
+      in getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:052319f702c80f6555f685fd87d82e2e8663f4985c7f70acdccc5ab16eaf898c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3851cd234b59256e830ee82bb25c22e433bd19515cc4c873b49d3b6384500661
+  case: errors_ebadf_147
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3851cd234b59256e830ee82bb25c22e433bd19515cc4c873b49d3b6384500661
+  case: errors_ebadf_147

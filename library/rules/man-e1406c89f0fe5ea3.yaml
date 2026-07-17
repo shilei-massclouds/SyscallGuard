@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 get_mempolicy(mode, ULONG_WIDTH, maxnode, addr, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E1406C89F0FE5EA3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: get_mempolicy
+    arguments:
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - addr
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:e1406c89f0fe5ea3bccdac6656418519025e6a84ef105d56db2b758232191917
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_mempolicy.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:af429a8ad4c4d008ec78953f88d371897aef2e6cac27fe5a9d2cfdde0a361698
+  case: return_value_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: get_mempolicy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_mempolicy.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:af429a8ad4c4d008ec78953f88d371897aef2e6cac27fe5a9d2cfdde0a361698
+  case: return_value_165

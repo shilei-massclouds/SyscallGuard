@@ -1,0 +1,47 @@
+# 合规检查：条件：O_CREAT and O_DIRECTORY were both specified in flags , and the Linux kernel version is 6.4 or later. (Earlier kernels were inconsistent in this area, and...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4B1DDC20BEF0A957
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: flags
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: O_CREAT and O_DIRECTORY were both specified in flags , and the Linux kernel version is 6.4
+      or later. (Earlier kernels were inconsistent in this area, and...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4b1ddc20bef0a957feb2481622228ed6a91f4d38fee2d66c3ef119d289f1dfa1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1079
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6a8ecda40d9a919961df22abaf06c346f8e996f935431bcd4f86f3e304067fa8
+  case: errors_einval_1079
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1079
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6a8ecda40d9a919961df22abaf06c346f8e996f935431bcd4f86f3e304067fa8
+  case: errors_einval_1079

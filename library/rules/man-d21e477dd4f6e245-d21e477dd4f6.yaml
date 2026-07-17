@@ -1,0 +1,37 @@
+# 合规检查：条件：path or fd refers to a file whose size, inode number, or number of blocks cannot be represented in, respectively, the types off_t , ino_t , or blkcnt_t ....；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D21E477DD4F6E245--d21e477dd4f6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EOVERFLOW
+    summary: path or fd refers to a file whose size, inode number, or number of blocks cannot be represented
+      in, respectively, the types off_t , ino_t , or blkcnt_t ....
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:d21e477dd4f6e24515b0516b8b6439007df30bb01e2a42cfba518effd82045ee
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 282
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:71474d45d4c566242fea95f0d4f800915eba720700b2cc737b32f905ce56d1ef
+  case: errors_eoverflow_282

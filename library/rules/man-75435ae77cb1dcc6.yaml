@@ -1,0 +1,45 @@
+# 合规检查：条件：RWF_DONTCACHE was set in flags and the file doesn't support it；检查：调用 writev(fd, iov, iovcnt)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_75435AE77CB1DCC6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: RWF_DONTCACHE was set in flags and the file doesn't support it
+  action:
+    operation: invoke_syscall
+    syscall: writev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:b4e7ba995c00dbe87088c5b4d6b24e104598157cb5838ed7d589ca4dc616f4f9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f109cc99eeff71e60f373d0af03800d7a4db0532eea70c580418769f9f3b0a2
+  case: errors_eopnotsupp_405
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f109cc99eeff71e60f373d0af03800d7a4db0532eea70c580418769f9f3b0a2
+  case: errors_eopnotsupp_405

@@ -1,0 +1,45 @@
+# 合规检查：条件：A component of path does not exist, or is a dangling symbolic link；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_76075BEF778F7A0A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A component of path does not exist, or is a dangling symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:76075bef778f7a0a7dd7852d17a9fc268211e0cb84fc7f637d8fee94d3b74926
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 447
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecd530ac1b791d4feddf97ba44c456e692b20509da743978562e16528fb85742
+  case: errors_enoent_447
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 447
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecd530ac1b791d4feddf97ba44c456e692b20509da743978562e16528fb85742
+  case: errors_enoent_447

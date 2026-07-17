@@ -1,0 +1,46 @@
+# 合规检查：条件：fd_in or fd_out does not refer to a pipe; or fd_in and fd_out refer to the same pipe；检查：调用 tee(fd_in, fd_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F0982EBF65B854A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_in
+    predicate: documented_condition
+    value: EINVAL
+    summary: fd_in or fd_out does not refer to a pipe; or fd_in and fd_out refer to the same pipe
+  action:
+    operation: invoke_syscall
+    syscall: tee
+    arguments:
+    - fd_in
+    - fd_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3f0982ebf65b854a9192af8f6907506e865d23c776e68ec8bc4694ec15f74610
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tee.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2b768e04f7f0409b825a32b903c22dda2fc73454195424c0cf0b1fbf754ea53
+  case: errors_einval_93
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tee
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tee.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2b768e04f7f0409b825a32b903c22dda2fc73454195424c0cf0b1fbf754ea53
+  case: errors_einval_93

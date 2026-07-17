@@ -1,0 +1,45 @@
+# 合规检查：条件：A message queue has to be created but the system does not have enough memory for the new data structure；检查：调用 msgget(key, msgflg)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_34267E560D90B4A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: A message queue has to be created but the system does not have enough memory for the new
+      data structure
+  action:
+    operation: invoke_syscall
+    syscall: msgget
+    arguments:
+    - key
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:34267e560d90b4a95d9f6fe8bd4227ba2a2aaab830dfa20a90eaaebab6a2b72c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b316f62794b343027b0a5ccdf317db1d28a3563fdd10cdd6eb2afa09f876ab0e
+  case: errors_enomem_151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b316f62794b343027b0a5ccdf317db1d28a3563fdd10cdd6eb2afa09f876ab0e
+  case: errors_enomem_151

@@ -1,0 +1,43 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 epoll_create1(flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C24A59A79D89B0CC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: epoll_create1
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:c24a59a79d89b0cc11c4e6dd891e6a3bd09d873674eaee61c5277b9ee8847850
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_create.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86116f68f1789896eec8613ca143e7b39694c368c7d48214887feb43c44607ba
+  case: errors_enfile_84
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_create1
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_create.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86116f68f1789896eec8613ca143e7b39694c368c7d48214887feb43c44607ba
+  case: errors_enfile_84

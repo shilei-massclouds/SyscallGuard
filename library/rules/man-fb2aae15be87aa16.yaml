@@ -1,0 +1,46 @@
+# 合规检查：条件：flags is not valid, or first is greater than last . The following can occur with CLOSE_RANGE_UNSHARE (when constructing the new descriptor table):；检查：调用 close_range(first, last, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB2AAE15BE87AA16
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: first
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'flags is not valid, or first is greater than last . The following can occur with CLOSE_RANGE_UNSHARE
+      (when constructing the new descriptor table):'
+  action:
+    operation: invoke_syscall
+    syscall: close_range
+    arguments:
+    - first
+    - last
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fb2aae15be87aa16387ee998d81d5f588e4b128578addc71977c96c54abfb36c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close_range.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:499a5370995c2e52dbdd4b2a59bc286f79c8c69467343a7cb1f3e3d78a6a86f8
+  case: errors_einval_54
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close_range.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:499a5370995c2e52dbdd4b2a59bc286f79c8c69467343a7cb1f3e3d78a6a86f8
+  case: errors_einval_54

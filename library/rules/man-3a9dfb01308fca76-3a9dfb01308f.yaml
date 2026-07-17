@@ -1,0 +1,37 @@
+# 合规检查：条件：( mlock (), mlock2 (), and munlock ()) The result of the addition addr + size was less than addr (e.g., the addition may have resulted in an overflow)；检查：调用 mlock(size, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3A9DFB01308FCA76--3a9dfb01308f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( mlock (), mlock2 (), and munlock ()) The result of the addition addr + size was less than
+      addr (e.g., the addition may have resulted in an overflow)
+  action:
+    operation: invoke_syscall
+    syscall: mlock
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3a9dfb01308fca76219f4233263bbcab8921c14e0a0362046b4309b5eed85310
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a4c1318a20d5d0bb2e74268b74a4bb982a5d77b36a600a3b50f160cef99225b4
+  case: errors_einval_180

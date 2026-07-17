@@ -1,0 +1,38 @@
+# 合规检查：条件：( mlock (), mlock2 (), and munlock ()) Some or all of the specified address range could not be locked；检查：调用 mlock2(size, size, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F8A15CD5ADF2271
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EAGAIN
+    summary: ( mlock (), mlock2 (), and munlock ()) Some or all of the specified address range could not
+      be locked
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:3f8a15cd5adf22710e01ea685c0c3306eb7275c11cc083a2acee081d294a1397
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d4f3677e3c79ac8248ccc42e27b4239db1dcf253c04197cd8fc3a6c235d341c
+  case: errors_eagain_173

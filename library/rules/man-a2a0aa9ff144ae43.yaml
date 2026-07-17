@@ -1,0 +1,42 @@
+# 合规检查：条件：The name could not fit in the buffer；检查：调用 lookup_dcookie()；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A2A0AA9FF144AE43
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENAMETOOLONG
+    summary: The name could not fit in the buffer
+  action:
+    operation: invoke_syscall
+    syscall: lookup_dcookie
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:a2a0aa9ff144ae4385d27a7fe20e48ae07b28a0b1ba9a5cefee846e158e504e3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 53
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32524730a0e4cb9fa7177a67e8649008da0bdf3fea4e115369049e7b3ec4719d
+  case: errors_enametoolong_53
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lookup_dcookie
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 53
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32524730a0e4cb9fa7177a67e8649008da0bdf3fea4e115369049e7b3ec4719d
+  case: errors_enametoolong_53

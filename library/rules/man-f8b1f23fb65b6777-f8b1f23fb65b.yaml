@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 pkey_alloc(flags, access_rights)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F8B1F23FB65B6777--f8b1f23fb65b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: pkey_alloc
+    arguments:
+    - flags
+    - access_rights
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:f8b1f23fb65b677719f9f3726f957396c7d7ecb593d94d46358fffdea4536a83
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_alloc
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 55
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:6cf76ea77d397618cc02699060b83ce56b5fef184a254a9ccbe678e7031ad654
+  case: return_value_55

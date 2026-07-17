@@ -1,0 +1,37 @@
+# 合规检查：条件：An unknown flag is specified in flags；检查：调用 readv(fd, iov, iovcnt)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D92412EE0F393450
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: An unknown flag is specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: readv
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:d92412ee0f393450b9676bc94ded1e64a9ccca583f8b312e520f073b3859acc4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 411
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:730e914bed071a34d9ea814111ef67ffc676617d3f63f256885ec151e89e4278
+  case: errors_eopnotsupp_411

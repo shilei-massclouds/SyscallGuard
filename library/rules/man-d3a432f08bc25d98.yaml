@@ -1,0 +1,48 @@
+# 合规检查：条件：path or statxbuf points to a location outside the process's accessible address space or is NULL (except since Linux 6.11 if AT_EMPTY_PATH is specified in...；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D3A432F08BC25D98
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path or statxbuf points to a location outside the process's accessible address space or is
+      NULL (except since Linux 6.11 if AT_EMPTY_PATH is specified in...
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d3a432f08bc25d98da7c259302167648928ca8d4f30b00ec0f1e3bb199cf3398
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 657
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:357df1b93ddd96e89ed0c295b388fd7a85f48daa2183a8a677dcde7a29689a78
+  case: errors_efault_657
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 657
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:357df1b93ddd96e89ed0c295b388fd7a85f48daa2183a8a677dcde7a29689a78
+  case: errors_efault_657

@@ -1,0 +1,45 @@
+# 合规检查：条件：The filesystem containing path does not support the creation of directories；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6AD26E12F4B51375
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EPERM
+    summary: The filesystem containing path does not support the creation of directories
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:6ad26e12f4b513755e08f52495da7ccac122f83f81df4f7e371b3a8134dd023f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 199
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9c8ffec5cbdd17a87537ef231c270a26dd4a5dd6830a5a988bd8dac10bb237c6
+  case: errors_eperm_199
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 199
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9c8ffec5cbdd17a87537ef231c270a26dd4a5dd6830a5a988bd8dac10bb237c6
+  case: errors_eperm_199

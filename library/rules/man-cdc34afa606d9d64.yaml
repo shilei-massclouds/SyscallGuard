@@ -1,0 +1,45 @@
+# 合规检查：条件：sevp->sigev_notify is not one of the permitted values; or sevp->sigev_notify is SIGEV_SIGNAL and sevp->sigev_signo is not a valid signal number；检查：调用 mq_notify(mqdes, sevp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CDC34AFA606D9D64
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: sevp
+    predicate: invalid_value
+    value: EINVAL
+    summary: sevp->sigev_notify is not one of the permitted values; or sevp->sigev_notify is SIGEV_SIGNAL
+      and sevp->sigev_signo is not a valid signal number
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - mqdes
+    - sevp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:cdc34afa606d9d64cbf232d48d1084cea67bf7af4de78766b2989f1567ae24d9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:548c97a5e83bf42312458456ffea9649a482681acfb3d2ef33d6c3fb4e44a2a8
+  case: errors_einval_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_notify
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:548c97a5e83bf42312458456ffea9649a482681acfb3d2ef33d6c3fb4e44a2a8
+  case: errors_einval_134

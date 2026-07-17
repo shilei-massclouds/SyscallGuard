@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:f8a7cc7117f89520c22c831d5e3259963c184628af4f09ead7295227e8256d24
   case: migrate_pages02_88_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+  line: 88
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f8a7cc7117f89520c22c831d5e3259963c184628af4f09ead7295227e8256d24
+  case: migrate_pages02_88_raw_0

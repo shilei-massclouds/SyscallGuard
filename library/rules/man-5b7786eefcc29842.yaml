@@ -1,0 +1,45 @@
+# 合规检查：条件：new_value , old_value , or curr_value is not a valid pointer；检查：调用 setitimer(which, new_value, old_value)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5B7786EEFCC29842
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: new_value
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: new_value , old_value , or curr_value is not a valid pointer
+  action:
+    operation: invoke_syscall
+    syscall: setitimer
+    arguments:
+    - which
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ecc93e7b84518c262b1a665da73652ccf6124dae96b779fa0fc0477986a8e8b3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de327817e8abe4ae05a112ef20c3405ac76b3eb30b08d506915c6ca447d7ba7
+  case: errors_efault_138
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setitimer
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de327817e8abe4ae05a112ef20c3405ac76b3eb30b08d506915c6ca447d7ba7
+  case: errors_efault_138

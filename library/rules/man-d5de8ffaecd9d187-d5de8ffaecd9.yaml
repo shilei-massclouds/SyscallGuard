@@ -1,0 +1,36 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sched_getattr(pid, attr, size, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D5DE8FFAECD9D187--d5de8ffaecd9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d5de8ffaecd9d1878121a27438642ece6b4eee95012160648a2e453378fe95de
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 348
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:03f3a81bf9e5cb8edbe8ebad502d5f61e2d2930931796e7212916b9754ea2cb7
+  case: return_value_348

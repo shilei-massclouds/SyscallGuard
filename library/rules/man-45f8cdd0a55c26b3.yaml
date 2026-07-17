@@ -1,0 +1,47 @@
+# 合规检查：条件：io_getevents () is not implemented on this architecture；检查：调用 io_getevents(ctx_id, min_nr, nr, events, timeout)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_45F8CDD0A55C26B3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: io_getevents () is not implemented on this architecture
+  action:
+    operation: invoke_syscall
+    syscall: io_getevents
+    arguments:
+    - ctx_id
+    - min_nr
+    - nr
+    - events
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:45f8cdd0a55c26b3c9975790ef8627d577d1344e1dee8a6b7706298b974e16dd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_getevents.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1064cf88ae503d7c743d733ff8f67e5eaf0cd151ab2a83d2dd9f610bf54a3918
+  case: errors_enosys_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_getevents
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_getevents.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1064cf88ae503d7c743d733ff8f67e5eaf0cd151ab2a83d2dd9f610bf54a3918
+  case: errors_enosys_98

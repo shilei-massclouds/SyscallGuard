@@ -1,0 +1,46 @@
+# 合规检查：条件：Either the value specified in how was invalid or the kernel does not support the size passed in sigsetsize；检查：调用 rt_sigprocmask(how, set, oldset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B8AAF34D422EFA92
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: how
+    predicate: invalid_value
+    value: EINVAL
+    summary: Either the value specified in how was invalid or the kernel does not support the size passed
+      in sigsetsize
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigprocmask
+    arguments:
+    - how
+    - set
+    - oldset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b8aaf34d422efa92e7f6188e564168bdf25d97933f1a43c45ed6f113584f2409
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigprocmask.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7d44fb8087ccb6b0e9a2ad774f28569e1f4a090f69d9af5f11670f3cc3e485c
+  case: errors_einval_111
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigprocmask
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigprocmask.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7d44fb8087ccb6b0e9a2ad774f28569e1f4a090f69d9af5f11670f3cc3e485c
+  case: errors_einval_111

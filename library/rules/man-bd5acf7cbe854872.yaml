@@ -1,0 +1,46 @@
+# 合规检查：条件：An attempt was made to change console_loglevel or clear the kernel message ring buffer by a process without sufficient privilege (more precisely: without...；检查：调用 syslog(type, bufp, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BD5ACF7CBE854872
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'An attempt was made to change console_loglevel or clear the kernel message ring buffer by
+      a process without sufficient privilege (more precisely: without...'
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - type
+    - bufp
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:bd5acf7cbe8548721fa69217921bf0da1b4c3ed6ebe6d1f20eaaac6429143dec
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 361
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:403f34c23a5613481db0e96e47b7c79556a1e947f237e62fce8f20ff4ff02bfb
+  case: errors_eperm_361
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syslog
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 361
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:403f34c23a5613481db0e96e47b7c79556a1e947f237e62fce8f20ff4ff02bfb
+  case: errors_eperm_361

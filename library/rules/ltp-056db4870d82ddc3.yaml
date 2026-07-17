@@ -1,0 +1,42 @@
+# 合规检查：条件：Path resolution encounters a symlink loop.、The fixture creates FOO_SYMLINK as a symbolic link.；检查：调用 openat2(AT_FDCWD, FOO_SYMLINK, how, sizeof(*how))；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_056DB4870D82DDC3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates FOO_SYMLINK as a symbolic link.
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - AT_FDCWD
+    - FOO_SYMLINK
+    - how
+    - sizeof(*how)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:056db4870d82ddc3ba03295208d4f5908240d4fe7a8b5e1801d47796d080a98a
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat202.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
+  case: openat202_54_5_0

@@ -1,0 +1,46 @@
+# 合规检查：条件：A component of the path prefix is not a directory；检查：调用 readlinkat(dirfd, path, bufsiz, bufsiz)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_58F03BE7E74BDC3F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dirfd
+    - path
+    - bufsiz
+    - bufsiz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:58f03be7e74bdc3fb3b2ad436be01e73c2793677967008c9781004860d397d0b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:172b7ba92c0cf85900d17c1bab00e689d681b8038d56f3df7af257c90978e354
+  case: errors_enotdir_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:172b7ba92c0cf85900d17c1bab00e689d681b8038d56f3df7af257c90978e354
+  case: errors_enotdir_173

@@ -1,0 +1,40 @@
+# 合规检查：条件：The file has been locked, or too much memory has been locked (see setrlimit (2))；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AF6B7627EDF8880A--af6b7627edf8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The file has been locked, or too much memory has been locked (see setrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:af6b7627edf8880ae0bb4d822f369e7ef7eff63d6ac1529309d810ef6515c6a3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 511
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b04904194ecdca78f2dfd635ca525764816f04a8fc981beba2c419952f64df65
+  case: errors_eagain_511

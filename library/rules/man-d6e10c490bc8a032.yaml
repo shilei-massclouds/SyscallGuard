@@ -1,0 +1,48 @@
+# 合规检查：条件：The filesystem object indicated by path resides within a filesystem subvolume (e.g., btrfs (5)) which uses a different fsid than its root superblock. This...；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EXDEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D6E10C490BC8A032
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EXDEV
+    summary: The filesystem object indicated by path resides within a filesystem subvolume (e.g., btrfs
+      (5)) which uses a different fsid than its root superblock. This...
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EXDEV
+  errno:
+  - EXDEV
+semantic_hash: sha256:d6e10c490bc8a03234955c3e5c37d64e56627c15878f87bd29445642a30012d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 801
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8962bdadfc6e5297d65ffdf0c0cc36d1327b65fdd894818db5c71cf82bafb5b8
+  case: errors_exdev_801
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 801
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8962bdadfc6e5297d65ffdf0c0cc36d1327b65fdd894818db5c71cf82bafb5b8
+  case: errors_exdev_801

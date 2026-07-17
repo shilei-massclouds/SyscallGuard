@@ -1,0 +1,45 @@
+# 合规检查：条件：path refers to a directory, and AT_REMOVEDIR was not specified in flags；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA8E6AA5717504D8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: path refers to a directory, and AT_REMOVEDIR was not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:da8e6aa5717504d8c00479e98d69975d5415b265e85fe12ad4779753302e2a07
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:977bd814960c6f80c5436ea68cb8522c73da2d3fe31b46f7207b95c675720f26
+  case: errors_eisdir_237
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 237
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:977bd814960c6f80c5436ea68cb8522c73da2d3fe31b46f7207b95c675720f26
+  case: errors_eisdir_237

@@ -1,0 +1,35 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 mlock2(size, size, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F60DBFEDFB3F5EDB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:f60dbfedfb3f5edbffe809865f3dd4871664cbab36dd157149315c3a59420cc6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:028ada650806985513e44da323c33cd0a091fe9b515e2a2ab3dd0341740fa881
+  case: return_value_165

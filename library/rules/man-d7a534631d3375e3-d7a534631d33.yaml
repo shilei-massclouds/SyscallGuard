@@ -1,0 +1,37 @@
+# 合规检查：条件：Timeout while trying to resolve a symbol reference by this module；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D7A534631D3375E3--d7a534631d33
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: Timeout while trying to resolve a symbol reference by this module
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:d7a534631d3375e3e4c574f1b7e3747e6807c9902d09b0bce5bba544616aa5f8
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:853c0d931a59a044af630310f01710737d32983994c302a34f57472986808533
+  case: errors_ebusy_187

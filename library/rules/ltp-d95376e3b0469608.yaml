@@ -1,0 +1,37 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 pread64(pipe_fd[0], &buf, K1, 0)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D95376E3B0469608
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: pread64
+    arguments:
+    - pipe_fd[0]
+    - '&buf'
+    - K1
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:d95376e3b04696087b8a55cfe7d6fc6d71225fe62043fc247dd911e05c4dc79f
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pread/pread02.c
+  line: 42
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e355eb5a4b70eb9e02c5b2e8636d010ea907d4101f8d357aec398ee6f329a160
+  case: pread02_42_0_0

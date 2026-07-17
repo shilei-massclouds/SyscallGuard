@@ -1,0 +1,37 @@
+# 合规检查：条件：Invalid flags specified in prot；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_84706FE26532D57F--84706fe26532
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: prot
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid flags specified in prot
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:84706fe26532d57f8161c71ec48125dc57d67b4a9241a50754fdfd353f773630
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 158
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a85e6b7f451b5c90173eae958c80c3920fb6423426288c504d2c383fed0bd122
+  case: errors_einval_158

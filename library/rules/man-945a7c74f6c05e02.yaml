@@ -1,0 +1,47 @@
+# 合规检查：条件：(In case no block device is required:) Table of dummy devices is full；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_945A7C74F6C05E02
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EMFILE
+    summary: (In case no block device is required:) Table of dummy devices is full
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:945a7c74f6c05e02e5a095ef85986a7ab926d38292baf4c38e1c494e688a0c85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 780
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:708a35efdaf1de5dcc6c5439b25f328555963e5d655a8435e04dbc09b1c3cb73
+  case: errors_emfile_780
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 780
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:708a35efdaf1de5dcc6c5439b25f328555963e5d655a8435e04dbc09b1c3cb73
+  case: errors_emfile_780

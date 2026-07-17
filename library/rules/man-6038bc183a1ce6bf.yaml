@@ -1,0 +1,44 @@
+# 合规检查：条件：The argument sockfd is not a valid file descriptor；检查：调用 listen(sockfd, backlog)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6038BC183A1CE6BF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The argument sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: listen
+    arguments:
+    - sockfd
+    - backlog
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:6038bc183a1ce6bf1f011017b47094e84ad9e4c0bfc10e39d8976a6d72800493
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d4a851c8298790369a58d8b785bcbeb713ff417b37f4832182b21286c998ca04
+  case: errors_ebadf_67
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listen.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d4a851c8298790369a58d8b785bcbeb713ff417b37f4832182b21286c998ca04
+  case: errors_ebadf_67

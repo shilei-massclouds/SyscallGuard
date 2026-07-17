@@ -1,0 +1,47 @@
+# 合规检查：条件：A component of a path was not searchable. (See also path_resolution (7).)；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7B1346E6F2525BCE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: A component of a path was not searchable. (See also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:7b1346e6f2525bce1a1237b3487e06e9de8d3dde1246947b18dca5447aaaf4c7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 634
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2131b99ed061dfe22ea86f80e2d9dbfed191ca53fae5238fd18f8678f6bb1ad4
+  case: errors_eacces_634
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 634
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2131b99ed061dfe22ea86f80e2d9dbfed191ca53fae5238fd18f8678f6bb1ad4
+  case: errors_eacces_634

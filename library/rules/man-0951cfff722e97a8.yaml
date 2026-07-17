@@ -1,0 +1,43 @@
+# 合规检查：条件：The kernel has no registered cookie/directory entry mappings at the time of lookup, or the cookie does not refer to a valid directory entry；检查：调用 lookup_dcookie()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0951CFFF722E97A8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The kernel has no registered cookie/directory entry mappings at the time of lookup, or the
+      cookie does not refer to a valid directory entry
+  action:
+    operation: invoke_syscall
+    syscall: lookup_dcookie
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0951cfff722e97a8a9f317f660b95e48a88a30f05f43b9926f6a508ebf8a1e17
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 49
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e5f8552f88cc475a52485eb837e1796a277cc7adfbb9a497feebf18c06e0a56
+  case: errors_einval_49
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lookup_dcookie
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 49
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e5f8552f88cc475a52485eb837e1796a277cc7adfbb9a497feebf18c06e0a56
+  case: errors_einval_49

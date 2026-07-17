@@ -1,0 +1,49 @@
+# 合规检查：条件：or EWOULDBLOCK The socket is marked nonblocking and the requested operation would block. POSIX.1-2001 allows either error to be returned for this case, and...；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5508CCE68A3412AF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: or EWOULDBLOCK The socket is marked nonblocking and the requested operation would block.
+      POSIX.1-2001 allows either error to be returned for this case, and...
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:babacbfb411cdfd4609f479f5f7b085cf1a4663e98d2e0254007d996539dac51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 351
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c62038d78397430d40b6143b3d0677257af13fe1cc9464c5dd593a726c9a84c
+  case: errors_eagain_351
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 351
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c62038d78397430d40b6143b3d0677257af13fe1cc9464c5dd593a726c9a84c
+  case: errors_eagain_351

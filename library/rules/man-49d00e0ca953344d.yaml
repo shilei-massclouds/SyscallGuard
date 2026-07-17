@@ -1,0 +1,45 @@
+# 合规检查：条件：uaddr does not point to a valid object that is, the address is not four-byte-aligned；检查：调用 futex(uaddr, op, arg3)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_49D00E0CA953344D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: uaddr
+    predicate: documented_condition
+    value: EINVAL
+    summary: uaddr does not point to a valid object that is, the address is not four-byte-aligned
+  action:
+    operation: invoke_syscall
+    syscall: futex
+    arguments:
+    - uaddr
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:49d00e0ca953344d068ca2442066eacc9b0a677d20e4ffaf1aa1dd2e1b83133d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 491
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b95348bba6f08a11a7e3751a54388622865c820f17d1e7dd03080c9369f7b3ad
+  case: errors_einval_491
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 491
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b95348bba6f08a11a7e3751a54388622865c820f17d1e7dd03080c9369f7b3ad
+  case: errors_einval_491

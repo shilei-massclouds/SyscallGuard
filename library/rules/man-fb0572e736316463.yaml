@@ -1,0 +1,46 @@
+# 合规检查：条件：A process was located, but its effective user ID did not match either the effective or the real user ID of the caller, and was not privileged (on Linux: did...；检查：调用 setpriority(which, who, prio)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB0572E736316463
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'A process was located, but its effective user ID did not match either the effective or the
+      real user ID of the caller, and was not privileged (on Linux: did...'
+  action:
+    operation: invoke_syscall
+    syscall: setpriority
+    arguments:
+    - which
+    - who
+    - prio
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f25d304f2baba88b4b841ff90aaea633a518f87d74a11ac10de3a58e0e00be05
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e9a1968f548c0701c7519d3c8636403d5e7f67502a76da3c5954ec036538648f
+  case: errors_eperm_124
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpriority
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e9a1968f548c0701c7519d3c8636403d5e7f67502a76da3c5954ec036538648f
+  case: errors_eperm_124

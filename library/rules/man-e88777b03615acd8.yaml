@@ -1,0 +1,47 @@
+# 合规检查：条件：The memory area pointed to by events is not accessible with write permissions；检查：调用 epoll_pwait2(epfd, n, n, timeout, sigmask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E88777B03615ACD8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EFAULT
+    summary: The memory area pointed to by events is not accessible with write permissions
+  action:
+    operation: invoke_syscall
+    syscall: epoll_pwait2
+    arguments:
+    - epfd
+    - n
+    - n
+    - timeout
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:3232812b4f9d1c96e8a5cc0bb485a6d8ac590968e9e81a2ad69a08a439ecf43b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:10cac2cd8caeb33080d188b4d6399501da082a72a4a919e7f3ca2c24853f27fd
+  case: errors_efault_191
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_pwait2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:10cac2cd8caeb33080d188b4d6399501da082a72a4a919e7f3ca2c24853f27fd
+  case: errors_efault_191

@@ -1,0 +1,44 @@
+# 合规检查：条件：fd is not a valid file descriptor (and MAP_ANONYMOUS was not set)；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_35AF4698AC57ED3F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor (and MAP_ANONYMOUS was not set)
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:8b5fc0e010093596ab0aaece77724d79e0014ea3ae5f054a4c9b88168f8bfcc8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 515
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:68f7d39572adbf162d3734d83d1d774a1181726941cefb500416fad1ae0ac74a
+  case: errors_ebadf_515
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 515
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:68f7d39572adbf162d3734d83d1d774a1181726941cefb500416fad1ae0ac74a
+  case: errors_ebadf_515

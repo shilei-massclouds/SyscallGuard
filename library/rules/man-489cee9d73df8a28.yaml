@@ -1,0 +1,46 @@
+# 合规检查：条件：If RWF_ATOMIC is specified, the combination of the sum of the iov_len values and the offset value does not comply with the length and offset torn-write...；检查：调用 writev(fd, iov, iovcnt)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_489CEE9D73DF8A28
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: If RWF_ATOMIC is specified, the combination of the sum of the iov_len values and the offset
+      value does not comply with the length and offset torn-write...
+  action:
+    operation: invoke_syscall
+    syscall: writev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dc491bd865cecf7b2aa8406f1dffb9cd15436c80ca87e96450bb702927b2c409
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 383
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ddc02dc76ee1fb993ec59b7ba25bf6d19f00a1f7d1714a2463c3ac0e9ad607df
+  case: errors_einval_383
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 383
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ddc02dc76ee1fb993ec59b7ba25bf6d19f00a1f7d1714a2463c3ac0e9ad607df
+  case: errors_einval_383

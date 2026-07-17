@@ -1,0 +1,46 @@
+# 合规检查：条件：The key quota for this user would be exceeded by creating this key or linking it to the keyring；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FCE5926029B8D7A0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: The key quota for this user would be exceeded by creating this key or linking it to the keyring
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:fce5926029b8d7a045e977307ee34a94d267dd776be83b98be28a94a47b0daca
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 380
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5cdd06883bf5b9bbc308512b723673839ff78ebeb6af693471c51a2975b902ce
+  case: errors_edquot_380
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 380
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5cdd06883bf5b9bbc308512b723673839ff78ebeb6af693471c51a2975b902ce
+  case: errors_edquot_380

@@ -1,0 +1,47 @@
+# 合规检查：条件：flags contains FAN_MARK_ONLYDIR , and dirfd and path do not specify a directory；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC8A3CE3EBA6AE65
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: flags
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: flags contains FAN_MARK_ONLYDIR , and dirfd and path do not specify a directory
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:cc8a3ce3eba6ae659fbb056a91ef59c9e0ce8f4c86d1079b76dc012513a2daf5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 741
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca3ef0b33ce843f26aeeade2f11989c56eb53a7018c9ecf47041bd82bedcce6c
+  case: errors_enotdir_741
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 741
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca3ef0b33ce843f26aeeade2f11989c56eb53a7018c9ecf47041bd82bedcce6c
+  case: errors_enotdir_741

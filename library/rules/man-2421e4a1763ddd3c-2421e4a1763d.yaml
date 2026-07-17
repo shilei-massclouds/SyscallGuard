@@ -1,0 +1,37 @@
+# 合规检查：条件：Out of memory；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2421E4A1763DDD3C--2421e4a1763d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:2421e4a1763ddd3c298326948c994e9d98729a0c321faa458a546addac9f81a7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 205
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a74aeabebd37e654da40a0f8459b55c31295c6063616a76962dcea5ea7ac9563
+  case: errors_enomem_205

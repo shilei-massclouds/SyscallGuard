@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 chroot(path)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2BA50C0DF3547FCF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:2ba50c0df3547fcf5f115ec991bdc2d5ceecef57d9a0666bab463057a2ab979d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 93
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:745aa410b5ec3dfeaf01d176402ce7ab4ba0d5f5267cd7c7af7f7b1f435b4bd3
+  case: return_value_93
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 93
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:745aa410b5ec3dfeaf01d176402ce7ab4ba0d5f5267cd7c7af7f7b1f435b4bd3
+  case: return_value_93

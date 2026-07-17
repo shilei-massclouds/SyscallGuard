@@ -1,0 +1,47 @@
+# 合规检查：条件：For some operation sem_op+semval is greater than SEMVMX , the implementation dependent maximum value for semval；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AC65964463FBA3CE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: ERANGE
+    summary: For some operation sem_op+semval is greater than SEMVMX , the implementation dependent maximum
+      value for semval
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:240cef9e6ae621b25a38acadebd330f56b0438ed160577920a0f6ca5c9516d9d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b5eff6a8c7b19b726761e8ae91091844a41c0a241a1e54a4ecaff86014ccb63
+  case: errors_erange_343
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b5eff6a8c7b19b726761e8ae91091844a41c0a241a1e54a4ecaff86014ccb63
+  case: errors_erange_343

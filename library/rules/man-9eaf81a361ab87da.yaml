@@ -1,0 +1,44 @@
+# 合规检查：条件：The calling process does not have permission to send the signal to any of the target processes；检查：调用 kill(pid, sig)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9EAF81A361AB87DA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have permission to send the signal to any of the target processes
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - pid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:9eaf81a361ab87daf58beb72789442098f92fb105c2fd4e86358ed5950d2689c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:542caa2ffed91463a1529c4a752b04794e0572634a35e6238f8ff1d7bd90aa3f
+  case: errors_eperm_107
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:542caa2ffed91463a1529c4a752b04794e0572634a35e6238f8ff1d7bd90aa3f
+  case: errors_eperm_107

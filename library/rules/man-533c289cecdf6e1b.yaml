@@ -1,0 +1,45 @@
+# 合规检查：条件：stack is not aligned to a suitable boundary for this architecture. For example, on aarch64, stack must be a multiple of 16；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_533C289CECDF6E1B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: stack is not aligned to a suitable boundary for this architecture. For example, on aarch64,
+      stack must be a multiple of 16
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:119c13f656d345105bfaae2330b0f8e147d5000bc6aae7719ab0745edf865189
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f45ba02648634a1693be656250a34e0dd5e7de24b6a04fda450b3207dfc6ddf6
+  case: errors_einval_1385
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f45ba02648634a1693be656250a34e0dd5e7de24b6a04fda450b3207dfc6ddf6
+  case: errors_einval_1385

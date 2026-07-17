@@ -1,0 +1,45 @@
+# 合规检查：条件：(for MADV_COLLAPSE ) Not enough memory: could not allocate hugepage；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FBD57CA95B5D3FC4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: '(for MADV_COLLAPSE ) Not enough memory: could not allocate hugepage'
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:fbd57ca95b5d3fc4436058d9d9e07e8b9301f127090f79c372fe3879e09583b6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 926
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:543db5ffcf75af63963fbfa8bd40e0cb903251e7f87578dc487560943fd26278
+  case: errors_enomem_926
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 926
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:543db5ffcf75af63963fbfa8bd40e0cb903251e7f87578dc487560943fd26278
+  case: errors_enomem_926

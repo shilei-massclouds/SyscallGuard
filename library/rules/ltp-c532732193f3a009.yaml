@@ -1,0 +1,48 @@
+# 合规检查：条件：The fixture creates NEW_DIR_NAME as a directory.、The fixture creates OLD_DIR_NAME as a directory.、The fixture sets OLD_DIR_NAME mode to 00770.、The fixture sets NEW_DIR_NAME mode to 00770.；检查：调用 rename(OLD_DIR_NAME, NEW_DIR_NAME)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C532732193F3A009
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: directory
+    summary: The fixture creates NEW_DIR_NAME as a directory.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: directory
+    summary: The fixture creates OLD_DIR_NAME as a directory.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '00770'
+    summary: The fixture sets OLD_DIR_NAME mode to 00770.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '00770'
+    summary: The fixture sets NEW_DIR_NAME mode to 00770.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - OLD_DIR_NAME
+    - NEW_DIR_NAME
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:c532732193f3a009e105e92c5844ee94f1260038652681e2c1d0ff23ddc7921f
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename03.c
+  line: 38
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:9b1107f2a284a79ca4edca5642a5adc981c948df1dd4cd86b97893c6a4e4e600
+  case: rename03_38_raw_0

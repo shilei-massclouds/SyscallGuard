@@ -1,0 +1,46 @@
+# 合规检查：条件：(for MADV_WILLNEED ) Paging in this area would exceed the process's maximum resident set size；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CFF425C920956F88
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EIO
+    summary: (for MADV_WILLNEED ) Paging in this area would exceed the process's maximum resident set
+      size
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:cff425c920956f88e86ffd3b025cde2c9470a22b50b7a05d16c624061211851c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 915
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b33f2a0808e851b08d114090dc53ece778318c34c93e4ee57e3647cc4b97e86d
+  case: errors_eio_915
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 915
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b33f2a0808e851b08d114090dc53ece778318c34c93e4ee57e3647cc4b97e86d
+  case: errors_eio_915

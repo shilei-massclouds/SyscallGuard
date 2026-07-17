@@ -1,0 +1,46 @@
+# 合规检查：条件：The message queue was removed；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_210B5A9910A7CEA9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIDRM
+    summary: The message queue was removed
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:81120f7c849ce0603334d45d78c336ff79b191eac8e01db47b189eaf55da0340
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:303fedd1d0c7846ef20dbb45ea3608810a8ea833b79df523b0e45d9d678a1f9e
+  case: errors_eidrm_343
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:303fedd1d0c7846ef20dbb45ea3608810a8ea833b79df523b0e45d9d678a1f9e
+  case: errors_eidrm_343

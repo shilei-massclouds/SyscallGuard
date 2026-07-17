@@ -1,0 +1,46 @@
+# 合规检查：条件：Write access to the directory containing linkpath is denied, or one of the directories in the path prefix of linkpath did not allow search permission. (See...；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6D2CC2D69B0E02EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: linkpath
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Write access to the directory containing linkpath is denied, or one of the directories in
+      the path prefix of linkpath did not allow search permission. (See...
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:6d2cc2d69b0e02ef39bb4deda8dca757216acf967bb676336aaa5d836f1761e3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5acab25a50ea7d653460b1dbcbba6d1ae0ff393eae31259e5b2858a72eed5a82
+  case: errors_eacces_132
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5acab25a50ea7d653460b1dbcbba6d1ae0ff393eae31259e5b2858a72eed5a82
+  case: errors_eacces_132

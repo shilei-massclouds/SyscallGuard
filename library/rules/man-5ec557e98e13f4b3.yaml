@@ -1,0 +1,47 @@
+# 合规检查：条件：The call timed out before a message could be transferred；检查：调用 mq_timedsend(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 ETIMEDOUT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5EC557E98E13F4B3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ETIMEDOUT
+    summary: The call timed out before a message could be transferred
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedsend
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETIMEDOUT
+  errno:
+  - ETIMEDOUT
+semantic_hash: sha256:5ec557e98e13f4b33c51a989861e5099c1da58441587598a3b2d067e25f5740e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4bead6e021ac731d741465e848d1644466d4384fc02d2997f63b226827b441b2
+  case: errors_etimedout_138
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedsend
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4bead6e021ac731d741465e848d1644466d4384fc02d2997f63b226827b441b2
+  case: errors_etimedout_138

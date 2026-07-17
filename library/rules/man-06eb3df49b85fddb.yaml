@@ -1,0 +1,47 @@
+# 合规检查：条件：A pathname was empty or had a nonexistent component；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_06EB3DF49B85FDDB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A pathname was empty or had a nonexistent component
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:06eb3df49b85fddb8dc27fcb05df4e119f7b7c47ed32a7c978bcb7a197be3783
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 499
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:842fd873fdc7226d230c4ee31b9f12dc9fa12a2b6d3c909bd4101e33bf7c6aad
+  case: errors_enoent_499
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 499
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:842fd873fdc7226d230c4ee31b9f12dc9fa12a2b6d3c909bd4101e33bf7c6aad
+  case: errors_enoent_499

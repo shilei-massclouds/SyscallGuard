@@ -1,0 +1,47 @@
+# 合规检查：条件：The major number of the block device source is out of range；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENXIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C0E9558A65575B4D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: source
+    predicate: invalid_value
+    value: ENXIO
+    summary: The major number of the block device source is out of range
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENXIO
+  errno:
+  - ENXIO
+semantic_hash: sha256:c0e9558a65575b4d43d22b300374f320d3aa57dee3e7c7b0aa25dbcdfc78964f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 823
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e4ec109e5d2839f0cf9887e64f96129eec31f6409dec0aa65343804667f3466b
+  case: errors_enxio_823
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 823
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e4ec109e5d2839f0cf9887e64f96129eec31f6409dec0aa65343804667f3466b
+  case: errors_enxio_823

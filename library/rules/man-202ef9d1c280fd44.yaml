@@ -1,0 +1,46 @@
+# 合规检查：条件：(since Linux 3.14) msgflg specified MSG_COPY , but not IPC_NOWAIT；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_202EF9D1C280FD44
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 3.14) msgflg specified MSG_COPY , but not IPC_NOWAIT
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:291a56be7af7262db6ba45ca1d6225b34369adcd9070e6cf1e67c1132a5609a6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 403
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f6f6d8cf99672589f11d316a991708679092a789e79b2755ba7e27b66bd4b4e3
+  case: errors_einval_403
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 403
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f6f6d8cf99672589f11d316a991708679092a789e79b2755ba7e27b66bd4b4e3
+  case: errors_einval_403

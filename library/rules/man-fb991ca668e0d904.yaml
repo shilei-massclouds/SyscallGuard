@@ -1,0 +1,34 @@
+# 合规检查：条件：Could not find a process with the ID specified in pid；检查：调用 prlimit64()；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FB991CA668E0D904
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: Could not find a process with the ID specified in pid
+  action:
+    operation: invoke_syscall
+    syscall: prlimit64
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:fb991ca668e0d9045374c7792731e30ca08acf9d1fd8bc1fdc8fb4ade90a6eca
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prlimit64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fae8d31e180bc91de06c905a9d299ad0bf47de07e78d73040fc596a443e657c2
+  case: errors_esrch_509

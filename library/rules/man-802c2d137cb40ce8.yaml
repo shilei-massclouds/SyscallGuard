@@ -1,0 +1,45 @@
+# 合规检查：条件：( pkey_alloc ()) All protection keys available for the current process have been allocated. The number of keys available is architecture-specific and...；检查：调用 pkey_alloc(flags, access_rights)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_802C2D137CB40CE8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSPC
+    summary: ( pkey_alloc ()) All protection keys available for the current process have been allocated.
+      The number of keys available is architecture-specific and...
+  action:
+    operation: invoke_syscall
+    syscall: pkey_alloc
+    arguments:
+    - flags
+    - access_rights
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:802c2d137cb40ce89ccc76213e10a0b572eb20f149cdd13c48aa666329c083ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 72
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36de64443a261f2c7c0de9400d8360dc6396312544c78b5d8a3c3b5f61e0e845
+  case: errors_enospc_72
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_alloc
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 72
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:36de64443a261f2c7c0de9400d8360dc6396312544c78b5d8a3c3b5f61e0e845
+  case: errors_enospc_72

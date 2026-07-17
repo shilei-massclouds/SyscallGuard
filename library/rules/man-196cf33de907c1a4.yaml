@@ -1,0 +1,45 @@
+# 合规检查：条件：path is longer than PATH_MAX；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_196CF33DE907C1A4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is longer than PATH_MAX
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:196cf33de907c1a4b65eddc369fa910e5d5ff2008c3d1af3ab49a04b46c44697
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 439
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6bdc818400841dec0bde6cbd37d465f0057cfc1a70e42e49a66675a9341b0d2d
+  case: errors_enametoolong_439
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 439
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6bdc818400841dec0bde6cbd37d465f0057cfc1a70e42e49a66675a9341b0d2d
+  case: errors_enametoolong_439

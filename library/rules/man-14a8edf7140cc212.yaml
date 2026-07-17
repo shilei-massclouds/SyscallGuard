@@ -1,0 +1,47 @@
+# 合规检查：条件：While the process was sleeping to receive a message, the process caught a signal; see signal (7)；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_14A8EDF7140CC212
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While the process was sleeping to receive a message, the process caught a signal; see signal
+      (7)
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:d9c36714a3692afbd3289e442b19a6f002ef63a73d8026e71a1ccde66ca07a1c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 391
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11633e534954aa4cf4ad7131275d075e858b5e5f29a559817c401764e85430a5
+  case: errors_eintr_391
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 391
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11633e534954aa4cf4ad7131275d075e858b5e5f29a559817c401764e85430a5
+  case: errors_eintr_391

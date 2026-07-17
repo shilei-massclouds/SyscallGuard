@@ -1,0 +1,39 @@
+# 合规检查：条件：The filesystem does not support decoding of a pathname to a file handle；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0EEE801F78C405AB--0eee801f78c4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: handle
+    predicate: documented_path_condition
+    value: EOPNOTSUPP
+    summary: The filesystem does not support decoding of a pathname to a file handle
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:0eee801f78c405abbe9912f91e4cd190a271127e89b4895af18e432617635647
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:35bda9e18510b4a4abb2cbd629332e35376d2d94d0b6a985c73956cd6d7c97be
+  case: errors_eopnotsupp_385

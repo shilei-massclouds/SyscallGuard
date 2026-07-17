@@ -1,0 +1,34 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 write(fd, buf, i)；预期：{'kind': 'return_value', 'return': 'i'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CB0D3A27CA90726B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - buf
+    - i
+  expected_result:
+    kind: return_value
+    return: i
+  errno: []
+semantic_hash: sha256:cb0d3a27ca90726b54114413b3fc4a8be1fbd848398dcd06fbc316842af7a0d1
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/write/write01.c
+  line: 24
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f6e0d143528a82a99e9537f0db7d4324fdb1e0991d441d24ebebd027d7e9d6b7
+  case: write01_24_raw_0

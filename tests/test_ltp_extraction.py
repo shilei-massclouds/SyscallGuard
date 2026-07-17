@@ -46,6 +46,55 @@ class AdapterFixture(unittest.TestCase):
 
 
 class StructExtractionTests(AdapterFixture):
+    def test_path_sensitive_errno_and_identity_expansion(self) -> None:
+        value = self.extract(
+            "alpha",
+            r'''
+#define DNAME_R "readonly"
+struct test_case_t { const char *fname; int exp_errno; int exp_user; };
+static const struct test_case_t tests[] = {
+    {DNAME_R, 0, 2},
+    {DNAME_R, EACCES, 1},
+};
+void setup(void) { SAFE_MKDIR(DNAME_R, 0444); }
+void run(unsigned int n) {
+    struct test_case_t *tc = &tests[n];
+    if (tc->exp_errno) {
+        TST_EXP_FAIL(alpha(tc->fname), tc->exp_errno);
+    } else {
+        TST_EXP_PASS(alpha(tc->fname));
+    }
+}
+''',
+        )
+        rows = value["normalized"]
+        self.assertEqual(len(rows), 2)
+        outcomes = [row["semantics"]["expected_result"] for row in rows]
+        self.assertIn({"kind": "success", "return": "SUCCESS"}, outcomes)
+        self.assertIn(
+            {"kind": "return_errno", "return": "-1", "errno": "EACCES"},
+            outcomes,
+        )
+        by_outcome = {
+            row["semantics"]["expected_result"]["kind"]: row["semantics"]["preconditions"]
+            for row in rows
+        }
+        self.assertIn(
+            "root",
+            [item["value"] for item in by_outcome["success"] if item["kind"] == "credential"],
+        )
+        self.assertIn(
+            "nobody",
+            [item["value"] for item in by_outcome["return_errno"] if item["kind"] == "credential"],
+        )
+        self.assertFalse(
+            [
+                row
+                for row in rows
+                if row["semantics"]["expected_result"].get("errno") == "0"
+            ]
+        )
+
     def test_inline_separate_typedef_designated_and_access_forms(self) -> None:
         code = r"""
 typedef struct { int fd; int exp_errno; } test_case_t;

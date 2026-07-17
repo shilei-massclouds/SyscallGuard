@@ -1,0 +1,37 @@
+# 合规检查：条件：The file referred to by fd is not opened for reading；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9DA524ED947C6C91--9da524ed947c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The file referred to by fd is not opened for reading
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:9da524ed947c6c917fa059c6bc03e3c7eadfb5c5563898bec45b4f0c3ccde3cf
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2703f4a3b427cfe84464e232ef05f8d745a01595d439d0de37fa25ba0919062f
+  case: errors_ebadf_250

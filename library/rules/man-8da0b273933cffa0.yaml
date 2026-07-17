@@ -1,0 +1,44 @@
+# 合规检查：条件：list has an invalid address. getgroups () can additionally fail with the following error:；检查：调用 getgroups(size, size)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DA0B273933CFFA0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: 'list has an invalid address. getgroups () can additionally fail with the following error:'
+  action:
+    operation: invoke_syscall
+    syscall: getgroups
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:8da0b273933cffa0f13f33c9f917e80baed62b82f2c8f5c8a37dd38d7cb133aa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69702f827aad2433490ed3b3367713e90c04430a17f28f99ebb44840bda46254
+  case: errors_efault_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getgroups
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69702f827aad2433490ed3b3367713e90c04430a17f28f99ebb44840bda46254
+  case: errors_efault_98

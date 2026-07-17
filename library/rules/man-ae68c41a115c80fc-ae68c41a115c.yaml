@@ -1,0 +1,37 @@
+# 合规检查：条件：An invalid user space address was specified for an argument；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AE68C41A115C80FC--ae68c41a115c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: An invalid user space address was specified for an argument
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ae68c41a115c80fc4017a217740267206206c6d203d671fee845b58442a6e922
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa00f2c29285cad6fc67f7d4db224a3691aaeb25a3bd1454dc43e87b0d5a8eab
+  case: errors_efault_385

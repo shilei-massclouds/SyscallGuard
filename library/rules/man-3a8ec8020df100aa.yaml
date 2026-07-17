@@ -1,0 +1,48 @@
+# 合规检查：条件：This kernel does not implement fanotify_mark (). The fanotify API is available only if the kernel was configured with CONFIG_FANOTIFY；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3A8EC8020DF100AA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: This kernel does not implement fanotify_mark (). The fanotify API is available only if the
+      kernel was configured with CONFIG_FANOTIFY
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:3a8ec8020df100aa162a62fca54acdd2001423d4eeb615ca81abf2bb978158b7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 735
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c4f037ea8efff9c05dc7ba2126c00f2ff34fc2ba73a71a531e1b48fbe43781d
+  case: errors_enosys_735
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 735
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c4f037ea8efff9c05dc7ba2126c00f2ff34fc2ba73a71a531e1b48fbe43781d
+  case: errors_enosys_735

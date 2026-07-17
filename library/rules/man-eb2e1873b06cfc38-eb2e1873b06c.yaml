@@ -1,0 +1,36 @@
+# 合规检查：条件：The named attribute does not exist；检查：调用 fremovexattr(fd, name)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EB2E1873B06CFC38--eb2e1873b06c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: The named attribute does not exist
+  action:
+    operation: invoke_syscall
+    syscall: fremovexattr
+    arguments:
+    - fd
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:eb2e1873b06cfc38d8c0e0514b74bda2629fa4d962dc3d47e4d6385cd35e3d7d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fremovexattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62e2545c20b572c9e952a0d3939a6b4761096fabd417b1267e8f921c77acad88
+  case: errors_enodata_67

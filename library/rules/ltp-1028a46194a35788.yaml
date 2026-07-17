@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:fb1ab9170d5b1a0c21c95b4a27d2a6ad75c9374b8b13cf505e0d9fce049601dd
   case: rename11_155_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename11.c
+  line: 155
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fb1ab9170d5b1a0c21c95b4a27d2a6ad75c9374b8b13cf505e0d9fce049601dd
+  case: rename11_155_raw_0

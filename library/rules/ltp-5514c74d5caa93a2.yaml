@@ -1,0 +1,46 @@
+# 合规检查：条件：The fixture sets slavedir mode to 0777.、The fixture creates slavedir as a directory.、The file descriptor is invalid.；检查：调用 mount_setattr(-1, slavedir, 0, &attr, sizeof(attr))；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5514C74D5CAA93A2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0777'
+    summary: The fixture sets slavedir mode to 0777.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: directory
+    summary: The fixture creates slavedir as a directory.
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - '-1'
+    - slavedir
+    - '0'
+    - '&attr'
+    - sizeof(attr)
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:5514c74d5caa93a290dd5ca9634c33e6d8f61a930d3961177234b00588cd31d9
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+  line: 111
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:455e005500cbad5f3c4d09eb3da7de3026dfc719551083054f02864ed04c7280
+  case: mount_setattr02_111_raw_0

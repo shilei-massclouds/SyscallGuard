@@ -1,0 +1,46 @@
+# 合规检查：条件：cmd is invalid, or flags is nonzero, or the MEMBARRIER_CMD_GLOBAL command is disabled because the nohz_full CPU parameter has been set, or the...；检查：调用 membarrier(cmd, flags, cpu_id)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8B9E7EB9BDAD45CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: cmd
+    predicate: invalid_value
+    value: EINVAL
+    summary: cmd is invalid, or flags is nonzero, or the MEMBARRIER_CMD_GLOBAL command is disabled because
+      the nohz_full CPU parameter has been set, or the...
+  action:
+    operation: invoke_syscall
+    syscall: membarrier
+    arguments:
+    - cmd
+    - flags
+    - cpu_id
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8b9e7eb9bdad45cffafc97fdaaed49877d122da4fa4f12aef89608d90a0adef5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 261
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:42f461e9489ca3c575090d3da303a1f466701600eebec001ada16c92730e6f8d
+  case: errors_einval_261
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: membarrier
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 261
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:42f461e9489ca3c575090d3da303a1f466701600eebec001ada16c92730e6f8d
+  case: errors_einval_261

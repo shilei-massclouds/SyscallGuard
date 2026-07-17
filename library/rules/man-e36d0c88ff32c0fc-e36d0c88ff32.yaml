@@ -1,0 +1,40 @@
+# 合规检查：条件：The specified handle is not valid for opening a file. This error will occur if, for example, the file has been deleted. This error can also occur if the...；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 ESTALE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E36D0C88FF32C0FC--e36d0c88ff32
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: handle
+    predicate: documented_condition
+    value: ESTALE
+    summary: The specified handle is not valid for opening a file. This error will occur if, for example,
+      the file has been deleted. This error can also occur if the...
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESTALE
+  errno:
+  - ESTALE
+semantic_hash: sha256:e36d0c88ff32c0fccebd8e08bfeff8ee1581040e90565273f9f56862b902f039
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 435
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b141906827cfb4864d585207666786de45ff547620626f6d5d85f84a468e6569
+  case: errors_estale_435

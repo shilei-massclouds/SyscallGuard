@@ -1,0 +1,44 @@
+# 合规检查：条件：An invalid thread ID, thread group ID, or signal was specified；检查：调用 tkill(tid, sig)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E9B0EB62F08112DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An invalid thread ID, thread group ID, or signal was specified
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0262941f9ed8a71398b8fd3508d78c7dce25cce8b163336e28ee548549d88f38
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f262aa3b58343056e15e66c55b4f289f632ef836c056707b4f56f908ea621d97
+  case: errors_einval_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f262aa3b58343056e15e66c55b4f289f632ef836c056707b4f56f908ea621d97
+  case: errors_einval_98

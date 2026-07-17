@@ -1,0 +1,44 @@
+# 合规检查：条件：An unused argument is nonzero；检查：调用 prctl(op, arg2)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_58AE02A36A0151D5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: An unused argument is nonzero
+  action:
+    operation: invoke_syscall
+    syscall: prctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:58ae02a36a0151d5f2d7d0c55068f18f76ef5b9c20e5296582c7ccdb33a45dc7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/prctl.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c059258b3b4d2d6812b56d5bac15da588ac8632ed874d56165dfd551b7b48807
+  case: errors_einval_176
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/prctl.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c059258b3b4d2d6812b56d5bac15da588ac8632ed874d56165dfd551b7b48807
+  case: errors_einval_176

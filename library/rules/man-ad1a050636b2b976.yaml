@@ -1,0 +1,46 @@
+# 合规检查：条件：The handle->handle_bytes value passed into the call was too small. When this error occurs, handle->handle_bytes is updated to indicate the required size for...；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD1A050636B2B976
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: handle
+    predicate: invalid_value
+    value: EOVERFLOW
+    summary: The handle->handle_bytes value passed into the call was too small. When this error occurs,
+      handle->handle_bytes is updated to indicate the required size for...
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:d2ac04842383be9a5a00d7643ccc111dfecede9b9e74581324de49f5da88bd4f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7ebc211916d903f9e80486946963f2cf4015c5563ade41575c94dd0943ed4016
+  case: errors_eoverflow_388
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7ebc211916d903f9e80486946963f2cf4015c5563ade41575c94dd0943ed4016
+  case: errors_eoverflow_388

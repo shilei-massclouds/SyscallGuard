@@ -1,0 +1,48 @@
+# 合规检查：条件：The fanotify file descriptor was opened with FAN_CLASS_NOTIF or the fanotify group identifies filesystem objects by file handles and mask contains a flag...；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_06BCAA4A9250F3F9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: mask
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: The fanotify file descriptor was opened with FAN_CLASS_NOTIF or the fanotify group identifies
+      filesystem objects by file handles and mask contains a flag...
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:06bcaa4a9250f3f983aaf8ef9ac9169da1790ed34a774df1aaf6fb20def5a2b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 659
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8e3fe3294cf7d25813d58a9bf21f699afbd8ffd9bd0874c5b7eeef1e2fb5cac
+  case: errors_einval_659
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 659
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8e3fe3294cf7d25813d58a9bf21f699afbd8ffd9bd0874c5b7eeef1e2fb5cac
+  case: errors_einval_659

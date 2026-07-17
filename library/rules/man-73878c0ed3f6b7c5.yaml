@@ -1,0 +1,46 @@
+# 合规检查：条件：An ELF executable had more than one PT_INTERP segment (i.e., tried to name more than one interpreter)；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73878C0ED3F6B7C5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An ELF executable had more than one PT_INTERP segment (i.e., tried to name more than one
+      interpreter)
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:73878c0ed3f6b7c5bb8a9b8164315e95d23a6c293258beb26362f6ff3fd9f81f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 479
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7df60987cc468d833b8c202a18575f49a4fff745cf5ba8b943fb78dc62efd5f3
+  case: errors_einval_479
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 479
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7df60987cc468d833b8c202a18575f49a4fff745cf5ba8b943fb78dc62efd5f3
+  case: errors_einval_479

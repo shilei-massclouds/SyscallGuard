@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 setitimer(which, new_value, old_value)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_345E0906F8242D6E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: setitimer
+    arguments:
+    - which
+    - new_value
+    - old_value
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:6aec3086a85520c779322a3dde2aae26393a0e35e793d79e9225d3fde0faa163
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 133
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:4f4b2597a40750fc1f04d8a28e313d321ea08d3dd26ff6fba93112dc31f459fe
+  case: return_value_133
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setitimer
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 133
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:4f4b2597a40750fc1f04d8a28e313d321ea08d3dd26ff6fba93112dc31f459fe
+  case: return_value_133

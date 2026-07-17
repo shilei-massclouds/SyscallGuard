@@ -1,0 +1,44 @@
+# 合规检查：条件：put_old is not at or underneath new_root；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7A51FEC15E193EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: new_root
+    predicate: documented_condition
+    value: EINVAL
+    summary: put_old is not at or underneath new_root
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b7a51fec15e193ef33277138dc487518c45d1e2c8678dcebc463d2f14acde915
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:417654daa132d8706f693edf0c3df5f1253f179a18e08f1bd434f23c3ce56e5a
+  case: errors_einval_133
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:417654daa132d8706f693edf0c3df5f1253f179a18e08f1bd434f23c3ce56e5a
+  case: errors_einval_133

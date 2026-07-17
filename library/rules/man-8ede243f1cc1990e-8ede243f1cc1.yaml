@@ -1,0 +1,36 @@
+# 合规检查：条件：There was insufficient kernel memory to create the timer；检查：调用 timerfd_create(clockid, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8EDE243F1CC1990E--8ede243f1cc1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: There was insufficient kernel memory to create the timer
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_create
+    arguments:
+    - clockid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:8ede243f1cc1990e2281d31a39da7302e63706f18523e44af5beed9648df42e7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 426
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:636019636a8bbde61bb00cdd0cd97e4afa3a1297bdec721e978fabcf9dc25686
+  case: errors_enomem_426

@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:1bcacd4912c1b784e30e3af41dbd0133a0428ce70f64044bec631683c314cca4
   case: settimeofday02_33_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/settimeofday/settimeofday02.c
+  line: 33
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1bcacd4912c1b784e30e3af41dbd0133a0428ce70f64044bec631683c314cca4
+  case: settimeofday02_33_2_0

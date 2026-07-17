@@ -1,0 +1,45 @@
+# 合规检查：条件：The thread whose ID is pid could not be found；检查：调用 sched_setaffinity(pid, cpusetsize, mask)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F10EAAC7D96DB347
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: The thread whose ID is pid could not be found
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:67f73acfead7307e83ec6eb08d63111362fa40ebe22379a32d1d8346ab924749
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55f2d4bdf4ab95a742683cfc8166f5bc055c5edb96ee5163a7a4f8c93fff4a24
+  case: errors_esrch_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55f2d4bdf4ab95a742683cfc8166f5bc055c5edb96ee5163a7a4f8c93fff4a24
+  case: errors_esrch_126

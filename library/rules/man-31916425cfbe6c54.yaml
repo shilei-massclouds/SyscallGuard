@@ -1,0 +1,47 @@
+# 合规检查：条件：newpath is an existing directory, but oldpath is not a directory；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_31916425CFBE6C54
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: newpath is an existing directory, but oldpath is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:31916425cfbe6c548b19578dfa66a0f7e50e27fa7bcd62483bb9ff62242dc28b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 328
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ec8a3c278ca383b6b144f109a54bb5093bd38e8d87b90075432e9a8c6757c64
+  case: errors_eisdir_328
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 328
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ec8a3c278ca383b6b144f109a54bb5093bd38e8d87b90075432e9a8c6757c64
+  case: errors_eisdir_328

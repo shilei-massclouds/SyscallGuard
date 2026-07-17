@@ -1,0 +1,47 @@
+# 合规检查：条件：Invalid value in one of the tv_nsec fields (value outside range [0, 999,999,999], and not UTIME_NOW or UTIME_OMIT ); or an invalid value in one of the...；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A72109DBCD03580F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid value in one of the tv_nsec fields (value outside range [0, 999,999,999], and not
+      UTIME_NOW or UTIME_OMIT ); or an invalid value in one of the...
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a72109dbcd03580f75222fb0a0262f1aa41df407a0df347a1eacf4a90a978d0a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 296
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a09aa918619e4facb6edbcf5d690a23d8d83b9ec8d2724b64aaf7e2318e22286
+  case: errors_einval_296
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 296
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a09aa918619e4facb6edbcf5d690a23d8d83b9ec8d2724b64aaf7e2318e22286
+  case: errors_einval_296

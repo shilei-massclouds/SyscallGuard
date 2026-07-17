@@ -1,0 +1,47 @@
+# 合规检查：条件：The calling process does not have the required \%CAP_SYS_ADMIN capability；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2D58D7D0BFEEFB1B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have the required \%CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:2d58d7d0bfeefb1bb48a18f487499f825e8497406b1716d8cd3d72589a6b56c4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 512
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fe21c9d47a9b13f992c960cff855c982461fd4578a1014b704ca35b24bf99c8
+  case: errors_eperm_512
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 512
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fe21c9d47a9b13f992c960cff855c982461fd4578a1014b704ca35b24bf99c8
+  case: errors_eperm_512

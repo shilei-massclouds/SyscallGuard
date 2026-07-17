@@ -1,0 +1,34 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 flistxattr(fd, buf, sizeof(buf))；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F7EAB2DB74BE5612
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd
+    - buf
+    - sizeof(buf)
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:f7eab2db74be5612fc11d80b971dc7c3a64e07361717e158cf307b48f55bc105
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flistxattr/flistxattr01.c
+  line: 52
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:5fe2350882fcc0af799b249c41f82ac178686506978deccd3087614cfd2fd7f1
+  case: flistxattr01_52_raw_0

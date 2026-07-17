@@ -1,0 +1,44 @@
+# 合规检查：条件：CLONE_NEWNET was specified in flags , but the kernel was not configured with the CONFIG_NET_NS option；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6DD22946F924AE87
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWNET was specified in flags , but the kernel was not configured with the CONFIG_NET_NS
+      option
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6dd22946f924ae87c272a9b3ec9faf047851f07d744f328dc94921de5a3220f1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 318
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34c4a781dccfe2dd29f341d8a79292e56f3d4b689bc9c93ac93b84c69332376b
+  case: errors_einval_318
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 318
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34c4a781dccfe2dd29f341d8a79292e56f3d4b689bc9c93ac93b84c69332376b
+  case: errors_einval_318

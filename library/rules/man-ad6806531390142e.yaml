@@ -1,0 +1,44 @@
+# 合规检查：条件：Cannot allocate sufficient memory to change the specified namespace；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD6806531390142E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Cannot allocate sufficient memory to change the specified namespace
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:ad6806531390142e9889c79f9b3a40477568a268f0e59942d4efd66f063e769f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 304
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d29e4e78ad1f6a715b8d12d2811569bcd1d804578d036423c93879eed5432fc9
+  case: errors_enomem_304
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 304
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d29e4e78ad1f6a715b8d12d2811569bcd1d804578d036423c93879eed5432fc9
+  case: errors_enomem_304

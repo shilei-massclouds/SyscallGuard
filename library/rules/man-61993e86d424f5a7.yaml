@@ -1,0 +1,44 @@
+# 合规检查：条件：The calling process does not have the CAP_SYS_ADMIN capability；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_61993E86D424F5A7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have the CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:61993e86d424f5a7d8ebebf5fbba35af4ac62f8e9afd1a448f104b4c4719bd2a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de25ef44448f4e3d8874307f36491a4995dda1c328e7a88131299e4953889737
+  case: errors_eperm_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de25ef44448f4e3d8874307f36491a4995dda1c328e7a88131299e4953889737
+  case: errors_eperm_165

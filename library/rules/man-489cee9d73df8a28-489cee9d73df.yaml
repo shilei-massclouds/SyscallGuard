@@ -1,0 +1,39 @@
+# 合规检查：条件：If RWF_ATOMIC is specified, the combination of the sum of the iov_len values and the offset value does not comply with the length and offset torn-write...；检查：调用 preadv(fd, iov, iovcnt, offset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_489CEE9D73DF8A28--489cee9d73df
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: offset
+    predicate: invalid_value
+    value: EINVAL
+    summary: If RWF_ATOMIC is specified, the combination of the sum of the iov_len values and the offset
+      value does not comply with the length and offset torn-write...
+  action:
+    operation: invoke_syscall
+    syscall: preadv
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:489cee9d73df8a2803432279fe0bdbeb141452d4facd16226a0cca97e379f105
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: preadv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 383
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba54dbc1127bf20ba5a29f2b29add48aaee4c24d4a7f717d9152019cb7af02d2
+  case: errors_einval_383

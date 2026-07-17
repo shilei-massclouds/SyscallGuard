@@ -1,0 +1,46 @@
+# 合规检查：条件：Invalid value for op or msqid . Or: for a MSG_STAT operation, the index value specified in msqid referred to an array slot that is currently unused；检查：调用 msgctl(msqid, op, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_34ECC98B0B7BFD53
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: msqid
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'Invalid value for op or msqid . Or: for a MSG_STAT operation, the index value specified
+      in msqid referred to an array slot that is currently unused'
+  action:
+    operation: invoke_syscall
+    syscall: msgctl
+    arguments:
+    - msqid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:34ecc98b0b7bfd53e810a3797bf982715a219db75ac8d7a64e8c48c1b7b35d22
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 342
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b5818abba660b8108a85b1afcb58e19d0f689083fc662a81d71abc1b3a9d3720
+  case: errors_einval_342
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 342
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b5818abba660b8108a85b1afcb58e19d0f689083fc662a81d71abc1b3a9d3720
+  case: errors_einval_342

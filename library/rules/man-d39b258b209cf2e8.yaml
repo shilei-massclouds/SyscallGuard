@@ -1,0 +1,48 @@
+# 合规检查：条件：fd_in and fd_out refer to the same pipe；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D39B258B209CF2E8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_in
+    predicate: documented_condition
+    value: EINVAL
+    summary: fd_in and fd_out refer to the same pipe
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d39b258b209cf2e8801dd2a45b9a0d6f5a7f72c4d0823020e4788de226f9eb13
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecdc862c73afbecc481764ce0030df0606a4bda8c54606f4b84364b2cfbe329a
+  case: errors_einval_168
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecdc862c73afbecc481764ce0030df0606a4bda8c54606f4b84364b2cfbe329a
+  case: errors_einval_168

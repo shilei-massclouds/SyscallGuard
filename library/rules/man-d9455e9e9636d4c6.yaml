@@ -1,0 +1,48 @@
+# 合规检查：条件：One or both file descriptors are not valid, or do not have proper read-write mode；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D9455E9E9636D4C6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: One or both file descriptors are not valid, or do not have proper read-write mode
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:d9455e9e9636d4c67ca7f65640af4e81202966a3916ef5451253e0df51f1c21f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 150
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb6c1aa7912315ad3c714dc0eb5a2588d519fd7bbb787c036370731c4857f7db
+  case: errors_ebadf_150
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 150
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb6c1aa7912315ad3c714dc0eb5a2588d519fd7bbb787c036370731c4857f7db
+  case: errors_ebadf_150

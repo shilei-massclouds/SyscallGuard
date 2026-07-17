@@ -1,0 +1,37 @@
+# 合规检查：条件：(PowerPC architecture) PROT_SAO was specified in prot , but SAO hardware feature is not available；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAE2D4DCA95CC6B7--dae2d4dca95c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: prot
+    predicate: documented_condition
+    value: EINVAL
+    summary: (PowerPC architecture) PROT_SAO was specified in prot , but SAO hardware feature is not available
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:dae2d4dca95cc6b794742ca520252ae4030acafcfa3558028d79245b704a0063
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:263d9479f5f9328c2063f032c72723b5005acf0b3d77be31f6b0c49b9e6ac949
+  case: errors_einval_162

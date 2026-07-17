@@ -1,0 +1,44 @@
+# 合规检查：条件：The user is not privileged (Linux: does not have the CAP_SETUID capability in its user namespace) and uid does not match the real UID or saved set-user-ID...；检查：调用 setuid(uid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D5CA1153B000D5E0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: uid
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'The user is not privileged (Linux: does not have the CAP_SETUID capability in its user namespace)
+      and uid does not match the real UID or saved set-user-ID...'
+  action:
+    operation: invoke_syscall
+    syscall: setuid
+    arguments:
+    - uid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:d5ca1153b000d5e0b1e5cc47ae30fe9dab77a75ef97251c769560afc9fa3b06f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setuid.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e42bf977992b8e9ea87ef520bf15c76605977c276b8096c6c25b2dc1e4874569
+  case: errors_eperm_92
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setuid.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e42bf977992b8e9ea87ef520bf15c76605977c276b8096c6c25b2dc1e4874569
+  case: errors_eperm_92

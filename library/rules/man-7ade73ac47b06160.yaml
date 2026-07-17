@@ -1,0 +1,44 @@
+# 合规检查：条件：The named file does not exist；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7ADE73AC47B06160
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The named file does not exist
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:73fd6779da200e71676807009e026185d41b39c13aba22bae650849191fa9a71
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f0b5f97b20a0ec1947ace1c50c71927a3a32620f9a95ea48e7b66471d96bac5
+  case: errors_enoent_131
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 131
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f0b5f97b20a0ec1947ace1c50c71927a3a32620f9a95ea48e7b66471d96bac5
+  case: errors_enoent_131

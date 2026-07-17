@@ -1,0 +1,48 @@
+# 合规检查：条件：The parameter named by key must be a block device, but the provided parameter value was not a block device；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ENOTBLK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9E0F46165E1997DC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: key
+    predicate: invalid_value
+    value: ENOTBLK
+    summary: The parameter named by key must be a block device, but the provided parameter value was not
+      a block device
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTBLK
+  errno:
+  - ENOTBLK
+semantic_hash: sha256:9e0f46165e1997dce192bd0f763949d581bb58eff939bbef5aa6760f68a1f6d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 474
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd12369a1bb95869bd8b7931965d6536622bc488b48cf43be9db2d5334e86521
+  case: errors_enotblk_474
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 474
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd12369a1bb95869bd8b7931965d6536622bc488b48cf43be9db2d5334e86521
+  case: errors_enotblk_474

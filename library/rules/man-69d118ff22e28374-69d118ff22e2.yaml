@@ -1,0 +1,40 @@
+# 合规检查：条件：kernel_fd does not refer to an open file, or the kernel can't load this file. Currently, the file must be a bzImage and contain an x86 kernel that is...；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_69D118FF22E28374--69d118ff22e2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: kernel_fd
+    predicate: documented_condition
+    value: ENOEXEC
+    summary: kernel_fd does not refer to an open file, or the kernel can't load this file. Currently,
+      the file must be a bzImage and contain an x86 kernel that is...
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:69d118ff22e283745fd9e3fb0763270cf5474752c884dc6b9e14cc0ad061c68f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 300
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a2aee7baf50de6b783ae313338bae77395701304273757c8c50629bd3b1c714
+  case: errors_enoexec_300

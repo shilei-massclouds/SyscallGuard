@@ -1,0 +1,47 @@
+# 合规检查：条件：ruleset_fd is not a ruleset file descriptor, or a member of rule_attr is not the expected file descriptor type；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EBADFD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_972985852EC9A0D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: ruleset_fd
+    predicate: invalid_or_wrong_type
+    value: EBADFD
+    summary: ruleset_fd is not a ruleset file descriptor, or a member of rule_attr is not the expected
+      file descriptor type
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADFD
+  errno:
+  - EBADFD
+semantic_hash: sha256:972985852ec9a0d41d8712e26c1b8ab9c0350b2ae259825dca92c49b88b54e5a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fdb50191392aaf4e605c0d850670cb3f238f2f720ba71a3f2a5e759cf8e47e5
+  case: errors_ebadfd_148
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fdb50191392aaf4e605c0d850670cb3f238f2f720ba71a3f2a5e759cf8e47e5
+  case: errors_ebadfd_148

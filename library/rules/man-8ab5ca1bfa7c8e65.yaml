@@ -1,0 +1,49 @@
+# 合规检查：条件：The socket type requires that message be sent atomically, and the size of the message to be sent made this impossible；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EMSGSIZE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8AB5CA1BFA7C8E65
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EMSGSIZE
+    summary: The socket type requires that message be sent atomically, and the size of the message to
+      be sent made this impossible
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMSGSIZE
+  errno:
+  - EMSGSIZE
+semantic_hash: sha256:043d4444c51f49f347d28465ee53a308c1947a3a44fff7f19772dcd82cf1ac48
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 402
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b45caab799e44d1aa9cfd5401dbcff061bd3463dd8016e93cd01b1e0a2ba1fc
+  case: errors_emsgsize_402
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 402
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b45caab799e44d1aa9cfd5401dbcff061bd3463dd8016e93cd01b1e0a2ba1fc
+  case: errors_emsgsize_402

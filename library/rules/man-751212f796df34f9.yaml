@@ -1,0 +1,48 @@
+# 合规检查：条件：The queue was empty, and the O_NONBLOCK flag was set for the message queue description referred to by mqdes；检查：调用 mq_timedreceive(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_751212F796DF34F9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mqdes
+    predicate: invalid_value
+    value: EAGAIN
+    summary: The queue was empty, and the O_NONBLOCK flag was set for the message queue description referred
+      to by mqdes
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedreceive
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:751212f796df34f9beb8749ab9206766245b90e84cd1bf75ca3764fa3314b28f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c59064221c663ba13528532e6af4f0abce44e74bb04741cb7dc87720a66e9e0f
+  case: errors_eagain_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedreceive
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c59064221c663ba13528532e6af4f0abce44e74bb04741cb7dc87720a66e9e0f
+  case: errors_eagain_98

@@ -1,0 +1,46 @@
+# 合规检查：条件：A signal was caught during execution; see signal (7)；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_15530E372E989131
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: A signal was caught during execution; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:15530e372e98913172801dba66db60610bdd5e86e2802f361f93e91660815c91
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 323
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3411fa98f3085c946a4807f95ca89b8c826d966277d1759976214edd256a3fa
+  case: errors_eintr_323
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 323
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c3411fa98f3085c946a4807f95ca89b8c826d966277d1759976214edd256a3fa
+  case: errors_eintr_323

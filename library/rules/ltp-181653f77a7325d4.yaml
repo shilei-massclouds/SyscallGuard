@@ -1,0 +1,45 @@
+# 合规检查：条件：The fixture sets TEMP_FILE mode to 0700.、The userspace pointer is outside accessible memory.、The fixture creates TEMP_FILE as a regular file.；检查：调用 rename(INVALID_PATH, TEMP_FILE)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_181653F77A7325D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0700'
+    summary: The fixture sets TEMP_FILE mode to 0700.
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEMP_FILE as a regular file.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - INVALID_PATH
+    - TEMP_FILE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:181653f77a7325d4d6e9be62ec41f76d87ea39f0088c2eb54ed74ce461282256
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename08.c
+  line: 28
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f61fbb9dc371f4686fa8231a161b0282de152ee02de2bf655ae4488c757b4aa9
+  case: rename08_28_raw_0

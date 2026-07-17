@@ -1,0 +1,46 @@
+# 合规检查：条件：In \%struct landlock_net_port_attr , the port number is greater than 65535；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5731488A6334C44A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: In \%struct landlock_net_port_attr , the port number is greater than 65535
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5731488a6334c44a7dcee0352b8b2dc6005564079587ae128a534f10335c7c21
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:981455c2352db992a6451ce746fc93ee5070830122e25c33451caf5f140a9a62
+  case: errors_einval_178
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:981455c2352db992a6451ce746fc93ee5070830122e25c33451caf5f140a9a62
+  case: errors_einval_178

@@ -1,0 +1,44 @@
+# 合规检查：条件：We don't like addr , because it exceeds the virtual address space of the CPU；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_19B4AA1EE4A6319C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: We don't like addr , because it exceeds the virtual address space of the CPU
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:a98e754fc22556de2e7e1976f26f08df9c19551119e77c9750b2b49e8c289059
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 583
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e66f377a6416f557cf3d6b7f4803a5f0d3188aa2d760a0e13976efce952114e
+  case: errors_enomem_583
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 583
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e66f377a6416f557cf3d6b7f4803a5f0d3188aa2d760a0e13976efce952114e
+  case: errors_enomem_583

@@ -1,0 +1,45 @@
+# 合规检查：条件：Unknown protocol, or protocol family not available；检查：调用 socket(domain, type, protocol)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B2FA2520FCDBEF6E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: protocol
+    predicate: documented_condition
+    value: EINVAL
+    summary: Unknown protocol, or protocol family not available
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - domain
+    - type
+    - protocol
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b2fa2520fcdbef6e8b9058e45f660eaa4bc97f2ae93426577cef68e5814248ad
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 409
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:40adb6ea415333b82f7d1f9be764aa9cc7db80e79af3e9b5c8f7c2401a38f292
+  case: errors_einval_409
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socket
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 409
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:40adb6ea415333b82f7d1f9be764aa9cc7db80e79af3e9b5c8f7c2401a38f292
+  case: errors_einval_409

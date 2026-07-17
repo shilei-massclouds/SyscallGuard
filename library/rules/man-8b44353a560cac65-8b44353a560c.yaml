@@ -1,0 +1,38 @@
+# 合规检查：条件：The caller was not privileged (did not have the CAP_SYS_MODULE capability), or module loading is disabled (see /proc/sys/kernel/modules_disabled in proc...；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8B44353A560CAC65--8b44353a560c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller was not privileged (did not have the CAP_SYS_MODULE capability), or module loading
+      is disabled (see /proc/sys/kernel/modules_disabled in proc...
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8b44353a560cac65ef3f0d887e42f20bcb5fbec6dde582b2061d597d4dfdba7f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9c11d0eb7c05cadcf4b0452cd94141c75b4a8f39893e10026c48b681f0881e3a
+  case: errors_eperm_208

@@ -1,0 +1,46 @@
+# 合规检查：条件：operation specified SECCOMP_GET_ACTION_AVAIL , but the kernel does not support the filter return action specified by args；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_02D976F1ED01493F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: operation
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: operation specified SECCOMP_GET_ACTION_AVAIL , but the kernel does not support the filter
+      return action specified by args
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:02d976f1ed01493f72fb104c4224a2317b6a211ea5d88d288550abb85fe93611
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 877
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f49d010ed2a80592b9da6b3cc61acc41de01bc1be96e527bb9e70019a3c24a09
+  case: errors_eopnotsupp_877
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 877
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f49d010ed2a80592b9da6b3cc61acc41de01bc1be96e527bb9e70019a3c24a09
+  case: errors_eopnotsupp_877

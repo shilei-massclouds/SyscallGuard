@@ -1,0 +1,40 @@
+# 合规检查：条件：flags contained none of MAP_PRIVATE , MAP_SHARED , or MAP_SHARED_VALIDATE；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DE03A6A5B1731AF7--de03a6a5b173
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags contained none of MAP_PRIVATE , MAP_SHARED , or MAP_SHARED_VALIDATE
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:de03a6a5b1731af7337b6fe64330f8a02f628f42dd87260aa00bf3c01e843fb6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 544
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57160ee8ac3701b990499d39e42eb689fedf91363c7f7fce76c835b8f2726034
+  case: errors_einval_544

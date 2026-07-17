@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:5bc5678eed7f77502e69603fc6c918f2d0077ca7b3a74ca172b3011794c07775
   case: fchmodat01_47_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmodat/fchmodat01.c
+  line: 47
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:5bc5678eed7f77502e69603fc6c918f2d0077ca7b3a74ca172b3011794c07775
+  case: fchmodat01_47_0_0

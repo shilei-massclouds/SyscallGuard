@@ -1,0 +1,39 @@
+# 合规检查：条件：The option is unknown at the level indicated；检查：调用 getsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 ENOPROTOOPT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C45E594DAEB3C860--c45e594daeb3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: level
+    predicate: documented_condition
+    value: ENOPROTOOPT
+    summary: The option is unknown at the level indicated
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOPROTOOPT
+  errno:
+  - ENOPROTOOPT
+semantic_hash: sha256:c45e594daeb3c86088c50a246b78cce3176b74d175848a083ce3e451af91a280
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cc08bfc150af6f2bcc3554bb795100cb509d866c682a10773b5d762d82c6c6bd
+  case: errors_enoprotoopt_134

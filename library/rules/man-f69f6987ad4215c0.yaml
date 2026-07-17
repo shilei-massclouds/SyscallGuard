@@ -1,0 +1,44 @@
+# 合规检查：条件：clock_settime () does not have permission to set the clock indicated；检查：调用 clock_settime(clockid, tp)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F69F6987AD4215C0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: clock_settime () does not have permission to set the clock indicated
+  action:
+    operation: invoke_syscall
+    syscall: clock_settime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f69f6987ad4215c0bb787670a69503573125e6ab8d3e0048a9e44d9a7964321d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54224cc39959899910bca275de39a24015d88b1f3334d74b2313a1bc5b38490e
+  case: errors_eperm_343
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:54224cc39959899910bca275de39a24015d88b1f3334d74b2313a1bc5b38490e
+  case: errors_eperm_343

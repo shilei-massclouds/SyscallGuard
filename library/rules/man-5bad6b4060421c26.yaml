@@ -1,0 +1,46 @@
+# 合规检查：条件：Could not mount (internal) anonymous inode device；检查：调用 timerfd_settime(fd, flags, new_value, old_value)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5BAD6B4060421C26
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODEV
+    summary: Could not mount (internal) anonymous inode device
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_settime
+    arguments:
+    - fd
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:2b9b5a58118d24b74f7c71ff29d32d5aecd0a00cd85b154640da31edc7064e6d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7334893e6f19bd6268ac86cfc83409c3f45228eb57ed3c25ccb09ebc72720b63
+  case: errors_enodev_423
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7334893e6f19bd6268ac86cfc83409c3f45228eb57ed3c25ccb09ebc72720b63
+  case: errors_enodev_423

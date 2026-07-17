@@ -1,0 +1,40 @@
+# 合规检查：条件：The calling process does not have read permission on the message queue, and does not have the CAP_IPC_OWNER capability in the user namespace that governs...；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_94C6721D75F7461E--94c6721d75f7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The calling process does not have read permission on the message queue, and does not have
+      the CAP_IPC_OWNER capability in the user namespace that governs...
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:94c6721d75f7461ee62bbdd02a282c200a022869afda1c8a413ca299b85235ad
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:264e89a6ef6721507dbcedfbd8470ff1650fd45bc7efa09cf610641b0d1d5a4b
+  case: errors_eacces_376

@@ -1,0 +1,44 @@
+# 合规检查：条件：The operation was prevented by a file seal; see fcntl (2)；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F630CB686BBBFC09
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The operation was prevented by a file seal; see fcntl (2)
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:be10e75dd7eb669d9ce888b78a73afa780794740b9cdbce52f8ebca76132f765
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 609
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c394a1f2a2f403488f00680f051e0f216309f4a9d988c90e1f9aa16d3fb76d8e
+  case: errors_eperm_609
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 609
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c394a1f2a2f403488f00680f051e0f216309f4a9d988c90e1f9aa16d3fb76d8e
+  case: errors_eperm_609

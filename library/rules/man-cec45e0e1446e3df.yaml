@@ -1,0 +1,45 @@
+# 合规检查：条件：An invalid flag was specified in flags；检查：调用 getrandom(size, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CEC45E0E1446E3DF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid flag was specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: getrandom
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:cec45e0e1446e3df175d83de317b062067cc1252be8ac188e2685182a8f20608
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 150
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f4152c8c1ccbc7738ce7bfedf67763e1919df4166d160571b57e980a1a6c7f5
+  case: errors_einval_150
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrandom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrandom.2
+  line: 150
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0f4152c8c1ccbc7738ce7bfedf67763e1919df4166d160571b57e980a1a6c7f5
+  case: errors_einval_150

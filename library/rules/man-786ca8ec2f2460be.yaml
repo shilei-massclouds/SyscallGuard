@@ -1,0 +1,44 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 pidfd_open(pid, flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_786CA8EC2F2460BE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_open
+    arguments:
+    - pid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:786ca8ec2f2460be8e637faf8d171a33b87b638c54867157cfbbd225731db7d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 78
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69146e345b71176146123b5940a948ff100a90bca5588caf7625a2d824689f0f
+  case: errors_enfile_78
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 78
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69146e345b71176146123b5940a948ff100a90bca5588caf7625a2d824689f0f
+  case: errors_enfile_78

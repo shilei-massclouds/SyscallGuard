@@ -1,0 +1,43 @@
+# 合规检查：条件：set points to memory which is not a valid part of the process address space；检查：调用 rt_sigpending(set)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EA4A4C5EBDD0FCB1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: set
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: set points to memory which is not a valid part of the process address space
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigpending
+    arguments:
+    - set
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:ea4a4c5ebdd0fcb14ef810f2aeb42a46da7e9d4b3b50d786ad878dc7292d1940
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigpending.2
+  line: 41
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb384736ee984c4b2a486aa43cde23212fdcd07c424ebec22da6d19678c65e84
+  case: errors_efault_41
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigpending
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigpending.2
+  line: 41
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb384736ee984c4b2a486aa43cde23212fdcd07c424ebec22da6d19678c65e84
+  case: errors_efault_41

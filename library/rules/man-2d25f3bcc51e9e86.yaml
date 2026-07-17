@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 close_range(first, last, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2D25F3BCC51E9E86
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: close_range
+    arguments:
+    - first
+    - last
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:2d25f3bcc51e9e8668b8975407c689d8a4dcb94f064cca32da41f12a1b2c4a66
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close_range.2
+  line: 47
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:c1730c8d13aa55b0b4119874c63f9227f61668e366b128df80a819a3b8ce9f6d
+  case: return_value_47
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close_range.2
+  line: 47
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:c1730c8d13aa55b0b4119874c63f9227f61668e366b128df80a819a3b8ce9f6d
+  case: return_value_47

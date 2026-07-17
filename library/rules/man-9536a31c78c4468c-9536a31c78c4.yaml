@@ -1,0 +1,39 @@
+# 合规检查：条件：While the process was sleeping to receive a message, the message queue was removed；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9536A31C78C4468C--9536a31c78c4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIDRM
+    summary: While the process was sleeping to receive a message, the message queue was removed
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:9536a31c78c4468c2df049726e6afec46ebbf6ceaaf12b83f9530934f1765b1e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 387
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:53afee61805e587954f59a5b8f462bfeee97bcb00ccc00c49fb9f7d826567605
+  case: errors_eidrm_387

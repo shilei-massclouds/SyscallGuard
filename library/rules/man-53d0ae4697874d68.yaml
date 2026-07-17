@@ -1,0 +1,47 @@
+# 合规检查：条件：Invalid value for op or semid . Or: for a SEM_STAT operation, the index value specified in semid referred to an array slot that is currently unused；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_53D0AE4697874D68
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: semid
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'Invalid value for op or semid . Or: for a SEM_STAT operation, the index value specified
+      in semid referred to an array slot that is currently unused'
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:53d0ae4697874d688b1e5e82a3de51084bb8ce554dfc516998ad09dc1fd7ccea
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 455
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57a384d5ac067b23bbd7c41732598f7894549ca9755b011f3d3e2c3b3a2a0207
+  case: errors_einval_455
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 455
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57a384d5ac067b23bbd7c41732598f7894549ca9755b011f3d3e2c3b3a2a0207
+  case: errors_einval_455

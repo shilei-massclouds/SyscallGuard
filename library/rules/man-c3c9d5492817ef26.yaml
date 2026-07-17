@@ -1,0 +1,56 @@
+# 合规检查：条件：The address pointed to by msgp isn't accessible；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C3C9D5492817EF26
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: The address pointed to by msgp isn't accessible
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c3c9d5492817ef26a995cbb624f82c8cdb6680d32125f30394c0b9f3506b6ffe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:217bc99f5aa7fc4ec7382666f9075449a6823fff00c2442525712f3804e59121
+  case: errors_efault_338
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7087e90f1f6df28ed7ef66ddff2e325701e59d1b15acf7d2e21005f249ae491d
+  case: errors_efault_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7087e90f1f6df28ed7ef66ddff2e325701e59d1b15acf7d2e21005f249ae491d
+  case: errors_efault_382

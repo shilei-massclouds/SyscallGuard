@@ -1,0 +1,47 @@
+# 合规检查：条件：The block device source is located on a filesystem mounted with the MS_NODEV option；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4EC4209E61942204
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: source
+    predicate: documented_state_condition
+    value: EACCES
+    summary: The block device source is located on a filesystem mounted with the MS_NODEV option
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:4ec4209e6194220481ac680f4ddddb6acbb21c03d9103842702eed813be5003e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 657
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fb01cfd56e5d211f6a61c9c4c9635d9bddbc584141a3b24ed7f5cbb38855a532
+  case: errors_eacces_657
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 657
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fb01cfd56e5d211f6a61c9c4c9635d9bddbc584141a3b24ed7f5cbb38855a532
+  case: errors_eacces_657

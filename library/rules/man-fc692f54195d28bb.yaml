@@ -1,0 +1,48 @@
+# 合规检查：条件：Some bit in the flags argument is inappropriate for the socket type；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FC692F54195D28BB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: Some bit in the flags argument is inappropriate for the socket type
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:ac1402fbbd105764563ecb086ef0e2ad78f146c866b2bd9d7a7be64d83f983db
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 427
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:402a099f56d44f602d554f2b1964cfe4c499e429b498caac3f4a04e90c8fe2e2
+  case: errors_eopnotsupp_427
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 427
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:402a099f56d44f602d554f2b1964cfe4c499e429b498caac3f4a04e90c8fe2e2
+  case: errors_eopnotsupp_427

@@ -1,0 +1,47 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.、The fixture creates SYMLINK_FILE as a symbolic link.、The argument is a userspace buffer.；检查：调用 readlinkat(file_fd, SYMLINK_FILE, buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_45D731F7321AFF41
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates SYMLINK_FILE as a symbolic link.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - file_fd
+    - SYMLINK_FILE
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:45d731f7321aff418f0cf2518857c34618edac66d4beeb7d8d038f7799dabc63
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_2_0

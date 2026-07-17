@@ -1,0 +1,41 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.、The argument is a userspace buffer.；检查：调用 write(fd, bad_addr, sizeof(buf))；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E8BA54C78A3F671D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: bad_addr
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  - kind: pointer
+    subject: sizeof
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - bad_addr
+    - sizeof(buf)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:e8ba54c78a3f671d012f67f096af969315100533c8751c1a7ce4647f29a0f8da
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/write/write05.c
+  line: 60
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e7b3dbb454b1ee2865963f284d1bde20f06f5186403f6aa5be955fa3aea9d7ce
+  case: write05_60_1_0

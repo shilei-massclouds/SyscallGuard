@@ -1,0 +1,35 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 fstatfs(bad_fd, &buf)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C04292C48EC89063
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - bad_fd
+    - '&buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c04292c48ec890631dad7462ac866fdf563ed45287d5de2025bc8babd3c8c2c5
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstatfs/fstatfs02.c
+  line: 38
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:468d840d7f8f3ac1c36cb0bce83495b996186a55a4c35e1f6746098c919e4cdc
+  case: fstatfs02_38_0_0

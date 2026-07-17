@@ -1,0 +1,47 @@
+# 合规检查：条件：path is too long；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2C230ACE590DB7ED
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:d6be6ee3da60875f8740d389786e10c452708e3dc2055a9a7dc406b717dfe136
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a1438c69c4d1ec7b351cd76337de1163a57e737edb55144e3a4b6cae77278772
+  case: errors_enametoolong_239
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 239
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a1438c69c4d1ec7b351cd76337de1163a57e737edb55144e3a4b6cae77278772
+  case: errors_enametoolong_239

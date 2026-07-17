@@ -1,0 +1,45 @@
+# 合规检查：条件：path is an empty string, but AT_EMPTY_PATH is not specified in flags；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E0EA24901A5FC880
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path is an empty string, but AT_EMPTY_PATH is not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:e0ea24901a5fc8800a1987a270f16bff6a914f5cf155e033478de970f3bc7aa2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0072a2e0af47e23047b280f856733310874efee1d648ff429eace9da605132f
+  case: errors_enoent_452
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0072a2e0af47e23047b280f856733310874efee1d648ff429eace9da605132f
+  case: errors_enoent_452

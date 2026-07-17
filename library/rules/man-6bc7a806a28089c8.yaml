@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6BC7A806A28089C8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:6bc7a806a28089c883dd70748cbabffbdb8daa002b5e86438b8a4b2b89454bfb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 382
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:271714e2b8c0e8779ca45afc4fa85d9840e4148ea56e035cb4650eedbdd54184
+  case: return_value_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 382
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:271714e2b8c0e8779ca45afc4fa85d9840e4148ea56e035cb4650eedbdd54184
+  case: return_value_382

@@ -1,0 +1,38 @@
+# 合规检查：条件：The calling process did not have the required permissions (see above) to change owner and/or group；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_16DF34CB3DEC5CD7--16df34cb3dec
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: owner
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process did not have the required permissions (see above) to change owner and/or
+      group
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:16df34cb3dec5cd722e1d69018a421f1df0f7d98f467124b7a4abd37982fa141
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 259
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f632ec9e5b7a6acb291f383680ba9c4095b9367141a47973b12a8f59f6f2e91
+  case: errors_eperm_259

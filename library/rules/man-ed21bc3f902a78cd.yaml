@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 2.6.32) CLONE_PARENT was specified, and the caller is an init process；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED21BC3F902A78CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 2.6.32) CLONE_PARENT was specified, and the caller is an init process
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:039d2619edcda94017330a36a5289fc14db320901498f504c61e3c0cf38910c1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:493068a2f8254ba2adfdbe06f1b510768c805d55000eb7ba6628e36debae2238
+  case: errors_einval_1324
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:493068a2f8254ba2adfdbe06f1b510768c805d55000eb7ba6628e36debae2238
+  case: errors_einval_1324

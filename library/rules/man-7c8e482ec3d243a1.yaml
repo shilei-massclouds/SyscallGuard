@@ -1,0 +1,48 @@
+# 合规检查：条件：One of from_path or to_path is NULL or a pointer to a location outside the calling process's accessible address space；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C8E482EC3D243A1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: from_path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of from_path or to_path is NULL or a pointer to a location outside the calling process's
+      accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7c8e482ec3d243a173552f7663ea1eb1cd4180674db2348da11ab6bf94ecec90
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e45187bc72d8a56bfb5deb58cf026049b4351f4940d2e32b2b0b398435d9616e
+  case: errors_efault_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e45187bc72d8a56bfb5deb58cf026049b4351f4940d2e32b2b0b398435d9616e
+  case: errors_efault_406

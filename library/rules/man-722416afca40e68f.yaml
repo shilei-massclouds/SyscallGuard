@@ -1,0 +1,47 @@
+# 合规检查：条件：pidfd is not a valid PID file descriptor；检查：调用 process_madvise(pidfd, n, n, advice, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_722416AFCA40E68F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: pidfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: pidfd is not a valid PID file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: process_madvise
+    arguments:
+    - pidfd
+    - n
+    - n
+    - advice
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:722416afca40e68f71d26d7d9664195ed53c2020cba41ca47cc6294e16468632
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:440ca13624e2333a18a0bc2d85feebc94ae7d04ecacb67cacf02d779089fc04b
+  case: errors_ebadf_139
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:440ca13624e2333a18a0bc2d85feebc94ae7d04ecacb67cacf02d779089fc04b
+  case: errors_ebadf_139

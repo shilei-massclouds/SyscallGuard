@@ -1,0 +1,37 @@
+# 合规检查：条件：RWF_DONTCACHE was set in flags and the file doesn't support it；检查：调用 readv(fd, iov, iovcnt)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8711CFFA529772CC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: RWF_DONTCACHE was set in flags and the file doesn't support it
+  action:
+    operation: invoke_syscall
+    syscall: readv
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:8711cffa529772cc0369f1d4f77dc379f0b46d98b89b40326fecd6d1bd2a075f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c86d5e02f8849b933d530a6ba66b0ca1b3275246bb21859d723d92a62104d4fb
+  case: errors_eopnotsupp_405

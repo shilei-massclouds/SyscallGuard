@@ -1,0 +1,38 @@
+# 合规检查：条件：An unknown flag is specified in flags；检查：调用 pwritev(fd, iov, iovcnt, offset)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD5E816980269EC5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: An unknown flag is specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: pwritev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:ad5e816980269ec59926bd50c0bb62ccf7c87509fa965948f58be2c8f6ad7067
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pwritev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 411
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0832941f59dca7612483cea1258d4f5edc3fb2dfeb8e8c1589dca66ea4bc8629
+  case: errors_eopnotsupp_411

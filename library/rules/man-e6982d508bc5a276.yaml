@@ -1,0 +1,47 @@
+# 合规检查：条件：The calling process is not in a PID namespace from which it can send a signal to the target process；检查：调用 pidfd_send_signal(pidfd, sig, info, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E6982D508BC5A276
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The calling process is not in a PID namespace from which it can send a signal to the target
+      process
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_send_signal
+    arguments:
+    - pidfd
+    - sig
+    - info
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e6982d508bc5a27648f595b7a7cdf156b2a2ed43361064fce136125fb6800ee2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6422ba48f1d9c2fdd35722c44238b3d5d9ca268eafb36e816895b51298e78bc6
+  case: errors_einval_157
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_send_signal
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_send_signal.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6422ba48f1d9c2fdd35722c44238b3d5d9ca268eafb36e816895b51298e78bc6
+  case: errors_einval_157

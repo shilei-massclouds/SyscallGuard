@@ -1,0 +1,36 @@
+# 合规检查：条件：or EINVAL fd is not open for writing；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_385A1F88874013A7--385a1f888740
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: or EINVAL fd is not open for writing
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:385a1f88874013a70f480d35962aa59af9678b5715d141b41aac5258ae365f11
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d37e8a0a5e8f535c8d60c1406cc593a17dc740b63a3e77268cb3eba6a9f2457
+  case: errors_ebadf_165

@@ -1,0 +1,47 @@
+# 合规检查：条件：The PID file descriptor specified in id is nonblocking and the process that it refers to has not terminated；检查：调用 waitid(idtype, id, infop, options)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9CD8BB8BC1A82C97
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: id
+    predicate: invalid_or_wrong_type
+    value: EAGAIN
+    summary: The PID file descriptor specified in id is nonblocking and the process that it refers to
+      has not terminated
+  action:
+    operation: invoke_syscall
+    syscall: waitid
+    arguments:
+    - idtype
+    - id
+    - infop
+    - options
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:9cd8bb8bc1a82c97876458bc7f78404f8b782ebf449d5a3f9e6d7168cbaaf380
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e99f071668937330bd2eca9d1b76ce42cee0116bf8b8a76ee4feaa1ee4fd62cc
+  case: errors_eagain_396
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: waitid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e99f071668937330bd2eca9d1b76ce42cee0116bf8b8a76ee4feaa1ee4fd62cc
+  case: errors_eagain_396

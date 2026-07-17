@@ -1,0 +1,45 @@
+# 合规检查：条件：( fchown ()) fd is not a valid open file descriptor；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FE11B37FAD24331A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( fchown ()) fd is not a valid open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:fe11b37fad24331a669ed5378b839efca647ffd9fe608059b6ed697b3ecd95f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0bafcdc7c14a133a31dae36c582134c886e79c2362a83bc65e18347a6e448354
+  case: errors_ebadf_208
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0bafcdc7c14a133a31dae36c582134c886e79c2362a83bc65e18347a6e448354
+  case: errors_ebadf_208

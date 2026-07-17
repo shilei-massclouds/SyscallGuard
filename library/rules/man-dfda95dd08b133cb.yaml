@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 open_tree(dirfd, path, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DFDA95DD08B133CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:dfda95dd08b133cbc930a5c6e7350e557e4961c6c4f3eda90f1e85d62ab497c5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 402
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:132927b38fc8482a301f2dc383cb4eb7dbce342c9417e16988103ed3de2f47b4
+  case: return_value_402
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 402
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:132927b38fc8482a301f2dc383cb4eb7dbce342c9417e16988103ed3de2f47b4
+  case: return_value_402

@@ -1,0 +1,44 @@
+# 合规检查：条件：Could not allocate memory for the descriptor or for the page tables. shmdt () can fail with one of the following errors:；检查：调用 shmdt(shmaddr)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E709A8443F71E3F8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: 'Could not allocate memory for the descriptor or for the page tables. shmdt () can fail with
+      one of the following errors:'
+  action:
+    operation: invoke_syscall
+    syscall: shmdt
+    arguments:
+    - shmaddr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:e709a8443f71e3f82887f22f105323ea0a961b8a5daeba9ec1bf9cf70ee6415e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3f8dcc9af295cb802bcec4d26e08c5d1514d03b4aeed5431f40b100901af31e6
+  case: errors_enomem_180
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmdt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3f8dcc9af295cb802bcec4d26e08c5d1514d03b4aeed5431f40b100901af31e6
+  case: errors_enomem_180

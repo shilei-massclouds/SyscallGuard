@@ -1,0 +1,45 @@
+# 合规检查：条件：Another thread caused a failure during thread sync, but its ID could not be determined；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A055049575FB6E47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: Another thread caused a failure during thread sync, but its ID could not be determined
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:a055049575fb6e4736f15f3caf06225c439553a0df7a88fef520595a274c54e7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 884
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0384b5e5a80f90718f441836b3ea5b8a989f02d35e37cbb187eb18059c713350
+  case: errors_esrch_884
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 884
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0384b5e5a80f90718f441836b3ea5b8a989f02d35e37cbb187eb18059c713350
+  case: errors_esrch_884

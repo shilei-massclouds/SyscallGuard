@@ -1,0 +1,38 @@
+# 合规检查：条件：ruid does not match the caller's real UID and this call would bring the number of processes belonging to the real user ID ruid over the caller's...；检查：调用 setresgid(rgid, egid, sgid)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ACD89E42FD5F6797--acd89e42fd5f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EAGAIN
+    summary: ruid does not match the caller's real UID and this call would bring the number of processes
+      belonging to the real user ID ruid over the caller's...
+  action:
+    operation: invoke_syscall
+    syscall: setresgid
+    arguments:
+    - rgid
+    - egid
+    - sgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:acd89e42fd5f67979a108f30a6371de6b8820f10338e7c2ddfc164dbdb0953f1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setresgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setresuid.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63c488a6ee471dfa8259db051377e108b99e51f7d9906f8de0102dea45513459
+  case: errors_eagain_69

@@ -1,0 +1,37 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix. (See also path_resolution (7).)；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A6FE87EBBFDE4983--a6fe87ebbfde
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix. (See also path_resolution
+      (7).)
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:a6fe87ebbfde49831ccd7211da6a932aa59a0b3fede352ab63a3961b05586049
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ac79246c9b6039fc66b177d43e55e856bed573da8c21773833be95afef011b71
+  case: errors_eacces_243

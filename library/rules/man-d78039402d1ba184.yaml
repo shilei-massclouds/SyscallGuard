@@ -1,0 +1,45 @@
+# 合规检查：条件：The maximum number of composed rulesets is reached for the calling thread. This limit is currently 64；检查：调用 landlock_restrict_self(ruleset_fd, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D78039402D1BA184
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: E2BIG
+    summary: The maximum number of composed rulesets is reached for the calling thread. This limit is
+      currently 64
+  action:
+    operation: invoke_syscall
+    syscall: landlock_restrict_self
+    arguments:
+    - ruleset_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:d78039402d1ba184d07099cd5f10cb2cf616a5954d52342e208d20ab631d62b7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34e7ba99d39254c50322e4833b0bfd1d9e7f38d85de3afe477f5455ca82d8844
+  case: errors_e2big_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_restrict_self
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34e7ba99d39254c50322e4833b0bfd1d9e7f38d85de3afe477f5455ca82d8844
+  case: errors_e2big_164

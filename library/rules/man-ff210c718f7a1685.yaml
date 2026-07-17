@@ -1,0 +1,32 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 prlimit64()；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FF210C718F7A1685
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: prlimit64
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:ff210c718f7a1685eb366d045808f20a296f65a545631b358064772e09c5a8fd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prlimit64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 468
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:599014ca0431aca6bba717fa66477e2b7e381805d614fcaced0ef49fb250a802
+  case: return_value_468

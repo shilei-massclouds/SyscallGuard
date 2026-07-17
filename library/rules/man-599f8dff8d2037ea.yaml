@@ -1,0 +1,46 @@
+# 合规检查：条件：The semaphore set was removed；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_599F8DFF8D2037EA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIDRM
+    summary: The semaphore set was removed
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:599f8dff8d2037ea98d671e7b3db730030642e35b4f7c29a8e8db471119b0666
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d29ae8b675682c082406de70d709345bfca4a340b2020cc9dba67daaaad2990
+  case: errors_eidrm_452
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d29ae8b675682c082406de70d709345bfca4a340b2020cc9dba67daaaad2990
+  case: errors_eidrm_452

@@ -1,0 +1,48 @@
+# 合规检查：条件：The socket is not connected, and no target has been given；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 ENOTCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED76A5F89A22FE98
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTCONN
+    summary: The socket is not connected, and no target has been given
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTCONN
+  errno:
+  - ENOTCONN
+semantic_hash: sha256:2efab6cf3ed62a09f4d730a9df0cb1e85b073fbb79f96e96d6a7eed738ebaa48
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:05cbc99f489dc132857ae292c44542ef2499fbee7e4c7ab9de5a87bf195eec1c
+  case: errors_enotconn_419
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:05cbc99f489dc132857ae292c44542ef2499fbee7e4c7ab9de5a87bf195eec1c
+  case: errors_enotconn_419

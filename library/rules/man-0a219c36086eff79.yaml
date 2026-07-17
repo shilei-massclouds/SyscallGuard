@@ -1,0 +1,45 @@
+# 合规检查：条件：The socket is nonblocking and a previous connection attempt has not yet been completed；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EALREADY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0A219C36086EFF79
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EALREADY
+    summary: The socket is nonblocking and a previous connection attempt has not yet been completed
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EALREADY
+  errno:
+  - EALREADY
+semantic_hash: sha256:0a219c36086eff79c31bedc5eeb06d7ba15ceec18b793630394f0e0a0dc16eed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c4cdab1ec77d49da19c66b69ec3d0eefa816fbdaafdb94f3759f5cbedf1ded3
+  case: errors_ealready_139
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4c4cdab1ec77d49da19c66b69ec3d0eefa816fbdaafdb94f3759f5cbedf1ded3
+  case: errors_ealready_139

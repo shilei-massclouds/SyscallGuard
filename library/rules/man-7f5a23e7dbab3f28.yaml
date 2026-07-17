@@ -1,0 +1,47 @@
+# 合规检查：条件：epfd is not an epoll file descriptor, or n is less than or equal to zero；检查：调用 epoll_pwait2(epfd, n, n, timeout, sigmask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7F5A23E7DBAB3F28
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: epfd is not an epoll file descriptor, or n is less than or equal to zero
+  action:
+    operation: invoke_syscall
+    syscall: epoll_pwait2
+    arguments:
+    - epfd
+    - n
+    - n
+    - timeout
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ffd96ee08e3897eef07a3774de5466be4892d086de7e0cd630b0d25b370f822b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 204
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe0b370dea430e4ef35fd1db1d65a29e9f934c3a7e199c98d176eb0e086a360e
+  case: errors_einval_204
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_pwait2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_wait.2
+  line: 204
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe0b370dea430e4ef35fd1db1d65a29e9f934c3a7e199c98d176eb0e086a360e
+  case: errors_einval_204

@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:e098aae9a2b41859308001732acfb7d282a888b835433a51e8143dd89da461a3
   case: flock06_41_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/flock/flock06.c
+  line: 41
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e098aae9a2b41859308001732acfb7d282a888b835433a51e8143dd89da461a3
+  case: flock06_41_raw_0

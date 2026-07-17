@@ -1,0 +1,47 @@
+# 合规检查：条件：mode contains one of FALLOC_FL_COLLAPSE_RANGE or FALLOC_FL_INSERT_RANGE and also other flags; no other flags are permitted with FALLOC_FL_COLLAPSE_RANGE or...；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6DED785691EF1985
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mode
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode contains one of FALLOC_FL_COLLAPSE_RANGE or FALLOC_FL_INSERT_RANGE and also other flags;
+      no other flags are permitted with FALLOC_FL_COLLAPSE_RANGE or...
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6ded785691ef19858f236d870f7b2cead52c1a9a65c5f661d2acb0b958471c1d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 370
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:197260c12f54f2a04cfcd96d187bed93ae05956fc398eb579dc487eaccf524f4
+  case: errors_einval_370
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 370
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:197260c12f54f2a04cfcd96d187bed93ae05956fc398eb579dc487eaccf524f4
+  case: errors_einval_370

@@ -1,0 +1,45 @@
+# 合规检查：条件：The operation was prevented by a file seal; see fcntl (2)；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_65600F460F34E22D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The operation was prevented by a file seal; see fcntl (2)
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:65600f460f34e22d5c12d8411dda5646a5c2e429b91feab3b4fc3066226b87ef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2934c9333249641d6028761d6f0143dc12dd2597b3957029b765dc5f132e2a6d
+  case: errors_eperm_208
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2934c9333249641d6028761d6f0143dc12dd2597b3957029b765dc5f132e2a6d
+  case: errors_eperm_208

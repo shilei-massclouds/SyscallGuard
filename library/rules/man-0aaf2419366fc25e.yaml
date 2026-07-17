@@ -1,0 +1,48 @@
+# 合规检查：条件：The filesystem object indicated by dirfd and path is associated with a filesystem that reports zero fsid (e.g., fuse (4)). This error can be returned only...；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0AAF2419366FC25E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENODEV
+    summary: The filesystem object indicated by dirfd and path is associated with a filesystem that reports
+      zero fsid (e.g., fuse (4)). This error can be returned only...
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:0aaf2419366fc25e8cd286171aedd538b537d21de8091083c3637cad9e1413ac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 698
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dcee5ab0c6d838de0079dca27f1e6d295bf1d201d34175a77dba6a6ae5339060
+  case: errors_enodev_698
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 698
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dcee5ab0c6d838de0079dca27f1e6d295bf1d201d34175a77dba6a6ae5339060
+  case: errors_enodev_698

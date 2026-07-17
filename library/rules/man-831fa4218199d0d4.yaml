@@ -1,0 +1,44 @@
+# 合规检查：条件：The RLIMIT_SIGPENDING resource limit was reached and sig is a real-time signal；检查：调用 tkill(tid, sig)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_831FA4218199D0D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: sig
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The RLIMIT_SIGPENDING resource limit was reached and sig is a real-time signal
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:3d5818e3711783a3340de855da035ac1cc44b2a5c424099d8c71a9a33b110aa1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 86
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c5674c4fecb6b9c9da98b27b0df4a4f1cf3f7967eb5a16fa6dc27cec6cfd7ad3
+  case: errors_eagain_86
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 86
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c5674c4fecb6b9c9da98b27b0df4a4f1cf3f7967eb5a16fa6dc27cec6cfd7ad3
+  case: errors_eagain_86

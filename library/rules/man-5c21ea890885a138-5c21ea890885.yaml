@@ -1,0 +1,36 @@
+# 合规检查：条件：Out of memory；检查：调用 getgroups(size, size)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5C21EA890885A138--5c21ea890885
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory
+  action:
+    operation: invoke_syscall
+    syscall: getgroups
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:5c21ea890885a138b3d8c042cb83ce47d82460530441096531db437363aa7d44
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getgroups
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 119
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fbfd0b300acf0f1a96abb7c1f360db4bcc4fe3ca3c0945fda43e9948cc54f7c0
+  case: errors_enomem_119

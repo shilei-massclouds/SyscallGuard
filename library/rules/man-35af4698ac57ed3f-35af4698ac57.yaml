@@ -1,0 +1,40 @@
+# 合规检查：条件：fd is not a valid file descriptor (and MAP_ANONYMOUS was not set)；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_35AF4698AC57ED3F--35af4698ac57
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor (and MAP_ANONYMOUS was not set)
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:35af4698ac57ed3fbd4027d53da28632f649d4584832089f17a1313728568044
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 515
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a196ec1b5e3aecf544359ae5536d0210c5198e5a62016ff3ad1ea50b62b28701
+  case: errors_ebadf_515

@@ -1,0 +1,36 @@
+# 合规检查：条件：No process(es) could be found that matched the specification in which and who；检查：调用 ioprio_get(which, who)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D9B93A8C37EF88D2--d9b93a8c37ef
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: which
+    predicate: documented_condition
+    value: ESRCH
+    summary: No process(es) could be found that matched the specification in which and who
+  action:
+    operation: invoke_syscall
+    syscall: ioprio_get
+    arguments:
+    - which
+    - who
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:d9b93a8c37ef88d20a01b1ce9da726a0dc1e0ac3ee5b46cd38b404bde9662d06
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioprio_get
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7090ded2fcf0770f1d3dbd71a40b29b10c70b9fdfab49eab98a39be71b0c5681
+  case: errors_esrch_181

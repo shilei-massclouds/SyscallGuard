@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:a599edd69db2553717bd43515056cff98347d31a8908b7434436552265669bcb
   case: nanosleep01_21_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/nanosleep/nanosleep01.c
+  line: 21
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a599edd69db2553717bd43515056cff98347d31a8908b7434436552265669bcb
+  case: nanosleep01_21_raw_0

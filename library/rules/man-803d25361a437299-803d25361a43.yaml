@@ -1,0 +1,38 @@
+# 合规检查：条件：Too many symbolic links were encountered in resolving path；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_803D25361A437299--803d25361a43
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in resolving path
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:803d25361a4372992e3199cbb36fd7886f0fd417302aa909745833ec1ec25ee3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 246
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1dd0fa88bf895114fe6a716a93c6880820a4b0d246f480c5a1d1d4e06936f708
+  case: errors_eloop_246

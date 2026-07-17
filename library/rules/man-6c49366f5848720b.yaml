@@ -1,0 +1,47 @@
+# 合规检查：条件：The argument op has one of the values GETALL , GETPID , GETVAL , GETNCNT , GETZCNT , IPC_STAT , SEM_STAT , SEM_STAT_ANY , SETALL , or SETVAL and the calling...；检查：调用 semctl(semid, semnum, op, arg4)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6C49366F5848720B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: op
+    predicate: invalid_value
+    value: EACCES
+    summary: The argument op has one of the values GETALL , GETPID , GETVAL , GETNCNT , GETZCNT , IPC_STAT
+      , SEM_STAT , SEM_STAT_ANY , SETALL , or SETVAL and the calling...
+  action:
+    operation: invoke_syscall
+    syscall: semctl
+    arguments:
+    - semid
+    - semnum
+    - op
+    - arg4
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:6c49366f5848720bc331f76e5b24390af5b59d2e38924a9f5ea1d573f073baa8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 425
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a51f211a9848e7f124249107f51511afe6e0502a3e8870cd211010c49459517
+  case: errors_eacces_425
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semctl.2
+  line: 425
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a51f211a9848e7f124249107f51511afe6e0502a3e8870cd211010c49459517
+  case: errors_eacces_425

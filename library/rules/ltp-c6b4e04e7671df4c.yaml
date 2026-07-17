@@ -1,0 +1,38 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 getsockopt(sock_bind, IPPROTO_TCP, -1, &optval, &optlen)；预期：返回 -1，errno 为 ENOPROTOOPT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_C6B4E04E7671DF4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sock_bind
+    - IPPROTO_TCP
+    - '-1'
+    - '&optval'
+    - '&optlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOPROTOOPT
+  errno:
+  - ENOPROTOOPT
+semantic_hash: sha256:c6b4e04e7671df4c9a052fd2d8d0dd0fd7e03dfaecced67f3ebffb99f63b8c85
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockopt/getsockopt01.c
+  line: 70
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5a415210b0e7eb032be508ebe5cf0f99e1bd78796d5fb40f665fb02845def96e
+  case: getsockopt01_70_7_0

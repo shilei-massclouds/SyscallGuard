@@ -1,0 +1,38 @@
+# 合规检查：条件：Write permission was requested for a file on a read-only filesystem；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_745D5AB5A8DA3C1F--745d5ab5a8da
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EROFS
+    summary: Write permission was requested for a file on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:745d5ab5a8da3c1f4a14f3bf9e125eff52fba2d0371e7caebcb716cdbc3c9b7d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 279
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fb09a26931a8647c5b2a716f19148b01b6991237dcd301149d7bb563e4d45e47
+  case: errors_erofs_279

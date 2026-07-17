@@ -1,0 +1,47 @@
+# 合规检查：条件：( utimensat ()) path is relative, but dirfd is neither AT_FDCWD nor a file descriptor referring to a directory; or, one of the prefix components of path is...；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F4721319ED57B1F1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( utimensat ()) path is relative, but dirfd is neither AT_FDCWD nor a file descriptor referring
+      to a directory; or, one of the prefix components of path is...
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:f4721319ed57b1f1484fcc2751ba54a261d1b0eafb821a57b2bbd0fd95d02f97
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fae2befca0263fe60a6c579632075fd2a151fea670c77ce8ad55f9f30d41386c
+  case: errors_enotdir_338
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fae2befca0263fe60a6c579632075fd2a151fea670c77ce8ad55f9f30d41386c
+  case: errors_enotdir_338

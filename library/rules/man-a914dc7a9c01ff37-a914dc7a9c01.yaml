@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fchmod(fd, mode)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A914DC7A9C01FF37--a914dc7a9c01
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:a914dc7a9c01ff37443f24579bd9f3c2dbe1c80e491f5b7e8180e78291ad1c1d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 232
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:040d2aa33d10c31943bfbcf71d1fea48a3865f73c6f502a15e6a989d5dc21a2d
+  case: return_value_232

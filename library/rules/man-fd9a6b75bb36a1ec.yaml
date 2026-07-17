@@ -1,0 +1,47 @@
+# 合规检查：条件：The caller attempted to change one or both timestamps to a value other than the current time, or to change one of the timestamps to the current time while...；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD9A6B75BB36A1EC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The caller attempted to change one or both timestamps to a value other than the current time,
+      or to change one of the timestamps to the current time while...
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:fd9a6b75bb36a1ecdfee74ab64d829c90b6f981eb188bb11b8160338285f2dfb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 350
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3c9bc74ad09b065652a449851e7832dac760aad3491facf6432640d83cd128a
+  case: errors_eperm_350
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 350
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3c9bc74ad09b065652a449851e7832dac760aad3491facf6432640d83cd128a
+  case: errors_eperm_350

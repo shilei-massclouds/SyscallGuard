@@ -1,0 +1,48 @@
+# 合规检查：条件：Either fd_in or fd_out refers to an active swap file；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_004335DB8973F3B4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_in
+    predicate: documented_condition
+    value: ETXTBSY
+    summary: Either fd_in or fd_out refers to an active swap file
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:004335db8973f3b4d6f79585d5b74085d4926b5350ac9e7153e3f6f006990df5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b1254e7beb2c7722c272cdb523d860020041e4389f6650274d4aee3d7dfc9add
+  case: errors_etxtbsy_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b1254e7beb2c7722c272cdb523d860020041e4389f6650274d4aee3d7dfc9add
+  case: errors_etxtbsy_169

@@ -1,0 +1,43 @@
+# 合规检查：条件：Too many symbolic links were encountered in resolving path；检查：调用 chroot(path)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A13A15172625B56C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in resolving path
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:a13a15172625b56c2c24aaa6bb1e54906d6dd02a7b1468f35bb3ce7a9a3ba454
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 114
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4bb98fef8994d6bb1aa9ad1a6d0e8e093301ca2072564307199b6e2eede3a5e4
+  case: errors_eloop_114
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 114
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4bb98fef8994d6bb1aa9ad1a6d0e8e093301ca2072564307199b6e2eede3a5e4
+  case: errors_eloop_114

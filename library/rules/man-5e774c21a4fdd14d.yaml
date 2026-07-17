@@ -1,0 +1,43 @@
+# 合规检查：条件：A pathname was empty or had a nonexistent component；检查：调用 umount2(target)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5E774C21A4FDD14D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: A pathname was empty or had a nonexistent component
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:5e774c21a4fdd14d663c369aa6e788744d450c8fa521aca5bf585be3a9a2c7f4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:728aa71f3371043be27b3eb04cb95e5c6f5328f806fdd6ee387ca1214878642d
+  case: errors_enoent_148
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:728aa71f3371043be27b3eb04cb95e5c6f5328f806fdd6ee387ca1214878642d
+  case: errors_enoent_148

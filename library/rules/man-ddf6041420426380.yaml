@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned if the group_fd file descriptor is not valid, or, if PERF_FLAG_PID_CGROUP is set, the cgroup file descriptor in pid is not valid；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DDF6041420426380
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: pid
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: Returned if the group_fd file descriptor is not valid, or, if PERF_FLAG_PID_CGROUP is set,
+      the cgroup file descriptor in pid is not valid
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ddf6041420426380270c4941eefc5568efc677b86a0f39f9c9cef21da514866e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3781
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8ad9cc489fbce834adadf4c26ed6843752bcd1a24e47951d25c809ffb8a8c4f
+  case: errors_ebadf_3781
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3781
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8ad9cc489fbce834adadf4c26ed6843752bcd1a24e47951d25c809ffb8a8c4f
+  case: errors_ebadf_3781

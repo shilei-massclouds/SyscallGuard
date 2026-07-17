@@ -1,0 +1,46 @@
+# 合规检查：条件：Internal kernel structures could not be allocated；检查：调用 pkey_mprotect(size, size, prot, pkey)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C7F2D1ED6833880A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: Internal kernel structures could not be allocated
+  action:
+    operation: invoke_syscall
+    syscall: pkey_mprotect
+    arguments:
+    - size
+    - size
+    - prot
+    - pkey
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:db736de641a91112c7636029c297dc607751fa7e715f7002e84e2ceaf5854396
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b6b2fc5426b48017d58e968ab49b8a2c17fc91a887a95bccf080b7c78db92f6
+  case: errors_enomem_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b6b2fc5426b48017d58e968ab49b8a2c17fc91a887a95bccf080b7c78db92f6
+  case: errors_enomem_169

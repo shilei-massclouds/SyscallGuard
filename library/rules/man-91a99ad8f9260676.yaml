@@ -1,0 +1,48 @@
+# 合规检查：条件：The system does not have enough memory to make a copy of the message pointed to by msgp . msgrcv () can fail with the following errors:；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_91A99AD8F9260676
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: 'The system does not have enough memory to make a copy of the message pointed to by msgp
+      . msgrcv () can fail with the following errors:'
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:91a99ad8f926067698c0c395bf2db93fd30ae986b5f23c99abba740515b34865
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 360
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38447ca93c1c935a5c26e614f6aa256d7256ccd66f752e4595eeabd8ab80070d
+  case: errors_enomem_360
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 360
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38447ca93c1c935a5c26e614f6aa256d7256ccd66f752e4595eeabd8ab80070d
+  case: errors_enomem_360

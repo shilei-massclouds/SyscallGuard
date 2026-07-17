@@ -28,8 +28,24 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup/dup01.c
+  line: 22
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:1110ce6589b56006d969c173b8ab6037911a3b134a548e7ff00a05d78a7c7609
+  case: dup01_22_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/dup/dup05.c
   line: 20
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:7792941fae58ed720481e54ed216b8df9351308204e964ae709f8509d353408c
   case: dup05_20_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup/dup05.c
+  line: 20
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:7792941fae58ed720481e54ed216b8df9351308204e964ae709f8509d353408c
+  case: dup05_20_raw_0

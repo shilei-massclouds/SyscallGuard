@@ -29,7 +29,23 @@ sources:
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/getsid/getsid01.c
+  line: 22
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:7db9e663b1ce4e22431176b7f2a6c2040be823330aaf16d64973bcb990e7ad1d
+  case: getsid01_22_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsid/getsid01.c
   line: 33
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:d2442469dcf647ec005d59d64b25d39b32856525afe00f121672ac638c228a1a
   case: getsid01_33_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsid/getsid01.c
+  line: 33
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d2442469dcf647ec005d59d64b25d39b32856525afe00f121672ac638c228a1a
+  case: getsid01_33_raw_0

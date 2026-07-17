@@ -1,0 +1,43 @@
+# 合规检查：条件：A component of path is not a directory. The general errors for fchdir () are listed below:；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8CEC520B690B55F8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: 'A component of path is not a directory. The general errors for fchdir () are listed below:'
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:8cec520b690b55f84f30bc194ccc0c1f893b145da35316e4f7ea9d45e0a7320b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41d44f275d0f6200c235b060cb8b6816f2ef13624aa422610f9dbc368d373929
+  case: errors_enotdir_83
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41d44f275d0f6200c235b060cb8b6816f2ef13624aa422610f9dbc368d373929
+  case: errors_enotdir_83

@@ -1,0 +1,48 @@
+# 合规检查：条件：flags is not 0；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_08FD6D3E2365FC1C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is not 0
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3fcab0829aad1e138011bee8a13039556a1a726b54fd3384faff2ddbf877648d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1896cec6875f750488e71708aec482d471e2c85c5bdb9e6be642f00cc9789b1
+  case: errors_einval_234
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1896cec6875f750488e71708aec482d471e2c85c5bdb9e6be642f00cc9789b1
+  case: errors_einval_234

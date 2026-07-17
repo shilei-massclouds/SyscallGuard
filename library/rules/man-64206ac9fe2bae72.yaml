@@ -1,0 +1,43 @@
+# 合规检查：条件：The close () call was interrupted by a signal; see signal (7)；检查：调用 close(fd)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_64206AC9FE2BAE72
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The close () call was interrupted by a signal; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:64206ac9fe2bae7275c84ef3217984b1c49c8de293c17d2cbb6b8b71b9468d6f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 56
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:24dd52bad1794982bc2a3ea576ed1048852e5ef3f76f6f4e834ac7e7fdb49dd5
+  case: errors_eintr_56
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 56
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:24dd52bad1794982bc2a3ea576ed1048852e5ef3f76f6f4e834ac7e7fdb49dd5
+  case: errors_eintr_56

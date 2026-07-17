@@ -1,0 +1,38 @@
+# 合规检查：条件：(since Linux 3.7) Module signature is invalid or the kernel does not have a key for this module. This error is returned only if the kernel was configured...；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CA6F515A86EFABB7--ca6f515a86ef
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOKEY
+    summary: (since Linux 3.7) Module signature is invalid or the kernel does not have a key for this
+      module. This error is returned only if the kernel was configured...
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:ca6f515a86efabb7a856dc15a276f4ae2b8db9b34dc17a69844533e5a89342a3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 194
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a5bb061d1efc3ff4e1ae329f414d744d97ca86fbfbfee336a81a15d98070d347
+  case: errors_enokey_194

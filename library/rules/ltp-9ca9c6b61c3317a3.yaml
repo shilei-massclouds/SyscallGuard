@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:fe4cf73c123d562efd79cd38f2253314e8c4ba3e8e7bd1e5d32e4d2071519064
   case: accept01_91_3
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/accept/accept01.c
+  line: 91
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:fe4cf73c123d562efd79cd38f2253314e8c4ba3e8e7bd1e5d32e4d2071519064
+  case: accept01_91_3_0

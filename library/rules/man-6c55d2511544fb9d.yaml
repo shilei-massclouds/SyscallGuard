@@ -1,0 +1,48 @@
+# 合规检查：条件：An access-time setting was specified in the attr_set field without MOUNT_ATTR__ATIME being set in the attr_clr field；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6C55D2511544FB9D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An access-time setting was specified in the attr_set field without MOUNT_ATTR__ATIME being
+      set in the attr_clr field
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6c55d2511544fb9d6fa60212118baebb63e005809f1736d66c3efa1c2b72edaa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:edde6b77036974273d06ba256ceb550fda0c3793ca02bc78f1e9503393169a8e
+  case: errors_einval_453
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:edde6b77036974273d06ba256ceb550fda0c3793ca02bc78f1e9503393169a8e
+  case: errors_einval_453

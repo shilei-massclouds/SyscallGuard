@@ -1,0 +1,46 @@
+# 合规检查：条件：ruid does not match the caller's real UID and this call would bring the number of processes belonging to the real user ID ruid over the caller's...；检查：调用 setresuid(ruid, euid, suid)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ACD89E42FD5F6797
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: ruid
+    predicate: insufficient_permission
+    value: EAGAIN
+    summary: ruid does not match the caller's real UID and this call would bring the number of processes
+      belonging to the real user ID ruid over the caller's...
+  action:
+    operation: invoke_syscall
+    syscall: setresuid
+    arguments:
+    - ruid
+    - euid
+    - suid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:fcd380e47c7b9c98116c5a93af8f17a437d7b54a0b8190af7a59a625d7342874
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setresuid.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c482fb9eedf7797ea73fa03f3013a82c2cc3e12c54ef85bcb9976bd196f64fc1
+  case: errors_eagain_69
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setresuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setresuid.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c482fb9eedf7797ea73fa03f3013a82c2cc3e12c54ef85bcb9976bd196f64fc1
+  case: errors_eagain_69

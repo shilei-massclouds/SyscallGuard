@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sethostname(name, size)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6998D4E70F807B13
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sethostname
+    arguments:
+    - name
+    - size
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:6998d4e70f807b1346ca12410e36102afece3730fa03bdccb9dd4be8b2b6259e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 71
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a6f5b66a6ef8be57f560442c14070675d1d90a3869473937c7201722bdad3ce4
+  case: return_value_71
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sethostname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 71
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a6f5b66a6ef8be57f560442c14070675d1d90a3869473937c7201722bdad3ce4
+  case: return_value_71

@@ -1,0 +1,47 @@
+# 合规检查：条件：The thread whose ID is pid could not be found. In addition, sched_getattr () can fail for the following reasons:；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A0A4C98B164C92C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: 'The thread whose ID is pid could not be found. In addition, sched_getattr () can fail for
+      the following reasons:'
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:a0a4c98b164c92c33bbd635fb794e30897b3aa542228bd5a945f5145560e9f05
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 371
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98a0d52e0c151d8166e9ce43722d97374c1ef2d421de7526edabdaa764618835
+  case: errors_esrch_371
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 371
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98a0d52e0c151d8166e9ce43722d97374c1ef2d421de7526edabdaa764618835
+  case: errors_esrch_371

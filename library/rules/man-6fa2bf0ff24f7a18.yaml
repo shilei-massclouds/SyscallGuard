@@ -1,0 +1,46 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6FA2BF0FF24F7A18
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:13946e2df1a9c81f1b11d3d8ac5ae00b2ca418ceac80bb2301d2c24446af163e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 263
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:46fffc946739ceaa03d8e530c3176fbe262266b9c0975795c34d059f7f17a807
+  case: errors_efault_263
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 263
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:46fffc946739ceaa03d8e530c3176fbe262266b9c0975795c34d059f7f17a807
+  case: errors_efault_263

@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:168c2058a2b18c535e3e3825d5544aa198f8f0a10117074f007a9a6763618b7c
   case: move_mount01_59_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount01.c
+  line: 59
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:168c2058a2b18c535e3e3825d5544aa198f8f0a10117074f007a9a6763618b7c
+  case: move_mount01_59_raw_0

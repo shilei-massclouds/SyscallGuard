@@ -1,0 +1,46 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FCDB282A3F163957
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:fcdb282a3f16395729cf5a859ff2b8621f001cc8856a41edded3e8a77bf45f53
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:157c5d8efffb8f12731c3a75be5ba00fab9f3cb09b0f286836f83452666f080c
+  case: errors_efault_181
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:157c5d8efffb8f12731c3a75be5ba00fab9f3cb09b0f286836f83452666f080c
+  case: errors_efault_181

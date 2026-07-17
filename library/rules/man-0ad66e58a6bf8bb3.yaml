@@ -1,0 +1,46 @@
+# 合规检查：条件：The caller lacked the required privilege ( CAP_SYS_ADMIN ) for the specified operation；检查：调用 quotactl_fd(fd, op, id, addr)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0AD66E58A6BF8BB3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller lacked the required privilege ( CAP_SYS_ADMIN ) for the specified operation
+  action:
+    operation: invoke_syscall
+    syscall: quotactl_fd
+    arguments:
+    - fd
+    - op
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:16a56b315723a07629e29091a69706ebe98f9a396595acd374045569fe62b829
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:992b4b85973dfa69f2fd42fef0c8356a01d6f55d89435e28589f3d8068070903
+  case: errors_eperm_182
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl_fd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:992b4b85973dfa69f2fd42fef0c8356a01d6f55d89435e28589f3d8068070903
+  case: errors_eperm_182

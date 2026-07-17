@@ -1,0 +1,49 @@
+# 合规检查：条件：( clone () only) CLONE_PIDFD was specified together with CLONE_DETACHED in the flags mask；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_60276E83E8DF5B7B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( clone () only) CLONE_PIDFD was specified together with CLONE_DETACHED in the flags mask
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:60276e83e8df5b7bfabeabcf82cb915db788a5e91f656b9eae57d77267a63a0f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dee146ef8477fe1ba84731cf88667be8764c81a1ec1324836b415dc1cee8fd76
+  case: errors_einval_1398
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dee146ef8477fe1ba84731cf88667be8764c81a1ec1324836b415dc1cee8fd76
+  case: errors_einval_1398

@@ -1,0 +1,39 @@
+# 合规检查：条件：The size of name or value exceeds a filesystem-specific limit；检查：调用 fsetxattr(fd, name, size, size, flags)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A953E8990237D494--a953e8990237
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: name
+    predicate: unavailable_or_exhausted
+    value: ERANGE
+    summary: The size of name or value exceeds a filesystem-specific limit
+  action:
+    operation: invoke_syscall
+    syscall: fsetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:a953e8990237d494949f46fbeff37bf839b774fd29f856eca0ab2bd04be937dd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b5678bbad56f73eef0003235974655c7cafc66026a00225444d21d39c9aef25a
+  case: errors_erange_137

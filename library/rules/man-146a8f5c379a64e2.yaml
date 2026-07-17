@@ -1,0 +1,45 @@
+# 合规检查：条件：A secure computing mode has already been set, and operation differs from the existing setting；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_146A8F5C379A64E2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: operation
+    predicate: invalid_value
+    value: EINVAL
+    summary: A secure computing mode has already been set, and operation differs from the existing setting
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:146a8f5c379a64e2062910fed5103db5771fb0722aada23a594f46eb01cd6f0f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 848
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba65fcaf7d4e4dffb23b7f5a6a1e85a3d32e005591aa4a879a8b97726f249a08
+  case: errors_einval_848
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 848
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba65fcaf7d4e4dffb23b7f5a6a1e85a3d32e005591aa4a879a8b97726f249a08
+  case: errors_einval_848

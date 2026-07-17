@@ -1,0 +1,45 @@
+# 合规检查：条件：linkpath already exists；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73A689AC99A1E643
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: linkpath
+    predicate: documented_path_condition
+    value: EEXIST
+    summary: linkpath already exists
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:73a689ac99a1e643cba4f2572ff3ffbbb33893e28f875d140ccb59ee684c166d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14f083e42a7494273fbbf5255d5a06efedc002ba9cc3c30478c087295b635ac8
+  case: errors_eexist_155
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14f083e42a7494273fbbf5255d5a06efedc002ba9cc3c30478c087295b635ac8
+  case: errors_eexist_155

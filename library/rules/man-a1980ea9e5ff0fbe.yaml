@@ -1,0 +1,47 @@
+# 合规检查：条件：A path argument was longer than PATH_MAX；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1980EA9E5FF0FBE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: A path argument was longer than PATH_MAX
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:a1980ea9e5ff0fbed6431a1e4b5ecb5fc1efab79204a41cf7466f2688d0bb36b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 457
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6ebdfb83c69ffb9c15d0eacfab9281dd1894aaeebaf2ed71ecec82f81e966ceb
+  case: errors_enametoolong_457
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 457
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6ebdfb83c69ffb9c15d0eacfab9281dd1894aaeebaf2ed71ecec82f81e966ceb
+  case: errors_enametoolong_457

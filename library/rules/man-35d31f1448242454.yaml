@@ -1,0 +1,46 @@
+# 合规检查：条件：There is not enough space left on the device containing the file referred to by fd；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_35D31F1448242454
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ENOSPC
+    summary: There is not enough space left on the device containing the file referred to by fd
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:35d31f144824245430312ea60d4748c6557487ceb5a45844a0006913ead15797
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:699e1ed1dc9c0ea90d2a0eff8419a3dc4381233a1e31c06aaf2bc94fcd32d24a
+  case: errors_enospc_410
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:699e1ed1dc9c0ea90d2a0eff8419a3dc4381233a1e31c06aaf2bc94fcd32d24a
+  case: errors_enospc_410

@@ -1,0 +1,46 @@
+# 合规检查：条件：No process matching pid could be found；检查：调用 migrate_pages(pid, maxnode, old_nodes, new_nodes)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3BDD5D5E243B177B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: No process matching pid could be found
+  action:
+    operation: invoke_syscall
+    syscall: migrate_pages
+    arguments:
+    - pid
+    - maxnode
+    - old_nodes
+    - new_nodes
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:3bdd5d5e243b177b0f89b952020ee2497dec0532af63e55b3aacfdf32ea640e9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/migrate_pages.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6998271f6c675aefd8829a806b303a0a6f8d70a770d438ff855894db44a5c226
+  case: errors_esrch_120
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: migrate_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/migrate_pages.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6998271f6c675aefd8829a806b303a0a6f8d70a770d438ff855894db44a5c226
+  case: errors_esrch_120

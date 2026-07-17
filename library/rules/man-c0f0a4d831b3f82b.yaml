@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) set_tid_size was greater than zero, and the caller lacks the CAP_SYS_ADMIN capability in one or more of the user namespaces that own the...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C0F0A4D831B3F82B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: ( clone3 () only) set_tid_size was greater than zero, and the caller lacks the CAP_SYS_ADMIN
+      capability in one or more of the user namespaces that own the...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:c0f0a4d831b3f82bac954c6a3d8666c0bdc805c97217083d5f82bf45ce5b375f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1528
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d91352a4d28249c4a1f69574acaa53675652e1f28d88cd5d37895817d9e16fa
+  case: errors_eperm_1528
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1528
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d91352a4d28249c4a1f69574acaa53675652e1f28d88cd5d37895817d9e16fa
+  case: errors_eperm_1528

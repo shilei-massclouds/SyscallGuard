@@ -1,0 +1,42 @@
+# 合规检查：条件：timeout was not NULL and clockid was not a valid clock；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D8614FE82771E138
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: timeout was not NULL and clockid was not a valid clock
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d8614fe82771e1387bfde20c29affd73242ad5de47ce160695ca41797319c79f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b169bce718b8bd18815679320fb520fb2cc3967bd39e33035cdad6673b2c2dfc
+  case: errors_einval_212
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 212
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b169bce718b8bd18815679320fb520fb2cc3967bd39e33035cdad6673b2c2dfc
+  case: errors_einval_212

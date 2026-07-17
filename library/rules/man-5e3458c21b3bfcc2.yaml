@@ -1,0 +1,46 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5E3458C21B3BFCC2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5e3458c21b3bfcc28765f0773928bed6951f195bfae019b60651ef7f24e8f548
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1039
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ee3156a6e15f5daae3c84cc81e35a009823af56dd8e083b4bb5fcdf966a65a00
+  case: errors_efault_1039
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1039
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ee3156a6e15f5daae3c84cc81e35a009823af56dd8e083b4bb5fcdf966a65a00
+  case: errors_efault_1039

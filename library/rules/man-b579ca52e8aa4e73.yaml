@@ -1,0 +1,43 @@
+# 合规检查：条件：umount2 () was called with MNT_EXPIRE and either MNT_DETACH or MNT_FORCE；检查：调用 umount2(target)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B579CA52E8AA4E73
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: umount2 () was called with MNT_EXPIRE and either MNT_DETACH or MNT_FORCE
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b579ca52e8aa4e7345220e5754c6a7d6604ed8f9cdca0b3864874c152b848f8e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b15615c4a4e375246be261a304d7bc354ce8446dc6f34bd38d18d82f2903ef01
+  case: errors_einval_130
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b15615c4a4e375246be261a304d7bc354ce8446dc6f34bd38d18d82f2903ef01
+  case: errors_einval_130

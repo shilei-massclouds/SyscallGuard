@@ -1,0 +1,36 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_22C0858FE24A32E2--22c0858fe24a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:22c0858fe24a32e2a67cfb96968d3f1bd583e3e4a879c67dfd4fc2e824f71c09
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 286
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7807eea510d8ca76d28d270d4887b1e7c882a2a3a8682c19482bbfc2b7665b73
+  case: errors_enomem_286

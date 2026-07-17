@@ -1,0 +1,48 @@
+# 合规检查：条件：A new filesystem instance was requested with \%FSCONFIG_CMD_CREATE_EXCL but a matching superblock already existed；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4D632B3F0E812432
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: A new filesystem instance was requested with \%FSCONFIG_CMD_CREATE_EXCL but a matching superblock
+      already existed
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:4d632b3f0e8124326aefaa6943e9a918c699a464c6f78289e1e5666143757e25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 413
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e3144e1dcf70c43c009e731bdd9f0037ffe328450bc653bf46350fd6d1925c0e
+  case: errors_ebusy_413
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 413
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e3144e1dcf70c43c009e731bdd9f0037ffe328450bc653bf46350fd6d1925c0e
+  case: errors_ebusy_413

@@ -1,0 +1,45 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E6410AAE89E74298
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:e6410aae89e74298fdda2a1e33ca6850b547e083db1c1d12938ffa24957f5c97
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:954045e2e7a521fca8527cc6bde9cf798be70f6bca6a63d0c762ddfbafab81bd
+  case: errors_eio_483
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:954045e2e7a521fca8527cc6bde9cf798be70f6bca6a63d0c762ddfbafab81bd
+  case: errors_eio_483

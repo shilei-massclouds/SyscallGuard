@@ -1,0 +1,35 @@
+# 合规检查：条件：The pathname exceeds the supported limit.；检查：调用 gethostname(hostname, real_length - 1)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BFFEED9C08C13250
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: length
+    value: too_long
+    summary: The pathname exceeds the supported limit.
+  action:
+    operation: invoke_syscall
+    syscall: gethostname
+    arguments:
+    - hostname
+    - real_length - 1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:bffeed9c08c1325002ad35c0e697eb1bc2f43ac940fa171495aadd9627aeab4e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gethostname/gethostname02.c
+  line: 23
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:7011c4161a5dbefa02a3ce4c97f0d418888a84d01b0a14468cb24b08c6bb8e9c
+  case: gethostname02_23_raw_0

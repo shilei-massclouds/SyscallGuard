@@ -1,0 +1,45 @@
+# 合规检查：条件：A file descriptor refers to a non-regular file. Or a file mapping was requested, but fd is not open for reading. Or MAP_SHARED was requested and PROT_WRITE...；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_18C5488E8D09D6D2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EACCES
+    summary: A file descriptor refers to a non-regular file. Or a file mapping was requested, but fd is
+      not open for reading. Or MAP_SHARED was requested and PROT_WRITE...
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:12801a46920e6d41ad5c881de860879f821dd1d92a944c0c2cc6570a95831d8d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 493
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb004ae212f4b754a4fad31882b32e67b72e3f62091b234da97ec84655c54236
+  case: errors_eacces_493
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 493
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb004ae212f4b754a4fad31882b32e67b72e3f62091b234da97ec84655c54236
+  case: errors_eacces_493

@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:3a4ae113fad5d93abbac48186518244c03f68866f54288523ce878b23b8400a6
   case: sbrk02_20_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sbrk/sbrk02.c
+  line: 20
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3a4ae113fad5d93abbac48186518244c03f68866f54288523ce878b23b8400a6
+  case: sbrk02_20_raw_0

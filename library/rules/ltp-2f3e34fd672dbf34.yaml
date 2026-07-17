@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.tst-exp.positive
   evidence_hash: sha256:cbc9b62da18335a6555c7dad350040b97d7b6d81e20bc1b7f3780e2a960a75f3
   case: waitpid01_102_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitpid/waitpid01.c
+  line: 102
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:cbc9b62da18335a6555c7dad350040b97d7b6d81e20bc1b7f3780e2a960a75f3
+  case: waitpid01_102_raw_0

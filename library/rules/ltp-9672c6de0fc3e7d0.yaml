@@ -1,0 +1,37 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 epoll_ctl(epfd, EPOLL_CTL_MOD, fd[1], &events[1])；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9672C6DE0FC3E7D0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - EPOLL_CTL_MOD
+    - fd[1]
+    - '&events[1]'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:9672c6de0fc3e7d025f8da536fe17501f4c7f3121f98411c58506bb5c3bb1acb
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+  line: 85
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9b451ce6499a718fc05056a4260e9a1d863dea4510c97220819b18818d349773
+  case: epoll_ctl02_85_7_0

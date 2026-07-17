@@ -1,0 +1,45 @@
+# 合规检查：条件：The new directory cannot be created because the user's disk quota is exhausted；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3D9FFC664D02AC73
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOSPC
+    summary: The new directory cannot be created because the user's disk quota is exhausted
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:3d9ffc664d02ac73e8cbb4d8c4e43318189601a52d3ff72b6c09cb3033061626
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50035e6f019f59e0b6108bc285afcc38b2b1e03e85cffff9d9884ddef1ec9da9
+  case: errors_enospc_183
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:50035e6f019f59e0b6108bc285afcc38b2b1e03e85cffff9d9884ddef1ec9da9
+  case: errors_enospc_183

@@ -1,0 +1,44 @@
+# 合规检查：条件：Some values were too large to be represented in the returned struct；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A61FDA2E6CA66366
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOVERFLOW
+    summary: Some values were too large to be represented in the returned struct
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:734874d624047e852d49b14afca912a8319a5cb955a96ba1491b40ff82d987d7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 276
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:18f622c3dfda8e970680cc3f8571a7ead21f147e87cf561dd4fc31c137bbb021
+  case: errors_eoverflow_276
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 276
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:18f622c3dfda8e970680cc3f8571a7ead21f147e87cf561dd4fc31c137bbb021
+  case: errors_eoverflow_276

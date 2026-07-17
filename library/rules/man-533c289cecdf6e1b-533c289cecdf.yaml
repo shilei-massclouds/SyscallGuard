@@ -1,0 +1,42 @@
+# 合规检查：条件：stack is not aligned to a suitable boundary for this architecture. For example, on aarch64, stack must be a multiple of 16；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_533C289CECDF6E1B--533c289cecdf
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: stack
+    predicate: documented_condition
+    value: EINVAL
+    summary: stack is not aligned to a suitable boundary for this architecture. For example, on aarch64,
+      stack must be a multiple of 16
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:533c289cecdf6e1bb3a36b3f800e0e725da833b75064490deaf5eb902c0c645c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eeeb7729994406e7f025f35cd0778169300d2e5580c9b158a5e772d2519902db
+  case: errors_einval_1385

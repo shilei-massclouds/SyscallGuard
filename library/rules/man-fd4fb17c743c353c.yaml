@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getrusage(who, usage)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD4FB17C743C353C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getrusage
+    arguments:
+    - who
+    - usage
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:fd4fb17c743c353c20c651fd7bdbe310b035e6553951330bdfdf1eb78951bf5f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrusage.2
+  line: 160
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:3e86529172555d15249586e00b29ad4bf6856b77bc0b5d73bd90b3bab09f88db
+  case: return_value_160
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrusage
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrusage.2
+  line: 160
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:3e86529172555d15249586e00b29ad4bf6856b77bc0b5d73bd90b3bab09f88db
+  case: return_value_160

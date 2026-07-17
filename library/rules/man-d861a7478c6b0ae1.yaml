@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 capset(hdrp, datap)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D861A7478C6B0AE1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: capset
+    arguments:
+    - hdrp
+    - datap
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:30b63a5e2615b683e93a4500efc7e55f96770caeba600958b57d3c0e160976ed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 173
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:fc0fb904359fe20a9acc3916b248da7c0d944a5e0505254d0acc1d622576595a
+  case: return_value_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: capset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/capget.2
+  line: 173
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:fc0fb904359fe20a9acc3916b248da7c0d944a5e0505254d0acc1d622576595a
+  case: return_value_173

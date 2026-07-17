@@ -1,0 +1,33 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 swapoff(path)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_84AFF3A4A1AE1FFD--84aff3a4a1ae
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:84aff3a4a1ae1ffdff787c39829827935c5706d241df3c96cdf25ab17fdc7114
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 85
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:1215cdf1127a07047bb8bb905208c60ba3a2914d1aeaab72db2ba88638b56129
+  case: return_value_85

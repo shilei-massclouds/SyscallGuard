@@ -1,0 +1,46 @@
+# 合规检查：条件：( utimensat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C6BB917B58F9645A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( utimensat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c6bb917b58f9645a582900976b5f7fe0097e8051e7be608727358282ae03ebc2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12c2b4f491cd5ba2129ac1d5d00d6b4584ece0c65ebf06d5d8730678e8286d8f
+  case: errors_ebadf_272
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12c2b4f491cd5ba2129ac1d5d00d6b4584ece0c65ebf06d5d8730678e8286d8f
+  case: errors_ebadf_272

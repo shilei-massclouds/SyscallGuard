@@ -1,0 +1,45 @@
+# 合规检查：条件：fd is a PID file descriptor but the process it refers to no longer exists (i.e., it has terminated and been waited on)；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6FFF3E54966CBB24
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ESRCH
+    summary: fd is a PID file descriptor but the process it refers to no longer exists (i.e., it has terminated
+      and been waited on)
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:6fff3e54966cbb24b2c024171d8405f84ce1452a5c229947e270d4ab642f4171
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 311
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b6af0699154dddd388a44a11b5a67b8328df8e16fb9438affb3b7bedb6935af8
+  case: errors_esrch_311
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 311
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b6af0699154dddd388a44a11b5a67b8328df8e16fb9438affb3b7bedb6935af8
+  case: errors_esrch_311

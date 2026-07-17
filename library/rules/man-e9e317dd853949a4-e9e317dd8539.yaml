@@ -1,0 +1,36 @@
+# 合规检查：条件：The file does not exist；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E9E317DD853949A4--e9e317dd8539
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The file does not exist
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:e9e317dd853949a42d8a4779c1b130db344799fbc8a2ef9d104be7f4d6a2e84f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 283
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b2bff4a100c47326bc4d8361f844c0032b54427410b07c99ac6ba76dab0242c2
+  case: errors_enoent_283

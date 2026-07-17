@@ -1,0 +1,35 @@
+# 合规检查：条件：buf does not point to writable memory；检查：调用 adjtimex(buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C480BD0B4E985931--c480bd0b4e98
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: buf
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: buf does not point to writable memory
+  action:
+    operation: invoke_syscall
+    syscall: adjtimex
+    arguments:
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c480bd0b4e985931777b1ddf00b4d9fc07eb57e51dc82da3c6cf409a772f0364
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: adjtimex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cfaafc84a9c3e624e808850df4fdb5ee41054ced2fe9422de0b2c1b0c3e3e0da
+  case: errors_efault_466

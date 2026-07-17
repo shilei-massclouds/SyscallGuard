@@ -1,0 +1,48 @@
+# 合规检查：条件：Write access to the directory containing newpath is denied, or search permission is denied for one of the directories in the path prefix of oldpath or...；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EF7244A0D55E1334
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Write access to the directory containing newpath is denied, or search permission is denied
+      for one of the directories in the path prefix of oldpath or...
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:ef7244a0d55e1334df6434f3529b61e0034b625a377fc5198becd6c66b3d9f46
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 167
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d991c66c10581a2ac6ddecdf35ea63de591bfe9c72feed736132bf0403e53cb
+  case: errors_eacces_167
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 167
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7d991c66c10581a2ac6ddecdf35ea63de591bfe9c72feed736132bf0403e53cb
+  case: errors_eacces_167

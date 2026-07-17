@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified req.mnt_id doesn't exist；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0E1E00FAC83DFEEA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: req
+    predicate: documented_condition
+    value: ENOENT
+    summary: The specified req.mnt_id doesn't exist
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:0e1e00fac83dfeeaecad42f8d8d9db67a3570745209b60f6034d68d47c4bbcaf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7306d0ae6caecdca4de29f007c936b52dbd25a1db0c145bba3dfe4b9639c484
+  case: errors_enoent_448
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7306d0ae6caecdca4de29f007c936b52dbd25a1db0c145bba3dfe4b9639c484
+  case: errors_enoent_448

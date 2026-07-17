@@ -1,0 +1,35 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 symlink(test_file, sym_file)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_91664E8E6FF0FCE1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: symlink
+    arguments:
+    - test_file
+    - sym_file
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:91664e8e6ff0fce11712eb5696f22ce4f7837aa5f7b2d872a54a60fa272aeb8e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/symlink/symlink03.c
+  line: 171
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:76513c74bb71476957a2cd71ab16718687a17c2967bc133c5d5f54c7e2db9695
+  case: symlink03_171_2_0

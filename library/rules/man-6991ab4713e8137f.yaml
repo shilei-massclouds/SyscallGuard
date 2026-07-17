@@ -1,0 +1,46 @@
+# 合规检查：条件：The size of the list of extended attribute names is larger than the maximum size allowed; the list cannot be retrieved. This can happen on filesystems that...；检查：调用 llistxattr(path, list, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6991AB4713E8137F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: list
+    predicate: invalid_value
+    value: E2BIG
+    summary: The size of the list of extended attribute names is larger than the maximum size allowed;
+      the list cannot be retrieved. This can happen on filesystems that...
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - path
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:4ba5785e5553e06635f19913f191649d64f7941ae77789dc03fc35034f4191dd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6fd89bf1c58e31ea4459092bc8a4e9d51076b3a0e5beae0061aaa5b217950f64
+  case: errors_e2big_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: llistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6fd89bf1c58e31ea4459092bc8a4e9d51076b3a0e5beae0061aaa5b217950f64
+  case: errors_e2big_116

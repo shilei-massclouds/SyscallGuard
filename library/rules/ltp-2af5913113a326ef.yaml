@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 waitpid(-1, NULL, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2AF5913113A326EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: waitpid
+    arguments:
+    - '-1'
+    - 'NULL'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2af5913113a326ef45070947084470a9f0e37043d0537ff0b5487e371ddcae1e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitpid/waitpid04.c
+  line: 30
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0883985c4375eae99aff2b90324c0f54c59df8f99ad5121f711ea2fa42cce566
+  case: waitpid04_30_2_0

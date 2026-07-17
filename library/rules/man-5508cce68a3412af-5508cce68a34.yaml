@@ -1,0 +1,38 @@
+# 合规检查：条件：or EWOULDBLOCK The socket is marked nonblocking and the requested operation would block. POSIX.1-2001 allows either error to be returned for this case, and...；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5508CCE68A3412AF--5508cce68a34
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: or EWOULDBLOCK The socket is marked nonblocking and the requested operation would block.
+      POSIX.1-2001 allows either error to be returned for this case, and...
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:5508cce68a3412af45089dd592732ffd10ac2f500a649928bc5d95e47d1ebabb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 351
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3c2e67bdc549282d2eec92489a043ca84437bbed78f91bdfabe8b92f9177416c
+  case: errors_eagain_351

@@ -1,0 +1,47 @@
+# 合规检查：条件：mode is FALLOC_FL_COLLAPSE_RANGE , FALLOC_FL_ZERO_RANGE , or FALLOC_FL_INSERT_RANGE , but the file referred to by fd is not a regular file；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4AE13EE9521C82E8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: mode is FALLOC_FL_COLLAPSE_RANGE , FALLOC_FL_ZERO_RANGE , or FALLOC_FL_INSERT_RANGE , but
+      the file referred to by fd is not a regular file
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4ae13ee9521c82e83025aa6d9d26eac48a2d9bce4334336b70155ec28b1981c9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51c69eb16fd4041e36b7dbb6e69682164eda62997bdbb95ac2f70233a27da0c4
+  case: errors_einval_382
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 382
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:51c69eb16fd4041e36b7dbb6e69682164eda62997bdbb95ac2f70233a27da0c4
+  case: errors_einval_382

@@ -1,0 +1,47 @@
+# 合规检查：条件：Too many links encountered during pathname resolution of a path argument；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_59B67A4969C83F19
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many links encountered during pathname resolution of a path argument
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:59b67a4969c83f190a7c76d6889b2f52f603cd6b97115838e7f5a901a75a78a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:259589a3e6bd1ac7fbfa70bb2bf139a2e6ac107e97242a1abd39ca6493760acc
+  case: errors_eloop_452
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 452
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:259589a3e6bd1ac7fbfa70bb2bf139a2e6ac107e97242a1abd39ca6493760acc
+  case: errors_eloop_452

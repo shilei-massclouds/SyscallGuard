@@ -1,0 +1,45 @@
+# 合规检查：条件：target or linkpath was too long；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3D64FB7ADE71FD41
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: target
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: target or linkpath was too long
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:3d64fb7ade71fd4183b23f25b2770628c029053b16e05cc19aeafb5e4e626858
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e5ff96713c1acd24e8b08bf3b06ec780a15aee97d07abc8d82870c816154047
+  case: errors_enametoolong_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e5ff96713c1acd24e8b08bf3b06ec780a15aee97d07abc8d82870c816154047
+  case: errors_enametoolong_169

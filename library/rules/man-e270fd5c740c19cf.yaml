@@ -1,0 +1,44 @@
+# 合规检查：条件：One or more of the target user or group IDs is not valid in this user namespace；检查：调用 setreuid(ruid, euid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E270FD5C740C19CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: One or more of the target user or group IDs is not valid in this user namespace
+  action:
+    operation: invoke_syscall
+    syscall: setreuid
+    arguments:
+    - ruid
+    - euid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6b9a0dacbb27c9d7962c13e36d4e47435b49089e8b9031018728d1c0f5a8c34f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bfcc4f4f797a0554d75e70267e56bf538a76c1cf4321b95916b1d29adde1e34e
+  case: errors_einval_92
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setreuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bfcc4f4f797a0554d75e70267e56bf538a76c1cf4321b95916b1d29adde1e34e
+  case: errors_einval_92

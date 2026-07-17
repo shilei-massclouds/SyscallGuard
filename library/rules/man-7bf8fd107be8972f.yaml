@@ -1,0 +1,44 @@
+# 合规检查：条件：Out of memory；检查：调用 getcwd(size, size)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7BF8FD107BE8972F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:7bf8fd107be8972f9767cd4f20d9fa07da752440208904d0fcfe00ee5e3d65e2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0944ac6a0ba40699e0a70f59f02f608cd8335b7db55ae00b83579c4399292abc
+  case: errors_enomem_170
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcwd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0944ac6a0ba40699e0a70f59f02f608cd8335b7db55ae00b83579c4399292abc
+  case: errors_enomem_170

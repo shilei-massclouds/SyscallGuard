@@ -1,0 +1,46 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4DA1BBD6BBC55961
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:4da1bbd6bbc559615dcdea1f50dbe5c19d786e7dc80a0677340335539bd87a2b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75cf8d6cb2dd175648f02945bff46bd7a93d2a1e1ae14e52b420aabf49523a58
+  case: errors_enfile_1151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75cf8d6cb2dd175648f02945bff46bd7a93d2a1e1ae14e52b420aabf49523a58
+  case: errors_enfile_1151

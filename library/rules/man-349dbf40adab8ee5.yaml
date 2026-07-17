@@ -1,0 +1,46 @@
+# 合规检查：条件：size does not equal sizeof(struct robust_list_head) . The get_robust_list () system call can fail with the following errors:；检查：调用 get_robust_list(pid, head_ptr, sizep)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_349DBF40ADAB8EE5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: 'size does not equal sizeof(struct robust_list_head) . The get_robust_list () system call
+      can fail with the following errors:'
+  action:
+    operation: invoke_syscall
+    syscall: get_robust_list
+    arguments:
+    - pid
+    - head_ptr
+    - sizep
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:349dbf40adab8ee593f6684d32ad6212bdd0006e189395a9c85944831b11934e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db96b576987b7579155d4f4f0c533830bff4252759d195c03e0b4d3977026eab
+  case: errors_einval_100
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: get_robust_list
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db96b576987b7579155d4f4f0c533830bff4252759d195c03e0b4d3977026eab
+  case: errors_einval_100

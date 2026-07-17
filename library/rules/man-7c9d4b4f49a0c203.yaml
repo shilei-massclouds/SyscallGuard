@@ -1,0 +1,43 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 inotify_init1(flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C9D4B4F49A0C203
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: inotify_init1
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:7c9d4b4f49a0c20315fabbc0c2d2e1452303992bdc4960441274b895754f38ed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_init.2
+  line: 74
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:48e78e765f43eed6ae1277ce9d9bb68be96eebfcdcb3780a5216289e54a5e6d0
+  case: errors_enfile_74
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_init1
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_init.2
+  line: 74
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:48e78e765f43eed6ae1277ce9d9bb68be96eebfcdcb3780a5216289e54a5e6d0
+  case: errors_enfile_74

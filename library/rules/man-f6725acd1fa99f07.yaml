@@ -1,0 +1,48 @@
+# 合规检查：条件：Reserved flag specified in mask . (Currently, there is one such flag, designated by the constant STATX__RESERVED , with the value 0x80000000U.)；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6725ACD1FA99F07
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mask
+    predicate: invalid_value
+    value: EINVAL
+    summary: Reserved flag specified in mask . (Currently, there is one such flag, designated by the constant
+      STATX__RESERVED , with the value 0x80000000U.)
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f6725acd1fa99f0739127cfe77461f50186e1cbd67097bc48af9db644b5ffc84
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 674
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:204252d98dc24638b2823f07f976ed801867ce92d76dda7b58420426ac470059
+  case: errors_einval_674
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 674
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:204252d98dc24638b2823f07f976ed801867ce92d76dda7b58420426ac470059
+  case: errors_einval_674

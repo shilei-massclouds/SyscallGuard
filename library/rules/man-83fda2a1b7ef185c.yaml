@@ -1,0 +1,43 @@
+# 合规检查：条件：mask points to memory which is not a valid part of the process address space；检查：调用 rt_sigsuspend(mask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_83FDA2A1B7EF185C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: mask
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: mask points to memory which is not a valid part of the process address space
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigsuspend
+    arguments:
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:83fda2a1b7ef185c6de1779f2c3d635cf4c1a89744416c761c9b2e58816aee62
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigsuspend.2
+  line: 59
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d30eceff869a24a227848e0fd4b26510a4b612b7d53dc3c540cc86251f6bf47c
+  case: errors_efault_59
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigsuspend
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigsuspend.2
+  line: 59
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d30eceff869a24a227848e0fd4b26510a4b612b7d53dc3c540cc86251f6bf47c
+  case: errors_efault_59

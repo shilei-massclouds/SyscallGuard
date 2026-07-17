@@ -1,0 +1,45 @@
+# 合规检查：条件：The socket is not connected；检查：调用 getpeername(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENOTCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C2064F7C94D121C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTCONN
+    summary: The socket is not connected
+  action:
+    operation: invoke_syscall
+    syscall: getpeername
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTCONN
+  errno:
+  - ENOTCONN
+semantic_hash: sha256:7c2064f7c94d121c020b0515afaae8b45c157931aba6cf32d49ebdd75b67d818
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 62
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c60d9f57584d042816aa47d2d4becf9d293053bffaf6c39a7fe173c6b81cde6
+  case: errors_enotconn_62
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getpeername
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 62
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c60d9f57584d042816aa47d2d4becf9d293053bffaf6c39a7fe173c6b81cde6
+  case: errors_enotconn_62

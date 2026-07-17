@@ -1,0 +1,41 @@
+# 合规检查：条件：MAP_DENYWRITE was set but the object specified by fd is open for writing. Use of a mapped region can result in these signals:；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A637DDA9F34883F7--a637dda9f348
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ETXTBSY
+    summary: 'MAP_DENYWRITE was set but the object specified by fd is open for writing. Use of a mapped
+      region can result in these signals:'
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:a637dda9f34883f714465d2b838425a71d129ecf43d46e26ddc1109d1dade527
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 628
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e6720308d48fb5f0a53dadb865711cb843bb536f05ae9513a536d359511cb6e
+  case: errors_etxtbsy_628

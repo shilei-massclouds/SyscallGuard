@@ -1,0 +1,46 @@
+# 合规检查：条件：(Internet domain sockets) The socket referred to by sockfd had not previously been bound to an address and, upon attempting to bind it to an ephemeral port,...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EADDRNOTAVAIL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F839FD72E465E97B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: sockfd
+    predicate: documented_condition
+    value: EADDRNOTAVAIL
+    summary: (Internet domain sockets) The socket referred to by sockfd had not previously been bound
+      to an address and, upon attempting to bind it to an ephemeral port,...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRNOTAVAIL
+  errno:
+  - EADDRNOTAVAIL
+semantic_hash: sha256:f839fd72e465e97b9520ecd961761e68ffc26d8efc09899fc1e2071371778d34
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7cd2f6a9b7df11d4ff01ca9d6b02139cd6f9377313e2a744c12075736a0d2137
+  case: errors_eaddrnotavail_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7cd2f6a9b7df11d4ff01ca9d6b02139cd6f9377313e2a744c12075736a0d2137
+  case: errors_eaddrnotavail_116

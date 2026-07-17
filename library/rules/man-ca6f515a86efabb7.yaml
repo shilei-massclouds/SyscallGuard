@@ -1,0 +1,43 @@
+# 合规检查：条件：(since Linux 3.7) Module signature is invalid or the kernel does not have a key for this module. This error is returned only if the kernel was configured...；检查：调用 init_module()；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CA6F515A86EFABB7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOKEY
+    summary: (since Linux 3.7) Module signature is invalid or the kernel does not have a key for this
+      module. This error is returned only if the kernel was configured...
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:4e9ae27f53168ced50e0f48a4ed7cfe857876add83fbccf676c5d5ac6bae1f16
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 194
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fbff254e70f3accd9bbf5224ecdc7ac37419a03268f14a0715273dbcaf6b493
+  case: errors_enokey_194
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 194
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0fbff254e70f3accd9bbf5224ecdc7ac37419a03268f14a0715273dbcaf6b493
+  case: errors_enokey_194

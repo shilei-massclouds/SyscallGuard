@@ -1,0 +1,46 @@
+# 合规检查：条件：A component of the path prefix of path is not a directory, or path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0E9ACF30258A85E0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: A component of the path prefix of path is not a directory, or path is relative and dirfd
+      is a file descriptor referring to a file other than a directory
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:0e9acf30258a85e057ea5f0a68387754a3a3bbb5da8150af0191d04481b0918e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 459
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:408c3d81ae18e40759e9bc4855faf9be2ac3eff85aeafacac5d5e5641675fef6
+  case: errors_enotdir_459
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 459
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:408c3d81ae18e40759e9bc4855faf9be2ac3eff85aeafacac5d5e5641675fef6
+  case: errors_enotdir_459

@@ -1,0 +1,44 @@
+# 合规检查：条件：The kernel ran out of memory for allocating lock records；检查：调用 flock(fd, op)；预期：返回 -1，errno 为 ENOLCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0119730CE00C10B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOLCK
+    summary: The kernel ran out of memory for allocating lock records
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOLCK
+  errno:
+  - ENOLCK
+semantic_hash: sha256:0119730ce00c10b5e59507d2c85ee231feb32888bb1d6838c604b17e312b8be4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d84c85a164201dfd76e62fb2bed193fa1fe11c9df714db868fca1f7a84a0c95
+  case: errors_enolck_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d84c85a164201dfd76e62fb2bed193fa1fe11c9df714db868fca1f7a84a0c95
+  case: errors_enolck_112

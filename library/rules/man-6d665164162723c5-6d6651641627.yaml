@@ -1,0 +1,37 @@
+# 合规检查：条件：The clockid specified is invalid for one of two reasons. Either the System-V style hard coded positive value is out of range, or the dynamic clock ID does...；检查：调用 clock_getres(clockid, res)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6D665164162723C5--6d6651641627
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: clockid
+    predicate: invalid_value
+    value: EINVAL
+    summary: The clockid specified is invalid for one of two reasons. Either the System-V style hard coded
+      positive value is out of range, or the dynamic clock ID does...
+  action:
+    operation: invoke_syscall
+    syscall: clock_getres
+    arguments:
+    - clockid
+    - res
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6d665164162723c5927f1e69624afc5e14e7a2f8dba1118fc63496a505136b1d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_getres
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 284
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d4b544408bcfb116011d0aad96657939bdb1bdfe6f990c9d40fa963836ec544
+  case: errors_einval_284

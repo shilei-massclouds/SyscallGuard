@@ -1,0 +1,46 @@
+# 合规检查：条件：The filesystem is mounted nosuid , the user is not the superuser, and the file has the set-user-ID or set-group-ID bit set；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_611DBAEAF25BEBA0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The filesystem is mounted nosuid , the user is not the superuser, and the file has the set-user-ID
+      or set-group-ID bit set
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:611dbaeaf25beba0231386a90eddcd75f43b589b8ccd3d475b62624d9d3d0ed8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 532
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82de3f99b0b2580f13b0ce133e94f986b7a89a5a6c4f98f5fd6666aba9eb964b
+  case: errors_eperm_532
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 532
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:82de3f99b0b2580f13b0ce133e94f986b7a89a5a6c4f98f5fd6666aba9eb964b
+  case: errors_eperm_532

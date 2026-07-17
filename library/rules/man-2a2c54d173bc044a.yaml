@@ -1,0 +1,45 @@
+# 合规检查：条件：buf is outside your accessible address space；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A2C54D173BC044A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: buf is outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2a2c54d173bc044a0423e24937138da7371133fc1f2fffac772d7ce961e966f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4cd27798f33872d9001d5fa805f7b7cd0db04a9febd46e5ecb5bdc946db0db7d
+  case: errors_efault_106
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4cd27798f33872d9001d5fa805f7b7cd0db04a9febd46e5ecb5bdc946db0db7d
+  case: errors_efault_106

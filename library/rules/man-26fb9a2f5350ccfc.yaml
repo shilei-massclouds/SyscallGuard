@@ -1,0 +1,46 @@
+# 合规检查：条件：clockid was CLOCK_REALTIME_ALARM or CLOCK_BOOTTIME_ALARM but the caller did not have the CAP_WAKE_ALARM capability；检查：调用 timer_create(clockid, sevp, timerid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26FB9A2F5350CCFC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: clockid
+    predicate: insufficient_permission
+    value: EPERM
+    summary: clockid was CLOCK_REALTIME_ALARM or CLOCK_BOOTTIME_ALARM but the caller did not have the
+      CAP_WAKE_ALARM capability
+  action:
+    operation: invoke_syscall
+    syscall: timer_create
+    arguments:
+    - clockid
+    - sevp
+    - timerid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:26fb9a2f5350ccfc7e6105c29e752415a19034e95a9de194802ee815b770b4a1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 215
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2252b1546efa35f4316bde0dbf5e5133f348a3516dbe936dbbba23139fe50fa9
+  case: errors_eperm_215
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 215
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2252b1546efa35f4316bde0dbf5e5133f348a3516dbe936dbbba23139fe50fa9
+  case: errors_eperm_215

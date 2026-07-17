@@ -1,0 +1,44 @@
+# 合规检查：条件：The fixture sets TEST_TMPDIR mode to 0222.、The fixture creates TEST_TMPDIR as a directory.、The caller lacks a permission required by the operation.；检查：调用 chroot(TEST_TMPDIR)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_07CB582EDCDF46C6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0222'
+    summary: The fixture sets TEST_TMPDIR mode to 0222.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: directory
+    summary: The fixture creates TEST_TMPDIR as a directory.
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - TEST_TMPDIR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:07cb582edcdf46c62a1d03d440393d7643aabbb757bb29565a3924c36792f7c1
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/chroot/chroot04.c
+  line: 25
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:21e56229bace62ab126a4b33077dedcef99a7f82d86552ab7dd0682efc1cc697
+  case: chroot04_25_raw_0

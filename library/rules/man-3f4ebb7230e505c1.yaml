@@ -1,0 +1,45 @@
+# 合规检查：条件：Invalid operation specified in op；检查：调用 futex(uaddr, op, arg3)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3F4EBB7230E505C1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: ENOSYS
+    summary: Invalid operation specified in op
+  action:
+    operation: invoke_syscall
+    syscall: futex
+    arguments:
+    - uaddr
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:3f4ebb7230e505c19d64491b230aed65d4b1d84374d22251ac2b8e37ca928035
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 499
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5cdbef6cb449d6109391e5ff3f15a06c88817f264125f75477e63f89778284b
+  case: errors_enosys_499
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 499
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5cdbef6cb449d6109391e5ff3f15a06c88817f264125f75477e63f89778284b
+  case: errors_enosys_499

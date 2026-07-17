@@ -1,0 +1,46 @@
+# 合规检查：条件：fd is not a valid file descriptor, or is not opened for writing；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A650A050193AE2D3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor, or is not opened for writing
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:a650a050193ae2d3ce6c5d97608906669ae7c99da0bc92b9fe743b4e801be514
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a51d612a91b04492efce4b83d1e699255d3bea56d2cff19d17e9e9ee672f39d
+  case: errors_ebadf_307
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a51d612a91b04492efce4b83d1e699255d3bea56d2cff19d17e9e9ee672f39d
+  case: errors_ebadf_307

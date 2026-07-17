@@ -1,0 +1,46 @@
+# 合规检查：条件：Another crash kernel is already being loaded or a crash kernel is already in use；检查：调用 kexec_load(entry, nr_segments, nr_segments, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5DA5389EECD6E4CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: Another crash kernel is already being loaded or a crash kernel is already in use
+  action:
+    operation: invoke_syscall
+    syscall: kexec_load
+    arguments:
+    - entry
+    - nr_segments
+    - nr_segments
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:61499d7ff153f10c22f0e3d84b5e7b93a381aeb67b444b511463c7f94ccb009a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 262
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b9196a555b18121f9da05d61a88f38220c102cbe977f26ae0cfd3c1795c6b0f5
+  case: errors_ebusy_262
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 262
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b9196a555b18121f9da05d61a88f38220c102cbe977f26ae0cfd3c1795c6b0f5
+  case: errors_ebusy_262

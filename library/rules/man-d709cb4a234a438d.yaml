@@ -1,0 +1,45 @@
+# 合规检查：条件：An invalid value was passed in flags or event_f_flags . FAN_ALL_INIT_FLAGS (deprecated since Linux 4.20) defines all allowable bits for flags；检查：调用 fanotify_init(flags, event_f_flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D709CB4A234A438D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid value was passed in flags or event_f_flags . FAN_ALL_INIT_FLAGS (deprecated since
+      Linux 4.20) defines all allowable bits for flags
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d709cb4a234a438dd9aefff0ed748aa84fd35666224b1ead5a3b164a22bdee5a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 480
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8ee54595cfd69e6d4e3283479a20ab780a51b4c7771b5f0aa0df7fc60b59f1d
+  case: errors_einval_480
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 480
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8ee54595cfd69e6d4e3283479a20ab780a51b4c7771b5f0aa0df7fc60b59f1d
+  case: errors_einval_480

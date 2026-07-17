@@ -1,0 +1,35 @@
+# 合规检查：条件：An unprivileged process tried to raise the hard limit; the CAP_SYS_RESOURCE capability is required to do this；检查：调用 prlimit64()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2F46A4167B50A3E0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: An unprivileged process tried to raise the hard limit; the CAP_SYS_RESOURCE capability is
+      required to do this
+  action:
+    operation: invoke_syscall
+    syscall: prlimit64
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:2f46a4167b50a3e0ceb0029d74e74517ebbe301de9d57670622feecc40652e3a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prlimit64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2013d35a88bfcf18f0fc0f5f44b18de548388ca09aa1136a2b1e6f0fe73e52a2
+  case: errors_eperm_489

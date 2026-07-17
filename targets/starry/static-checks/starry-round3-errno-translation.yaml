@@ -3,24 +3,13 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_ROUND3_ERRNO_TRANSLATION
 title: AxError variants used by round-three syscall checks map to Linux errno values
 rule_refs:
-- LTP_2648B36BD9CF39EE
-- LTP_466F01834F965621
 - LTP_53E3454ED6EFD842
-- LTP_5B4AA4EE494B37D2
-- LTP_64B1B6EEEC3F79FC
-- LTP_6C14DE68E3C0CC24
 - LTP_729222947741DFD6
 - LTP_88D300A8FB407324
-- LTP_89BB56D579EEF06D
 - LTP_8C1C2578972FCA1D
-- LTP_912BE233FAFE6762
 - LTP_9461AA782926BAB4
-- LTP_D246498B20D9CB2C
-- LTP_EB1B734A0943248E
 - LTP_F8FD511858BB650D
-- LTP_F92A1A6292F40811
 - LTP_FC1E41C3414E7F21
-- LTP_FCF5A4835CFCD143
 applies_to_syscalls:
 - fstat
 - fstatfs
@@ -46,60 +35,27 @@ patterns:
 - label: short output buffers map to ERANGE
   regex: OutOfRange => ERANGE
 upstream_dependencies:
-- id: LTP_2648B36BD9CF39EE
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:2648b36bd9cf39eed20eeccf40f65b34092fefc293cc25e59a3b4d0130b0968f
-- id: LTP_466F01834F965621
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:466f01834f965621ab012906888aad7acf5ae6e62b290e92e8975f01e19fc7ef
 - id: LTP_53E3454ED6EFD842
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:53e3454ed6efd842d4456341bdaf29e25ad49ab8f5a55c170a4e23c3355fe2f9
-- id: LTP_5B4AA4EE494B37D2
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:5b4aa4ee494b37d28532bc2342bda381464c5ae3ffeb7fb7f6e14d925a95e2e7
-- id: LTP_64B1B6EEEC3F79FC
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:64b1b6eeec3f79fc85edbb4e3e6e6066f854c28d9721e3cbbab7294f2295e473
-- id: LTP_6C14DE68E3C0CC24
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:6c14de68e3c0cc24bbb7021cd805e26a73df65653f350d8fa8ed8de5232949e8
 - id: LTP_729222947741DFD6
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:729222947741dfd63a81e9c93572baf5c789acbffca84a2edd5dce13fe1fb2a3
 - id: LTP_88D300A8FB407324
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:88d300a8fb407324aefbe09d1b569b46d87628a1639509250755357a2c634c1a
-- id: LTP_89BB56D579EEF06D
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:89bb56d579eef06d47c81ec803de4585a5afecb282c21eb9399b98db46b4e647
 - id: LTP_8C1C2578972FCA1D
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:8c1c2578972fca1d655df720a137f88882824f681ac3cbfa59052c4a1f8ef64a
-- id: LTP_912BE233FAFE6762
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:912be233fafe67624b7249f0492e0d4ded1fbd11fc3cf20af5bc3bb23dfc0874
 - id: LTP_9461AA782926BAB4
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:9461aa782926bab4cb006db18510ae154420b8c023b3b2f9cc0308d205ca9cf7
-- id: LTP_D246498B20D9CB2C
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:d246498b20d9cb2cd6ece54014a50e1c77fa08b6a598251c2dc0e3a3700193e2
-- id: LTP_EB1B734A0943248E
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:eb1b734a0943248e40e858f9d9547299edda39a8c18852a2c1775fce0d0b0f6e
 - id: LTP_F8FD511858BB650D
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:f8fd511858bb650d732732911dd9b8f3b5680d09787b4b47438a5bb603dc1aff
-- id: LTP_F92A1A6292F40811
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:f92a1a6292f408112c127494a4bcae4af4bb94ac649b58da52777e46e088a50e
 - id: LTP_FC1E41C3414E7F21
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:fc1e41c3414e7f214284f077070cc39320ebd294786eda043234fca8d9f5da6d
-- id: LTP_FCF5A4835CFCD143
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:fcf5a4835cfcd143bee1e5d04d1a6a86a0a2d3560f5b6abc1a0b388e31f42c86
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/schedule.rs
   symbols: []
@@ -133,13 +89,13 @@ target_dependencies:
     sys_getcwd: sha256:9c2e1ce153437668394cf37c2109645ae16ff80edbb88a018923b7a74e75f86c
   missing_symbols: []
   content_hash: sha256:18d71decf970e3fff40862c4c99b2d88d44caf9f050a70c78a6080e8d10e34f7
-- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+- path: os/StarryOS/kernel/src/syscall/task/job.rs
   symbols: []
   scope: file
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  file_hash: sha256:a028bda9fb89a9dd7cb112542e74b72af633471c5eceedf0413ab87e9f3679fa
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:2ca7cb6c85ef5be3c325c17fdb063e1caa3e9525eb5cc91a849709fa2298c53d
+  content_hash: sha256:1e27b292d0f06406e3346e2449e4469f2535641cf869c494109da000e7d13c59
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -147,6 +103,13 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:5627712698b1a219cfd6979f50739901d84b932915ff6a54e14864b111f5a299
 - path: os/StarryOS/kernel/src/task/ops.rs
   symbols:
   - get_process
@@ -163,31 +126,15 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:675b8810b95801dd4013aa4ac9b82c61f4e4a7556ca4d3cf8b1cc71d9bd5e010
-- path: os/StarryOS/kernel/src/syscall/kmod.rs
-  symbols:
-  - sys_init_module
-  scope: symbols
-  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
-  symbol_hashes:
-    sys_init_module: sha256:14320e800da79349d19c6a90c3f9a43563b494cdc90c14fad3d9856bb440b202
-  missing_symbols: []
-  content_hash: sha256:696ac52a233eb1b299ebe8337f5b21d6e3058ab209d91da85b1e4f9eeb87041c
 - path: os/StarryOS/kernel/src/syscall/time.rs
   symbols:
   - sys_gettimeofday
   scope: symbols
-  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
   symbol_hashes:
-    sys_gettimeofday: sha256:5f9fbcb824746ae88197146532aea04901de4cfe3e923e9bf1f50f78d793aca9
+    sys_gettimeofday: sha256:9bc0f2124344b51cf1aa6b1355a9abb19cad1859afabce4d51cd2fb0c4ed248a
   missing_symbols: []
-  content_hash: sha256:7c1a54ec26d41b82f7be870fda63ffe8dd7d28673b320385e98810f4841f65a4
-- path: os/StarryOS/kernel/src/syscall/task/job.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:d56b7d1084aa7ced27dfed7079690a6c619d652dcbc560adb14ad48d6ea04153
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:8f5fd857b3b30fcf12ff4c1dd971a2b14eeed8d83b172ff556b654cba8ef260f
+  content_hash: sha256:7d0c8e670c76147521a2380680f91c9e9bfcc646a5ed469e1baceeac9ca0329c
 - path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
   symbols: []
   scope: file
@@ -195,13 +142,6 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:a792b678a012108e37743173ef2de96643a9dfcaf5674f5d60d50dfc46b2c9eb
-- path: os/StarryOS/kernel/src/syscall/time.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:c71f1c6f45e3dc9ad40b11dfc80c4b0148e0774cea009277728b05a483eca0cb
 - path: os/StarryOS/kernel/src/syscall/fs/stat.rs
   symbols:
   - sys_fstatfs
@@ -220,21 +160,37 @@ target_dependencies:
     sys_fstat: sha256:40ddaada164b353221610e56c2272597d1d231a317f2cab23c02992117aab097
   missing_symbols: []
   content_hash: sha256:d1ef21c63411cd05413bdfc07c69c6060e0f3cafb4481c70769a65c292145761
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dcd8e9bf36ab723b6d18fb28526fdd5c0a85458c56718fd6dc69faf62ced4441
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols:
+  - sys_init_module
+  scope: symbols
+  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
+  symbol_hashes:
+    sys_init_module: sha256:4ab1aeec8bd4b071d881e62a00b3bbeca1b503c59069efa923bf6a5442732a93
+  missing_symbols: []
+  content_hash: sha256:e3ff290763a0527de3c4602a5f71d9b8be06b41c93a5b8ac8ec26cacd1b1f8d5
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:f5120c36722f0f04288c370e3b748aa3a8d275528a06d9f4d723532e48f95f2c
 - path: os/StarryOS/kernel/src/syscall/fs/io.rs
   symbols:
   - sys_ftruncate
   scope: symbols
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
   symbol_hashes:
     sys_ftruncate: sha256:0548101d54dc340becc9a0e5c05a97fd7c17b8c404a8dd2ceac5cc06bc74f15f
   missing_symbols: []
   content_hash: sha256:f756bb906d6069259209ff3f5cbd15174b8d4fd2247525dd51e318b05a02ef54
-- path: os/StarryOS/kernel/src/syscall/kmod.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:f7e1a336824e1784cff6ae1eca8bf56268455e96026a73116518bc941064b1f8
-target_content_fingerprint: sha256:df50f1c6b45c844d83539b254d3b48b53920bfc8707d3cf50a2d29cc6715a400
-generated_at_utc: '2026-07-16T08:20:59.387945Z'
+target_content_fingerprint: sha256:fd2a1e17c675bc57a5e18e25e7cc5ed02a53c0f7d16757574f989161a0fc67c0
+generated_at_utc: '2026-07-17T05:29:50.139264Z'

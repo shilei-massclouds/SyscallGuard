@@ -1,0 +1,45 @@
+# 合规检查：条件：MAP_DENYWRITE was set but the object specified by fd is open for writing. Use of a mapped region can result in these signals:；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A637DDA9F34883F7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ETXTBSY
+    summary: 'MAP_DENYWRITE was set but the object specified by fd is open for writing. Use of a mapped
+      region can result in these signals:'
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:4a2b03226ac27b5b8653ed8698002d50f498f803074d64475dd967602e36cbdc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 628
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ac01d642f1765ac19acbcdab229ba84c1f946b80f40a63a790b54d64245d9010
+  case: errors_etxtbsy_628
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 628
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ac01d642f1765ac19acbcdab229ba84c1f946b80f40a63a790b54d64245d9010
+  case: errors_etxtbsy_628

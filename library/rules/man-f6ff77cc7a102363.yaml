@@ -1,0 +1,45 @@
+# 合规检查：条件：For sethostname (), the caller did not have the CAP_SYS_ADMIN capability in the user namespace associated with its UTS namespace (see namespaces (7))；检查：调用 sethostname(name, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6FF77CC7A102363
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: For sethostname (), the caller did not have the CAP_SYS_ADMIN capability in the user namespace
+      associated with its UTS namespace (see namespaces (7))
+  action:
+    operation: invoke_syscall
+    syscall: sethostname
+    arguments:
+    - name
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f6ff77cc7a10236330cb10b5a8f6786801559ec515370d49d99e65146b5a1fbe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:88f443f53f0d51c71676036ee49ed770eb90b1f4d6aceafa5ee1d11242981c92
+  case: errors_eperm_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sethostname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gethostname.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:88f443f53f0d51c71676036ee49ed770eb90b1f4d6aceafa5ee1d11242981c92
+  case: errors_eperm_98

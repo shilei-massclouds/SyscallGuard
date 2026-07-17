@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:b42299f8b0e13a28938b275b8cb7e58ca3a05cd1f1274cd1bca47076cc7193fa
   case: sched_setattr01_88_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+  line: 88
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b42299f8b0e13a28938b275b8cb7e58ca3a05cd1f1274cd1bca47076cc7193fa
+  case: sched_setattr01_88_2_0

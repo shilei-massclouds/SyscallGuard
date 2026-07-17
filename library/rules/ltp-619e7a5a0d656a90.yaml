@@ -1,0 +1,34 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 poll(outfds, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_619E7A5A0D656A90
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: outfds
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: poll
+    arguments:
+    - outfds
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_value
+    return: '1'
+  errno: []
+semantic_hash: sha256:619e7a5a0d656a90fd645364a1b0fc1a033aaef6930c55eb1229201333ed5807
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/poll/poll01.c
+  line: 30
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:a70956d09b2e67c5ab9e15c15882e9cf3b3f7418ba5f1d73c152b7d49ada2f02
+  case: poll01_30_raw_0

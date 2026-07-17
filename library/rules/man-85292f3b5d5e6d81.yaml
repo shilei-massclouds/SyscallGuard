@@ -1,0 +1,46 @@
+# 合规检查：条件：Insufficient memory to read from in_fd；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_85292F3B5D5E6D81
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: in_fd
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient memory to read from in_fd
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:85292f3b5d5e6d818a7a2bd7b2e15852a8a870b65b71ddb21f947ca6ad0cc9fe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e562494938b597c227846cb33458d00d66da222301d3b63a2ac0070b1bb987d
+  case: errors_enomem_149
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e562494938b597c227846cb33458d00d66da222301d3b63a2ac0070b1bb987d
+  case: errors_enomem_149

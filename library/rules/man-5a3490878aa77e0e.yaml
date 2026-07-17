@@ -1,0 +1,43 @@
+# 合规检查：条件：The group ID specified in gid is not valid in this user namespace；检查：调用 setgid(gid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5A3490878AA77E0E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: gid
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: The group ID specified in gid is not valid in this user namespace
+  action:
+    operation: invoke_syscall
+    syscall: setgid
+    arguments:
+    - gid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5a3490878aa77e0e7e7960eb4d42c89c103eb900d14caf62ccefd9566d62d1f8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setgid.2
+  line: 42
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a81a9818fef159f2aefcc2314f02b832453f47a82179ac0f97ed8a4d0593e378
+  case: errors_einval_42
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setgid.2
+  line: 42
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a81a9818fef159f2aefcc2314f02b832453f47a82179ac0f97ed8a4d0593e378
+  case: errors_einval_42

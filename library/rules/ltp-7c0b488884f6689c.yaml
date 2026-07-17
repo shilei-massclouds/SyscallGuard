@@ -31,3 +31,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:3f0219732dee8a05bd47792a9bc127609644a2d81bdf62c0ddd05452597864ec
   case: pwritev202_71_4
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3f0219732dee8a05bd47792a9bc127609644a2d81bdf62c0ddd05452597864ec
+  case: pwritev202_71_4_0

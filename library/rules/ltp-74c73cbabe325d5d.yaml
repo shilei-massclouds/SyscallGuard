@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:f7d4b231e16aa6436fe3e6ae1a7765acb07b48eb1a8ae19b91a2771823ef3cf5
   case: waitid09_25_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid09.c
+  line: 25
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:f7d4b231e16aa6436fe3e6ae1a7765acb07b48eb1a8ae19b91a2771823ef3cf5
+  case: waitid09_25_raw_0

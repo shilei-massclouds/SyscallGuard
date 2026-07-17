@@ -1,0 +1,38 @@
+# 合规检查：条件：The sem_flg of some operation specified SEM_UNDO and the system does not have enough memory to allocate the undo structure；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F90518591C595B36--f90518591c59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The sem_flg of some operation specified SEM_UNDO and the system does not have enough memory
+      to allocate the undo structure
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:f90518591c595b3621594135b4a4389f649e144cde766427aefca8ac6aeb7ee4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 335
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b8221ef78d108c3842fc82b2d58a713805b6f74f04b16f50e873beededc9567
+  case: errors_enomem_335

@@ -1,0 +1,38 @@
+# 合规检查：条件：The socket type requires that message be sent atomically, and the size of the message to be sent made this impossible；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EMSGSIZE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8AB5CA1BFA7C8E65--8ab5ca1bfa7c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EMSGSIZE
+    summary: The socket type requires that message be sent atomically, and the size of the message to
+      be sent made this impossible
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMSGSIZE
+  errno:
+  - EMSGSIZE
+semantic_hash: sha256:8ab5ca1bfa7c8e653c3de439c9e7b6a03fcae4365a9118f5710230768d19e20d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 402
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba8a7f87e29c2be2186fda2712d571c29706e14404c8b969e1889e6c26dc4c84
+  case: errors_emsgsize_402

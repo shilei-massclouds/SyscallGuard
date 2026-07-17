@@ -1,0 +1,45 @@
+# 合规检查：条件：The operation is prohibited because the file has been memory-mapped by another process；检查：调用 fcntl(fd, op, arg3)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DE214BBDF6500D66
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The operation is prohibited because the file has been memory-mapped by another process
+  action:
+    operation: invoke_syscall
+    syscall: fcntl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:de214bbdf6500d6666093692eff2bbc656cf7f601f6b322011f1953197dc600b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3af4f8c448b122d1b652ec600dc88c4d9118c6b1193f8071816b1253268d6965
+  case: errors_eagain_125
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fcntl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3af4f8c448b122d1b652ec600dc88c4d9118c6b1193f8071816b1253268d6965
+  case: errors_eagain_125

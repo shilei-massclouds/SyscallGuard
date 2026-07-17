@@ -1,0 +1,40 @@
+# 合规检查：条件：No memory is available；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD1C66A20F3D8232--fd1c66a20f3d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: No memory is available
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:fd1c66a20f3d8232663b84cdf5c8986e070fd6bdc388d41cfec3188c5836e93b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 564
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b60e3107fc7db2a9858e10101f38e45d7a3fd9d8089aac213531ce4c011cb3d5
+  case: errors_enomem_564

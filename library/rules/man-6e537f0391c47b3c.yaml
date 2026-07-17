@@ -1,0 +1,45 @@
+# 合规检查：条件：(Linux 3.11 to Linux 4.8) CLONE_NEWUSER was specified in the flags mask, and the limit on the number of nested user namespaces would be exceeded. See the...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EUSERS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6E537F0391C47B3C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EUSERS
+    summary: (Linux 3.11 to Linux 4.8) CLONE_NEWUSER was specified in the flags mask, and the limit on
+      the number of nested user namespaces would be exceeded. See the...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EUSERS
+  errno:
+  - EUSERS
+semantic_hash: sha256:6f402fe60832a5fc212ad9eaed870b8527916fccbbcecd4a2c6a932cb17ab2c8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1540
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33ca537071221e3c756e634ab9cca2c286b6210b709304d27d872735b2796071
+  case: errors_eusers_1540
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1540
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33ca537071221e3c756e634ab9cca2c286b6210b709304d27d872735b2796071
+  case: errors_eusers_1540

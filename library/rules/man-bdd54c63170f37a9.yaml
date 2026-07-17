@@ -1,0 +1,45 @@
+# 合规检查：条件：An attempt was made to move a process into a process group in a different session, or to change the process group ID of one of the children of the calling...；检查：调用 setpgid(pid, pgid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BDD54C63170F37A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: An attempt was made to move a process into a process group in a different session, or to
+      change the process group ID of one of the children of the calling...
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - pid
+    - pgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:bdd54c63170f37a968b1a9dd3de6c3e1ceeb26d6d199b24a0a13c59272066bc0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 197
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bbbfb1c34a0bb992235e347887fc6713c6171aeb6f007f62afa4f8963df248cd
+  case: errors_eperm_197
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 197
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bbbfb1c34a0bb992235e347887fc6713c6171aeb6f007f62afa4f8963df248cd
+  case: errors_eperm_197

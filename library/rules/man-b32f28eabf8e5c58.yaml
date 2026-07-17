@@ -1,0 +1,46 @@
+# 合规检查：条件：For BPF_MAP_*_ELEM commands, some of the fields of union bpf_attr that are not used by this command are not set to zero；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B32F28EABF8E5C58
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: For BPF_MAP_*_ELEM commands, some of the fields of union bpf_attr that are not used by this
+      command are not set to zero
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b32f28eabf8e5c58864095272297d3444701d4d9d4e0b4e710575e43e0c95ec7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1031
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d760e06a05c3ea86cd4ce57ee35e4c6406fbfd8a8cfb3106e37bf3c324a9cdda
+  case: errors_einval_1031
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1031
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d760e06a05c3ea86cd4ce57ee35e4c6406fbfd8a8cfb3106e37bf3c324a9cdda
+  case: errors_einval_1031

@@ -1,0 +1,35 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 finit_module(fd, param_values, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B05C5A299862E91C--b05c5a299862
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:b05c5a299862e91c448343bd3888f0c5db80438e0cbd2e83a76f3106abdb1fcb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 179
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:1f98a2404bb2d6890ef3f9aeab8713114fd0d59f44c61af39424592d6a05b57a
+  case: return_value_179

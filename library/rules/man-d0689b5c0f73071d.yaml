@@ -1,0 +1,47 @@
+# 合规检查：条件：Process pid1 or pid2 does not exist；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D0689B5C0F73071D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid1
+    predicate: documented_condition
+    value: ESRCH
+    summary: Process pid1 or pid2 does not exist
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:d0689b5c0f73071d15d6aaa59f9204eea202fad71bd05e27e51ead23a3590eea
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 284
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a46b916708dcc878d69d7cc08cfe7d804ae9a02e826da8a0338f1df34c813cf
+  case: errors_esrch_284
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 284
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a46b916708dcc878d69d7cc08cfe7d804ae9a02e826da8a0338f1df34c813cf
+  case: errors_esrch_284

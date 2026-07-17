@@ -1,0 +1,45 @@
+# 合规检查：条件：The clk_id given to clock_adjtime () is invalid for one of two reasons. Either the System-V style hard-coded positive clock ID value is out of range, or the...；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_152CE1AA8F27494F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: clk_id
+    predicate: invalid_value
+    value: EINVAL
+    summary: The clk_id given to clock_adjtime () is invalid for one of two reasons. Either the System-V
+      style hard-coded positive clock ID value is out of range, or the...
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:152ce1aa8f27494f9b400eebe0972dd34ae830b57d451bbfc750a9178bf8d7ac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:566b68fbefbba7afbbdefc91a5e74e378ffe5a0edffed41f332d24e2f2179579
+  case: errors_einval_489
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:566b68fbefbba7afbbdefc91a5e74e378ffe5a0edffed41f332d24e2f2179579
+  case: errors_einval_489

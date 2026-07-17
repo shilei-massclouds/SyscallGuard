@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_928C8BCADF71D467
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:928c8bcadf71d467f38b8545fcec6c1af0e94bdc9a8e79f730a6dc8d3ffd8939
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 219
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:16132883c8297e2e64ec3900c0e285d8cd6f8ffa2534d8a8601770c9352f28e2
+  case: return_value_219
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 219
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:16132883c8297e2e64ec3900c0e285d8cd6f8ffa2534d8a8601770c9352f28e2
+  case: return_value_219

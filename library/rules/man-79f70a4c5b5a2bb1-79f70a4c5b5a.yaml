@@ -1,0 +1,35 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 tgkill(tgid, tid, sig)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_79F70A4C5B5A2BB1--79f70a4c5b5a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: tgkill
+    arguments:
+    - tgid
+    - tid
+    - sig
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:79f70a4c5b5a2bb10b0df578524fdeadf59ba9fe284698ac1084c873034fa11e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tgkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 81
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:2f396376784ca991f38cbd28197c08fbb1f3ee327f429b6d2cc9bf3b8a4d48a3
+  case: return_value_81

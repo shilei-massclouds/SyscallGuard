@@ -1,0 +1,46 @@
+# 合规检查：条件：path is NULL or a pointer to a location outside the calling process's accessible address space；检查：调用 open_tree(dirfd, path, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_01C5D96796AD018A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path is NULL or a pointer to a location outside the calling process's accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: open_tree
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:01c5d96796ad018ae43a4fe22435eab4f88bad0948e37621f8f30a7c03e03b99
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:197738cdb7fca630fc4436b0e6acec95d0e046476d022aa27a5aa1c8d8aee208
+  case: errors_efault_422
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_tree
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_tree.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:197738cdb7fca630fc4436b0e6acec95d0e046476d022aa27a5aa1c8d8aee208
+  case: errors_efault_422

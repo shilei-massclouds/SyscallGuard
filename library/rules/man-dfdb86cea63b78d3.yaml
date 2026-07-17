@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DFDB86CEA63B78D3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:16308108fa2239e079e90d2231e7ad51040e745c29b114132287d1076448653d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 215
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:83aa1afd424ab7c5c9096d3a35e76e194e52be6d767ad97b9c37cbaf8a4f6f3e
+  case: return_value_215
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 215
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:83aa1afd424ab7c5c9096d3a35e76e194e52be6d767ad97b9c37cbaf8a4f6f3e
+  case: return_value_215

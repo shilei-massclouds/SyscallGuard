@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified protocol does not support creation of socket pairs；检查：调用 socketpair(domain, type, protocol, sv)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_094BE7407163CD3C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: protocol
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: The specified protocol does not support creation of socket pairs
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:094be7407163cd3c436fe69f5630f72d3e5ffdf6b661ec3f6e517b8806eba5a4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 66
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d3c4e7a7dbf99c5fefa704e978f0657467b292088546c63fa194eb3024088924
+  case: errors_eopnotsupp_66
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 66
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d3c4e7a7dbf99c5fefa704e978f0657467b292088546c63fa194eb3024088924
+  case: errors_eopnotsupp_66

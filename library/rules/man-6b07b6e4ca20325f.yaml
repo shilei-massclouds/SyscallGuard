@@ -1,0 +1,47 @@
+# 合规检查：条件：The message can't be sent due to the msg_qbytes limit for the queue and IPC_NOWAIT was specified in msgflg；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6B07B6E4CA20325F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: msgflg
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The message can't be sent due to the msg_qbytes limit for the queue and IPC_NOWAIT was specified
+      in msgflg
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:21d356b65a2e1a0298d2f1c0735fed4d4dd14c4adcb8e073bd25fb8fb7d0c719
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 330
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8516d0882ce86789144c92f137aa078a0a471ad78f02b3355db5ccaec394b28c
+  case: errors_eagain_330
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 330
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8516d0882ce86789144c92f137aa078a0a471ad78f02b3355db5ccaec394b28c
+  case: errors_eagain_330

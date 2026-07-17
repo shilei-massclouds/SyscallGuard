@@ -1,0 +1,42 @@
+# 合规检查：条件：Unable to allocate memory for internal tables；检查：调用 pselect6()；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AB29953502749E9B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Unable to allocate memory for internal tables
+  action:
+    operation: invoke_syscall
+    syscall: pselect6
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:ab29953502749e9b77d970346df5188b200a7aa7d69e6c7555b14654623e879e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75c5ba24ec2df8393d09f3d90011cfab46626076fe78af39192f17c8ca2bea63
+  case: errors_enomem_419
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pselect6
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75c5ba24ec2df8393d09f3d90011cfab46626076fe78af39192f17c8ca2bea63
+  case: errors_enomem_419

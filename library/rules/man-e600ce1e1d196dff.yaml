@@ -1,0 +1,46 @@
+# 合规检查：条件：path refers to a file that is currently in use as a swap file, and the O_TRUNC flag was specified；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E600CE1E1D196DFF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ETXTBSY
+    summary: path refers to a file that is currently in use as a swap file, and the O_TRUNC flag was specified
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:e600ce1e1d196dff53f0581228850d7ceaa2ed9b2c59c6a7956935fda14986a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1277
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:613bd10165d2384494cb363d97245799ded8010de9ee03017d9c4ff147ea97f8
+  case: errors_etxtbsy_1277
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1277
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:613bd10165d2384494cb363d97245799ded8010de9ee03017d9c4ff147ea97f8
+  case: errors_etxtbsy_1277

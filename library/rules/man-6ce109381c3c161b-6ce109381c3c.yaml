@@ -1,0 +1,37 @@
+# 合规检查：条件：An address specified in either the sops or the timeout argument isn't accessible；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6CE109381C3C161B--6ce109381c3c
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: sops
+    predicate: invalid_value
+    value: EFAULT
+    summary: An address specified in either the sops or the timeout argument isn't accessible
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:6ce109381c3c161bd616fb4f728f9a46b9761796e2c6907dc0e92d2df30cf99c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2e92992f1a0e3710076ff1880af7b46771aafefd45b9f3618d481b8ce15bbbe1
+  case: errors_efault_306

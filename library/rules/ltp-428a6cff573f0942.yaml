@@ -1,0 +1,33 @@
+# 合规检查：条件：The fixture sets TEMP_FILE mode to FILE_MODE.；检查：调用 utime(TEMP_FILE, NULL)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_428A6CFF573F0942
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: FILE_MODE
+    summary: The fixture sets TEMP_FILE mode to FILE_MODE.
+  action:
+    operation: invoke_syscall
+    syscall: utime
+    arguments:
+    - TEMP_FILE
+    - 'NULL'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:428a6cff573f0942e02a78b1b3f7f0c410ae4835d02c7dbb84c6f80519dce244
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime03.c
+  line: 72
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:fda7c77dcc5d316d4378671618991176b0e745a77bd455d80f18e5fb87d6ae54
+  case: utime03_72_raw_0

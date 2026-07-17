@@ -1,0 +1,44 @@
+# 合规检查：条件：The filesystem named by fsname is not supported by the kernel；检查：调用 fsopen(fsname, flags)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7939BA9D8C46E111
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fsname
+    predicate: documented_condition
+    value: ENODEV
+    summary: The filesystem named by fsname is not supported by the kernel
+  action:
+    operation: invoke_syscall
+    syscall: fsopen
+    arguments:
+    - fsname
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:7939ba9d8c46e1112238d11234ed7faa040092d706b732fe9146066520db34d3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f83de000cd5e39811e87513745b640500252c922dc63a234370b836fef13702
+  case: errors_enodev_245
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsopen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f83de000cd5e39811e87513745b640500252c922dc63a234370b836fef13702
+  case: errors_enodev_245

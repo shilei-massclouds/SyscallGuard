@@ -1,0 +1,46 @@
+# 合规检查：条件：how.resolve contains RESOLVE_NO_XDEV , and a path component crosses a mount point；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EXDEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_22B16FF99BAA88E5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EXDEV
+    summary: how.resolve contains RESOLVE_NO_XDEV , and a path component crosses a mount point
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EXDEV
+  errno:
+  - EXDEV
+semantic_hash: sha256:22b16ff99baa88e5ca2cf628d580ab4d8c336e3c32d8abc7e9d42cea9c42385a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 478
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e645d9578817c68141a1399eace81d6f00ebb9782b026bc71ebd994b6356ae39
+  case: errors_exdev_478
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 478
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e645d9578817c68141a1399eace81d6f00ebb9782b026bc71ebd994b6356ae39
+  case: errors_exdev_478

@@ -1,0 +1,38 @@
+# 合规检查：条件：The binary image supplied in module_image is not an ELF image, or is an ELF image that is invalid or for a different architecture. The following errors may...；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_14F98525705E7767--14f98525705e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOEXEC
+    summary: The binary image supplied in module_image is not an ELF image, or is an ELF image that is
+      invalid or for a different architecture. The following errors may...
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:14f98525705e776704fa38a0ad6d7552579a4c66d34c49e21bb8d16d92abd1ac
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 241
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e208f38aeaa02cbc8142374ebbd6be4cc5061c43c09c002e5d80b07f2100f50a
+  case: errors_enoexec_241

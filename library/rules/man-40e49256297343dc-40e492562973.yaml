@@ -1,0 +1,36 @@
+# 合规检查：条件：No process was located using the which and who values specified；检查：调用 getpriority(which, who)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_40E49256297343DC--40e492562973
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: which
+    predicate: invalid_value
+    value: ESRCH
+    summary: No process was located using the which and who values specified
+  action:
+    operation: invoke_syscall
+    syscall: getpriority
+    arguments:
+    - which
+    - who
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:40e49256297343dc90ff256c0eaa1331b6682a2dd45fbb36c1849f14387ac97c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getpriority
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpriority.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5819587d17f0cb5551e3cba8420b71ac4c819493390c67085e75226d18b3c13f
+  case: errors_esrch_132

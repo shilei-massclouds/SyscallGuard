@@ -1,0 +1,46 @@
+# 合规检查：条件：The anonymous mount namespace necessary to contain the new mount object could not be allocated, as doing so would exceed the configured per-user limit on...；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FD83C3A37800C7FA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: The anonymous mount namespace necessary to contain the new mount object could not be allocated,
+      as doing so would exceed the configured per-user limit on...
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:fd83c3a37800c7faaf42fffc98c9b285d8df6e1e8a2fa1e0d1cc24e96e02d29a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d5cab39fe2a6cdc3f3c8d5e8fd9abe7da5e716df21bdcf420890d47e41a28a1
+  case: errors_enospc_180
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 180
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6d5cab39fe2a6cdc3f3c8d5e8fd9abe7da5e716df21bdcf420890d47e41a28a1
+  case: errors_enospc_180

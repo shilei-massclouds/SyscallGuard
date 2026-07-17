@@ -1,0 +1,45 @@
+# 合规检查：条件：Network is unreachable；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENETUNREACH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6E1B78D7DB21D5CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENETUNREACH
+    summary: Network is unreachable
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENETUNREACH
+  errno:
+  - ENETUNREACH
+semantic_hash: sha256:6e1b78d7db21d5cffc84b6cbc3da9290c27c2a2b8b6f278cd7306116297232fe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:215cacba87592f7cf78a1f2759564fb898812c1c2f9d8532a833e3d255a90923
+  case: errors_enetunreach_192
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:215cacba87592f7cf78a1f2759564fb898812c1c2f9d8532a833e3d255a90923
+  case: errors_enetunreach_192

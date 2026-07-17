@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.value
   evidence_hash: sha256:08bbf6fcc628f35844e1ee9c19d6d4164394105cd3471d6c9f1c9745cd44db5f
   case: set_tid_address01_17_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/set_tid_address/set_tid_address01.c
+  line: 17
+  recognizer_id: ltp.tst-exp.value
+  evidence_hash: sha256:08bbf6fcc628f35844e1ee9c19d6d4164394105cd3471d6c9f1c9745cd44db5f
+  case: set_tid_address01_17_raw_0

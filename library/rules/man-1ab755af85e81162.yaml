@@ -1,0 +1,46 @@
+# 合规检查：条件：whence is SEEK_DATA or SEEK_HOLE , and offset is beyond the end of the file, or whence is SEEK_DATA and offset is within a hole at the end of the file；检查：调用 lseek(fd, offset, whence)；预期：返回 -1，errno 为 ENXIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1AB755AF85E81162
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: offset
+    predicate: documented_condition
+    value: ENXIO
+    summary: whence is SEEK_DATA or SEEK_HOLE , and offset is beyond the end of the file, or whence is
+      SEEK_DATA and offset is within a hole at the end of the file
+  action:
+    operation: invoke_syscall
+    syscall: lseek
+    arguments:
+    - fd
+    - offset
+    - whence
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENXIO
+  errno:
+  - ENXIO
+semantic_hash: sha256:1ab755af85e81162f8c8b3e105b6cb54a3267517210a568b3ed43f5fce7ea50c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:95648b1b6f874777391c1d0c37a9221d629052f6fb1e02bd2052f2cbc2b787b2
+  case: errors_enxio_174
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lseek
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:95648b1b6f874777391c1d0c37a9221d629052f6fb1e02bd2052f2cbc2b787b2
+  case: errors_enxio_174

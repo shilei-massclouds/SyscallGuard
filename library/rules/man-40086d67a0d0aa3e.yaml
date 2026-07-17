@@ -1,0 +1,44 @@
+# 合规检查：条件：An I/O error occurred updating the inode；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_40086D67A0D0AA3E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred updating the inode
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:fc5d606d8fcbdb1a631b661637eee56b2a1b4729d6ac9938c8a3cf06e18be7f2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1f496a0946f009bb223620eb70b6718aed667d983aef98e7197118e41fbac028
+  case: errors_eio_118
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1f496a0946f009bb223620eb70b6718aed667d983aef98e7197118e41fbac028
+  case: errors_eio_118

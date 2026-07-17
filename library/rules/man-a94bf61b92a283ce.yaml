@@ -1,0 +1,44 @@
+# 合规检查：条件：( settimeofday ()): tv.tv_sec is negative or tv.tv_usec is outside the range [0, 999,999]；检查：调用 settimeofday(tv, tz)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A94BF61B92A283CE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: tv
+    predicate: invalid_value
+    value: EINVAL
+    summary: '( settimeofday ()): tv.tv_sec is negative or tv.tv_usec is outside the range [0, 999,999]'
+  action:
+    operation: invoke_syscall
+    syscall: settimeofday
+    arguments:
+    - tv
+    - tz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a94bf61b92a283ce7b66410027d9b4c19313586692dc9d3d038604bb00ec35cf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gettimeofday.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7733c805d27e26ff62440237de22f64adb089f13d4f5ab7de40604770278e377
+  case: errors_einval_138
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: settimeofday
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gettimeofday.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7733c805d27e26ff62440237de22f64adb089f13d4f5ab7de40604770278e377
+  case: errors_einval_138

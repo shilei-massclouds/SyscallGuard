@@ -1,0 +1,46 @@
+# 合规检查：条件：( openat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F350D4F80E8650CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( openat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f350d4f80e8650cb559ba1960827b68e7fa485a321d03bb381238353183d3649
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1010
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:effca6d6a00e25cd019ade0d28c612b43b83b1b2cfca231690dc214b6a519bdb
+  case: errors_ebadf_1010
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1010
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:effca6d6a00e25cd019ade0d28c612b43b83b1b2cfca231690dc214b6a519bdb
+  case: errors_ebadf_1010

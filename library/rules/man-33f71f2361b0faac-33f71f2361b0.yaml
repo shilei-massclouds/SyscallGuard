@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 setregid(rgid, egid)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33F71F2361B0FAAC--33f71f2361b0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: setregid
+    arguments:
+    - rgid
+    - egid
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:33f71f2361b0faac749de467868b69e243c580945debabd70724cd300383639c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setregid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setreuid.2
+  line: 58
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:e25df517a108af46f3277987f5113439efedc9ba3e7cff9ae1ea755fcc150713
+  case: return_value_58

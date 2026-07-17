@@ -1,0 +1,46 @@
+# 合规检查：条件：offset was less than 0, or size was less than or equal to 0；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B6A8CADA204B8089
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: offset
+    predicate: invalid_value
+    value: EINVAL
+    summary: offset was less than 0, or size was less than or equal to 0
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b6a8cada204b8089d2338e771d94e27b0a8a20e2d203d78087980887422e78fa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 328
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dd3b4d38a94a0d08248158e385d9bc1e9a0470cc2a67c1c66300b48e2692ff29
+  case: errors_einval_328
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 328
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dd3b4d38a94a0d08248158e385d9bc1e9a0470cc2a67c1c66300b48e2692ff29
+  case: errors_einval_328

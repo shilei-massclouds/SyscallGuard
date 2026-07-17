@@ -1,0 +1,47 @@
+# 合规检查：条件：The system call was interrupted by a signal that was caught before a valid connection arrived; see signal (7)；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_142A30F5EBF7CCE1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The system call was interrupted by a signal that was caught before a valid connection arrived;
+      see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:c6e1cc206ff57ab6dcb014d58b70f0575cd6daeb05b7f5272895b73b86766e77
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1abc0f61ff3bcc9a39e3c07156a9d933e765afd9516d2065ca5e1da27c1097c
+  case: errors_eintr_198
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1abc0f61ff3bcc9a39e3c07156a9d933e765afd9516d2065ca5e1da27c1097c
+  case: errors_eintr_198

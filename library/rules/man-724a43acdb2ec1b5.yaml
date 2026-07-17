@@ -1,0 +1,47 @@
+# 合规检查：条件：A move operation was attempted, and target is a descendant of source；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_724A43ACDB2EC1B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: source
+    predicate: documented_condition
+    value: ELOOP
+    summary: A move operation was attempted, and target is a descendant of source
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:724a43acdb2ec1b54b8298a3d2532734bbb94436514c088ae6e453f3512b5245
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 774
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5560b7b3e0ad88e0f2b4afc1b6876b4d8fbbab30dfaf73e91f3785e71272cd4
+  case: errors_eloop_774
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 774
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5560b7b3e0ad88e0f2b4afc1b6876b4d8fbbab30dfaf73e91f3785e71272cd4
+  case: errors_eloop_774

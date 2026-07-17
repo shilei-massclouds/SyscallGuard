@@ -1,0 +1,45 @@
+# 合规检查：条件：The given file descriptor is not valid；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1EFA395D2832F95E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The given file descriptor is not valid
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:1efa395d2832f95e4f5fcbcffe3d54ff5c2f016f77f317ffbb582b6f0f42aaa2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 72
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d1bffe20943f7bb351f694734084dd20bfe9e8e9a06f2053c4c09884c56fc1e5
+  case: errors_ebadf_72
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 72
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d1bffe20943f7bb351f694734084dd20bfe9e8e9a06f2053c4c09884c56fc1e5
+  case: errors_ebadf_72

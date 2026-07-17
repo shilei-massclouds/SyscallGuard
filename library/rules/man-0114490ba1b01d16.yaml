@@ -1,0 +1,45 @@
+# 合规检查：条件：The value specified in resource is not valid; or, for setrlimit () or prlimit (): rlim->rlim_cur was greater than rlim->rlim_max；检查：调用 setrlimit(resource, rlim)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0114490BA1B01D16
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: resource
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: 'The value specified in resource is not valid; or, for setrlimit () or prlimit (): rlim->rlim_cur
+      was greater than rlim->rlim_max'
+  action:
+    operation: invoke_syscall
+    syscall: setrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0114490ba1b01d16a06eebc54a35e4bc49b19aa0811d8b5cb1798d9867c6bd56
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 477
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02044ac589e6caed55ea7e2e245ff8e4f4177921a7ecd61c2cb349f3eec2612b
+  case: errors_einval_477
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 477
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:02044ac589e6caed55ea7e2e245ff8e4f4177921a7ecd61c2cb349f3eec2612b
+  case: errors_einval_477

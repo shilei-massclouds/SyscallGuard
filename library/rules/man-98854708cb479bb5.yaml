@@ -1,0 +1,49 @@
+# 合规检查：条件：(For UNIX domain sockets, which are identified by pathname) Write permission is denied on the destination socket file, or search permission is denied for...；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98854708CB479BB5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: (For UNIX domain sockets, which are identified by pathname) Write permission is denied on
+      the destination socket file, or search permission is denied for...
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:466bf322c3a82b8780aadd20811ad234ea10d89af9d69c1633cac1921b5493af
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 340
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:848ee08166b86360ae7b5a3d881fa3b6ed151e648a996a7665e0d71f8ec7b1ca
+  case: errors_eacces_340
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 340
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:848ee08166b86360ae7b5a3d881fa3b6ed151e648a996a7665e0d71f8ec7b1ca
+  case: errors_eacces_340

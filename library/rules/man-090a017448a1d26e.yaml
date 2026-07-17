@@ -1,0 +1,48 @@
+# 合规检查：条件：The link named by oldpath does not exist; or, a directory component in newpath does not exist; or, oldpath or newpath is an empty string；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_090A017448A1D26E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: The link named by oldpath does not exist; or, a directory component in newpath does not exist;
+      or, oldpath or newpath is an empty string
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:090a017448a1d26e4c51a53fcd120e1ac329e32f362578e4faf49b260139c552
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 348
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad890552f07e554206acc0351eb4fec1bbd268633f8d3bbd94ad75d3e1829bcc
+  case: errors_enoent_348
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 348
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad890552f07e554206acc0351eb4fec1bbd268633f8d3bbd94ad75d3e1829bcc
+  case: errors_enoent_348

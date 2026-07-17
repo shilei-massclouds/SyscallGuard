@@ -1,0 +1,44 @@
+# 合规检查：条件：The current root directory is not a mount point (because of an earlier chroot (2))；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1D92F98E3C8E6862
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The current root directory is not a mount point (because of an earlier chroot (2))
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1d92f98e3c8e6862a97459205e438176766fbd2bdcc688a4cbb8cec62b2bcabe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11331d3afc8ddf75cdf0b4db895b4c3ba1aa23b4033be533c44de7f999726976
+  case: errors_einval_138
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:11331d3afc8ddf75cdf0b4db895b4c3ba1aa23b4033be533c44de7f999726976
+  case: errors_einval_138

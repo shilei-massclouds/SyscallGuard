@@ -1,0 +1,45 @@
+# 合规检查：条件：One of the data structures points to invalid data；检查：调用 io_cancel(ctx_id, iocb, result)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_42C9F55F25054133
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: One of the data structures points to invalid data
+  action:
+    operation: invoke_syscall
+    syscall: io_cancel
+    arguments:
+    - ctx_id
+    - iocb
+    - result
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:42c9f55f2505413366010ccd9944d545c66612ac10a2957ef4fc0e13cb0f6389
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 59
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d72bf36b45880ca445e47515ae957f030012511b535edfa20ed791dd7a8c253
+  case: errors_efault_59
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_cancel
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 59
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9d72bf36b45880ca445e47515ae957f030012511b535edfa20ed791dd7a8c253
+  case: errors_efault_59

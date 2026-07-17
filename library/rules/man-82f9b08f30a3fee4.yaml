@@ -1,0 +1,48 @@
+# 合规检查：条件：Some address in the range old_address to old_address + old_size is an invalid virtual memory address for this process. You can also get EFAULT even if there...；检查：调用 mremap(old_size, old_size, new_size, flags, new_address)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_82F9B08F30A3FEE4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: old_size
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: Some address in the range old_address to old_address + old_size is an invalid virtual memory
+      address for this process. You can also get EFAULT even if there...
+  action:
+    operation: invoke_syscall
+    syscall: mremap
+    arguments:
+    - old_size
+    - old_size
+    - new_size
+    - flags
+    - new_address
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:82f9b08f30a3fee447c21e2283526e7f2abc5117089465036d8c89355085f0ca
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mremap.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3161e037bab9c5c32fb6ecf6e4918a9547b543e4381b2859c5c53ff04de118ba
+  case: errors_efault_269
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mremap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mremap.2
+  line: 269
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3161e037bab9c5c32fb6ecf6e4918a9547b543e4381b2859c5c53ff04de118ba
+  case: errors_efault_269

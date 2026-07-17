@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 3.7) CLONE_NEWPID was specified in the flags mask, but the limit on the nesting depth of PID namespaces would have been exceeded; see...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B6D195DF26E5FDE3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: (since Linux 3.7) CLONE_NEWPID was specified in the flags mask, but the limit on the nesting
+      depth of PID namespaces would have been exceeded; see...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:b7bab2a60b4af8a3614e102258e7f11df90f8df04796949b26054eb0035e3f6b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1450
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:49fe32849d0f7baf964990baf773743931680c846bc8c8811f3a9f161339c642
+  case: errors_enospc_1450
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1450
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:49fe32849d0f7baf964990baf773743931680c846bc8c8811f3a9f161339c642
+  case: errors_enospc_1450

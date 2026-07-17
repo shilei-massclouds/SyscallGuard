@@ -1,0 +1,45 @@
+# 合规检查：条件：args was not a valid address；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8609DB2EE85AF88E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: args
+    predicate: documented_condition
+    value: EFAULT
+    summary: args was not a valid address
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:8609db2ee85af88e75f0e70480a79070e6b311fae426664f6100a0b5c83248c4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 827
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:baa59067e15544a9fd899418369be4661d67d5b3df0950bf63ee7530cc6c15e0
+  case: errors_efault_827
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 827
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:baa59067e15544a9fd899418369be4661d67d5b3df0950bf63ee7530cc6c15e0
+  case: errors_efault_827

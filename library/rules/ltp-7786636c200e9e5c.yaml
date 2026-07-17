@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:6073ae738a0d8e09bd267518c38e8a701c4b5d7f4e55206c4a3bf10dea17705c
   case: lremovexattr01_61_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:6073ae738a0d8e09bd267518c38e8a701c4b5d7f4e55206c4a3bf10dea17705c
+  case: lremovexattr01_61_raw_0

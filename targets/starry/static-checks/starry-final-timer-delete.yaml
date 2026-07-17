@@ -23,7 +23,7 @@ target_dependencies:
   symbols:
   - sys_timer_delete
   scope: symbols
-  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
   symbol_hashes:
     sys_timer_delete: sha256:35254528423899f293b9f89b3266719fcfefe158e54e063eea6af17845d26847
   missing_symbols: []
@@ -50,18 +50,11 @@ target_dependencies:
   symbols:
   - sys_write
   scope: symbols
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
   symbol_hashes:
     sys_write: sha256:e56a59cac4b66400aa54c9265112803461bea6948e7415baa17cf6ac808e631b
   missing_symbols: []
   content_hash: sha256:244edb0800ce1b41d069c78edaabc634f5122e52657b25b0596fb5f152d7d2e4
-- path: os/StarryOS/kernel/src/syscall/fs/io.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:2ca7cb6c85ef5be3c325c17fdb063e1caa3e9525eb5cc91a849709fa2298c53d
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -87,6 +80,13 @@ target_dependencies:
     sys_umount2: sha256:721133f6b30f4ae02f4c0c5ec1dde98cac46acb91b981b12aaef7ee14306a19b
   missing_symbols: []
   content_hash: sha256:4d1f8fb6bbdeab73c84b11c2ac655ffd911969dc47a5fe3f85adeaf4a109b6bd
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:5627712698b1a219cfd6979f50739901d84b932915ff6a54e14864b111f5a299
 - path: test-suit/starryos/qemu/system/test-uname/src/main.c
   symbols: []
   scope: file
@@ -186,13 +186,6 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:b64a88881adb05016ace20e302e4add907b8e58556d53842f75c6ddec9ba66fd
-- path: os/StarryOS/kernel/src/syscall/time.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:c71f1c6f45e3dc9ad40b11dfc80c4b0148e0774cea009277728b05a483eca0cb
 - path: os/StarryOS/kernel/src/syscall/task/wait.rs
   symbols: []
   scope: file
@@ -232,6 +225,13 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:f5120c36722f0f04288c370e3b748aa3a8d275528a06d9f4d723532e48f95f2c
 - path: os/StarryOS/kernel/src/syscall/sys.rs
   symbols:
   - sys_syslog
@@ -241,5 +241,5 @@ target_dependencies:
     sys_syslog: sha256:f21f073cbd6caec69eab6cd383ca5e0001b1d969fa76ce4152449da31c94b262
   missing_symbols: []
   content_hash: sha256:fc1e90e772c8ae272cb0ddf2c6564e6ddae488afceadbb1a3ea859b05135e15f
-target_content_fingerprint: sha256:75b658d0caa6345d6320d1185d851790af4ee18d92810c955f512ffe556ad357
-generated_at_utc: '2026-07-16T10:53:32.721870Z'
+target_content_fingerprint: sha256:a9117565be398bd231ba67d226cd57439bc4ddf279e435568f3abac39c1aadae
+generated_at_utc: '2026-07-17T05:35:14.259448Z'

@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_NEWUSER was specified in the flags mask, but the kernel was not configured with the CONFIG_USER_NS option；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B2775D86DE47E6DF--b2775d86de47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWUSER was specified in the flags mask, but the kernel was not configured with the
+      CONFIG_USER_NS option
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b2775d86de47e6df01614c430b4146a185ec171f0cd73d8b033f9e0d54bff314
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1367
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7923127871b1b911c14e275c4416998ea99bf266f5cd7c26c46e884158e29515
+  case: errors_einval_1367

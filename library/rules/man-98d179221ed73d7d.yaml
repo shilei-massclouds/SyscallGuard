@@ -1,0 +1,46 @@
+# 合规检查：条件：A low-level I/O error occurred while modifying the inode. This error may relate to the write-back of data written by an earlier write (), which may have...；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98D179221ED73D7D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: A low-level I/O error occurred while modifying the inode. This error may relate to the write-back
+      of data written by an earlier write (), which may have...
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:98d179221ed73d7d738645057aea6135941719710938fcc1c32f3c2926305a48
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0983630efcf23bd6e9f97bcf11e633879eb4ea0edc0b6808fca103acd4f45c4
+  case: errors_eio_175
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c0983630efcf23bd6e9f97bcf11e633879eb4ea0edc0b6808fca103acd4f45c4
+  case: errors_eio_175

@@ -1,0 +1,49 @@
+# 合规检查：条件：Returned by the glibc clone () wrapper function when fn or stack is specified as NULL；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_123B801F86215725
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: fn
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: Returned by the glibc clone () wrapper function when fn or stack is specified as NULL
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:123b801f86215725c0c116535167d7cc28c6de3d20e8f288b75795c3304d73d2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1329
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b88f8ded37517253643b6fc7b87999f94c91ab382fc12180f321b66ba66710cd
+  case: errors_einval_1329
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1329
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b88f8ded37517253643b6fc7b87999f94c91ab382fc12180f321b66ba66710cd
+  case: errors_einval_1329

@@ -1,0 +1,45 @@
+# 合规检查：条件：flags includes an invalid bit value or an invalid bit combination；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FE482B8C9DC914AF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags includes an invalid bit value or an invalid bit combination
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:693fa92f7fb4f57d2a0df4cf5020163376848d7c4a826bbb2e9805d0cb98a78c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 357
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ef02efeabd6f8b928b0d6cc0fa8d9c8619bdc10ed10409b0fda1161c97d4cc6
+  case: errors_einval_357
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 357
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ef02efeabd6f8b928b0d6cc0fa8d9c8619bdc10ed10409b0fda1161c97d4cc6
+  case: errors_einval_357

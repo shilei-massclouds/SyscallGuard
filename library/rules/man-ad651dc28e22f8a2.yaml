@@ -1,0 +1,46 @@
+# 合规检查：条件：Firewall rules forbid connection；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD651DC28E22F8A2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: Firewall rules forbid connection
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:768ea3604818fbdedbe35faf924d8705fb63976be120a38c4c2a983361b057bb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 236
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b5e5d0b628c51bec88ea70c02b65fb68bbabe439843100bbd190b20179ecbca7
+  case: errors_eperm_236
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 236
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b5e5d0b628c51bec88ea70c02b65fb68bbabe439843100bbd190b20179ecbca7
+  case: errors_eperm_236

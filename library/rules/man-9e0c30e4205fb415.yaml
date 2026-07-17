@@ -1,0 +1,44 @@
+# 合规检查：条件：Both MFD_HUGETLB and MFD_ALLOW_SEALING were specified in flags；检查：调用 memfd_create(name, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9E0C30E4205FB415
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both MFD_HUGETLB and MFD_ALLOW_SEALING were specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: memfd_create
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9e0c30e4205fb415e37882ebeeb276505c96311a3f6ea5e043d380fa4e7ffcce
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b8f0a3fbfd356c769da7c16c208c5ac8edf55731b7e7a82f9d2a60d7f42c5db6
+  case: errors_einval_175
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b8f0a3fbfd356c769da7c16c208c5ac8edf55731b7e7a82f9d2a60d7f42c5db6
+  case: errors_einval_175

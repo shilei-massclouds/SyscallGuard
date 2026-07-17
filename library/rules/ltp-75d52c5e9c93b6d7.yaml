@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:00a6ae81e985f312e0dfa6bf133f3381eaf7400f617be47cb3d72b82010dad54
   case: dup201_45_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup2/dup201.c
+  line: 45
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:00a6ae81e985f312e0dfa6bf133f3381eaf7400f617be47cb3d72b82010dad54
+  case: dup201_45_2_0

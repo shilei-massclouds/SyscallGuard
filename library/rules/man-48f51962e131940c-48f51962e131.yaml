@@ -1,0 +1,40 @@
+# 合规检查：条件：The caller does not have permission to access the address space of the process pid；检查：调用 process_vm_readv(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_48F51962E131940C--48f51962e131
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: pid
+    predicate: invalid_or_inaccessible
+    value: EPERM
+    summary: The caller does not have permission to access the address space of the process pid
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_readv
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:48f51962e131940c0c6024407bce0e581e1d222e546e68df90592e65d9351ebf
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d9b4d52976031c70277d684db52baf592c951bddad964e0908aaa53c2e6230e
+  case: errors_eperm_249

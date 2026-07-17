@@ -1,0 +1,43 @@
+# 合规检查：条件：An address argument referred to a location that is outside the process's accessible address space；检查：调用 init_module()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D69AA1715418F1C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: An address argument referred to a location that is outside the process's accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:91b275f6fd20f21a0fc9c1ae67943d919be713b94394d00abb342453fa8465fd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0645e70bceaf43ebea80feca3c27d6e20025b2d0517a0d1e8ae34896e8603983
+  case: errors_efault_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0645e70bceaf43ebea80feca3c27d6e20025b2d0517a0d1e8ae34896e8603983
+  case: errors_efault_190

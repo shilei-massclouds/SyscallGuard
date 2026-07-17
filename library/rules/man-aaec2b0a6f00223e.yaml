@@ -1,0 +1,46 @@
+# 合规检查：条件：The limit of signals that may be queued has been reached. (See signal (7) for further information.)；检查：调用 rt_tgsigqueueinfo(tgid, tid, sig, info)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AAEC2B0A6F00223E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The limit of signals that may be queued has been reached. (See signal (7) for further information.)
+  action:
+    operation: invoke_syscall
+    syscall: rt_tgsigqueueinfo
+    arguments:
+    - tgid
+    - tid
+    - sig
+    - info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:fa09ff491713c0fe2ff780a0e900dccb93ce8b3ff9a83313ea2e6e9feee5cb96
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8669f092732102ae78711d0dfbb241b84ad57f44410263df8b2e79e1f32a2e9f
+  case: errors_eagain_133
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_tgsigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8669f092732102ae78711d0dfbb241b84ad57f44410263df8b2e79e1f32a2e9f
+  case: errors_eagain_133

@@ -1,0 +1,47 @@
+# 合规检查：条件：(for waitpid () or waitid ()) The process specified by pid ( waitpid ()) or idtype and id ( waitid ()) does not exist or is not a child of the calling...；检查：调用 waitid(idtype, id, infop, options)；预期：返回 -1，errno 为 ECHILD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BA4FBB07831E338E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: idtype
+    predicate: documented_condition
+    value: ECHILD
+    summary: (for waitpid () or waitid ()) The process specified by pid ( waitpid ()) or idtype and id
+      ( waitid ()) does not exist or is not a child of the calling...
+  action:
+    operation: invoke_syscall
+    syscall: waitid
+    arguments:
+    - idtype
+    - id
+    - infop
+    - options
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECHILD
+  errno:
+  - ECHILD
+semantic_hash: sha256:ba4fbb07831e338eb4f8cb17266277ef4a08128632d7964d903d6953c40c7a5e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0df87081e8b04623d73b43e0efb80d0b6a2fc26e250e9663449cd346def384b0
+  case: errors_echild_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: waitid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0df87081e8b04623d73b43e0efb80d0b6a2fc26e250e9663449cd346def384b0
+  case: errors_echild_406

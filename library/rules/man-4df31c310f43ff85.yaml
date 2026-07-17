@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 5.2) The caller is not privileged (does not have the CAP_SYS_PTRACE capability in the initial user namespace), and...；检查：调用 userfaultfd(flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4DF31C310F43FF85
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: (since Linux 5.2) The caller is not privileged (does not have the CAP_SYS_PTRACE capability
+      in the initial user namespace), and...
+  action:
+    operation: invoke_syscall
+    syscall: userfaultfd
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:4df31c310f43ff85779a69fe2d9437dc9cf6738da00a5e773774033e33c87ad8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/userfaultfd.2
+  line: 783
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b7037cb1b4b45c0eb4b3bd410fe2b26c3e06fd38b7a8ebd28ad82dc9d9a54c57
+  case: errors_eperm_783
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: userfaultfd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/userfaultfd.2
+  line: 783
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b7037cb1b4b45c0eb4b3bd410fe2b26c3e06fd38b7a8ebd28ad82dc9d9a54c57
+  case: errors_eperm_783

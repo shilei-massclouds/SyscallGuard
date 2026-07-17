@@ -1,0 +1,48 @@
+# 合规检查：条件：The target process does not exist (i.e., it has terminated and been waited on). See madvise (2) for advice -specific errors；检查：调用 process_madvise(pidfd, n, n, advice, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AC9D72E0631EDF66
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: advice
+    predicate: documented_condition
+    value: ESRCH
+    summary: The target process does not exist (i.e., it has terminated and been waited on). See madvise
+      (2) for advice -specific errors
+  action:
+    operation: invoke_syscall
+    syscall: process_madvise
+    arguments:
+    - pidfd
+    - n
+    - n
+    - advice
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:ac9d72e0631edf666c2f424011f7b3e6949689c8efa7e868932eda695309190a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1afee0de45a5c3ae11288d7201016592fb2b13fae531efb89358d62eb8256e8c
+  case: errors_esrch_175
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_madvise.2
+  line: 175
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1afee0de45a5c3ae11288d7201016592fb2b13fae531efb89358d62eb8256e8c
+  case: errors_esrch_175

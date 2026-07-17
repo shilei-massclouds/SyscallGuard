@@ -1,0 +1,46 @@
+# 合规检查：条件：path already exists and O_CREAT and O_EXCL were used；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A2EBD9E8475D935
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EEXIST
+    summary: path already exists and O_CREAT and O_EXCL were used
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:2a2ebd9e8475d935c9b9afa1fe7c830c4d9ff4db53d4feb9ae520ee9cb0c26a0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1033
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f084e9a9e160ff1a937f3fb9d9bc3fb1fbf4c0a0ee9f8eab95880470abb296dd
+  case: errors_eexist_1033
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1033
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f084e9a9e160ff1a937f3fb9d9bc3fb1fbf4c0a0ee9f8eab95880470abb296dd
+  case: errors_eexist_1033

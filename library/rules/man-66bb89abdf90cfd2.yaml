@@ -1,0 +1,48 @@
+# 合规检查：条件：No process with ID pid exists；检查：调用 process_vm_writev(pid, local_iov, liovcnt, remote_iov, riovcnt, flags)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_66BB89ABDF90CFD2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: pid
+    predicate: documented_state_condition
+    value: ESRCH
+    summary: No process with ID pid exists
+  action:
+    operation: invoke_syscall
+    syscall: process_vm_writev
+    arguments:
+    - pid
+    - local_iov
+    - liovcnt
+    - remote_iov
+    - riovcnt
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:a6bbe9af674143dd2370f6456c63917250820fd4cbe9ef5164108d8d5fb2473d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62747cbb76fe49574cf2e210aa34bd475d5c44fdaa413755b4059193ff086505
+  case: errors_esrch_253
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: process_vm_writev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/process_vm_readv.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62747cbb76fe49574cf2e210aa34bd475d5c44fdaa413755b4059193ff086505
+  case: errors_esrch_253

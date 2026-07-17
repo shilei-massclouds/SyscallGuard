@@ -1,0 +1,47 @@
+# 合规检查：条件：( openat ()) path is a relative pathname and dirfd is a file descriptor referring to a file other than a directory；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_04107E81740E9ACA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( openat ()) path is a relative pathname and dirfd is a file descriptor referring to a file
+      other than a directory
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:04107e81740e9aca2b40dd91a922df3dfb960f8f009eabc6c45d0ca3bb1d5dc3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e96c9fd95386b82f1333ae0621bccd8a82539a2b66e9e009a40610c074e2e293
+  case: errors_enotdir_1211
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e96c9fd95386b82f1333ae0621bccd8a82539a2b66e9e009a40610c074e2e293
+  case: errors_enotdir_1211

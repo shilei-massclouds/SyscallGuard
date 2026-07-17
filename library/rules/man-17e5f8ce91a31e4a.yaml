@@ -1,0 +1,44 @@
+# 合规检查：条件：who is invalid；检查：调用 getrusage(who, usage)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_17E5F8CE91A31E4A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: who
+    predicate: documented_condition
+    value: EINVAL
+    summary: who is invalid
+  action:
+    operation: invoke_syscall
+    syscall: getrusage
+    arguments:
+    - who
+    - usage
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:17e5f8ce91a31e4a9e125aba6a9febbb8cc50e658ab323303373073bc955ae8e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrusage.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ebc6b9d728e43133ef0ef4d8eed4735a7b0e7280a512990c2e18ad063d082ed9
+  case: errors_einval_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrusage
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrusage.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ebc6b9d728e43133ef0ef4d8eed4735a7b0e7280a512990c2e18ad063d082ed9
+  case: errors_einval_169

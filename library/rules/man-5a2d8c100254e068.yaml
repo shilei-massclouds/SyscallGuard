@@ -1,0 +1,44 @@
+# 合规检查：条件：The argument path points outside the process's allocated address space；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5A2D8C100254E068
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The argument path points outside the process's allocated address space
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:509825efb87175a39e0bb80309e462100a84cb5cd0dbe5e46a02eb9eab3d0867
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 89
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eb842945350699e08579bbc797bf255e62bcd7f96dd41cfa4f234628c2929352
+  case: errors_efault_89
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 89
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eb842945350699e08579bbc797bf255e62bcd7f96dd41cfa4f234628c2929352
+  case: errors_efault_89

@@ -1,0 +1,36 @@
+# 合规检查：条件：A component of the path prefix is not a directory；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1A7DF9D4B4186AB1--1a7df9d4b418
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:1a7df9d4b4186ab140de361600b8c22d044c259880828d7fa3132385ceb33702
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a1eac6ad6453af19f9f8886be3172e68eee88ac52183c51ccece3c52905a040e
+  case: errors_enotdir_134

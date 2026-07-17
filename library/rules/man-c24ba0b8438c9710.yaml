@@ -1,0 +1,45 @@
+# 合规检查：条件：A component of the path prefix of path or a script or ELF interpreter is not a directory；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C24BA0B8438C9710
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix of path or a script or ELF interpreter is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:c24ba0b8438c971028913b75efa4d5e7919bcdd3a85485715c0c002ec3044238
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 527
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8189db85485dd33b2e9092446a19a9d21bb5e2d7b0c87a59637266f4159f8411
+  case: errors_enotdir_527
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 527
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8189db85485dd33b2e9092446a19a9d21bb5e2d7b0c87a59637266f4159f8411
+  case: errors_enotdir_527

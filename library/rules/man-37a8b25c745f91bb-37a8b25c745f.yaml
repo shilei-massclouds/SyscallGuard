@@ -1,0 +1,36 @@
+# 合规检查：条件：fd is not a valid open file descriptor；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_37A8B25C745F91BB--37a8b25c745f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:37a8b25c745f91bb349251c3710ce01ee8039de65c5ab602e13188c8f1d5d1df
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 227
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a241ec2b88fa1519a14cca0efb629e6a06955abe6d44305ed3333e3b1f0354f
+  case: errors_ebadf_227

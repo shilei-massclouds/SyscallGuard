@@ -1,0 +1,44 @@
+# 合规检查：条件：(before Linux 6.9) CLONE_PIDFD was specified together with CLONE_THREAD in the flags mask；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_68607EC1ED7502E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: (before Linux 6.9) CLONE_PIDFD was specified together with CLONE_THREAD in the flags mask
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f85e62c9dcefe6ddb5bd11ef9bfedaf65cbc75a334cacbaa9607b1aaa93ca095
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47d222d0622d2a9b936f435c5dd34a1e62dd224343be6aa5539fafe58e4abd77
+  case: errors_einval_1406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47d222d0622d2a9b936f435c5dd34a1e62dd224343be6aa5539fafe58e4abd77
+  case: errors_einval_1406

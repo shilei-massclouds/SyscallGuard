@@ -1,0 +1,35 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 chdir(path)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A9D96AD1D8F35A36--a9d96ad1d8f3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: chdir
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:a9d96ad1d8f35a36b9102a8f744da28c1deb92c99f993022df772a9c7b13d3e3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 80
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c721c2f1a7193eb7e085913cb45477c6e185c4f0b20e89c222be570a1dabdd28
+  case: errors_enomem_80

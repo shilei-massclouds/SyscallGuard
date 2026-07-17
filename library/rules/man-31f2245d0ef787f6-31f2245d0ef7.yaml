@@ -1,0 +1,39 @@
+# 合规检查：条件：Two or more of the kernel target buffers overlap；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_31F2245D0EF787F6--31f2245d0ef7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: Two or more of the kernel target buffers overlap
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:31f2245d0ef787f6c13c3af35e77c1b03a461f6f0972f637db6af3084f8e7e8a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 285
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d17df3c9c373f14a5399bdabef22caf6390bea6624fb0129c446e8cd65a93421
+  case: errors_einval_285

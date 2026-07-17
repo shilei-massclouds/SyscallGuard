@@ -1,0 +1,48 @@
+# 合规检查：条件：Either fd_in or fd_out is not a regular file；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FDD174E970AC7930
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_in
+    predicate: documented_condition
+    value: EINVAL
+    summary: Either fd_in or fd_out is not a regular file
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:fdd174e970ac79301953bdd92e44970778a716c86428b4b554bcd57d2a2c4f6a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:92ae2e9d344ed8dfd75022d37d03c76c7b30f59045f40b6a81ea6c61da8e3063
+  case: errors_einval_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:92ae2e9d344ed8dfd75022d37d03c76c7b30f59045f40b6a81ea6c61da8e3063
+  case: errors_einval_134

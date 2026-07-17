@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fanotify_init(flags, event_f_flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A7F5466F6F1B9169
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:a7f5466f6f1b9169dcfac582348ddc2107992aa4baecc3a456eeb37e5b70599a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 473
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a3148b1e389575f1305f4f371551b6585d4f0ad026ee17246330f64279ca318e
+  case: return_value_473
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 473
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a3148b1e389575f1305f4f371551b6585d4f0ad026ee17246330f64279ca318e
+  case: return_value_473

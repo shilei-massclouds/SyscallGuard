@@ -1,0 +1,49 @@
+# 合规检查：条件：(Internet domain datagram sockets) The socket referred to by sockfd had not previously been bound to an address and, upon attempting to bind it to an...；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1C8833834002BF0D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: sockfd
+    predicate: documented_condition
+    value: EAGAIN
+    summary: (Internet domain datagram sockets) The socket referred to by sockfd had not previously been
+      bound to an address and, upon attempting to bind it to an...
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:f078ebcb97e04684351896f5bc53979e223724363d64fd34d888c3b2de5d3515
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 359
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec21ce347b1462f4bfb9d411bbcdbbb49eba6de01227aaa34f47f0342e93de69
+  case: errors_eagain_359
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 359
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ec21ce347b1462f4bfb9d411bbcdbbb49eba6de01227aaa34f47f0342e93de69
+  case: errors_eagain_359

@@ -1,0 +1,46 @@
+# 合规检查：条件：A signal occurred before any requested event; see signal (7)；检查：调用 ppoll(fds, nfds, tmo_p, sigmask)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ECE5AAC8F01E446F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: A signal occurred before any requested event; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: ppoll
+    arguments:
+    - fds
+    - nfds
+    - tmo_p
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:ece5aac8f01e446fa21a96dbc1c1d9e7076a365e4021c1d810a6e06563e6849f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 347
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b261c0eb54aaff8a5c403b6fc8be0935fc052cec0f8eb4b451cfd01d5b67b253
+  case: errors_eintr_347
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ppoll
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 347
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b261c0eb54aaff8a5c403b6fc8be0935fc052cec0f8eb4b451cfd01d5b67b253
+  case: errors_eintr_347

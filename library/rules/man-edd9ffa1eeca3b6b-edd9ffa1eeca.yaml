@@ -1,0 +1,42 @@
+# 合规检查：条件：(since Linux 2.6.17) System call was interrupted by a signal and will be restarted. (This can be seen only during a trace.)；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 ERESTARTNOINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EDD9FFA1EECA3B6B--edd9ffa1eeca
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ERESTARTNOINTR
+    summary: (since Linux 2.6.17) System call was interrupted by a signal and will be restarted. (This
+      can be seen only during a trace.)
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERESTARTNOINTR
+  errno:
+  - ERESTARTNOINTR
+semantic_hash: sha256:edd9ffa1eeca3b6bd1ec59c044a6770b159645f677955eb72aa5ab522c19f0a7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1535
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2248862934d8dd0bc7cbcdcbfde7c6a1f430cf7338aa7b081fc599bdbbca5d9
+  case: errors_erestartnointr_1535

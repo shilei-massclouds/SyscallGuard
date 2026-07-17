@@ -1,0 +1,47 @@
+# 合规检查：条件：The size of the value buffer is too small to hold the result. In addition, the errors documented in stat (2) can also occur；检查：调用 lgetxattr(path, name, size, size)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_902FE9C05B65909D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: ERANGE
+    summary: The size of the value buffer is too small to hold the result. In addition, the errors documented
+      in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:443f113eab0fe97e1040d40f4c3c11768375d7c76440ba1cc929d9f847807013
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db2c8683c4caec24377de2983177c6ab6e46f85eef686b64026133964a9f4613
+  case: errors_erange_115
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db2c8683c4caec24377de2983177c6ab6e46f85eef686b64026133964a9f4613
+  case: errors_erange_115

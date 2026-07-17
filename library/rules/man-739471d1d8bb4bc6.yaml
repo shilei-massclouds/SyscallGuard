@@ -1,0 +1,47 @@
+# 合规检查：条件：Invalid flag specified in flags；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_739471D1D8BB4BC6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid flag specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:739471d1d8bb4bc6954182bf7a1875fa72ce53d963fd4fe20ab49ceb12908416
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 670
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d4dfc7b6583e308af18d5efc21ce77b074f63274a14a1bbb417766c06d1afaf3
+  case: errors_einval_670
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 670
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d4dfc7b6583e308af18d5efc21ce77b074f63274a14a1bbb417766c06d1afaf3
+  case: errors_einval_670

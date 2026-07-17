@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 2.6.12) length was 0；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DB0AB4E3B90CB50
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: length
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 2.6.12) length was 0
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:99f05e99e18ffad35d1d63c465b8a287c3b1b72137aa0cea75a07abcaa19a942
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 539
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2d264c0e600f80ee4cae5163f5f42fae040f5f3e974a8f40ec3120f662811af
+  case: errors_einval_539
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 539
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2d264c0e600f80ee4cae5163f5f42fae040f5f3e974a8f40ec3120f662811af
+  case: errors_einval_539

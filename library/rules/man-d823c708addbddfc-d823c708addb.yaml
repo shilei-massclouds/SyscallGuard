@@ -1,0 +1,36 @@
+# 合规检查：条件：See NOTES；检查：调用 timerfd_create(clockid, flags)；预期：返回 -1，errno 为 ECANCELED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D823C708ADDBDDFC--d823c708addb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECANCELED
+    summary: See NOTES
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_create
+    arguments:
+    - clockid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECANCELED
+  errno:
+  - ECANCELED
+semantic_hash: sha256:d823c708addbddfc3899d87dcb24cbed9adb98c3cb566c60ec60573cfbfacdd4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 462
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ad16de50a7052eee2ab1e18dfe2d0c001bfea7eb07123d7bce67729263d7634
+  case: errors_ecanceled_462

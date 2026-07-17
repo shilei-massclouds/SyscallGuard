@@ -1,0 +1,48 @@
+# 合规检查：条件：A specified block device parameter is located on a filesystem mounted with the \%MS_NODEV option；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33A119ACDE32A174
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EACCES
+    summary: A specified block device parameter is located on a filesystem mounted with the \%MS_NODEV
+      option
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:33a119acde32a174e16e0a0e8993264efb823dd1ccb423cc34f15fc5d741a2f1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8eaf346ade4b464174beeb92174b3be730fd50c14e484c7323ac49d81dad8e84
+  case: errors_eacces_385
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8eaf346ade4b464174beeb92174b3be730fd50c14e484c7323ac49d81dad8e84
+  case: errors_eacces_385

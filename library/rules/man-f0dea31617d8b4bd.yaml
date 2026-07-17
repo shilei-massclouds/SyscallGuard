@@ -1,0 +1,43 @@
+# 合规检查：条件：The calling process did not have the required privileges for this operation；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F0DEA31617D8B4BD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process did not have the required privileges for this operation
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f0dea31617d8b4bd86c93965d71efc14b6e2f1fb1864f660e76a535507a6a9df
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 395
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:453dddb480f6bcc2eda3db830296cf714de44d6f4c29a1f319f1949efc882a93
+  case: errors_eperm_395
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 395
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:453dddb480f6bcc2eda3db830296cf714de44d6f4c29a1f319f1949efc882a93
+  case: errors_eperm_395

@@ -1,0 +1,48 @@
+# 合规检查：条件：Either fd_in or fd_out refers to a directory；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CFCAF51B4A9782F5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: fd_in
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: Either fd_in or fd_out refers to a directory
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:cfcaf51b4a9782f5071b39bdc832b2c7ea7d41f07481dc435484ddbf2714b2c0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4fee3458d7737741abe59dae9119029418477d2b3f9161c2c61838ccd5689100
+  case: errors_eisdir_144
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4fee3458d7737741abe59dae9119029418477d2b3f9161c2c61838ccd5689100
+  case: errors_eisdir_144

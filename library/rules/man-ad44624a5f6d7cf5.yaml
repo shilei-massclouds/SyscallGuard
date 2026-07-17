@@ -1,0 +1,44 @@
+# 合规检查：条件：The calling thread did not have the required capability for this operation；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD44624A5F6D7CF5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling thread did not have the required capability for this operation
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ad44624a5f6d7cf5df4ef34383b8d986ab6b63fdcb29b5e4c73c8875ac0a4854
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a8093cde17d7786c1458ace2304317805a6bd1ffce2ae29232de94e88ef42ec
+  case: errors_eperm_307
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a8093cde17d7786c1458ace2304317805a6bd1ffce2ae29232de94e88ef42ec
+  case: errors_eperm_307

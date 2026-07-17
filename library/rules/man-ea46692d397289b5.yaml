@@ -1,0 +1,46 @@
+# 合规检查：条件：clockid was invalid. ( CLOCK_THREAD_CPUTIME_ID is not a permitted value for clockid .)；检查：调用 clock_nanosleep(clockid, flags, t, remain)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EA46692D397289B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: clockid
+    predicate: invalid_value
+    value: EINVAL
+    summary: clockid was invalid. ( CLOCK_THREAD_CPUTIME_ID is not a permitted value for clockid .)
+  action:
+    operation: invoke_syscall
+    syscall: clock_nanosleep
+    arguments:
+    - clockid
+    - flags
+    - t
+    - remain
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ea46692d397289b5aee2472faca1017a28510a2492dbd6b2b6aa86770978cecc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:27f97d5bc8e326e05e85c799a91dfb3d9812d07a072520eb9c366510dbf6b4eb
+  case: errors_einval_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:27f97d5bc8e326e05e85c799a91dfb3d9812d07a072520eb9c366510dbf6b4eb
+  case: errors_einval_164

@@ -1,0 +1,36 @@
+# 合规检查：条件：Too many symbolic links encountered while traversing the path；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DD35836D94E4B623--dd35836d94e4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links encountered while traversing the path
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:dd35836d94e4b623c831b2bf9c45ce5c1d7218bbc1a27077ad2989ddccccaf62
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93b24314e7b76d4919c3a4b8c4232286c4912647e5f297d4775b935424f16972
+  case: errors_eloop_248

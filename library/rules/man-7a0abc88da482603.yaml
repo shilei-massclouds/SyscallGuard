@@ -1,0 +1,48 @@
+# 合规检查：条件：One of the mounts had at least one of MOUNT_ATTR_NOATIME , MOUNT_ATTR_NODEV , MOUNT_ATTR_NODIRATIME , MOUNT_ATTR_NOEXEC , MOUNT_ATTR_NOSUID , or...；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7A0ABC88DA482603
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: One of the mounts had at least one of MOUNT_ATTR_NOATIME , MOUNT_ATTR_NODEV , MOUNT_ATTR_NODIRATIME
+      , MOUNT_ATTR_NOEXEC , MOUNT_ATTR_NOSUID , or...
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:7a0abc88da4826038b95100a799965610f17508c46a8da1ee3ec674993bb9cd1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 523
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b41333e054a2336c00bfdd81a021c27b87f624735a3239be471485c7e44a4c5f
+  case: errors_eperm_523
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 523
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b41333e054a2336c00bfdd81a021c27b87f624735a3239be471485c7e44a4c5f
+  case: errors_eperm_523

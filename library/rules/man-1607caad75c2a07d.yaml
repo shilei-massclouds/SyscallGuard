@@ -1,0 +1,42 @@
+# 合规检查：条件：There was insufficient memory to create a new eventfd file descriptor；检查：调用 eventfd2()；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1607CAAD75C2A07D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOMEM
+    summary: There was insufficient memory to create a new eventfd file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: eventfd2
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:1607caad75c2a07da6dfbe5b5a7513082c4f2686987a1fada9dd70e033e43f4b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:77c22c792746e11deeee481a73cd4f11208d6d8cfa97e866842d7d3a518b0c2e
+  case: errors_enomem_249
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: eventfd2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:77c22c792746e11deeee481a73cd4f11208d6d8cfa97e866842d7d3a518b0c2e
+  case: errors_enomem_249

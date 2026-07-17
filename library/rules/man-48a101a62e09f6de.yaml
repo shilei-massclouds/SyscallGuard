@@ -1,0 +1,45 @@
+# 合规检查：条件：Result buffer is too small；检查：调用 getdents64(fd, count, count)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_48A101A62E09F6DE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: Result buffer is too small
+  action:
+    operation: invoke_syscall
+    syscall: getdents64
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:48a101a62e09f6deda7a2000875da0d065c782f750252ebbb48b01a7c0e1b733
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c246f0461c10c5515badbab12ee44e415570e1def03ccfed4950c533d26c7c2f
+  case: errors_einval_192
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getdents64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 192
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c246f0461c10c5515badbab12ee44e415570e1def03ccfed4950c533d26c7c2f
+  case: errors_einval_192

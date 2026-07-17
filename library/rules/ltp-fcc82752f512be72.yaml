@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:9982477ef8abb7a0c67e7b71f4760f66fec1c768ac43888cd1cf7ae434d88693
   case: seccomp01_131_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/seccomp/seccomp01.c
+  line: 131
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9982477ef8abb7a0c67e7b71f4760f66fec1c768ac43888cd1cf7ae434d88693
+  case: seccomp01_131_raw_0

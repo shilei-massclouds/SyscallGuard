@@ -1,0 +1,48 @@
+# 合规检查：条件：fd_out refers to an immutable file；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E42FB5C7D2882230
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: fd_out
+    predicate: documented_condition
+    value: EPERM
+    summary: fd_out refers to an immutable file
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e42fb5c7d2882230a25f07afb09741dd315c4f79b0d1654b656dde315b626daf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b67a7c0370a642f53c38d2b90b0158c274531585a3d33addc9045bd8b93e1bc
+  case: errors_eperm_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 165
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b67a7c0370a642f53c38d2b90b0158c274531585a3d33addc9045bd8b93e1bc
+  case: errors_eperm_165

@@ -1,0 +1,48 @@
+# 合规检查：条件：A component of the path prefix of path is not a directory or path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_023A091A450869AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: A component of the path prefix of path is not a directory or path is relative and dirfd is
+      a file descriptor referring to a file other than a directory
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:023a091a450869ab8e34855cc8abfe96d62d23c72cb63277353a92decf34ec68
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 701
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc72e280ea96ce44033f84eb01573b76b6a88de0251d5f29ebc464fc7404d7ef
+  case: errors_enotdir_701
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 701
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc72e280ea96ce44033f84eb01573b76b6a88de0251d5f29ebc464fc7404d7ef
+  case: errors_enotdir_701

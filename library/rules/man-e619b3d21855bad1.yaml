@@ -1,0 +1,43 @@
+# 合规检查：条件：target points outside the user address space；检查：调用 umount2(target)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E619B3D21855BAD1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: target
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: target points outside the user address space
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:e619b3d21855bad1cbdaa923e214563485f40c744752e2e152d8989908e11729
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d0c6e9bef34c440f19ea8dcb654a114192d1c35df6b5d70be39f80c159fcc14
+  case: errors_efault_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 116
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d0c6e9bef34c440f19ea8dcb654a114192d1c35df6b5d70be39f80c159fcc14
+  case: errors_efault_116

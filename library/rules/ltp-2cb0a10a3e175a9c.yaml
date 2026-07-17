@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:fd5fc99bf8ff11fe4eb07ee9f93a847d9ef066f72a50273b6fa72f389e9a58c3
   case: sched_getaffinity01_56_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+  line: 56
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fd5fc99bf8ff11fe4eb07ee9f93a847d9ef066f72a50273b6fa72f389e9a58c3
+  case: sched_getaffinity01_56_raw_0

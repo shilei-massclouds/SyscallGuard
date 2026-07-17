@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath is a directory；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D66228B4B29734E5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EPERM
+    summary: oldpath is a directory
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:d66228b4b29734e5df03bfb6070877135f08e7b6b31dd20161d7702b17a5c9be
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:754049fcdf66eac411471fd7a26c908328ab0b2dd2d863789d463423c757f449
+  case: errors_eperm_229
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:754049fcdf66eac411471fd7a26c908328ab0b2dd2d863789d463423c757f449
+  case: errors_eperm_229

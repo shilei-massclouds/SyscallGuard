@@ -1,0 +1,37 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 faccessat2(atcwd_fd, rel_path, -1, 0)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_144706EDC721819A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: atcwd_fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - atcwd_fd
+    - rel_path
+    - '-1'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:144706edc721819a5d8c2423f2ff01ddae8836248c2350964e3193232e22582a
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat202.c
+  line: 65
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:0262ed12557dd2d6095de58479d0eb81b4a91dd7482f6906003a8476c80134a5
+  case: faccessat202_65_2_0

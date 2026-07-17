@@ -1,0 +1,49 @@
+# 合规检查：条件：The output queue for a network interface was full. This generally indicates that the interface has stopped sending, but may be caused by transient...；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 ENOBUFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6C93411C3BFF79FE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOBUFS
+    summary: The output queue for a network interface was full. This generally indicates that the interface
+      has stopped sending, but may be caused by transient...
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOBUFS
+  errno:
+  - ENOBUFS
+semantic_hash: sha256:bbdaf071c64e0126bf8fa766e6df154841bb7da2e2791c4a11db75a4c3e0a4d9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 408
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8680beee6e9596cbc514053808cd6666c8f858eb83eb9cccd82dc89969bf8699
+  case: errors_enobufs_408
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 408
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8680beee6e9596cbc514053808cd6666c8f858eb83eb9cccd82dc89969bf8699
+  case: errors_enobufs_408

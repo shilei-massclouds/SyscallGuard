@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fchdir(fd)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E116073D3FDB5C1F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:5df89d10ec7725763781bc99e8b4d943a9e940b617f483ab009dffdc01a15907
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 44
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:c6193284d72848f6a4971b1e8760bf169c1712939f80ab8a8daf45db08687edf
+  case: return_value_44
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 44
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:c6193284d72848f6a4971b1e8760bf169c1712939f80ab8a8daf45db08687edf
+  case: return_value_44

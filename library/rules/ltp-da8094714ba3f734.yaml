@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.positive
   evidence_hash: sha256:bc3b958c2092ec7811b2413290625694cb8b6249a716ca8ab1245c188c2cbeca
   case: getpgid01_42_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getpgid/getpgid01.c
+  line: 42
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:bc3b958c2092ec7811b2413290625694cb8b6249a716ca8ab1245c188c2cbeca
+  case: getpgid01_42_raw_0

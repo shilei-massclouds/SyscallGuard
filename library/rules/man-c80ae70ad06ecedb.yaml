@@ -1,0 +1,47 @@
+# 合规检查：条件：( faccessat ()) path is relative and dirfd is a file descriptor referring to a file other than a directory；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C80AE70AD06ECEDB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( faccessat ()) path is relative and dirfd is a file descriptor referring to a file other
+      than a directory
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:c80ae70ad06ecedbeee8b73716ec01ce90439b58478682245ba0d9022ddc270f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 267
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f9864e1f4605461fe70d58fccfb2f517548e153800073a9a28106089750c566
+  case: errors_enotdir_267
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 267
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f9864e1f4605461fe70d58fccfb2f517548e153800073a9a28106089750c566
+  case: errors_enotdir_267

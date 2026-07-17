@@ -1,0 +1,46 @@
+# 合规检查：条件：req.mnt_fd is an invalid file descriptor；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_23EFF177A5F2D7A1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: req
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: req.mnt_fd is an invalid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:23eff177a5f2d7a1d7873408b815314a084c01202d5843b8880fe2e0f6720a21
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 430
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:15102939ae297027a432a61d54d4cc7474a4ac2399237f695b4b8de5897d276d
+  case: errors_ebadf_430
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 430
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:15102939ae297027a432a61d54d4cc7474a4ac2399237f695b4b8de5897d276d
+  case: errors_ebadf_430

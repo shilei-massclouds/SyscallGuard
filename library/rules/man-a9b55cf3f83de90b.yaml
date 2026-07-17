@@ -1,0 +1,47 @@
+# 合规检查：条件：RENAME_WHITEOUT was specified in flags , but the caller does not have the CAP_MKNOD capability；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A9B55CF3F83DE90B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: flags
+    predicate: insufficient_permission
+    value: EPERM
+    summary: RENAME_WHITEOUT was specified in flags , but the caller does not have the CAP_MKNOD capability
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:a9b55cf3f83de90b1f66e0303e8daaaca67305239bc9b73918a6fd51eb63621c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c42b3f6f02514b4d881375e65c643eaa407041ad0a5b3ec0be0ff64361bbc6c9
+  case: errors_eperm_483
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 483
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c42b3f6f02514b4d881375e65c643eaa407041ad0a5b3ec0be0ff64361bbc6c9
+  case: errors_eperm_483

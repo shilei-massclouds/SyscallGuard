@@ -1,0 +1,36 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 sched_setaffinity(self_pid, mask_size, fmask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_5818495120E9862A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - self_pid
+    - mask_size
+    - fmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5818495120e9862a9d6e8e943fe7d0bacb9f252a9f7d78d65e0fda2b5a1d0ef3
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
+  line: 69
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:80f096d5eed40d50fd406a0a78c6a3dc78f876c6d3452bc1ad984f9b8902a61e
+  case: sched_setaffinity01_69_0_0

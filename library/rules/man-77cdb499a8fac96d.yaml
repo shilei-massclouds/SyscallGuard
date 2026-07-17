@@ -1,0 +1,47 @@
+# 合规检查：条件：An operation could not proceed immediately and either IPC_NOWAIT was specified in sem_flg or the time limit specified in timeout expired；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_77CDB499A8FAC96D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: timeout
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: An operation could not proceed immediately and either IPC_NOWAIT was specified in sem_flg
+      or the time limit specified in timeout expired
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:9a9d0df208809181c5a01848212fe8e4533a636d3d4d54d63a6a5f7b9407779f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 297
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc2f07540317d696ae791e40c15d3055b1f2cb9ecec07e81038e3a550bf00695
+  case: errors_eagain_297
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 297
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc2f07540317d696ae791e40c15d3055b1f2cb9ecec07e81038e3a550bf00695
+  case: errors_eagain_297

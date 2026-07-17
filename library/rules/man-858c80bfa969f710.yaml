@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned when the requested event requires CAP_PERFMON (since Linux 5.8) or CAP_SYS_ADMIN permissions (or a more permissive perf_event paranoid setting)....；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_858C80BFA969F710
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: Returned when the requested event requires CAP_PERFMON (since Linux 5.8) or CAP_SYS_ADMIN
+      permissions (or a more permissive perf_event paranoid setting)....
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:858c80bfa969f710376f2461791c5c34766d9ee2534132176571786f6135f09b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3765
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c680bd4636093d0709b5b30dd36d5985fad2402c800541b3b1505003b905998f
+  case: errors_eacces_3765
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3765
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c680bd4636093d0709b5b30dd36d5985fad2402c800541b3b1505003b905998f
+  case: errors_eacces_3765

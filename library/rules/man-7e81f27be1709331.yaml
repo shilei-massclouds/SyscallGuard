@@ -1,0 +1,43 @@
+# 合规检查：条件：fd is bound to a special file (e.g., a pipe, FIFO, or socket) which does not support synchronization；检查：调用 fsync(fd)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7E81F27BE1709331
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd is bound to a special file (e.g., a pipe, FIFO, or socket) which does not support synchronization
+  action:
+    operation: invoke_syscall
+    syscall: fsync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1ebd1a01f14be31fe85f9cb0dfc1179f57b5f97e661ea9c127b0ad146449f902
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eecfe318fa759bae791261fa945ab182a07752be945aff3d94348a02cab9c569
+  case: errors_einval_125
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eecfe318fa759bae791261fa945ab182a07752be945aff3d94348a02cab9c569
+  case: errors_einval_125

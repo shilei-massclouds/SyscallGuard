@@ -1,0 +1,46 @@
+# 合规检查：条件：The argument op is equal to IPC_STAT or MSG_STAT , but the calling process does not have read permission on the message queue msqid , and does not have the...；检查：调用 msgctl(msqid, op, buf)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5CBF63A239A782AE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: msqid
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The argument op is equal to IPC_STAT or MSG_STAT , but the calling process does not have
+      read permission on the message queue msqid , and does not have the...
+  action:
+    operation: invoke_syscall
+    syscall: msgctl
+    arguments:
+    - msqid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:5cbf63a239a782ae09b56b2ca2f9436626655d67af4240091fc99ad0f9e1c4eb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 315
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e541ccfe58c3ff253e676b792250990c9fad3fc4abbd4ae220b912fbb245fe90
+  case: errors_eacces_315
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgctl.2
+  line: 315
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e541ccfe58c3ff253e676b792250990c9fad3fc4abbd4ae220b912fbb245fe90
+  case: errors_eacces_315

@@ -1,0 +1,47 @@
+# 合规检查：条件：The path indicated by from_dirfd and from_path is not a mount object；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7F3C070C0F27DDE3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: from_dirfd
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The path indicated by from_dirfd and from_path is not a mount object
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7f3c070c0f27dde392a830bdf57510a6fec0eb581b451bf1b8df026b304843ef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2d1498d330d218cc20756d8aac652e6e19fcf017029ca1c348c92a2895b8c4f
+  case: errors_einval_419
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2d1498d330d218cc20756d8aac652e6e19fcf017029ca1c348c92a2895b8c4f
+  case: errors_einval_419

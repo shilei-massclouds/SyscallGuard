@@ -1,0 +1,47 @@
+# 合规检查：条件：addr , size , prot , or pgoff is invalid；检查：调用 remap_file_pages(size, size, prot, pgoff, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BC766A7E60DD5054
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: addr , size , prot , or pgoff is invalid
+  action:
+    operation: invoke_syscall
+    syscall: remap_file_pages
+    arguments:
+    - size
+    - size
+    - prot
+    - pgoff
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bc766a7e60dd50542bd67a9a599e660ccfbade8bdd40e916463395a31f7dec0b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 135
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe6aaf1b71e06b6d05b4db485136e2a92d9087510a2f3c15f2df5a38f3324802
+  case: errors_einval_135
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: remap_file_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 135
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe6aaf1b71e06b6d05b4db485136e2a92d9087510a2f3c15f2df5a38f3324802
+  case: errors_einval_135

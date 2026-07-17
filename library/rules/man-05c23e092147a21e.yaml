@@ -1,0 +1,43 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05C23E092147A21E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:eb16f9de94abbb14f643308802781904ca1badd2b2080b731d8e5ecf14a50f63
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a0d90a0b58629cb8bcafe2f39cd6636318c1a1187b1b14611b2e569c0a31bf3
+  case: errors_efault_60
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a0d90a0b58629cb8bcafe2f39cd6636318c1a1187b1b14611b2e569c0a31bf3
+  case: errors_efault_60

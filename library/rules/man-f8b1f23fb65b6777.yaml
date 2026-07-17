@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 pkey_free(pkey)；预期：{'kind': 'positive_return', 'return': '>0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F8B1F23FB65B6777
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: pkey_free
+    arguments:
+    - pkey
+  expected_result:
+    kind: positive_return
+    return: '>0'
+  errno: []
+semantic_hash: sha256:be8b12836a570b3921d3f4e616392dd6a2131d33286d4644c4b6a15e0295ceb9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 55
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:37c967c06de3eaa0e0e50d41f8b4fae605b1976f9f631f0270e9d75518848476
+  case: return_value_55
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pkey_free
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pkey_alloc.2
+  line: 55
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:37c967c06de3eaa0e0e50d41f8b4fae605b1976f9f631f0270e9d75518848476
+  case: return_value_55

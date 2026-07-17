@@ -1,0 +1,45 @@
+# 合规检查：条件：shmid points to a removed identifier；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FEF731D4F49A2C00
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: shmid
+    predicate: documented_condition
+    value: EIDRM
+    summary: shmid points to a removed identifier
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:fef731d4f49a2c00e47f286dedddce2881069c5a4f756ec0defd4ea235534627
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d56893ec836311964e680ebbbd8eee826adda2b04a09def9768fc1bfbaa6b254
+  case: errors_eidrm_388
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d56893ec836311964e680ebbbd8eee826adda2b04a09def9768fc1bfbaa6b254
+  case: errors_eidrm_388

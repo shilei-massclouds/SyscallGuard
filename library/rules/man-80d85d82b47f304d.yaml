@@ -1,0 +1,46 @@
+# 合规检查：条件：An invalid value was specified for advice；检查：调用 fadvise64(fd, offset, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_80D85D82B47F304D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: advice
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid value was specified for advice
+  action:
+    operation: invoke_syscall
+    syscall: fadvise64
+    arguments:
+    - fd
+    - offset
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:80d85d82b47f304d9f75b8e03e28acceae1cdcd56550d808c8a03295c4cd7f12
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8561e94844c94ecbeb09c98f97884f3762dadfd72df0a69399dbfa27536488bc
+  case: errors_einval_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fadvise64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8561e94844c94ecbeb09c98f97884f3762dadfd72df0a69399dbfa27536488bc
+  case: errors_einval_141

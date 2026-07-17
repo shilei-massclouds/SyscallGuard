@@ -1,0 +1,35 @@
+# 合规检查：条件：The thread whose ID is pid could not be found；检查：调用 sched_getscheduler(pid)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E681781B7AEB92F3--e681781b7aeb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: The thread whose ID is pid could not be found
+  action:
+    operation: invoke_syscall
+    syscall: sched_getscheduler
+    arguments:
+    - pid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:e681781b7aeb92f35f1e27ec99ae43af5cf500e3d582265a3531bb7bfe8564b6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getscheduler
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:06c364f5ea23db6034aec7c88e2f65c9e18fd9fc6a78e12f0242c374321c6cc0
+  case: errors_esrch_155

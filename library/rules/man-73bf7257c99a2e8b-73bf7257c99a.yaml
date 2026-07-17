@@ -1,0 +1,37 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 getsockopt(sockfd, level, optname, optlen, optlen)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73BF7257C99A2E8B--73bf7257c99a
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:73bf7257c99a2e8b184950e8580e082a02866b7c3f3857fb674c9a4ec1b3d615
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 98
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d3aef884cf4a846d1534ca55a8413df737cbf9d20ad7e4ddf3eb780f1a9ac44c
+  case: return_value_98

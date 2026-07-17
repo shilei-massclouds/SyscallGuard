@@ -1,0 +1,44 @@
+# 合规检查：条件：buf does not point to writable memory；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C480BD0B4E985931
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: buf
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: buf does not point to writable memory
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f26aa469c9c6cce5334f3449e7e2097b0d62e3b98fd9e4d454ed2badce880cd2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:64c5197673177153584e2f5415608744b699b3db83f0b0563c7c3247b12d11d1
+  case: errors_efault_466
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:64c5197673177153584e2f5415608744b699b3db83f0b0563c7c3247b12d11d1
+  case: errors_efault_466

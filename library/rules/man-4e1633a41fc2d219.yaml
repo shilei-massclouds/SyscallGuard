@@ -1,0 +1,44 @@
+# 合规检查：条件：flags had an invalid flag set；检查：调用 fsopen(fsname, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4E1633A41FC2D219
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags had an invalid flag set
+  action:
+    operation: invoke_syscall
+    syscall: fsopen
+    arguments:
+    - fsname
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4e1633a41fc2d21975e3c844138ff999652e9419488753acbc8aac83353cface
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9fe70fc8259d514547181b047f660c40c92915751b8f3e100e78a09f3a855e56
+  case: errors_einval_235
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsopen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9fe70fc8259d514547181b047f660c40c92915751b8f3e100e78a09f3a855e56
+  case: errors_einval_235

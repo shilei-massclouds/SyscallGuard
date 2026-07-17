@@ -1,0 +1,46 @@
+# 合规检查：条件：timerid is invalid. timer_settime () may fail with the following errors:；检查：调用 timer_settime(timerid, flags, new_value, old_value)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E2C5701A4F2BD7FE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timerid
+    predicate: documented_condition
+    value: EINVAL
+    summary: 'timerid is invalid. timer_settime () may fail with the following errors:'
+  action:
+    operation: invoke_syscall
+    syscall: timer_settime
+    arguments:
+    - timerid
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e2c5701a4f2bd7fe58779d4202fd706e702b42a750565649ec668127079b7341
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 160
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:53bc143dca8093fd5d16f44c187c209c57da442f13280b852989e1f6da6a3864
+  case: errors_einval_160
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_settime.2
+  line: 160
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:53bc143dca8093fd5d16f44c187c209c57da442f13280b852989e1f6da6a3864
+  case: errors_einval_160

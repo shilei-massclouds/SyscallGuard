@@ -1,0 +1,37 @@
+# 合规检查：条件：A supplied memory address was invalid；检查：调用 sched_getaffinity(pid, cpusetsize, mask)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D468436403120505--d46843640312
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: A supplied memory address was invalid
+  action:
+    operation: invoke_syscall
+    syscall: sched_getaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d468436403120505f8dcc7a84f50404d0a0c74b8982de99b26a516855f5be0b7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 95
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7ff82dfe816a633d75d889948e877a2acc4e5a7119eab3c3b84983b855184b5f
+  case: errors_efault_95

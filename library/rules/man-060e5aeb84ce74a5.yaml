@@ -1,0 +1,47 @@
+# 合规检查：条件：flags contains RENAME_EXCHANGE and newpath does not exist；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_060E5AEB84CE74A5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: newpath
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: flags contains RENAME_EXCHANGE and newpath does not exist
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:060e5aeb84ce74a5c384bfb0676ecb2993f4353bea127e671ef17aa248d9080b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 475
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:99a0bfe11f52b93c0081b5c3420b62308c45a4cd8225ba29142baf81feb97e8d
+  case: errors_enoent_475
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 475
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:99a0bfe11f52b93c0081b5c3420b62308c45a4cd8225ba29142baf81feb97e8d
+  case: errors_enoent_475

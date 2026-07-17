@@ -1,0 +1,48 @@
+# 合规检查：条件：Each opened event uses one file descriptor. If a large number of events are opened, the per-process limit on the number of open file descriptors will be...；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C3C4A64CC1B204E2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: Each opened event uses one file descriptor. If a large number of events are opened, the per-process
+      limit on the number of open file descriptors will be...
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:c3c4a64cc1b204e2b373928b5fb5786b4fe9ca8e1da7c9b8f77750bccbac21ac
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3832
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7cc453d2d3200ee034ec106b235d805d96cbdd510f0e3fe190cb00d5acd02143
+  case: errors_emfile_3832
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3832
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7cc453d2d3200ee034ec106b235d805d96cbdd510f0e3fe190cb00d5acd02143
+  case: errors_emfile_3832

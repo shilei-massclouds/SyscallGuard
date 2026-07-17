@@ -1,0 +1,41 @@
+# 合规检查：条件：Both CLONE_SIGHAND and CLONE_CLEAR_SIGHAND were specified in the flags mask；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4F1974600A9BD598--4f1974600a9b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both CLONE_SIGHAND and CLONE_CLEAR_SIGHAND were specified in the flags mask
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4f1974600a9bd598125d3b9f0ecf5328b1a2710210d1eb64aaaa9c60e26e19b3
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1230
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:625a3d69c6efc5afbc098c2cd72117c93a14cb67c4748a948066318d051610a5
+  case: errors_einval_1230

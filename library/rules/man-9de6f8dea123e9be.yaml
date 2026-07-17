@@ -1,0 +1,46 @@
+# 合规检查：条件：The specified operation does not apply to the kind of object that the file descriptor fd references；检查：调用 ioctl(fd, op, arg3)；预期：返回 -1，errno 为 ENOTTY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9DE6F8DEA123E9BE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ENOTTY
+    summary: The specified operation does not apply to the kind of object that the file descriptor fd
+      references
+  action:
+    operation: invoke_syscall
+    syscall: ioctl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTTY
+  errno:
+  - ENOTTY
+semantic_hash: sha256:9de6f8dea123e9be97d23046bffae4436bf3f0c81a764a9c146508d1cd801798
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f78bd0ac5b5b7f7a175c327fe35cf15c7741c38f6dd73000e36d40d42e9d4309
+  case: errors_enotty_83
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f78bd0ac5b5b7f7a175c327fe35cf15c7741c38f6dd73000e36d40d42e9d4309
+  case: errors_enotty_83

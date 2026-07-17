@@ -1,0 +1,37 @@
+# 合规检查：条件：Permission denied. For the required permissions, see kill (2)；检查：调用 tgkill(tgid, tid, sig)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2CA114792327E0E9--2ca114792327
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: Permission denied. For the required permissions, see kill (2)
+  action:
+    operation: invoke_syscall
+    syscall: tgkill
+    arguments:
+    - tgid
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:2ca114792327e0e9a3ec18b2019619466784d621514f98680fbae04c44ba4e5b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tgkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 101
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32d7775794b52ec189e1da4aa081ec8dd5f24fb6784d4c467a76e072306d48f4
+  case: errors_eperm_101

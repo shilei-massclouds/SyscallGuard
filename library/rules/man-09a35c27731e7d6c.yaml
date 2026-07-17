@@ -1,0 +1,46 @@
+# 合规检查：条件：(Linux only) This may be returned by dup2 () or dup3 () during a race condition with open (2) and dup ()；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_09A35C27731E7D6C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: (Linux only) This may be returned by dup2 () or dup3 () during a race condition with open
+      (2) and dup ()
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:09a35c27731e7d6c4c4953ad35779f91dac2a9b15f88216e570293e0c99cd7a5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fda62fd6b458cb82a30b893c0e62fd7ac943a3305c579cfcd58201608a4e2b0c
+  case: errors_ebusy_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fda62fd6b458cb82a30b893c0e62fd7ac943a3305c579cfcd58201608a4e2b0c
+  case: errors_ebusy_154

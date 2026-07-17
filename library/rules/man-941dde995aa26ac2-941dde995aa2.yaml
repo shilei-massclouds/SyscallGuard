@@ -1,0 +1,36 @@
+# 合规检查：条件：fd does not reference a regular file or a POSIX shared memory object；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_941DDE995AA26AC2--941dde995aa2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd does not reference a regular file or a POSIX shared memory object
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:941dde995aa26ac27e815551a48b473cfefd534549767f936c8fbbb470de4eea
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1f9416e055a023c4395da85635081ebccec9cb738e821d3f7ad731ee43dff86
+  case: errors_einval_169

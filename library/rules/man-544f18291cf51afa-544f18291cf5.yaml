@@ -1,0 +1,34 @@
+# 合规检查：条件：sig , tgid , or tid was invalid；检查：调用 rt_sigqueueinfo()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_544F18291CF51AFA--544f18291cf5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: sig , tgid , or tid was invalid
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigqueueinfo
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:544f18291cf51afa96cd5eca7bed8f5f7ba609d502b6300c238390e93925f4a8
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ba730577bc8388a1f9b224c70149e0d9d1bebdfcb89a7cc6b6be024c6d498b0
+  case: errors_einval_139

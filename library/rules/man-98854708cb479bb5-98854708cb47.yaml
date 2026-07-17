@@ -1,0 +1,38 @@
+# 合规检查：条件：(For UNIX domain sockets, which are identified by pathname) Write permission is denied on the destination socket file, or search permission is denied for...；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98854708CB479BB5--98854708cb47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: (For UNIX domain sockets, which are identified by pathname) Write permission is denied on
+      the destination socket file, or search permission is denied for...
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:98854708cb479bb57ea411e017c680f9e136a1b5ed45db70df9c77c74bb3ba7e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 340
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:631fa34688d0ccd3230eed56234ed1b852b4cf2ae5151a42a1dbad151f78e630
+  case: errors_eacces_340

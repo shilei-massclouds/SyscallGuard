@@ -1,0 +1,44 @@
+# 合规检查：条件：(for swapon ()) The specified path is already being used as a swap area；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_356DB6479B5066CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EBUSY
+    summary: (for swapon ()) The specified path is already being used as a swap area
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:356db6479b5066cd474b649dcd7858c90642554026606b87cfcbbca64a408bcb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a1a23ffb8da9e6672de7d13f4e285c51623cae01e31cd745a17f62ced818bea
+  case: errors_ebusy_90
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a1a23ffb8da9e6672de7d13f4e285c51623cae01e31cd745a17f62ced818bea
+  case: errors_ebusy_90

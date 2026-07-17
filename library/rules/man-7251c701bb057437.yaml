@@ -1,0 +1,44 @@
+# 合规检查：条件：On NFS, these errors are not normally reported against the first write which exceeds the available storage space, but instead against a subsequent write...；检查：调用 close(fd)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7251C701BB057437
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: On NFS, these errors are not normally reported against the first write which exceeds the
+      available storage space, but instead against a subsequent write...
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:7251c701bb0574370c34ac73c5a486941ab03cedf096b32e774f30ec74b28949
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9f86cf47800d8b0635c3776ee5e243a110fe39d555e64b05fe42ae7d5ba74444
+  case: errors_edquot_70
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: close
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/close.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9f86cf47800d8b0635c3776ee5e243a110fe39d555e64b05fe42ae7d5ba74444
+  case: errors_edquot_70

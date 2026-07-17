@@ -1,0 +1,34 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 close(fd_invalid)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7E3E96A4962D78D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd_invalid
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: close
+    arguments:
+    - fd_invalid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:7e3e96a4962d78d4df7e74b7a5749127317130f148655b111351c2f28839c866
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/close/close02.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:ca06bbc53eefb436eb820838ed9c11d4c60dad02286a1ca034807cb7b06e8dc1
+  case: close02_35_0_0

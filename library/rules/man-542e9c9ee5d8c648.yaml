@@ -1,0 +1,45 @@
+# 合规检查：条件：Landlock is supported by the kernel but disabled at boot time；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_542E9C9EE5D8C648
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: Landlock is supported by the kernel but disabled at boot time
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:542e9c9ee5d8c648885a124d4f672bcb94201a1fd074a69daff9154b726ff8da
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81d2f3f50cceea01aeffd45592a429071265ea50b2ceafd9bd11d04ab6d68aba
+  case: errors_eopnotsupp_211
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81d2f3f50cceea01aeffd45592a429071265ea50b2ceafd9bd11d04ab6d68aba
+  case: errors_eopnotsupp_211

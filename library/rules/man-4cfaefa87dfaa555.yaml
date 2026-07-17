@@ -1,0 +1,44 @@
+# 合规检查：条件：ruleset_fd is not a ruleset file descriptor；检查：调用 landlock_restrict_self(ruleset_fd, flags)；预期：返回 -1，errno 为 EBADFD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4CFAEFA87DFAA555
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: ruleset_fd
+    predicate: invalid_or_wrong_type
+    value: EBADFD
+    summary: ruleset_fd is not a ruleset file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: landlock_restrict_self
+    arguments:
+    - ruleset_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADFD
+  errno:
+  - EBADFD
+semantic_hash: sha256:4cfaefa87dfaa55527b64dd401f5f6892742923e89efdfcf6fbd65ca1f3a05aa
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 172
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3ee81295628aeba75ea9ded5f074a5f03b2b7817bb6bbd52307dc1eaa5d28c78
+  case: errors_ebadfd_172
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_restrict_self
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 172
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3ee81295628aeba75ea9ded5f074a5f03b2b7817bb6bbd52307dc1eaa5d28c78
+  case: errors_ebadfd_172

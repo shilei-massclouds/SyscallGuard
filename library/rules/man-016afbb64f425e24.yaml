@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_016AFBB64F425E24
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:016afbb64f425e2475066962ff2afde848fea591d587c2409fc2ce9b46325a78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 593
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:70b7a2e95de55ac6322e034149606576f9094786a1205063a2928dffe4a7cdfe
+  case: return_value_593
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 593
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:70b7a2e95de55ac6322e034149606576f9094786a1205063a2928dffe4a7cdfe
+  case: return_value_593

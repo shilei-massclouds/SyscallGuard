@@ -1,0 +1,49 @@
+# 合规检查：条件：The connection-mode socket was connected already but a recipient was specified. (Now either this error is returned, or the recipient specification is ignored.)；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EISCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FF7AC002AD46509D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EISCONN
+    summary: The connection-mode socket was connected already but a recipient was specified. (Now either
+      this error is returned, or the recipient specification is ignored.)
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISCONN
+  errno:
+  - EISCONN
+semantic_hash: sha256:e9e8d95655158736eca43af76352f9b8f5b4109045c1da4a5d97414087a54e35
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94bec4398cf0615a21e304bd17ab5ffb14e3730d81fafd3a8b56be36c32efbeb
+  case: errors_eisconn_396
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:94bec4398cf0615a21e304bd17ab5ffb14e3730d81fafd3a8b56be36c32efbeb
+  case: errors_eisconn_396

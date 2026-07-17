@@ -1,0 +1,40 @@
+# 合规检查：条件：The underlying filesystem of the specified file does not support memory mapping；检查：调用 mmap(length, length, prot, flags, fd, offset)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9997FFB8AA0BC13C--9997ffb8aa0b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENODEV
+    summary: The underlying filesystem of the specified file does not support memory mapping
+  action:
+    operation: invoke_syscall
+    syscall: mmap
+    arguments:
+    - length
+    - length
+    - prot
+    - flags
+    - fd
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:9997ffb8aa0bc13c74e0e205a62acc33a76fe2cd5a767e0117070e1bca0deb9f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 560
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db3153091ae20f0538bec4fd3bb3c72cd993f29a765d00c96057a3b1b2cba24e
+  case: errors_enodev_560

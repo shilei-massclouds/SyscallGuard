@@ -1,0 +1,48 @@
+# 合规检查：条件：The file referred to by oldpath already has the maximum number of links to it. For example, on an ext4 (5) filesystem that does not employ the dir_index...；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EMLINK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26E9E7401804792E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EMLINK
+    summary: The file referred to by oldpath already has the maximum number of links to it. For example,
+      on an ext4 (5) filesystem that does not employ the dir_index...
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMLINK
+  errno:
+  - EMLINK
+semantic_hash: sha256:26e9e7401804792ed5cf321cb1dd42178740ad6fa5e94d5933b8fc1789af6fe5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a609b1dfd8eabd056d8110f06ed97e90cb3791c2afbf48d925744d33bad0813
+  case: errors_emlink_195
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 195
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a609b1dfd8eabd056d8110f06ed97e90cb3791c2afbf48d925744d33bad0813
+  case: errors_emlink_195

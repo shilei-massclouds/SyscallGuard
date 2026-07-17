@@ -1,0 +1,37 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 openat2(AT_FDCWD, "/proc/version", how, sizeof(*how))；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_7BB1BB36E9CF4892
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - AT_FDCWD
+    - '"/proc/version"'
+    - how
+    - sizeof(*how)
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:7bb1bb36e9cf4892f58aec7e67c027d16bebad17744b2f8294fb86d265ab715d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/openat2/openat202.c
+  line: 54
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1ecded63f0629ffa70c253bb1efb80a905a272d847592a59c9c4dfbe1d1cdf5e
+  case: openat202_54_8_0

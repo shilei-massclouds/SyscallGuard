@@ -1,0 +1,49 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 mbind(size, size, size, mode, ULONG_WIDTH, maxnode, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4F90C077A864B302
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: mbind
+    arguments:
+    - size
+    - size
+    - size
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:4f90c077a864b30231691c7bd6a3bc26fee0d0c6f092216e05c24d2f0ee87003
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de3fdcedd3cb7688d93fafee5af4af2f77959062ec532306c2b29f679650519
+  case: errors_enomem_448
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mbind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 448
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de3fdcedd3cb7688d93fafee5af4af2f77959062ec532306c2b29f679650519
+  case: errors_enomem_448

@@ -1,0 +1,37 @@
+# 合规检查：条件：Insufficient kernel memory was available and sig is a real-time signal；检查：调用 tgkill(tgid, tid, sig)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0FB5B0A9E82D9C13--0fb5b0a9e82d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: sig
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: Insufficient kernel memory was available and sig is a real-time signal
+  action:
+    operation: invoke_syscall
+    syscall: tgkill
+    arguments:
+    - tgid
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:0fb5b0a9e82d9c13f1abd0e30c16699798dd32eb3ccaf5357473fc3f6675949b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tgkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4497246b1cd63c5971943b4072c6dd3bb49d81a1ba59a9767a9be74351d0584b
+  case: errors_eagain_93

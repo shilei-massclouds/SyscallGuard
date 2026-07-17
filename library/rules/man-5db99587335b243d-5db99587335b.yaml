@@ -1,0 +1,37 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5DB99587335B243D--5db99587335b
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:5db99587335b243d7097be37cb58ee9788770a105260c19377c5da53349317b5
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 310
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:156e38cae2836a3811b10939fb243a668ba7436c0f0d93af7953b8b78e115294
+  case: return_value_310

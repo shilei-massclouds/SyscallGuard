@@ -1,0 +1,45 @@
+# 合规检查：条件：A message queue exists for key , but the calling process does not have permission to access the queue, and does not have the CAP_IPC_OWNER capability in the...；检查：调用 msgget(key, msgflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2138716686607D9D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: key
+    predicate: insufficient_permission
+    value: EACCES
+    summary: A message queue exists for key , but the calling process does not have permission to access
+      the queue, and does not have the CAP_IPC_OWNER capability in the...
+  action:
+    operation: invoke_syscall
+    syscall: msgget
+    arguments:
+    - key
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:2138716686607d9d07bfdf41fef2001adb6d256375ae37cc6997e8319ffb8a3a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:721fcb686579c2cb0c3be14b180e69b3a2128d08c6619560e431fab79345cd92
+  case: errors_eacces_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:721fcb686579c2cb0c3be14b180e69b3a2128d08c6619560e431fab79345cd92
+  case: errors_eacces_126

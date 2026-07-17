@@ -1,0 +1,43 @@
+# 合规检查：条件：The AIO context specified by ctx_id is invalid；检查：调用 io_destroy(ctx_id)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_299A0347BFD65B11
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: ctx_id
+    predicate: documented_condition
+    value: EINVAL
+    summary: The AIO context specified by ctx_id is invalid
+  action:
+    operation: invoke_syscall
+    syscall: io_destroy
+    arguments:
+    - ctx_id
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:299a0347bfd65b114f8ce058622eadb64b1aebca8def9640c2f5b9abe7e2b5a7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_destroy.2
+  line: 50
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0daf68f96e4f32dff515a07be7b10c01bb9694c65dcaa6952ae1bbedbfa2c198
+  case: errors_einval_50
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_destroy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_destroy.2
+  line: 50
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0daf68f96e4f32dff515a07be7b10c01bb9694c65dcaa6952ae1bbedbfa2c198
+  case: errors_einval_50

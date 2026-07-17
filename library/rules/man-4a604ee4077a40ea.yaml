@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 nfsservctl(cmd, argp, resp)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4A604EE4077A40EA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: nfsservctl
+    arguments:
+    - cmd
+    - argp
+    - resp
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:4a604ee4077a40ea59ccbd9cf6d57cfef16e96fe6620338c531e03e5fbb436c8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/nfsservctl.2
+  line: 61
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:917cd816df46d354c69261ebb04b93e03f77072cfbf3d272f764a83285272233
+  case: return_value_61
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: nfsservctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/nfsservctl.2
+  line: 61
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:917cd816df46d354c69261ebb04b93e03f77072cfbf3d272f764a83285272233
+  case: return_value_61

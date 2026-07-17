@@ -1,0 +1,47 @@
+# 合规检查：条件：source had an invalid superblock；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED0BB543F95CC312
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: source
+    predicate: documented_condition
+    value: EINVAL
+    summary: source had an invalid superblock
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ed0bb543f95cc312f57739f05c5933a4fe224871a889901d259343273310cb51
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 682
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:398ec70bef36e73bf25af291b38bb2784c70576d8b4d46c9161f7ea70993cf1c
+  case: errors_einval_682
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 682
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:398ec70bef36e73bf25af291b38bb2784c70576d8b4d46c9161f7ea70993cf1c
+  case: errors_einval_682

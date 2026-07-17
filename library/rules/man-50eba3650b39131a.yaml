@@ -1,0 +1,45 @@
+# 合规检查：条件：SCHED_DEADLINE admission control failure, see sched (7)；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_50EBA3650B39131A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: SCHED_DEADLINE admission control failure, see sched (7)
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:7ef99dc9b805b8342229b22ec62c68c9d4f1bf45e37384e33672b456be8719ce
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04e081f8a84ed4886dcf3b4ba78f9a1ac254a4c7b9f220aa7429da8503169adf
+  case: errors_ebusy_407
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 407
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04e081f8a84ed4886dcf3b4ba78f9a1ac254a4c7b9f220aa7429da8503169adf
+  case: errors_ebusy_407

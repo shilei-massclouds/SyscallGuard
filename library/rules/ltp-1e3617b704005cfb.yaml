@@ -1,0 +1,42 @@
+# 合规检查：条件：The file descriptor is invalid.、The argument is a userspace buffer.；检查：调用 pread64(fd, &buf, K1, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_1E3617B704005CFB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: pread64
+    arguments:
+    - fd
+    - '&buf'
+    - K1
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1e3617b704005cfb56d59376d50659bdd95129c98cd7f3d97306270e2d4af5a5
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pread/pread02.c
+  line: 42
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:e355eb5a4b70eb9e02c5b2e8636d010ea907d4101f8d357aec398ee6f329a160
+  case: pread02_42_1_0

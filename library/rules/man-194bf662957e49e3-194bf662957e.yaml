@@ -1,0 +1,37 @@
+# 合规检查：条件：No memory available；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_194BF662957E49E3--194bf662957e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: No memory available
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:194bf662957e49e303f03076003ba31d166a82db22c523a69e458484b2ecc121
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5abdcabcb7e04b40c061a809102a6f58907d2388d8789cc40ca5d1d4be47a1bb
+  case: errors_enomem_416

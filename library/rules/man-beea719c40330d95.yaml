@@ -1,0 +1,47 @@
+# 合规检查：条件：The KEXEC_ON_CRASH flags was specified, but the region specified by the mem and memsz fields of one of the segments entries lies outside the range of memory...；检查：调用 kexec_load(entry, nr_segments, nr_segments, flags)；预期：返回 -1，errno 为 EADDRNOTAVAIL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BEEA719C40330D95
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: EADDRNOTAVAIL
+    summary: The KEXEC_ON_CRASH flags was specified, but the region specified by the mem and memsz fields
+      of one of the segments entries lies outside the range of memory...
+  action:
+    operation: invoke_syscall
+    syscall: kexec_load
+    arguments:
+    - entry
+    - nr_segments
+    - nr_segments
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRNOTAVAIL
+  errno:
+  - EADDRNOTAVAIL
+semantic_hash: sha256:3f1bbe87203efdb5acb1b24c82fcee3d1f24957bff916aee0758b1796705ecd6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af69e5adae467eade569af38f9b5822728e21722eab96703640770bf1e3a380e
+  case: errors_eaddrnotavail_235
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af69e5adae467eade569af38f9b5822728e21722eab96703640770bf1e3a380e
+  case: errors_eaddrnotavail_235

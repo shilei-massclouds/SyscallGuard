@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:c2d9de71993eb609a84d21bb2a8027baf8c17e63d5e2856d57a779f0e2f94032
   case: ftruncate03_48_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/ftruncate/ftruncate03.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c2d9de71993eb609a84d21bb2a8027baf8c17e63d5e2856d57a779f0e2f94032
+  case: ftruncate03_48_1_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling process has insufficient privilege to call settimeofday (); under Linux the CAP_SYS_TIME capability is required；检查：调用 settimeofday(tv, tz)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6BACB1D8B8272512
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process has insufficient privilege to call settimeofday (); under Linux the CAP_SYS_TIME
+      capability is required
+  action:
+    operation: invoke_syscall
+    syscall: settimeofday
+    arguments:
+    - tv
+    - tz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:6bacb1d8b8272512103f574ed84611a0df5dc0b0ab42751c6552064f33a1f1a8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gettimeofday.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9453c47bf1b8a27cb89d6fe54ef4d3d8ef888c6f358c5ad9bb914c0e8fdc3e35
+  case: errors_eperm_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: settimeofday
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gettimeofday.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9453c47bf1b8a27cb89d6fe54ef4d3d8ef888c6f358c5ad9bb914c0e8fdc3e35
+  case: errors_eperm_154

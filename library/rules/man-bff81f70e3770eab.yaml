@@ -1,0 +1,46 @@
+# 合规检查：条件：The socket type does not support the requested communications protocol. This error can occur, for example, on an attempt to connect a UNIX domain datagram...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EPROTOTYPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BFF81F70E3770EAB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPROTOTYPE
+    summary: The socket type does not support the requested communications protocol. This error can occur,
+      for example, on an attempt to connect a UNIX domain datagram...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPROTOTYPE
+  errno:
+  - EPROTOTYPE
+semantic_hash: sha256:bff81f70e3770eabc0984581132d0f1cb0b73e29d4ef0b7cfa3af54ef29f2638
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e7be5db2c3e9b681a334b8b0d27443e2f6463c44231ba0378fa9752bae2bbee
+  case: errors_eprototype_200
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e7be5db2c3e9b681a334b8b0d27443e2f6463c44231ba0378fa9752bae2bbee
+  case: errors_eprototype_200

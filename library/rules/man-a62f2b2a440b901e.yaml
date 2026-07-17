@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sync_file_range(fd, offset, nbytes, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A62F2B2A440B901E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sync_file_range
+    arguments:
+    - fd
+    - offset
+    - nbytes
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:a62f2b2a440b901e6736b21b6811130e6a3f9f4409fbf134066917197f0f912b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 123
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:26e4458c4e67c32db6833035c6d97ec0a3cf539c2858379e5cc9e0ab38f2c21d
+  case: return_value_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync_file_range.2
+  line: 123
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:26e4458c4e67c32db6833035c6d97ec0a3cf539c2858379e5cc9e0ab38f2c21d
+  case: return_value_123

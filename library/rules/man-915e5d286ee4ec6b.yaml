@@ -1,0 +1,45 @@
+# 合规检查：条件：(since Linux 3.9) CLONE_NEWUSER was specified in the flags mask and the caller is in a chroot environment (i.e., the caller's root directory does not match...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_915E5D286EE4EC6B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EPERM
+    summary: (since Linux 3.9) CLONE_NEWUSER was specified in the flags mask and the caller is in a chroot
+      environment (i.e., the caller's root directory does not match...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:1edf4c7d06a5e653c047979285e3a5a04ea9e3afc4f1fa9c35f47b105c43b106
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1518
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5138e3f0ffccb1d804000511a614a2697a13ffc17e6eddee5817033863a4c4ba
+  case: errors_eperm_1518
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1518
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5138e3f0ffccb1d804000511a614a2697a13ffc17e6eddee5817033863a4c4ba
+  case: errors_eperm_1518

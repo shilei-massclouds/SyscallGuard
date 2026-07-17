@@ -1,0 +1,45 @@
+# 合规检查：条件：MAP_FIXED_NOREPLACE was specified in flags , and the range covered by addr and length clashes with an existing mapping；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ECC4567FF2E48872
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: length
+    predicate: invalid_value
+    value: EEXIST
+    summary: MAP_FIXED_NOREPLACE was specified in flags , and the range covered by addr and length clashes
+      with an existing mapping
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:041fa0b90e815d7125af1ebce146cc1320a55c49145df8633eadca0882be12c9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 521
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:92e16b5f569c8ae157189f84d439ec8c4ef706b245b47fc1549c5154a436632c
+  case: errors_eexist_521
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 521
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:92e16b5f569c8ae157189f84d439ec8c4ef706b245b47fc1549c5154a436632c
+  case: errors_eexist_521

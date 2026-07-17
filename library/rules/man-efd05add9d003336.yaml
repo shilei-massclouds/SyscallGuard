@@ -1,0 +1,35 @@
+# 合规检查：条件：(Not on Linux) addr was not a multiple of the page size；检查：调用 mlockall(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EFD05ADD9D003336
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: (Not on Linux) addr was not a multiple of the page size
+  action:
+    operation: invoke_syscall
+    syscall: mlockall
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:efd05add9d003336082a432415ca3243a2d9d82f1c91ef03b3055fd165e7cd10
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 208
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9de15f62728115999f9c224dbc3d1556e1d27e019c5c874225d9b77df2dd35e8
+  case: errors_einval_208

@@ -1,0 +1,39 @@
+# 合规检查：条件：XATTR_CREATE was specified, and the attribute exists already；检查：调用 lsetxattr(path, name, size, size, flags)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C3CDB84B3F8A1908
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EEXIST
+    summary: XATTR_CREATE was specified, and the attribute exists already
+  action:
+    operation: invoke_syscall
+    syscall: lsetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:c3cdb84b3f8a190841ef3b7958df152de0c32b734efef17f586057bea83024a7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3521efe63f1277cb4e4f9577c68627811745ffcee9541fe4d188fecc17480076
+  case: errors_eexist_104

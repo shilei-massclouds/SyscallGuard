@@ -1,0 +1,47 @@
+# 合规检查：条件：timeout is invalid. See also BUGS；检查：调用 recvmmsg(sockfd, n, n, flags, timeout)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1F8638F0BD38CCDA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timeout
+    predicate: documented_condition
+    value: EINVAL
+    summary: timeout is invalid. See also BUGS
+  action:
+    operation: invoke_syscall
+    syscall: recvmmsg
+    arguments:
+    - sockfd
+    - n
+    - n
+    - flags
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1f8638f0bd38ccda5086073b1856d3a7d1add9b785cc720c69014b582fa2d7f8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recvmmsg.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8a8fa9dcd0f9872c0c765d5eed311933b3dff1e4adbce29d8ed6abbe58d9f2af
+  case: errors_einval_144
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvmmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recvmmsg.2
+  line: 144
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8a8fa9dcd0f9872c0c765d5eed311933b3dff1e4adbce29d8ed6abbe58d9f2af
+  case: errors_einval_144

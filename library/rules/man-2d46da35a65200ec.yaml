@@ -1,0 +1,47 @@
+# 合规检查：条件：msg_len was greater than the mq_msgsize attribute of the message queue；检查：调用 mq_timedsend(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EMSGSIZE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2D46DA35A65200EC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: msg_len
+    predicate: invalid_value
+    value: EMSGSIZE
+    summary: msg_len was greater than the mq_msgsize attribute of the message queue
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedsend
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMSGSIZE
+  errno:
+  - EMSGSIZE
+semantic_hash: sha256:2d46da35a65200ecb47753749e775ae156645df5cb0a77e4dc811d2b8d39248a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:081a9012f7cd8b6484c3ab8bf8f75f43a3560b118a7af6cd18f8a83283d1c724
+  case: errors_emsgsize_132
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedsend
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:081a9012f7cd8b6484c3ab8bf8f75f43a3560b118a7af6cd18f8a83283d1c724
+  case: errors_emsgsize_132

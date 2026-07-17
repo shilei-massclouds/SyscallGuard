@@ -1,0 +1,37 @@
+# 合规检查：条件：( mlock (), mlock2 (), and munlock ()) Some of the specified address range does not correspond to mapped pages in the address space of the process；检查：调用 mlock(size, size)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5175E67C45874C49--5175e67c4587
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: ( mlock (), mlock2 (), and munlock ()) Some of the specified address range does not correspond
+      to mapped pages in the address space of the process
+  action:
+    operation: invoke_syscall
+    syscall: mlock
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:5175e67c45874c49e109bcd411dee32bd190cddbb52306795fe834b72b189e78
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98e2c30950f1c6b418c947a829f99c3586df77c85ed702f6055a37c08b0bfa64
+  case: errors_enomem_213

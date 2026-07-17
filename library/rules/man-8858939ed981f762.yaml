@@ -1,0 +1,48 @@
+# 合规检查：条件：The address pointed to by optval is not in a valid part of the process address space. For getsockopt (), this error may also be returned if optlen is not in...；检查：调用 getsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8858939ED981F762
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: optlen
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The address pointed to by optval is not in a valid part of the process address space. For
+      getsockopt (), this error may also be returned if optlen is not in...
+  action:
+    operation: invoke_syscall
+    syscall: getsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:8858939ed981f762940814e83d19e99a9120599318f57685e183bb072a682078
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c54d614db3f2bf04d9062b908e690db9c687fa24222ce868542f1bd9c9b6d44a
+  case: errors_efault_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c54d614db3f2bf04d9062b908e690db9c687fa24222ce868542f1bd9c9b6d44a
+  case: errors_efault_113

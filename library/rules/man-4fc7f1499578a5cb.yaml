@@ -1,0 +1,48 @@
+# 合规检查：条件：A move operation ( MS_MOVE ) was attempted, but the parent mount of source mount has propagation type MS_SHARED；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4FC7F1499578A5CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: source
+    predicate: documented_condition
+    value: EINVAL
+    summary: A move operation ( MS_MOVE ) was attempted, but the parent mount of source mount has propagation
+      type MS_SHARED
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4fc7f1499578a5cb0fcb4ba7853ecd39509865b62c679aaad4033e1f381e10fb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 704
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57f33529678f5e8cabce4e71ea89e759fb3a248840cad6efa0e5eede8aab5532
+  case: errors_einval_704
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 704
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57f33529678f5e8cabce4e71ea89e759fb3a248840cad6efa0e5eede8aab5532
+  case: errors_einval_704

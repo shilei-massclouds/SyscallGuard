@@ -1,0 +1,44 @@
+# 合规检查：条件：An invalid value was specified in how (but see BUGS)；检查：调用 shutdown(sockfd, how)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CAA0FFEFF7C64A82
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: how
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid value was specified in how (but see BUGS)
+  action:
+    operation: invoke_syscall
+    syscall: shutdown
+    arguments:
+    - sockfd
+    - how
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:caa0ffeff7c64a82bf218a9fb6d7c5dde87bcb41e8fb0795fc7bd39adf6f36ca
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 50
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b060a91a3f2596a06eadf76e121fb2af47ce75b5e9e15d5bf5afd68c8af9fbf
+  case: errors_einval_50
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shutdown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 50
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b060a91a3f2596a06eadf76e121fb2af47ce75b5e9e15d5bf5afd68c8af9fbf
+  case: errors_einval_50

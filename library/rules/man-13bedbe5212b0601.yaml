@@ -1,0 +1,43 @@
+# 合规检查：条件：(since Linux 5.17) The flag MODULE_INIT_COMPRESSED_FILE is set to load a compressed module, and the kernel was built without CONFIG_MODULE_DECOMPRESS；检查：调用 init_module()；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_13BEDBE5212B0601
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: (since Linux 5.17) The flag MODULE_INIT_COMPRESSED_FILE is set to load a compressed module,
+      and the kernel was built without CONFIG_MODULE_DECOMPRESS
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:bec52929d3207f434d4abd7bc5cc5bc9776a712d79b539bedd199d8e0416e811
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fbbe8df697dbc40dfdf0b26b2ddad529702769da4f21c8be3734d3f1fee2f16c
+  case: errors_eopnotsupp_274
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fbbe8df697dbc40dfdf0b26b2ddad529702769da4f21c8be3734d3f1fee2f16c
+  case: errors_eopnotsupp_274

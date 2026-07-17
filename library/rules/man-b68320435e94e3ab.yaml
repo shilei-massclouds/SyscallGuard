@@ -1,0 +1,46 @@
+# 合规检查：条件：( mknodat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B68320435E94E3AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( mknodat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b68320435e94e3ab790f931c55274f11cf0d4f04094e07a40441df1bc99106a0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 161
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:788dbc95344fdcdb2e40bb1a3a02ba0822b06cd026878e05f8b38eca3ddf60ad
+  case: errors_ebadf_161
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 161
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:788dbc95344fdcdb2e40bb1a3a02ba0822b06cd026878e05f8b38eca3ddf60ad
+  case: errors_ebadf_161

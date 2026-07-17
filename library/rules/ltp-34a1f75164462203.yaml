@@ -1,0 +1,35 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.；检查：调用 symlink(test_file, sym_file)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_34A1F75164462203
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  action:
+    operation: invoke_syscall
+    syscall: symlink
+    arguments:
+    - test_file
+    - sym_file
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:34a1f75164462203bdd61756365a433e542d77e60e5db737fd4c977902a8e080
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/symlink/symlink03.c
+  line: 171
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:76513c74bb71476957a2cd71ab16718687a17c2967bc133c5d5f54c7e2db9695
+  case: symlink03_171_5_0

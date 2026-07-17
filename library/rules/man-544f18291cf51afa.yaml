@@ -1,0 +1,46 @@
+# 合规检查：条件：sig , tgid , or tid was invalid；检查：调用 rt_tgsigqueueinfo(tgid, tid, sig, info)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_544F18291CF51AFA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: tgid
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: sig , tgid , or tid was invalid
+  action:
+    operation: invoke_syscall
+    syscall: rt_tgsigqueueinfo
+    arguments:
+    - tgid
+    - tid
+    - sig
+    - info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4d6c77a796470886c417b2f81358572bea8c7b80f201b5cdb8a1058c1e646f0c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:90853b5d90a0bd14c9d99ceb80e0a5c2b256fa14b90eaf027171b67cf0589471
+  case: errors_einval_139
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_tgsigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:90853b5d90a0bd14c9d99ceb80e0a5c2b256fa14b90eaf027171b67cf0589471
+  case: errors_einval_139

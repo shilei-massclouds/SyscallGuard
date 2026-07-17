@@ -1,0 +1,46 @@
+# 合规检查：条件：SCHED_FLAG_UTIL_CLAMP was provided, but the kernel was not built with CONFIG_UCLAMP_TASK support；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_603F4AB2BE3C6F35
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: SCHED_FLAG_UTIL_CLAMP was provided, but the kernel was not built with CONFIG_UCLAMP_TASK
+      support
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:a6e38f40fdfd38881dc740b1a2d2e84c8d396a09f5963ff91d7c7fdb0a7a1fa2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:880e84dd05ddb5adf55f73a832303c7e9970208ba4f61c7685a484c3f5e84984
+  case: errors_eopnotsupp_445
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 445
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:880e84dd05ddb5adf55f73a832303c7e9970208ba4f61c7685a484c3f5e84984
+  case: errors_eopnotsupp_445

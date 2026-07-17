@@ -1,0 +1,45 @@
+# 合规检查：条件：timeout was invalid；检查：调用 rt_sigtimedwait(set, info, timeout)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F5E80593B76ED05F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timeout
+    predicate: documented_condition
+    value: EINVAL
+    summary: timeout was invalid
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigtimedwait
+    arguments:
+    - set
+    - info
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f5e80593b76ed05f9f0ada406f5465b9a73bfa0473af0a5e5e97922b5c159220
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2efb1257654fe567dfb1d5a117006008bad23e7813e1fbfdf5ec3a94e48a2ee2
+  case: errors_einval_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigtimedwait
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigwaitinfo.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2efb1257654fe567dfb1d5a117006008bad23e7813e1fbfdf5ec3a94e48a2ee2
+  case: errors_einval_113

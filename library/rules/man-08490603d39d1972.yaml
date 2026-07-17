@@ -1,0 +1,49 @@
+# 合规检查：条件：The caller specified MPOL_MF_MOVE_ALL without sufficient privileges ( CAP_SYS_NICE ). Or, the caller attempted to move pages of a process belonging to...；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_08490603D39D1972
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller specified MPOL_MF_MOVE_ALL without sufficient privileges ( CAP_SYS_NICE ). Or,
+      the caller attempted to move pages of a process belonging to...
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:08490603d39d1972dd1158ce9601ded92e7216462ee783cebaeb844cf6f1ee2c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34006f0aaa7cc27d5dfd9be235b5c753470d14a8827bc9c14f694e62800e6524
+  case: errors_eperm_198
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34006f0aaa7cc27d5dfd9be235b5c753470d14a8827bc9c14f694e62800e6524
+  case: errors_eperm_198

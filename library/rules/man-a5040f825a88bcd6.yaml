@@ -1,0 +1,42 @@
+# 合规检查：条件：Invalid flag specified in flags；检查：调用 listmount()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A5040F825A88BCD6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid flag specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: listmount
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a5040f825a88bcd62fb88d51b696ca526f3d4ff3a97bd1f9427ecf1f7d4c2562
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 94
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:641afc6a376369248d697cbf2e6110047e60036e81b12b4fffb4c237145be6df
+  case: errors_einval_94
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: listmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listmount.2
+  line: 94
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:641afc6a376369248d697cbf2e6110047e60036e81b12b4fffb4c237145be6df
+  case: errors_einval_94

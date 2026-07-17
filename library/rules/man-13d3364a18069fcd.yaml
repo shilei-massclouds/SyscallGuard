@@ -1,0 +1,45 @@
+# 合规检查：条件：( statfs ()) Search permission is denied for a component of the path prefix of path . (See also path_resolution (7).)；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_13D3364A18069FCD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: ( statfs ()) Search permission is denied for a component of the path prefix of path . (See
+      also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:13d3364a18069fcd347d9003ffa02d30530f69eeaba441001ce874068fe70666
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df48d3d6a6e378e7bc3dde21b12d934146c05a25fb9a3a5158c693e1e0741f1d
+  case: errors_eacces_222
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 222
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df48d3d6a6e378e7bc3dde21b12d934146c05a25fb9a3a5158c693e1e0741f1d
+  case: errors_eacces_222

@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:cc7ee74cad9eb6edda4de68a6d560a2cc3fd06561ff05dbf7b3b4d6905cb5bfb
   case: madvise06_166_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/madvise/madvise06.c
+  line: 166
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:cc7ee74cad9eb6edda4de68a6d560a2cc3fd06561ff05dbf7b3b4d6905cb5bfb
+  case: madvise06_166_raw_0

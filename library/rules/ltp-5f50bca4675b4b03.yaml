@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:79af94ca852b0827a8e09b875b93be7f0ba1a430e9868add8939819f44194cda
   case: mount_setattr01_102_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+  line: 102
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:79af94ca852b0827a8e09b875b93be7f0ba1a430e9868add8939819f44194cda
+  case: mount_setattr01_102_raw_0

@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fspick(dirfd, path, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D13F343CBB4650FB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fspick
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:d13f343cbb4650fb8e6cb2587e2076b6625ba1256cf31d8a7756e9c925958a74
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 215
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:9384b420f7f97c3ce840c3c6e3b283e7172ea745ac3dd75b9195839300eb16c4
+  case: return_value_215
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fspick
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 215
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:9384b420f7f97c3ce840c3c6e3b283e7172ea745ac3dd75b9195839300eb16c4
+  case: return_value_215

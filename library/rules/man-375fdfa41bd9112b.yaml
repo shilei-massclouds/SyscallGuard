@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient space for the creation of a new message queue. This probably occurred because the queues_max limit was encountered; see mq_overview (7)；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_375FDFA41BD9112B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: Insufficient space for the creation of a new message queue. This probably occurred because
+      the queues_max limit was encountered; see mq_overview (7)
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:375fdfa41bd9112b2ca325d88d478900dcc307b09daa8e706979e0deed66a48f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 246
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:467ac0702770889dc78a2a5cc0527845f5ef330929d083347422ff97f93b54a8
+  case: errors_enospc_246
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 246
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:467ac0702770889dc78a2a5cc0527845f5ef330929d083347422ff97f93b54a8
+  case: errors_enospc_246

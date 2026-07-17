@@ -1,0 +1,46 @@
+# 合规检查：条件：For UNIX domain sockets, which are identified by pathname: Write permission is denied on the socket file, or search permission is denied for one of the...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_607DD2BFC7254305
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: 'For UNIX domain sockets, which are identified by pathname: Write permission is denied on
+      the socket file, or search permission is denied for one of the...'
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:607dd2bfc725430548cc89ebf749eaf0e62e392204d2adeb3a5048cbd9859a6e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0af7e8216544967ef36175eeff21957951e9c5235bff1b263f5161dab86ac43b
+  case: errors_eacces_92
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0af7e8216544967ef36175eeff21957951e9c5235bff1b263f5161dab86ac43b
+  case: errors_eacces_92

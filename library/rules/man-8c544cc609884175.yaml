@@ -1,0 +1,47 @@
+# 合规检查：条件：The requested access would be denied to the file, or search permission is denied for one of the directories in the path prefix of path . (See also...；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8C544CC609884175
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: The requested access would be denied to the file, or search permission is denied for one
+      of the directories in the path prefix of path . (See also...
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d386b156540d8146316722ecfcb7eb6b21802703c7c33fe7edc0da73ac938071
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9344a8d58b394963625dc43ee746bbe2820094274945ead53cee951d08b20dc4
+  case: errors_eacces_213
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9344a8d58b394963625dc43ee746bbe2820094274945ead53cee951d08b20dc4
+  case: errors_eacces_213

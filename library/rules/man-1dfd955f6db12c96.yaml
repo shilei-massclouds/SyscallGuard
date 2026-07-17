@@ -1,0 +1,42 @@
+# 合规检查：条件：The kernel could not allocate memory for the temporary buffer holding the path；检查：调用 lookup_dcookie()；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1DFD955F6DB12C96
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOMEM
+    summary: The kernel could not allocate memory for the temporary buffer holding the path
+  action:
+    operation: invoke_syscall
+    syscall: lookup_dcookie
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:1dfd955f6db12c963fce29cee56714f19e122b1bd64b6eb113129a01eb9756f4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 56
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:718828def91b2074dab76d2f62dd35763e67c96b93a4d2d1239163848c54848d
+  case: errors_enomem_56
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lookup_dcookie
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 56
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:718828def91b2074dab76d2f62dd35763e67c96b93a4d2d1239163848c54848d
+  case: errors_enomem_56

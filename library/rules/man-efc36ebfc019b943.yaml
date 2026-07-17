@@ -1,0 +1,44 @@
+# 合规检查：条件：Another process has already registered to receive notification for this message queue；检查：调用 mq_notify(mqdes, sevp)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EFC36EBFC019B943
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: Another process has already registered to receive notification for this message queue
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - mqdes
+    - sevp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:efc36ebfc019b94349d3ff2d41c8df7e4d84f111e50af4004fac471342ef497d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62b71630754415e01f9b23779e3679b60fa7d80dadb3db940a7a3c12d8a26962
+  case: errors_ebusy_130
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_notify
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62b71630754415e01f9b23779e3679b60fa7d80dadb3db940a7a3c12d8a26962
+  case: errors_ebusy_130

@@ -1,0 +1,45 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached (see the description of RLIMIT_NOFILE in getrlimit (2))；检查：调用 pidfd_open(pid, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DBC3995E6ADEDD4D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached (see the description
+      of RLIMIT_NOFILE in getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_open
+    arguments:
+    - pid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:dbc3995e6adedd4d2116cfcd7106f3efae1b73a28ba911cc9044cbae515d1748
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 71
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:175c6edce04c1a731e87e47319c838b1dcc52a6f7971b2d91f24466bca7978ba
+  case: errors_emfile_71
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 71
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:175c6edce04c1a731e87e47319c838b1dcc52a6f7971b2d91f24466bca7978ba
+  case: errors_emfile_71

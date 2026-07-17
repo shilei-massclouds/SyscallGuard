@@ -1,0 +1,38 @@
+# 合规检查：条件：The named attribute does not exist, or the process has no access to this attribute；检查：调用 getxattr(path, name, size, size)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D46842A7AA40AC40
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: The named attribute does not exist, or the process has no access to this attribute
+  action:
+    operation: invoke_syscall
+    syscall: getxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:d46842a7aa40ac402a892bf548b9e061c6a5472bd239d2f463cbf527a9d18d8c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 103
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d0ad0b370d203e0e5f92021270bcb1e0b38a46033e9f558b57c0a7eeb82ea294
+  case: errors_enodata_103

@@ -1,0 +1,41 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 syncfs(fd)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7659F99685012E59
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: syncfs
+    arguments:
+    - fd
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:3cf495de17feba8a74d58a334a53bb7bb2a6a55d29b9e2a335c83814d849c57f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 50
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d30deeb34d26de6f24d6184ad195d95f7d87cd133c25910bda9c64aac745806f
+  case: return_value_50
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syncfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 50
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d30deeb34d26de6f24d6184ad195d95f7d87cd133c25910bda9c64aac745806f
+  case: return_value_50

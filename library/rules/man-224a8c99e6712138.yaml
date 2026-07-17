@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient resources are available to queue any iocb s；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_224A8C99E6712138
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: Insufficient resources are available to queue any iocb s
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:224a8c99e671213840b53dee86c781ddb99970d2f86d0e9c4d11493713e199fc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 256
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b4963fba4029cc00358bc2845c131ad4d9e9084b4464daed3a98696547d12dcf
+  case: errors_eagain_256
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 256
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b4963fba4029cc00358bc2845c131ad4d9e9084b4464daed3a98696547d12dcf
+  case: errors_eagain_256

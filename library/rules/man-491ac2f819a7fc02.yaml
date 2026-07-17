@@ -1,0 +1,46 @@
+# 合规检查：条件：nr_segs is greater than IOV_MAX ; or memory not aligned if SPLICE_F_GIFT set；检查：调用 vmsplice(fd, iov, nr_segs, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_491AC2F819A7FC02
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: nr_segs
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: nr_segs is greater than IOV_MAX ; or memory not aligned if SPLICE_F_GIFT set
+  action:
+    operation: invoke_syscall
+    syscall: vmsplice
+    arguments:
+    - fd
+    - iov
+    - nr_segs
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:491ac2f819a7fc02806db2e5869cfde0aacd88cbcfb6d45c4137a95cbd7e917e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a66a17f3ff3aab601e1fef8aee63104e3825a5762a4e53e46924cfd94e95481
+  case: errors_einval_127
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: vmsplice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 127
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a66a17f3ff3aab601e1fef8aee63104e3825a5762a4e53e46924cfd94e95481
+  case: errors_einval_127

@@ -1,0 +1,44 @@
+# 合规检查：条件：The message queue descriptor specified in mqdes is invalid；检查：调用 mq_notify(mqdes, sevp)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_90C3670105A9BF3A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: mqdes
+    predicate: documented_condition
+    value: EBADF
+    summary: The message queue descriptor specified in mqdes is invalid
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - mqdes
+    - sevp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:90c3670105a9bf3ab8cf64b81d7c9bd964df3303dd338b05e6ae6c252b74c4dc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0c31306fa0817d35dd46b1a08978150d351ec17956529611a7642a9ca8af6d0
+  case: errors_ebadf_125
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_notify
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0c31306fa0817d35dd46b1a08978150d351ec17956529611a7642a9ca8af6d0
+  case: errors_ebadf_125

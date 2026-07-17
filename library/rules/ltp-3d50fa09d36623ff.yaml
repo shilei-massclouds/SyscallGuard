@@ -31,3 +31,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:85ca85b1f6f59aff1c4a6a4f0a674e00508207347a4f184bd62e177e7a14a470
   case: fsconfig02_73_19
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fsconfig/fsconfig02.c
+  line: 73
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:85ca85b1f6f59aff1c4a6a4f0a674e00508207347a4f184bd62e177e7a14a470
+  case: fsconfig02_73_19_0

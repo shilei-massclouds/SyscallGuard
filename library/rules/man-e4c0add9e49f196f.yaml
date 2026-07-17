@@ -1,0 +1,45 @@
+# 合规检查：条件：The current process was not registered prior to using private expedited commands；检查：调用 membarrier(cmd, flags, cpu_id)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E4C0ADD9E49F196F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The current process was not registered prior to using private expedited commands
+  action:
+    operation: invoke_syscall
+    syscall: membarrier
+    arguments:
+    - cmd
+    - flags
+    - cpu_id
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e4c0add9e49f196f9be7cdcf42f129b002f3a2e224c733ca114e3602867ca35b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 280
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:faa8c5f546f05370f9f85e84623461f040e8f7a46b1f7770c62d1a4a2bea13e1
+  case: errors_eperm_280
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: membarrier
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/membarrier.2
+  line: 280
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:faa8c5f546f05370f9f85e84623461f040e8f7a46b1f7770c62d1a4a2bea13e1
+  case: errors_eperm_280

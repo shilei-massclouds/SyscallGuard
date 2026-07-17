@@ -1,0 +1,48 @@
+# 合规检查：条件：Mounting a read-only filesystem was attempted without giving the MS_RDONLY flag. The filesystem may be read-only for various reasons, including: it resides...；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5D19D1B86EC99D53
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EACCES
+    summary: 'Mounting a read-only filesystem was attempted without giving the MS_RDONLY flag. The filesystem
+      may be read-only for various reasons, including: it resides...'
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:5d19d1b86ec99d5317cd448514f361b6c332231606361eb5f663c1fdb013faae
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 639
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da874c94d4ba0c44d36a2e21c205bcd1042dc1634eefb1767cf37eb310040fbf
+  case: errors_eacces_639
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 639
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:da874c94d4ba0c44d36a2e21c205bcd1042dc1634eefb1767cf37eb310040fbf
+  case: errors_eacces_639

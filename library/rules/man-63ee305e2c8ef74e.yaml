@@ -1,0 +1,48 @@
+# 合规检查：条件：Too many pages to move. Since Linux 2.6.29, the kernel no longer generates this error；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_63EE305E2C8EF74E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: E2BIG
+    summary: Too many pages to move. Since Linux 2.6.29, the kernel no longer generates this error
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:63ee305e2c8ef74e60b4c061eb04601a739ad7dad3b31e547c5945d31fb9143b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25d1a9f456b3ee6d9d58bea02200f05a80a0eaa151a1d379c05203d188ea6dd6
+  case: errors_e2big_174
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25d1a9f456b3ee6d9d58bea02200f05a80a0eaa151a1d379c05203d188ea6dd6
+  case: errors_e2big_174

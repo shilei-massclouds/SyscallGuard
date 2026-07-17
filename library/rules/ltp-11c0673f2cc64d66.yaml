@@ -1,0 +1,36 @@
+# 合规检查：条件：Path resolution encounters a symlink loop.；检查：调用 mkdirat(cur_fd, test_dir, 0777)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_11C0673F2CC64D66
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - cur_fd
+    - test_dir
+    - '0777'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:11c0673f2cc64d6693db898e3b01536c0bad36b20ce2e8c1f18dfcec70a24922
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat02.c
+  line: 56
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:e0b57afaa6bc7e0276ebafdbefb26013cc0e8ce3173de741942fb154e2540cb5
+  case: mkdirat02_56_3_0

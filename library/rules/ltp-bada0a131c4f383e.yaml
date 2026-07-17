@@ -1,0 +1,38 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 pwritev2(fd1, wr_iovec3, 1, 0, 0)；预期：返回 0，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_BADA0A131C4F383E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd1
+    - wr_iovec3
+    - '1'
+    - '0'
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:bada0a131c4f383e7b34e29876f9dfaa26c4e38333ea8b230817f3aaed670fc2
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3f0219732dee8a05bd47792a9bc127609644a2d81bdf62c0ddd05452597864ec
+  case: pwritev202_71_3_0

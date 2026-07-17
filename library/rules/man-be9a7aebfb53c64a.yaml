@@ -1,0 +1,46 @@
+# 合规检查：条件：There was insufficient memory to handle the requested op control operation；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BE9A7AEBFB53C64A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: op
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: There was insufficient memory to handle the requested op control operation
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:be9a7aebfb53c64ad981aff125cf29a1bb5212b057c504813b3a54e00001c160
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:663b5f96d811865e84e8a1258e101ace06ca75fd99201cd3a48f2bcfbb69dd2c
+  case: errors_enomem_349
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 349
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:663b5f96d811865e84e8a1258e101ace06ca75fd99201cd3a48f2bcfbb69dd2c
+  case: errors_enomem_349

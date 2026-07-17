@@ -1,0 +1,37 @@
+# 合规检查：条件：The effective UID does not match the owner of the file, and the process is not privileged (Linux: it does not have the CAP_FOWNER capability)；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_80267EC83AF63772--80267ec83af6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: 'The effective UID does not match the owner of the file, and the process is not privileged
+      (Linux: it does not have the CAP_FOWNER capability)'
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:80267ec83af6377234e862894dda015000745ae58e1b0ff9922d592723cdbbc4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:678de6d93ee34e6c3f2bcb16a47bb929dd845096136f720607bf4cb022cd74a4
+  case: errors_eperm_306

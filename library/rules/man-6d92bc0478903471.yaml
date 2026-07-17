@@ -1,0 +1,47 @@
+# 合规检查：条件：The keyring doesn't exist；检查：调用 add_key(type, description, size, size, keyring)；预期：返回 -1，errno 为 ENOKEY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6D92BC0478903471
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: keyring
+    predicate: documented_condition
+    value: ENOKEY
+    summary: The keyring doesn't exist
+  action:
+    operation: invoke_syscall
+    syscall: add_key
+    arguments:
+    - type
+    - description
+    - size
+    - size
+    - keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOKEY
+  errno:
+  - ENOKEY
+semantic_hash: sha256:6d92bc0478903471cc7895eae143325ea0a59c063ea218ed68f1ae2f47115ceb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d09526d2fa34a62411d229ca90c36f1548a4577f306d3e7fd0e34401a74adbbb
+  case: errors_enokey_191
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: add_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/add_key.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d09526d2fa34a62411d229ca90c36f1548a4577f306d3e7fd0e34401a74adbbb
+  case: errors_enokey_191

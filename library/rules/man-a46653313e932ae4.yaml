@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sched_setparam(pid, param)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A46653313E932AE4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sched_setparam
+    arguments:
+    - pid
+    - param
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:0be9a6b806f2c671d5b340fd57e6ceb35f72cdc7fb2cf339bf466d9e1980ec3c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 79
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:45e7928a8a6cfc70fa3ef00131d4c5e80cbced7a5d937ec895c03b44dfb272d4
+  case: return_value_79
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setparam
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 79
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:45e7928a8a6cfc70fa3ef00131d4c5e80cbced7a5d937ec895c03b44dfb272d4
+  case: return_value_79

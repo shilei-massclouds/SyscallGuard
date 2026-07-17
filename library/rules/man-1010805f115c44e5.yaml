@@ -1,0 +1,46 @@
+# 合规检查：条件：( symlinkat ()) linkpath is a relative pathname and newdirfd refers to a directory that has been deleted；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1010805F115C44E5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: newdirfd
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: ( symlinkat ()) linkpath is a relative pathname and newdirfd refers to a directory that has
+      been deleted
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:1010805f115c44e5940e0ed0ab35372fd9fbcf3d0a371679cf08bd6e65ca8944
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3de9df550571fab08a1c7582686d839a5dee3b8057a06b7f6432fb231a214c7a
+  case: errors_enoent_181
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3de9df550571fab08a1c7582686d839a5dee3b8057a06b7f6432fb231a214c7a
+  case: errors_enoent_181

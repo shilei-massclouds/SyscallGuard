@@ -1,0 +1,48 @@
+# 合规检查：条件：AT_EMPTY_PATH was specified in flags , oldpath is an empty string, and olddirfd refers to a directory；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4BB468C8659221AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: olddirfd
+    predicate: documented_path_condition
+    value: EPERM
+    summary: AT_EMPTY_PATH was specified in flags , oldpath is an empty string, and olddirfd refers to
+      a directory
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:4bb468c8659221ab878b768e775e6369f25d0992fedd0a9d32903b4c12b3b6ea
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 327
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12e6f81f94340138c388dd26a03689ce328eac6644a9f9e2a9c23c6b3647a475
+  case: errors_eperm_327
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 327
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12e6f81f94340138c388dd26a03689ce328eac6644a9f9e2a9c23c6b3647a475
+  case: errors_eperm_327

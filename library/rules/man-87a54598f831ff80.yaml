@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned if an event requiring a specific hardware feature is requested but there is no hardware support. This includes requesting low-skid events if not...；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_87A54598F831FF80
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: Returned if an event requiring a specific hardware feature is requested but there is no hardware
+      support. This includes requesting low-skid events if not...
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:87a54598f831ff806a74f5b3212547b9755662be8601606494834988721974c1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3867
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69491c066e34088b846c36a56d5d389c6e78023b7d5a3c297710e56874d6dc1d
+  case: errors_eopnotsupp_3867
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3867
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69491c066e34088b846c36a56d5d389c6e78023b7d5a3c297710e56874d6dc1d
+  case: errors_eopnotsupp_3867

@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:86ce51d3d8dba90cc919a9dade4fdf85ab3498ad494e90a4cd2b3625fc519854
   case: readahead01_41_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readahead/readahead01.c
+  line: 41
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:86ce51d3d8dba90cc919a9dade4fdf85ab3498ad494e90a4cd2b3625fc519854
+  case: readahead01_41_raw_0

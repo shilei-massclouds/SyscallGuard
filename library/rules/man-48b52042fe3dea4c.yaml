@@ -1,0 +1,44 @@
+# 合规检查：条件：buf or path points to an invalid address；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_48B52042FE3DEA4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EFAULT
+    summary: buf or path points to an invalid address
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:584879338501bc2f698ab10bb7896ebf32ccbdddc24c05be0b58e1f537546912
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d1bd8f430526383dc37ceddffe62981b27aca451318d5da2531da7fc64871166
+  case: errors_efault_234
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d1bd8f430526383dc37ceddffe62981b27aca451318d5da2531da7fc64871166
+  case: errors_efault_234

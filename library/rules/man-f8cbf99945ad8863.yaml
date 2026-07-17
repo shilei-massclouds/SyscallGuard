@@ -1,0 +1,44 @@
+# 合规检查：条件：ss is not NULL and the ss_flags field contains an invalid flag；检查：调用 sigaltstack(ss, old_ss)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F8CBF99945AD8863
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: ss
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: ss is not NULL and the ss_flags field contains an invalid flag
+  action:
+    operation: invoke_syscall
+    syscall: sigaltstack
+    arguments:
+    - ss
+    - old_ss
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f8cbf99945ad8863d50946d0a0a8f25440e0979f0caf876cecb3334c9753f8d1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 210
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d7e956af2a1838d824826f6b3ddb8209fd940dace832ddc4b6085ba1856549b2
+  case: errors_einval_210
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sigaltstack
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 210
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d7e956af2a1838d824826f6b3ddb8209fd940dace832ddc4b6085ba1856549b2
+  case: errors_einval_210

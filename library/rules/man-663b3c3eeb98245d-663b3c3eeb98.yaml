@@ -1,0 +1,37 @@
+# 合规检查：条件：The referenced socket is not of type SOCK_STREAM；检查：调用 accept(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_663B3C3EEB98245D--663b3c3eeb98
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EOPNOTSUPP
+    summary: The referenced socket is not of type SOCK_STREAM
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:663b3c3eeb98245df64f108786ce2b4184c0677f6a7163b7652a1b2198fa6a0b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 232
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:53637c46f5e3d59a2f10880ec133591bf2e62f24a60f940dd2051839e1cce467
+  case: errors_eopnotsupp_232

@@ -1,0 +1,46 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix. (See also path_resolution (7).)；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B6D39593C5B87DB5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix. (See also path_resolution
+      (7).)
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:b6d39593c5b87db5331b32edd2239057f66637bd7f154307d9cb6e0cf532a7a3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:13417773224ee9808c88d6bc482f28cbe9c08f1853f14b0b83495e068809fbb4
+  case: errors_eacces_151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:13417773224ee9808c88d6bc482f28cbe9c08f1853f14b0b83495e068809fbb4
+  case: errors_eacces_151

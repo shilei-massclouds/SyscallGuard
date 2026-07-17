@@ -1,0 +1,43 @@
+# 合规检查：条件：The caller does not have the required privileges；检查：调用 umount2(target)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_06DC94E90357CD37
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have the required privileges
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:06dc94e90357cd373d5df518845f5415d5307ad156127c72849b4044cc282950
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c02c800c71fb0dbd02d418a3abd1283e6f7d835ac59737333d507f70ac039911
+  case: errors_eperm_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c02c800c71fb0dbd02d418a3abd1283e6f7d835ac59737333d507f70ac039911
+  case: errors_eperm_154

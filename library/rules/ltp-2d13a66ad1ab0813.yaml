@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 mlock2(addr, HPAGES * pgsz + -1, MLOCK_ONFAULT)；预期：返回 0，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2D13A66AD1AB0813
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - addr
+    - HPAGES * pgsz + -1
+    - MLOCK_ONFAULT
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2d13a66ad1ab0813c8c2e6993a9b698f5bf9c8481df5a3a1192609999c367b6d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock201.c
+  line: 103
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c9fa57339b06e07ada78db2b48c84110c0e09e8bd03798f963e4e8f8e11f69d0
+  case: mlock201_103_7_0

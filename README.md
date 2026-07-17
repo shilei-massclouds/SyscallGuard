@@ -27,9 +27,10 @@ $修复缺口
   从配置来源提取目标无关的 syscall 规则。默认从 `ltp-local` 按名字典序处理前 20 个
   待处理 syscall，更新通用规则库，并生成 `runs/spec-*/report.md`。`source=` 的解析方式见
   [来源配置](#来源配置)。
-- `$映射规则 [syscalls=<name1,name2,...>]`：要求用户先在 Starry 中创建并切换到一个干净的
+- `$映射规则 [syscalls=<name1,name2,...>] [coverage=full|static-only]`：要求用户先在 Starry 中创建并切换到一个干净的
   专用分支，再把通用规则映射为静态检查和动态测试，并生成
-  `runs/mapping-*/report.md`。SKILL 不会代替用户创建或切换分支。
+  `runs/mapping-*/report.md`。`static-only` 禁止新建或更新动态测试，并把需要运行时夹具的规则
+  记录为 `deferred: dynamic_test`。SKILL 不会代替用户创建或切换分支。
 - `$合规检查 [from=<mapping-report-id>]`：默认自动选择与当前 Starry 分支和内容快照匹配的最新
   mapping 报告；没有唯一匹配时要求显式传入 `from=`。确认协商分支后执行静态检查和动态测试，
   生成 `runs/check-*/report.md`，并记录有证据支持的 findings。
@@ -85,6 +86,12 @@ python3 tools/audit_ltp.py --source /absolute/path/to/custom-ltp.yaml
 `location` 使用 LTP checkout 的绝对路径。若希望通过短别名调用，还需把 descriptor 注册到
 `sources/index.yaml`。工具不会搜索、克隆或切换 LTP 仓库，而是读取 `location` 当前 checkout
 中的 tracked 文件。
+
+内置别名 `man-pages-local` 使用 Linux 6.12.37 的 RISC-V64 UAPI syscall 全集和本地
+man-pages。它要求 descriptor 提供 `adapter: man_pages`、`location`、`linux_location`、
+`arch: riscv64`，默认全量处理。缺少 man2 页的 syscall 会记录为
+`missing_documentation`，不会阻断其他 syscall。规则分析优先沿 `ERRORS` 逐条形成 errno 规则；
+`RETURN VALUE` 只补充可无歧义解析的简单成功结果。
 
 ## 注意
 

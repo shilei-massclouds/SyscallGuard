@@ -1,0 +1,45 @@
+# 合规检查：条件：addr is not page-aligned or size is negative；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C454845A9E055091
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: addr is not page-aligned or size is negative
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c454845a9e0550910c64dda6557c9df87b29177b94c4b9f5feae43ae4f15d0f7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 838
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc6d374557966e249fa394f223df658cb22a8ae489ebdf3bd34b13d746ef37a7
+  case: errors_einval_838
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 838
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dc6d374557966e249fa394f223df658cb22a8ae489ebdf3bd34b13d746ef37a7
+  case: errors_einval_838

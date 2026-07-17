@@ -1,0 +1,37 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled；检查：调用 flistxattr(fd, list, size)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5A9551B19AED7826--5a9551b19aed
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled
+  action:
+    operation: invoke_syscall
+    syscall: flistxattr
+    arguments:
+    - fd
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:5a9551b19aed78263f5f3dfe48cc1657a6648145e18ccf30de8b8bb91033b77b
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:262750506eb27c0bc6a21a1eb3b4496c09591b64681b43a30dee73198369e198
+  case: errors_enotsup_126

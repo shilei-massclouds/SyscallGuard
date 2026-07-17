@@ -1,0 +1,44 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 pidfd_open(pid, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_73314E96AB480881
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_open
+    arguments:
+    - pid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:73314e96ab480881bbccdae4ad7970f3323649b79f9fc07c35fe1ffc66bfbc5b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c58f5acecd4d963fb5c8c2551de0510ed372635c54845e7bf3eb769c1ebcca59
+  case: errors_enomem_84
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_open.2
+  line: 84
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c58f5acecd4d963fb5c8c2551de0510ed372635c54845e7bf3eb769c1ebcca59
+  case: errors_enomem_84

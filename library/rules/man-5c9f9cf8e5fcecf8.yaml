@@ -1,0 +1,47 @@
+# 合规检查：条件：In \%struct landlock_path_beneath_attr , the rule accesses are not applicable to the file (i.e., some access rights in \%rule_attr->allowed_access are only...；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5C9F9CF8E5FCECF8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: rule_attr
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: In \%struct landlock_path_beneath_attr , the rule accesses are not applicable to the file
+      (i.e., some access rights in \%rule_attr->allowed_access are only...
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5c9f9cf8e5fcecf8b102c8ccdebbdaf95eed3a834be49c1c1b761ed39cf22510
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:adae26a66964e21b90c4b9a52d0e7df4f6b2b983e22e7195a1a6ca0f27e74d1c
+  case: errors_einval_168
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 168
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:adae26a66964e21b90c4b9a52d0e7df4f6b2b983e22e7195a1a6ca0f27e74d1c
+  case: errors_einval_168

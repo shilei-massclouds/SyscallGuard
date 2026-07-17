@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 inotify_add_watch(fd, path, mask)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_829272B1DEE9A08E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: inotify_add_watch
+    arguments:
+    - fd
+    - path
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:829272b1dee9a08e8e7d3f1acd619d6cb5e88506efb508b88a9f22642b1bc48c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb19baad0e4a19f85dffa6100dfa6ce22845684a481b5578559a9c0635998afc
+  case: errors_enomem_109
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: inotify_add_watch
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/inotify_add_watch.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bb19baad0e4a19f85dffa6100dfa6ce22845684a481b5578559a9c0635998afc
+  case: errors_enomem_109

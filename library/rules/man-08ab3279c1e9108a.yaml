@@ -1,0 +1,48 @@
+# 合规检查：条件：The target filesystem doesn't support splicing；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_08AB3279C1E9108A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: The target filesystem doesn't support splicing
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:08ab3279c1e9108a7b666cc0a3df883acbd1b97c054c2fb92968155d8d3227eb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d89050ff19caba35726172f0dacc56a483426d42c9ba0d8b3585f22ee76e1296
+  case: errors_einval_154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d89050ff19caba35726172f0dacc56a483426d42c9ba0d8b3585f22ee76e1296
+  case: errors_einval_154

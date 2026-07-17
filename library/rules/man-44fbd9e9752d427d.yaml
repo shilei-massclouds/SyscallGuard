@@ -1,0 +1,45 @@
+# 合规检查：条件：A message queue has to be created but the system limit for the maximum number of message queues ( MSGMNI ) would be exceeded；检查：调用 msgget(key, msgflg)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_44FBD9E9752D427D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: A message queue has to be created but the system limit for the maximum number of message
+      queues ( MSGMNI ) would be exceeded
+  action:
+    operation: invoke_syscall
+    syscall: msgget
+    arguments:
+    - key
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:44fbd9e9752d427d4b3f1fb733a495cb0811a46563f4fe072430af5b36bd7609
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:97d0f92d49c2f6638041638dce718a4502c2061a0724a0c95d117ce2fcfe7d1f
+  case: errors_enospc_155
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgget.2
+  line: 155
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:97d0f92d49c2f6638041638dce718a4502c2061a0724a0c95d117ce2fcfe7d1f
+  case: errors_enospc_155

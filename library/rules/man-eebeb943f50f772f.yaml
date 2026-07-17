@@ -1,0 +1,42 @@
+# 合规检查：条件：The timeout elapsed before any futex was woken；检查：调用 futex_waitv()；预期：返回 -1，errno 为 ETIMEDOUT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EEBEB943F50F772F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ETIMEDOUT
+    summary: The timeout elapsed before any futex was woken
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETIMEDOUT
+  errno:
+  - ETIMEDOUT
+semantic_hash: sha256:eebeb943f50f772f2723c7560dee15df6ef67e5ffc078de282a4659ed15d3913
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61ecac1d6e0d04bb595e601fc408fabccd53eaee9d45d2fe1d03b3788a95e00a
+  case: errors_etimedout_265
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61ecac1d6e0d04bb595e601fc408fabccd53eaee9d45d2fe1d03b3788a95e00a
+  case: errors_etimedout_265

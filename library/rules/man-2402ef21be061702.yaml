@@ -1,0 +1,44 @@
+# 合规检查：条件：There is a problem with reassociating the thread with the specified namespace；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2402EF21BE061702
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: There is a problem with reassociating the thread with the specified namespace
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2402ef21be0617027a58f27e25658011079ff637aae7afa5f4c3c2e4db373907
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:387942ed73457e75715eeb7d547e0061d6bf53a63cad1439c166f1a4ac28fef8
+  case: errors_einval_274
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:387942ed73457e75715eeb7d547e0061d6bf53a63cad1439c166f1a4ac28fef8
+  case: errors_einval_274

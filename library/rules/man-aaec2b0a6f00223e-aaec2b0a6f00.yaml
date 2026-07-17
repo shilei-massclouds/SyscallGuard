@@ -1,0 +1,34 @@
+# 合规检查：条件：The limit of signals that may be queued has been reached. (See signal (7) for further information.)；检查：调用 rt_sigqueueinfo()；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AAEC2B0A6F00223E--aaec2b0a6f00
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The limit of signals that may be queued has been reached. (See signal (7) for further information.)
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigqueueinfo
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:aaec2b0a6f00223e64ac114cfd4329b6e4550e5b21c7a45cbd39d423108e33df
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0401e7e0c8c0fea1d6ff0273b0be3514ca79a4ba2e54f9a8c70f609e56c5aa0e
+  case: errors_eagain_133

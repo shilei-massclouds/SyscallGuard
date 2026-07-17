@@ -1,0 +1,45 @@
+# 合规检查：条件：path is longer than PATH_MAX；检查：调用 fspick(dirfd, path, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0F9C19C106091F39
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is longer than PATH_MAX
+  action:
+    operation: invoke_syscall
+    syscall: fspick
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:0f9c19c106091f398a0f5316c77898574f818d2423724ba9568c3226892c188d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04b31c0c627db37df3be14e13f9adbd07abee8770ec8d60e6215f0af98be3c50
+  case: errors_enametoolong_253
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fspick
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 253
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04b31c0c627db37df3be14e13f9adbd07abee8770ec8d60e6215f0af98be3c50
+  case: errors_enametoolong_253

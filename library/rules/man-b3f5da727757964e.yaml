@@ -1,0 +1,45 @@
+# 合规检查：条件：On 32-bit architecture together with the large file extension (i.e., using 64-bit off_t ): the number of pages used for length plus number of pages used for...；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B3F5DA727757964E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: length
+    predicate: documented_condition
+    value: EOVERFLOW
+    summary: 'On 32-bit architecture together with the large file extension (i.e., using 64-bit off_t
+      ): the number of pages used for length plus number of pages used for...'
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:6e7d3d2d65c219351cb42b42bbc2c15c3d5207b20705674b7bfbd83b87dd6db4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 588
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:073ba22e945a0ea31f4c49622dfc2701a6e7c8d76ab9bd958dd56d3a857b7e64
+  case: errors_eoverflow_588
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 588
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:073ba22e945a0ea31f4c49622dfc2701a6e7c8d76ab9bd958dd56d3a857b7e64
+  case: errors_eoverflow_588

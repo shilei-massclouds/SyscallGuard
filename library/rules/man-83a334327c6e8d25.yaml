@@ -1,0 +1,46 @@
+# 合规检查：条件：The size of the list buffer is too small to hold the result. In addition, the errors documented in stat (2) can also occur；检查：调用 llistxattr(path, list, size)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_83A334327C6E8D25
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: list
+    predicate: invalid_value
+    value: ERANGE
+    summary: The size of the list buffer is too small to hold the result. In addition, the errors documented
+      in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - path
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:e96361fe7a2928656100954733be94bd670b6f0ca6a12461bee15030ca097d7b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8a941edfadceac74a0c358381e8504f5ae4e369343442bbbe2dd1a9e18561b6d
+  case: errors_erange_129
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: llistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8a941edfadceac74a0c358381e8504f5ae4e369343442bbbe2dd1a9e18561b6d
+  case: errors_erange_129

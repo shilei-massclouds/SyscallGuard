@@ -1,0 +1,50 @@
+# 合规检查：条件：The flags argument included the MPOL_MF_MOVE_ALL flag and the caller does not have the CAP_SYS_NICE privilege；检查：调用 mbind(size, size, size, mode, ULONG_WIDTH, maxnode, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F556B5D121DA3A9F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: flags
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The flags argument included the MPOL_MF_MOVE_ALL flag and the caller does not have the CAP_SYS_NICE
+      privilege
+  action:
+    operation: invoke_syscall
+    syscall: mbind
+    arguments:
+    - size
+    - size
+    - size
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f556b5d121da3a9fbeb6a17fdc6cce84e77c78ef4bc7a8f6fe2b295431485c5c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cc12c00517de38ff51fb21443999800c465f76eb70806b958cb9b6495854dd14
+  case: errors_eperm_451
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mbind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cc12c00517de38ff51fb21443999800c465f76eb70806b958cb9b6495854dd14
+  case: errors_eperm_451

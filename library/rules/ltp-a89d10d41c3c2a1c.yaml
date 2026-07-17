@@ -1,0 +1,35 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 set_robust_list(&head, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A89D10D41C3C2A1C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: set_robust_list
+    arguments:
+    - '&head'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a89d10d41c3c2a1c92bd38989eac288e9edc99da5946bd272901ba5ce3f26e53
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/set_robust_list/set_robust_list01.c
+  line: 103
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:63ecc53b7a33021735e07472304f8ef43f2d59601ca64ff76f41f904d3cd1805
+  case: set_robust_list01_103_raw_0

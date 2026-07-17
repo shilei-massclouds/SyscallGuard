@@ -1,0 +1,36 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 open_by_handle_at(AT_FDCWD, invalid_fhp, O_RDWR)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_A48010DFDC346FDE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - AT_FDCWD
+    - invalid_fhp
+    - O_RDWR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:a48010dfdc346fdef35e3099c5a8bba7fd4ecb37df306cb1895380dfd4a47ed8
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+  line: 78
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2323b0c8c76b130457901d472003c43518497dfd55d203b089d56a8ab29d4b3b
+  case: open_by_handle_at02_78_2_0

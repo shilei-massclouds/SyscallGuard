@@ -1,0 +1,48 @@
+# 合规检查：条件：One of the pointer arguments points to a location outside the calling process's accessible address space；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6D67821E17875717
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of the pointer arguments points to a location outside the calling process's accessible
+      address space
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:6d67821e17875717f479463e0e6f844fed667f561e017d9ce60fc374897237c2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 418
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25bbbd0bc1771420ddb5eabfbf8e68d0e0a102927bf9101f43372da20969a1fc
+  case: errors_efault_418
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 418
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25bbbd0bc1771420ddb5eabfbf8e68d0e0a102927bf9101f43372da20969a1fc
+  case: errors_efault_418

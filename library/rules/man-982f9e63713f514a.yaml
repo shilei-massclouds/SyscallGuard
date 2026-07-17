@@ -1,0 +1,46 @@
+# 合规检查：条件：The filesystem context associated with fsfd is not in the right state to be used by fsmount ()；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_982F9E63713F514A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: fsfd
+    predicate: documented_state_condition
+    value: EBUSY
+    summary: The filesystem context associated with fsfd is not in the right state to be used by fsmount
+      ()
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:982f9e63713f514a6358bf7eed89e0fa4832ef973807fe922f0579c10e745205
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1adf022c07f690965a05cbd308ef795fda978222dc8613e02698249b566b48b1
+  case: errors_ebusy_157
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1adf022c07f690965a05cbd308ef795fda978222dc8613e02698249b566b48b1
+  case: errors_ebusy_157

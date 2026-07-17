@@ -1,0 +1,48 @@
+# 合规检查：条件：The call would have blocked, and abs_timeout was invalid, either because tv_sec was less than zero, or because tv_nsec was less than zero or greater than...；检查：调用 mq_timedreceive(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A97621B251F86EF2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: abs_timeout
+    predicate: documented_condition
+    value: EINVAL
+    summary: The call would have blocked, and abs_timeout was invalid, either because tv_sec was less
+      than zero, or because tv_nsec was less than zero or greater than...
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedreceive
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a97621b251f86ef2a6e5dd7d7d5eedaa2513d112969c7c2ab9bf77bd3fe351d8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 114
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b4144e5ddfd6774fb5ef454980839064f4e13a2d2008f6f03564733e1f6ff8f
+  case: errors_einval_114
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedreceive
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 114
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b4144e5ddfd6774fb5ef454980839064f4e13a2d2008f6f03564733e1f6ff8f
+  case: errors_einval_114

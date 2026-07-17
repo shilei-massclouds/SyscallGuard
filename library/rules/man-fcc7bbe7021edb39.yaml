@@ -1,0 +1,36 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FCC7BBE7021EDB39
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:fcc7bbe7021edb39652e706d7e896453072df72eac3a875ebc572abcb5ed7079
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:849108135ad59960c8f9b3af630cac0c7b392833624e242b88f71200919548d9
+  case: errors_emfile_416

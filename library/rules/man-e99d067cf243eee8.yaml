@@ -1,0 +1,45 @@
+# 合规检查：条件：( dup3 ()) flags contain an invalid value；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E99D067CF243EEE8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( dup3 ()) flags contain an invalid value
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e99d067cf243eee89be17d52596c12b3fc5286b1f5d8c8481a26cafeeff1a239
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7c83688eefedfd395989039802e222c0232af4ad5717b671ebb72ea3002ff7cf
+  case: errors_einval_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7c83688eefedfd395989039802e222c0232af4ad5717b671ebb72ea3002ff7cf
+  case: errors_einval_173

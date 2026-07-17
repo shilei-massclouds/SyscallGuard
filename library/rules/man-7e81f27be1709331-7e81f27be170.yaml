@@ -1,0 +1,35 @@
+# 合规检查：条件：fd is bound to a special file (e.g., a pipe, FIFO, or socket) which does not support synchronization；检查：调用 fdatasync(fd)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7E81F27BE1709331--7e81f27be170
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd is bound to a special file (e.g., a pipe, FIFO, or socket) which does not support synchronization
+  action:
+    operation: invoke_syscall
+    syscall: fdatasync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7e81f27be1709331fed6bfc712511a0bea805f225bd717be80cf3533faa88a07
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fdatasync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:277f30624de72a0505931672fd51c428fc300020b58b776e5b0a3d1f27529a82
+  case: errors_einval_125

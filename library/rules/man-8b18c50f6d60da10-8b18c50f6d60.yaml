@@ -1,0 +1,36 @@
+# 合规检查：条件：A component of the path prefix of path is not a directory；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8B18C50F6D60DA10--8b18c50f6d60
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix of path is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:8b18c50f6d60da10f02e6f207c51a6d170b0e715ca6eac40ad454b19e99d49be
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 270
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b81fe91b16ea69e39b5ff422b58737045a910367ee33aba4f845dc74e200daa
+  case: errors_enotdir_270

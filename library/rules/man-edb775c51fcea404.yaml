@@ -1,0 +1,44 @@
+# 合规检查：条件：( pipe2 ()) Invalid value in flags；检查：调用 pipe2(pipefd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EDB775C51FCEA404
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( pipe2 ()) Invalid value in flags
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:edb775c51fcea404016cb3f6da328eef236bf5d00a21db4c724aeb77a38e9509
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 160
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b4a76eab6ea29816154fb4fcdb7bbbe59373c462f0a2e0b389e19d06251c940
+  case: errors_einval_160
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 160
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6b4a76eab6ea29816154fb4fcdb7bbbe59373c462f0a2e0b389e19d06251c940
+  case: errors_einval_160

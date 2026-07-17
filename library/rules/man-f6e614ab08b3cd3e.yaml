@@ -1,0 +1,47 @@
+# 合规检查：条件：( fchownat ()) Invalid flag specified in flags；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6E614AB08B3CD3E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( fchownat ()) Invalid flag specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f6e614ab08b3cd3e81fcd29b2ee4484a98a7b739ccacef894dcb174214796f0e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 226
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:80b1e9a67c55a12763e899df54cf8eb0eb4ba840753b237f5ab2ab091bf202b7
+  case: errors_einval_226
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 226
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:80b1e9a67c55a12763e899df54cf8eb0eb4ba840753b237f5ab2ab091bf202b7
+  case: errors_einval_226

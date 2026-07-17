@@ -1,0 +1,43 @@
+# 合规检查：条件：The call was interrupted by a signal; signal (7)；检查：调用 rt_sigsuspend(mask)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_82EE41F04229EE7F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The call was interrupted by a signal; signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigsuspend
+    arguments:
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:82ee41f04229ee7f49f9a029bfc525327194a52aa5d01eb3738dcf382ab244f4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigsuspend.2
+  line: 63
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5c259025d439dd9ad5249b8c6dbd8af86dfd66f3c709d91f56ce96d57e2cb0e
+  case: errors_eintr_63
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigsuspend
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigsuspend.2
+  line: 63
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f5c259025d439dd9ad5249b8c6dbd8af86dfd66f3c709d91f56ce96d57e2cb0e
+  case: errors_eintr_63

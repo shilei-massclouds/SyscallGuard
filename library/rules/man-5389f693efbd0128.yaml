@@ -1,0 +1,47 @@
+# 合规检查：条件：The device containing the file has no room for the new directory entry；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5389F693EFBD0128
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOSPC
+    summary: The device containing the file has no room for the new directory entry
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:5389f693efbd0128a2d2f9b730d47ffc651e54ae2d88765c5c1294e15c5927b6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c348ca4a50981b949012198775b585099a7a93d451caec8df3baf336d1d8e7f
+  case: errors_enospc_220
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c348ca4a50981b949012198775b585099a7a93d451caec8df3baf336d1d8e7f
+  case: errors_enospc_220

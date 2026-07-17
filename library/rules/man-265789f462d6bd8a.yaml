@@ -1,0 +1,47 @@
+# 合规检查：条件：source cannot be remounted read-only, because it still holds files open for writing；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_265789F462D6BD8A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: source
+    predicate: documented_state_condition
+    value: EBUSY
+    summary: source cannot be remounted read-only, because it still holds files open for writing
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:265789f462d6bd8ae3b6a2cab0516b8056289a13675c8dc2f15c7ec8ff226999
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 674
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07f5bb1a3f758bb69e656cdb3f13d3921505dfbf6c481b9742c69289178578b1
+  case: errors_ebusy_674
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 674
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:07f5bb1a3f758bb69e656cdb3f13d3921505dfbf6c481b9742c69289178578b1
+  case: errors_ebusy_674

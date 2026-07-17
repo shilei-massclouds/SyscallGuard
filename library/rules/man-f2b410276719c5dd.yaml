@@ -1,0 +1,44 @@
+# 合规检查：条件：name doesn't follow the format in mq_overview (7)；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F2B410276719C5DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: name
+    predicate: documented_condition
+    value: EINVAL
+    summary: name doesn't follow the format in mq_overview (7)
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f2b410276719c5dd8f28690124a7c7744f0f94b78843fd98ba7b7dde8f5cfb4e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9f8e296a990d4f38b3fd77859ee32e04a28f12351324d03d3ec9a4a9072d322d
+  case: errors_einval_174
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9f8e296a990d4f38b3fd77859ee32e04a28f12351324d03d3ec9a4a9072d322d
+  case: errors_einval_174

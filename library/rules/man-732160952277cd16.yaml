@@ -1,0 +1,45 @@
+# 合规检查：条件：The implementation does not support the specified address family；检查：调用 socket(domain, type, protocol)；预期：返回 -1，errno 为 EAFNOSUPPORT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_732160952277CD16
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAFNOSUPPORT
+    summary: The implementation does not support the specified address family
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - domain
+    - type
+    - protocol
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAFNOSUPPORT
+  errno:
+  - EAFNOSUPPORT
+semantic_hash: sha256:732160952277cd1606608f4af9b0045a9446a37910b8072a6cd154c5d3afdf4f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8a237e74506bcd2174882287749ad37e54c8273e6c79c60d2d7eea40eb096a9
+  case: errors_eafnosupport_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socket
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8a237e74506bcd2174882287749ad37e54c8273e6c79c60d2d7eea40eb096a9
+  case: errors_eafnosupport_406

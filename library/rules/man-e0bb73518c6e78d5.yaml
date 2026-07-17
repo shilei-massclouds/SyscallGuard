@@ -1,0 +1,47 @@
+# 合规检查：条件：The filesystem containing the file referred to by fd does not support this operation; or the mode is not supported by the filesystem containing the file...；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E0BB73518C6E78D5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EOPNOTSUPP
+    summary: The filesystem containing the file referred to by fd does not support this operation; or
+      the mode is not supported by the filesystem containing the file...
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:e0bb73518c6e78d5c7d31089b8b6d3cd7bd09d8a007a8534bd9a76d31204b613
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b14598e455db783fce93adca36b5d4fc1059ca601f1db471352fbc420d4fa05
+  case: errors_eopnotsupp_419
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b14598e455db783fce93adca36b5d4fc1059ca601f1db471352fbc420d4fa05
+  case: errors_eopnotsupp_419

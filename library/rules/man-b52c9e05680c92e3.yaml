@@ -1,0 +1,46 @@
+# 合规检查：条件：The nfds value exceeds the RLIMIT_NOFILE value；检查：调用 ppoll(fds, nfds, tmo_p, sigmask)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B52C9E05680C92E3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: nfds
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The nfds value exceeds the RLIMIT_NOFILE value
+  action:
+    operation: invoke_syscall
+    syscall: ppoll
+    arguments:
+    - fds
+    - nfds
+    - tmo_p
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b52c9e05680c92e3584314e6d1a37541d49d388a6d9c779e0d9ac7fa4e0155c9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 352
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:871d2af4f2d7552b7875a3e732ba97466329dff4e00f325cac573dc3bf74be4b
+  case: errors_einval_352
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ppoll
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 352
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:871d2af4f2d7552b7875a3e732ba97466329dff4e00f325cac573dc3bf74be4b
+  case: errors_einval_352

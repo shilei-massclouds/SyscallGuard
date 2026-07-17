@@ -1,0 +1,46 @@
+# 合规检查：条件：Timeout while attempting connection. The server may be too busy to accept new connections. Note that for IP sockets the timeout may be very long when...；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ETIMEDOUT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_18B3C82EAA89C160
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: ETIMEDOUT
+    summary: Timeout while attempting connection. The server may be too busy to accept new connections.
+      Note that for IP sockets the timeout may be very long when...
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETIMEDOUT
+  errno:
+  - ETIMEDOUT
+semantic_hash: sha256:18b3c82eaa89c1609b898f8bf4648e70bdeb39e741e74e5dec7f013dd02750c3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 205
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9713cd823dffc7e6d3c937f82b72e1b41e28195d613396fe59d91449f35197f2
+  case: errors_etimedout_205
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 205
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9713cd823dffc7e6d3c937f82b72e1b41e28195d613396fe59d91449f35197f2
+  case: errors_etimedout_205

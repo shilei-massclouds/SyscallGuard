@@ -1,0 +1,37 @@
+# 合规检查：条件：Search permission is denied for a component of the path prefix, or the named file is not writable by the user. (See also path_resolution (7).)；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4ACDAFA5048EFBA2--4acdafa5048e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for a component of the path prefix, or the named file is not
+      writable by the user. (See also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:4acdafa5048efba2942286d1735feb3788be5e72ab0cf42673917a2f890797d7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d9130c1671a118e2f4dc513180a6345fff123d33a2e95abef3b2f86bd0ae01a
+  case: errors_eacces_83

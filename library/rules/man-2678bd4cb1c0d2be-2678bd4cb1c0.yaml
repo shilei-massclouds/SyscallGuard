@@ -1,0 +1,36 @@
+# 合规检查：条件：path is too long；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2678BD4CB1C0D2BE--2678bd4cb1c0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:2678bd4cb1c0d2be0428ef08d5b65bac6049b0cd83651b1f5c7ec901037e2502
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 279
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:30022b48cf9a2738a4dc3be31b5ab31f8ef49c162505db72ae39d4be88cfea22
+  case: errors_enametoolong_279

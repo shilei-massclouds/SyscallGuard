@@ -1,0 +1,38 @@
+# 合规检查：条件：There is no shared memory segment attached at shmaddr ; or, shmaddr is not aligned on a page boundary；检查：调用 shmat(shmid, shmaddr, shmflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7581E30F4F3FD7F6--7581e30f4f3f
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: shmaddr
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: There is no shared memory segment attached at shmaddr ; or, shmaddr is not aligned on a page
+      boundary
+  action:
+    operation: invoke_syscall
+    syscall: shmat
+    arguments:
+    - shmid
+    - shmaddr
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7581e30f4f3fd7f6f8cc325bffaf6b8b84901d720737feb2fedba275b4ae95fb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmop.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c56c768c7f76de0237ba41b13f399ef70b6ee1dec8bb1b1a644ddff4da4d994
+  case: errors_einval_186

@@ -1,0 +1,39 @@
+# 合规检查：条件：nr_segments exceeds KEXEC_SEGMENT_MAX (16)；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_68ACED6EB62282D8--68aced6eb622
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: nr_segments exceeds KEXEC_SEGMENT_MAX (16)
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:68aced6eb62282d823b31092c91c281c7c59fa4f5d8b21c15ca8a2653c1e14b0
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 279
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4777343319683e72da548df59f73c83c5d871c6508d020f035c65010bf6b0c35
+  case: errors_einval_279

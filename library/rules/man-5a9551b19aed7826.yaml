@@ -1,0 +1,45 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled；检查：调用 llistxattr(path, list, size)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5A9551B19AED7826
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled
+  action:
+    operation: invoke_syscall
+    syscall: llistxattr
+    arguments:
+    - path
+    - list
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:5ac18f6dd080ed3cc4e946839121c619b63d25aa6034b70e02a8079a805db8ce
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:045a2b1896938040c30dd248cdaa68019f5d2c2d78e239744222953efcc2eeb1
+  case: errors_enotsup_126
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: llistxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/listxattr.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:045a2b1896938040c30dd248cdaa68019f5d2c2d78e239744222953efcc2eeb1
+  case: errors_enotsup_126

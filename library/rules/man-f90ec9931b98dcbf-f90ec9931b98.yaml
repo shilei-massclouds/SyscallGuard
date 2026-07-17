@@ -1,0 +1,40 @@
+# 合规检查：条件：(since Linux 3.8) Both MSG_COPY and IPC_NOWAIT were specified in msgflg , and this kernel was configured without CONFIG_CHECKPOINT_RESTORE；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F90EC9931B98DCBF--f90ec9931b98
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: ENOSYS
+    summary: (since Linux 3.8) Both MSG_COPY and IPC_NOWAIT were specified in msgflg , and this kernel
+      was configured without CONFIG_CHECKPOINT_RESTORE
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:f90ec9931b98dcbf0d5302a9502170c82c0f74182e4afed6aaa03591865173b1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 433
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:442ed564ad2519153439d436ab8eac2bfed1b3bf6c8c7e5d7217697f0a2e11b2
+  case: errors_enosys_433

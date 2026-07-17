@@ -1,0 +1,47 @@
+# 合规检查：条件：Returned when trying to mix perf and ftrace handling for a uprobe；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26179D59334DA9A7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: Returned when trying to mix perf and ftrace handling for a uprobe
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:26179d59334da9a701073a3682c6a4c216291d0b46b223dc063174daf4eeff2b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3801
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e6500dfa823a5b7c21976bc8702cb546850f72ed55adb53df27968d81df95d22
+  case: errors_eintr_3801
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3801
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e6500dfa823a5b7c21976bc8702cb546850f72ed55adb53df27968d81df95d22
+  case: errors_eintr_3801

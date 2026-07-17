@@ -1,0 +1,45 @@
+# 合规检查：条件：The filesystem does not support decoding of a pathname to a file handle；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0EEE801F78C405AB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: handle
+    predicate: documented_path_condition
+    value: EOPNOTSUPP
+    summary: The filesystem does not support decoding of a pathname to a file handle
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:5a590400e68314f0fdd55be0e8cadf9e154fd11d201716328810b1eca6e0df85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b55438f2835a80e1eb4cd155c7667a222f258f8d1aa11c833b733c5f5bdf3775
+  case: errors_eopnotsupp_385
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b55438f2835a80e1eb4cd155c7667a222f258f8d1aa11c833b733c5f5bdf3775
+  case: errors_eopnotsupp_385

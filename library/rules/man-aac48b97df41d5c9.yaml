@@ -1,0 +1,46 @@
+# 合规检查：条件：The semaphore set was removed；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 EIDRM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AAC48B97DF41D5C9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIDRM
+    summary: The semaphore set was removed
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIDRM
+  errno:
+  - EIDRM
+semantic_hash: sha256:95e46b2be830b17401ca9474c215b4d63ae07f1d50b42ab4e4abfd2110842d60
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 319
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:71a30b8dc790ae699b04ec173fe04acc341542f80299c2f75b2870b51acb9842
+  case: errors_eidrm_319
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 319
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:71a30b8dc790ae699b04ec173fe04acc341542f80299c2f75b2870b51acb9842
+  case: errors_eidrm_319

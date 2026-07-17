@@ -1,0 +1,45 @@
+# 合规检查：条件：attr was not a valid address；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5F1E1E101D590298
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: attr
+    predicate: documented_condition
+    value: EFAULT
+    summary: attr was not a valid address
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5f1e1e101d590298da456717711baf8b4877a13c86e4050785d58b793fd67e9e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:792d647db0b19d6751c0aa53a77e748040aaba740f6509bee0951b18953810a4
+  case: errors_efault_186
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:792d647db0b19d6751c0aa53a77e748040aaba740f6509bee0951b18953810a4
+  case: errors_efault_186

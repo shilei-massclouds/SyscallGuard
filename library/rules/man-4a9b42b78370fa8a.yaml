@@ -1,0 +1,45 @@
+# 合规检查：条件：The caller does not have appropriate privileges；检查：调用 sched_setattr(pid, attr, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4A9B42B78370FA8A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have appropriate privileges
+  action:
+    operation: invoke_syscall
+    syscall: sched_setattr
+    arguments:
+    - pid
+    - attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:a14ac76f8dafd549018ab7bc69198643d7d874dfb828517e91a94a6eedbcd28d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:18268b1c475c4a7df8ccc9c62d6c1438d69ec570c4b94528de3501d8b2d86475
+  case: errors_eperm_451
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:18268b1c475c4a7df8ccc9c62d6c1438d69ec570c4b94528de3501d8b2d86475
+  case: errors_eperm_451

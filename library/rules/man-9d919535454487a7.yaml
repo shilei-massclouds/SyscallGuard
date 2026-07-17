@@ -1,0 +1,47 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9D919535454487A7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:9d919535454487a7c12297605698e68883b5b7be069fc25e6b273a2075a33902
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 188
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:45381571b6dac3b935bf59df2546c3d8ae46e4f2cfce708da7e1f6b8a1f335a5
+  case: errors_eio_188
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 188
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:45381571b6dac3b935bf59df2546c3d8ae46e4f2cfce708da7e1f6b8a1f335a5
+  case: errors_eio_188

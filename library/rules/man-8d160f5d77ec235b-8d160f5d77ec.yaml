@@ -1,0 +1,37 @@
+# 合规检查：条件：The calling process has insufficient privilege (the caller does not have the CAP_SETGID capability in the user namespace in which it resides)；检查：调用 getgroups(size, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8D160F5D77EC235B--8d160f5d77ec
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process has insufficient privilege (the caller does not have the CAP_SETGID capability
+      in the user namespace in which it resides)
+  action:
+    operation: invoke_syscall
+    syscall: getgroups
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8d160f5d77ec235b06de55379d6dfbffd7aa79bca4509764d6a222d1959ff8d4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getgroups
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getgroups.2
+  line: 122
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93db80d492e8484e633fe25612da6cfb0e6f958832d961ea8cc0003492bd2a78
+  case: errors_eperm_122

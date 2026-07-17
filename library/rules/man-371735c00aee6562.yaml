@@ -1,0 +1,46 @@
+# 合规检查：条件：The fd argument was not a valid file descriptor；检查：调用 fadvise64(fd, offset, size, advice)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_371735C00AEE6562
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The fd argument was not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fadvise64
+    arguments:
+    - fd
+    - offset
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:371735c00aee6562778ce5fb9b3507a653e2662d1974e85b980bbdac1b3a1983
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 136
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38857dae6d3e60a867037079b8240e2ceaeeef891527cd9466666d7969c4b8df
+  case: errors_ebadf_136
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fadvise64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/posix_fadvise.2
+  line: 136
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38857dae6d3e60a867037079b8240e2ceaeeef891527cd9466666d7969c4b8df
+  case: errors_ebadf_136

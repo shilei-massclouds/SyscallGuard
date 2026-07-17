@@ -1,0 +1,46 @@
+# 合规检查：条件：how.flags contains OPENAT2_REGULAR flag and the path is not a regular file；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EFTYPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BDE63EEF419087CB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EFTYPE
+    summary: how.flags contains OPENAT2_REGULAR flag and the path is not a regular file
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFTYPE
+  errno:
+  - EFTYPE
+semantic_hash: sha256:bde63eef419087cb2a972e2b6fec7045685d7c5c7d798deb05c2b54b03cd3ad0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a431ff81a537b1386b244ea404732bcdbbd4f7a3f535a7569f7d4a3b51062356
+  case: errors_eftype_484
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a431ff81a537b1386b244ea404732bcdbbd4f7a3f535a7569f7d4a3b51062356
+  case: errors_eftype_484

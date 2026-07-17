@@ -1,0 +1,44 @@
+# 合规检查：条件：Invalid value in flags；检查：调用 landlock_restrict_self(ruleset_fd, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_060C6C9300CD33C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid value in flags
+  action:
+    operation: invoke_syscall
+    syscall: landlock_restrict_self
+    arguments:
+    - ruleset_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:060c6c9300cd33c3ea98ae812bf73c03b7986873e100d032c462c357c15b982c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ffc303e852b333266c769bc0792bbbfd94c0ef22f65b84ae4c4894e3883d5653
+  case: errors_einval_176
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_restrict_self
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_restrict_self.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ffc303e852b333266c769bc0792bbbfd94c0ef22f65b84ae4c4894e3883d5653
+  case: errors_einval_176

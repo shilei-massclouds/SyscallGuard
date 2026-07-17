@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_GUARD_INSTALL or MADV_GUARD_REMOVE , but the specified address range contains an unsupported mapping；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33FEF73F809FE6CF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: advice
+    predicate: invalid_value
+    value: EINVAL
+    summary: advice is MADV_GUARD_INSTALL or MADV_GUARD_REMOVE , but the specified address range contains
+      an unsupported mapping
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:33fef73f809fe6cfcfccf617e4c3f72137de946f27208b418f8834c3f5a318a0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 907
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b5531c077279f08fa8305eaab3ff3c714000623e424253412d0cc9c382a3123
+  case: errors_einval_907
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 907
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b5531c077279f08fa8305eaab3ff3c714000623e424253412d0cc9c382a3123
+  case: errors_einval_907

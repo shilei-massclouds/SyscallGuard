@@ -1,0 +1,47 @@
+# 合规检查：条件：The sem_flg of some operation specified SEM_UNDO and the system does not have enough memory to allocate the undo structure；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F90518591C595B36
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The sem_flg of some operation specified SEM_UNDO and the system does not have enough memory
+      to allocate the undo structure
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:df1abaff22e088fa5faf27969b10fe996ed5e453e1bb521a38d8ca88251a9927
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 335
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c7363ad25a33153ca4022657bc406949d6c05b0fb668f0e2a39864fe07450758
+  case: errors_enomem_335
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 335
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c7363ad25a33153ca4022657bc406949d6c05b0fb668f0e2a39864fe07450758
+  case: errors_enomem_335

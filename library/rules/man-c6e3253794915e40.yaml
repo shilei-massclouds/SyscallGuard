@@ -1,0 +1,46 @@
+# 合规检查：条件：req is of insufficient size to be utilized；检查：调用 statmount(req, smbuf, bufsize, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C6E3253794915E40
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: req
+    predicate: invalid_value
+    value: EINVAL
+    summary: req is of insufficient size to be utilized
+  action:
+    operation: invoke_syscall
+    syscall: statmount
+    arguments:
+    - req
+    - smbuf
+    - bufsize
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c6e3253794915e40e32fd60c820c21c5172ffa4fd1153368e2d275604eff89bb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 412
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd2ed3b4b9bb45a772111f7def6025e0c223c13717827eaa41365df3e45f9e68
+  case: errors_einval_412
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statmount.2
+  line: 412
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd2ed3b4b9bb45a772111f7def6025e0c223c13717827eaa41365df3e45f9e68
+  case: errors_einval_412

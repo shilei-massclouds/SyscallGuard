@@ -1,0 +1,43 @@
+# 合规检查：条件：The process group ID of any process equals the PID of the calling process. Thus, in particular, setsid () fails if the calling process is already a process...；检查：调用 setsid()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7FE0F4D79FB1B07
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The process group ID of any process equals the PID of the calling process. Thus, in particular,
+      setsid () fails if the calling process is already a process...
+  action:
+    operation: invoke_syscall
+    syscall: setsid
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b7fe0f4d79fb1b07037b88213901378b39b26323dbd8d7ca8b7d0f4221b27ae2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setsid.2
+  line: 42
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e30d8476bd24d0b1c576c3163352266c3f75857043bd467939ec79bb1adf1e9
+  case: errors_eperm_42
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setsid.2
+  line: 42
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e30d8476bd24d0b1c576c3163352266c3f75857043bd467939ec79bb1adf1e9
+  case: errors_eperm_42

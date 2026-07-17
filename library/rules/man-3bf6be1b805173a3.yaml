@@ -1,0 +1,46 @@
+# 合规检查：条件：The keyring wasn't available for modification by the user；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3BF6BE1B805173A3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: The keyring wasn't available for modification by the user
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:3bf6be1b805173a3f99d8d2800e88b74bd4c4a28c87be35ddb3db061c8a47765
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 377
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e953de154855b0d780f4ba258179110d51f3b340f3fef5bd6b33f073e6ce02d
+  case: errors_eacces_377
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 377
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5e953de154855b0d780f4ba258179110d51f3b340f3fef5bd6b33f073e6ce02d
+  case: errors_eacces_377

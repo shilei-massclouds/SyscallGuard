@@ -1,0 +1,38 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 execveat(fd, app_abs_path, argv, environ, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_3E9AD2C1B3BE9041
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - fd
+    - app_abs_path
+    - argv
+    - environ
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3e9ad2c1b3be9041648fef40e3d374ef184de638884e13d09165f53b701ed8e7
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/execveat/execveat02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ef68674328fd1b436f1c23c8bd8e5b00842b2c8c45af6b7b0791d237a333b29
+  case: execveat02_57_1_0

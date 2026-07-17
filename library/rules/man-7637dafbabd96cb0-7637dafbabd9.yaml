@@ -1,0 +1,37 @@
+# 合规检查：条件：The timestamp would not fit in time_t range. This can happen if an executable with 32-bit time_t is run on a 64-bit kernel when the time is 2038-01-19...；检查：调用 clock_getres(clockid, res)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7637DAFBABD96CB0--7637dafbabd9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EOVERFLOW
+    summary: The timestamp would not fit in time_t range. This can happen if an executable with 32-bit
+      time_t is run on a 64-bit kernel when the time is 2038-01-19...
+  action:
+    operation: invoke_syscall
+    syscall: clock_getres
+    arguments:
+    - clockid
+    - res
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:7637dafbabd96cb0f35f3ba61a03ad5351308cf9556cecfb3510c9737917dd4e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_getres
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 332
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:80d25b50f7895aff4faffa6415b5c418a600efca982f7dee1cc56363e47c2c42
+  case: errors_eoverflow_332

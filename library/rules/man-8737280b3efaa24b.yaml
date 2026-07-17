@@ -1,0 +1,46 @@
+# 合规检查：条件：( fchmodat ()) flags specified AT_SYMLINK_NOFOLLOW , which is not supported；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8737280B3EFAA24B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: ENOTSUP
+    summary: ( fchmodat ()) flags specified AT_SYMLINK_NOFOLLOW , which is not supported
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:8737280b3efaa24b5d9d57ef3bf7241f3d946f243579edc85236b2a1f49422dc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 299
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3ef48c18a691e050fb3bc277cc118bc0f340978cc5f345205534ddf4f406625b
+  case: errors_enotsup_299
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 299
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3ef48c18a691e050fb3bc277cc118bc0f340978cc5f345205534ddf4f406625b
+  case: errors_enotsup_299

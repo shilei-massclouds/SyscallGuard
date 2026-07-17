@@ -1,0 +1,46 @@
+# 合规检查：条件：MS_INVALIDATE was specified in flags , and a memory lock exists for the specified address range；检查：调用 msync(length, length, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_41809A68A4EFFB86
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: EBUSY
+    summary: MS_INVALIDATE was specified in flags , and a memory lock exists for the specified address
+      range
+  action:
+    operation: invoke_syscall
+    syscall: msync
+    arguments:
+    - length
+    - length
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:41809a68a4effb861d2d59d1f19a9a5b2689fd3362e90b7bfccabe9b3651cda6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 64
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad98e69bc5a30c252123384576720b8f1126178712b2136c25d3026d7ab932e4
+  case: errors_ebusy_64
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 64
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ad98e69bc5a30c252123384576720b8f1126178712b2136c25d3026d7ab932e4
+  case: errors_ebusy_64

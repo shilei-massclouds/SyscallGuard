@@ -1,0 +1,46 @@
+# 合规检查：条件：fd is not a valid file descriptor；检查：调用 timerfd_settime(fd, flags, new_value, old_value)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E433131871615492
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_settime
+    arguments:
+    - fd
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:9c0f067c78d2f105b7cf981f7777174648912a20391d4f7ce0536c0b589cfeeb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ad064919e56b0b289554b30b00fddd89d2586945a92016812849a03ebae52a5
+  case: errors_ebadf_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ad064919e56b0b289554b30b00fddd89d2586945a92016812849a03ebae52a5
+  case: errors_ebadf_444

@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.positive
   evidence_hash: sha256:2a367b481de72987d375b264f9d1fab4f67d4982f5d8250331621a1de30a0a7c
   case: fpathconf01_34_6
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fpathconf/fpathconf01.c
+  line: 34
+  recognizer_id: ltp.tst-exp.positive
+  evidence_hash: sha256:2a367b481de72987d375b264f9d1fab4f67d4982f5d8250331621a1de30a0a7c
+  case: fpathconf01_34_6_0

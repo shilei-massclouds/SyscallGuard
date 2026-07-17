@@ -1,0 +1,35 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 swapoff(path)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7011B01F7BF45FCE--7011b01f7bf4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:7011b01f7bf45fce13587a7502bbd0636825b3b8b969cc5c49a48c10cebd9b8c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a79f15ff2552b1f31b81a1d68da27ae2539fe46b782bf9ddf97ee653a16321c1
+  case: errors_enfile_118

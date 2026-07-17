@@ -1,0 +1,43 @@
+# 合规检查：条件：(since Linux 4.7) The file referred to by fd is opened for read-write. In addition to the above errors, if the module's init function is executed and...；检查：调用 init_module()；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_161E4EF12C551F0F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ETXTBSY
+    summary: (since Linux 4.7) The file referred to by fd is opened for read-write. In addition to the
+      above errors, if the module's init function is executed and...
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:31997507dc0efac569b2d8e334d042faa730054311f60244288ba458908a36c4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 281
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e9f67fdffb8bab050f5ca81dafdb22683090f298a0b931d1e8b0007e5fff27e
+  case: errors_etxtbsy_281
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 281
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e9f67fdffb8bab050f5ca81dafdb22683090f298a0b931d1e8b0007e5fff27e
+  case: errors_etxtbsy_281

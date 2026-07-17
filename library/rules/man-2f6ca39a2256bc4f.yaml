@@ -1,0 +1,47 @@
+# 合规检查：条件：A component used as a directory in oldpath or newpath is not, in fact, a directory；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2F6CA39A2256BC4F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component used as a directory in oldpath or newpath is not, in fact, a directory
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:2f6ca39a2256bc4fbaeba4d6b4b34177e8c666ddc85b0b4f9397267a53c6ab41
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 224
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b1d07a74c991264e3de5ac83b9c860c1ee72a476c15d58a760173f829027e4c4
+  case: errors_enotdir_224
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 224
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b1d07a74c991264e3de5ac83b9c860c1ee72a476c15d58a760173f829027e4c4
+  case: errors_enotdir_224

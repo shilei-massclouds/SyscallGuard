@@ -1,0 +1,36 @@
+# 合规检查：条件：fd is bound to a file on NFS or another filesystem which does not allocate space at the time of a write (2) system call, and some previous write failed due...；检查：调用 fdatasync(fd)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E13CE4DD7419ECC9--e13ce4dd7419
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EDQUOT
+    summary: fd is bound to a file on NFS or another filesystem which does not allocate space at the time
+      of a write (2) system call, and some previous write failed due...
+  action:
+    operation: invoke_syscall
+    syscall: fdatasync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:e13ce4dd7419ecc9e1e961c8c3026fb698adc52b255ecfed9a8c2d205be4a927
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fdatasync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 132
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9abbf36332e4f3ab82ea0b58950853697e1b51ba9b0c003243e6ee1c46ab3750
+  case: errors_edquot_132

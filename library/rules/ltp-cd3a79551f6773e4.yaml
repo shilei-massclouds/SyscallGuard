@@ -1,0 +1,36 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.；检查：调用 mkdirat(fd, relpath, 0600)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_CD3A79551F6773E4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - fd
+    - relpath
+    - '0600'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:cd3a79551f6773e41607f9694cfdbfd8a37fb09e6ba93354387053f7aa85c377
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mkdirat/mkdirat01.c
+  line: 67
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1896af747353699e778da51e1c39135aa3cbdabc7f87ea859440f589725aa2d8
+  case: mkdirat01_67_3_0

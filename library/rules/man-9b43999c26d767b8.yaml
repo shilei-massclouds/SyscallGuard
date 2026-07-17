@@ -1,0 +1,44 @@
+# 合规检查：条件：( statfs ()) Too many symbolic links were encountered in translating path；检查：调用 statfs(path, buf)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9B43999C26D767B8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: ( statfs ()) Too many symbolic links were encountered in translating path
+  action:
+    operation: invoke_syscall
+    syscall: statfs
+    arguments:
+    - path
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:9b43999c26d767b8d0ee64908a841f3c8bd7a2a7a9f1fa019267665ade1e1fe1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bda719b1ba3fc2345cbc60e6472a67fefc9e4bb306bef95068124e96ab59f0bb
+  case: errors_eloop_248
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 248
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bda719b1ba3fc2345cbc60e6472a67fefc9e4bb306bef95068124e96ab59f0bb
+  case: errors_eloop_248

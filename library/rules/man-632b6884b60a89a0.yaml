@@ -1,0 +1,44 @@
+# 合规检查：条件：new_root or put_old is not a directory；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_632B6884B60A89A0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: new_root
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: new_root or put_old is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:632b6884b60a89a058b60a0521f72f9cbdad50df464bc3f0b1be59998b447f86
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cd62494bf6cfef48c12dfbae7d6f2f073f30f4afc98facdd33367a1eb3f5b9a0
+  case: errors_enotdir_159
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cd62494bf6cfef48c12dfbae7d6f2f073f30f4afc98facdd33367a1eb3f5b9a0
+  case: errors_enotdir_159

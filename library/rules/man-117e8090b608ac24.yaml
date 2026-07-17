@@ -1,0 +1,44 @@
+# 合规检查：条件：The specified socket is not connected；检查：调用 shutdown(sockfd, how)；预期：返回 -1，errno 为 ENOTCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_117E8090B608AC24
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTCONN
+    summary: The specified socket is not connected
+  action:
+    operation: invoke_syscall
+    syscall: shutdown
+    arguments:
+    - sockfd
+    - how
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTCONN
+  errno:
+  - ENOTCONN
+semantic_hash: sha256:117e8090b608ac246dc5173823af5452999a465b363c0aa87f76c08a327b27a4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 55
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba4a528ad460f4ee67ef3f1791c04bd0b0dd41e360334d609ca2c44be6a72ec5
+  case: errors_enotconn_55
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shutdown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 55
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba4a528ad460f4ee67ef3f1791c04bd0b0dd41e360334d609ca2c44be6a72ec5
+  case: errors_enotconn_55

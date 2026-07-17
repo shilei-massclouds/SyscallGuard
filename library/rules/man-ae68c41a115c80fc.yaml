@@ -1,0 +1,48 @@
+# 合规检查：条件：An invalid user space address was specified for an argument；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AE68C41A115C80FC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: An invalid user space address was specified for an argument
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:82850360034de67000b891254b803cf42afa3dfa46b544653471d7040fcbfc36
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d1cc5edc1d6648f12283ccf4ed8ae31b80fb30860770e63ec093711e1fb72f6
+  case: errors_efault_385
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 385
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0d1cc5edc1d6648f12283ccf4ed8ae31b80fb30860770e63ec093711e1fb72f6
+  case: errors_efault_385

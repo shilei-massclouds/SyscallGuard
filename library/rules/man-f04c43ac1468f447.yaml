@@ -1,0 +1,36 @@
+# 合规检查：条件：fd is not a valid file descriptor；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F04C43AC1468F447
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f04c43ac1468f447222b0d94a7213b4bd151ff5385e95b03d8ab3641b28ac088
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0b4db32aafea561d924ff8230701e0a42de85203ae182d48af45aa4a867a5e6e
+  case: errors_ebadf_444

@@ -1,0 +1,36 @@
+# 合规检查：条件：An error occurred during synchronization. This error may relate to data written to some other file descriptor on the same file. Since Linux 4.13, errors...；检查：调用 fdatasync(fd)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CF1C83BB9BEB9F17--cf1c83bb9beb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EIO
+    summary: An error occurred during synchronization. This error may relate to data written to some other
+      file descriptor on the same file. Since Linux 4.13, errors...
+  action:
+    operation: invoke_syscall
+    syscall: fdatasync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:cf1c83bb9beb9f1796760ed022d9feca821050e66534cae7cd0ae9c337bd7e20
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fdatasync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a0676396d06e7e65cb9eee824123eda6866b4700e0de7f5ea5ad4af5d88da37
+  case: errors_eio_106

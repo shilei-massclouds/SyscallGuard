@@ -1,0 +1,44 @@
+# 合规检查：条件：The file has been locked, or too much memory has been locked (see setrlimit (2))；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AF6B7627EDF8880A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: The file has been locked, or too much memory has been locked (see setrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:38f61a221b1cf2570368d27148d6f34c9e9f5309e20961f9044c6516e927a5c2
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 511
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1731e5d9b25e80477c2222e2878946cbb43197c48f94c7cb87965efb99e2c97
+  case: errors_eagain_511
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 511
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e1731e5d9b25e80477c2222e2878946cbb43197c48f94c7cb87965efb99e2c97
+  case: errors_eagain_511

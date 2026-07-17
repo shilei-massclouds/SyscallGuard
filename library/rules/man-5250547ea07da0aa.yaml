@@ -1,0 +1,46 @@
+# 合规检查：条件：This syslog () system call is not available, because the kernel was compiled with the CONFIG_PRINTK kernel-configuration option disabled；检查：调用 syslog(type, bufp, size)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5250547EA07DA0AA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: This syslog () system call is not available, because the kernel was compiled with the CONFIG_PRINTK
+      kernel-configuration option disabled
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - type
+    - bufp
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:5250547ea07da0aaa899ec0e560a4fec3b81f188dbf4663b14038b1f7ce3c43b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 354
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b7e14d382bfb44a185695302d4f996ee4690f9c659e23abfa67e26c4f29087cd
+  case: errors_enosys_354
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syslog
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 354
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b7e14d382bfb44a185695302d4f996ee4690f9c659e23abfa67e26c4f29087cd
+  case: errors_enosys_354

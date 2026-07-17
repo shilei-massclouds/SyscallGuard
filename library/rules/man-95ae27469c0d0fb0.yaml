@@ -1,0 +1,46 @@
+# 合规检查：条件：The addr argument is not in a writable part of the user address space；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_95AE27469C0D0FB0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: addr
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The addr argument is not in a writable part of the user address space
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:61ffb7be2373f03736b3236f24d8191db844342c3c41edf7b0bf4f6c58a9c65a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 193
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e01c2b2848dade89b03d0ed60034b63c243ece847c0d2a9cb7ebbc243a84d10
+  case: errors_efault_193
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 193
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e01c2b2848dade89b03d0ed60034b63c243ece847c0d2a9cb7ebbc243a84d10
+  case: errors_efault_193

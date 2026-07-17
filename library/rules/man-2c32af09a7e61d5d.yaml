@@ -1,0 +1,48 @@
+# 合规检查：条件：The caller tried to change the mount to MOUNT_ATTR_RDONLY , but the mount still holds files open for writing；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2C32AF09A7E61D5D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: The caller tried to change the mount to MOUNT_ATTR_RDONLY , but the mount still holds files
+      open for writing
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:2c32af09a7e61d5d1283ed27b154dcdb63a573180473138cad373cef204ba898
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:281b105664e22cd1aa4df8777bd4832700aff9f14b1f7c48aa3bc625647ff0fa
+  case: errors_ebusy_398
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 398
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:281b105664e22cd1aa4df8777bd4832700aff9f14b1f7c48aa3bc625647ff0fa
+  case: errors_ebusy_398

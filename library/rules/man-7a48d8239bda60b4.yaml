@@ -1,0 +1,45 @@
+# 合规检查：条件：O_CREAT was specified in oflag , and attr was not NULL, but attr->mq_maxmsg or attr->mq_msqsize was invalid. Both of these fields must be greater than zero....；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7A48D8239BDA60B4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: oflag
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: O_CREAT was specified in oflag , and attr was not NULL, but attr->mq_maxmsg or attr->mq_msqsize
+      was invalid. Both of these fields must be greater than zero....
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7a48d8239bda60b42de91cf6f9387e5adefed0150520db663d0d7a16b829b454
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3db4d322601384131845212d8d6908e5e3ce25e40bc505310f7192a9b3434bd0
+  case: errors_einval_181
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 181
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3db4d322601384131845212d8d6908e5e3ce25e40bc505310f7192a9b3434bd0
+  case: errors_einval_181

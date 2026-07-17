@@ -1,0 +1,37 @@
+# 合规检查：条件：Another Fast Open is in progress；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EALREADY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_102F68125A825DE1--102f68125a82
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EALREADY
+    summary: Another Fast Open is in progress
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EALREADY
+  errno:
+  - EALREADY
+semantic_hash: sha256:102f68125a825de1d8542bb23c9f264884a893a4a1b602462179df2dfa445e79
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 372
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:38ed9034d3e8de1722cdb8f9ebb7e558a39a8e094822c5b5217418177b79b8b8
+  case: errors_ealready_372

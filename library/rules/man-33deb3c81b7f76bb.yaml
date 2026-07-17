@@ -1,0 +1,48 @@
+# 合规检查：条件：Search permission is denied for one of the directories in the path prefix of path . (See also path_resolution (7).)；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_33DEB3C81B7F76BB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied for one of the directories in the path prefix of path . (See
+      also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:33deb3c81b7f76bb55879101009934710f54d6f80a93e6cb011c188c2c07a7cd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 642
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8f1bdb8eeb073453c33ed4b4e19431d07cb2befc53d60391fd87c6a63efe008
+  case: errors_eacces_642
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 642
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e8f1bdb8eeb073453c33ed4b4e19431d07cb2befc53d60391fd87c6a63efe008
+  case: errors_eacces_642

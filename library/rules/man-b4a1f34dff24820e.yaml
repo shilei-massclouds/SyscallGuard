@@ -1,0 +1,48 @@
+# 合规检查：条件：The rename fails because oldpath or newpath is a directory that is in use by some process (perhaps as current working directory, or as root directory, or...；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B4A1F34DFF24820E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: EBUSY
+    summary: The rename fails because oldpath or newpath is a directory that is in use by some process
+      (perhaps as current working directory, or as root directory, or...
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:b4a1f34dff24820ef32e89e419e9f47d95cc292750d1f09d205bceec1a01e9b7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 301
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0171ce4c9796042c00534b8e9c9204212be75ac3d49c9bc50046e6b7e78cb9e1
+  case: errors_ebusy_301
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 301
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0171ce4c9796042c00534b8e9c9204212be75ac3d49c9bc50046e6b7e78cb9e1
+  case: errors_ebusy_301

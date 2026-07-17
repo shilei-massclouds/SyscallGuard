@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to a regular file that is too large to be opened. The usual scenario here is that an application compiled on a 32-bit platform without...；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DB0706309C6A7B74
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EOVERFLOW
+    summary: path refers to a regular file that is too large to be opened. The usual scenario here is
+      that an application compiled on a 32-bit platform without...
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:db0706309c6a7b745571b37f667a4b604946feb3bc25a469cb0c3cea8be91f82
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aeaa27964f64dd71c344b683f194def8a6ecb928f16461fac3ea44ad3e48d1cd
+  case: errors_eoverflow_1235
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1235
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aeaa27964f64dd71c344b683f194def8a6ecb928f16461fac3ea44ad3e48d1cd
+  case: errors_eoverflow_1235

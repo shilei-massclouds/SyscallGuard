@@ -1,0 +1,45 @@
+# 合规检查：条件：advice is MADV_HWPOISON , but the caller does not have the CAP_SYS_ADMIN capability；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_212564FB71548004
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: advice
+    predicate: insufficient_permission
+    value: EPERM
+    summary: advice is MADV_HWPOISON , but the caller does not have the CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:212564fb715480048c3169b671b87bbaef62f15c7b7362fa4318a4c61f0f23ef
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 944
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f0dae45f57028672283158857749feb0995e5d99a52c09bba0168f6e1f352bf
+  case: errors_eperm_944
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 944
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7f0dae45f57028672283158857749feb0995e5d99a52c09bba0168f6e1f352bf
+  case: errors_eperm_944

@@ -1,0 +1,45 @@
+# 合规检查：条件：addrlen is invalid (e.g., is negative)；检查：调用 getsockname(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F637DBB67E32D6EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: addrlen
+    predicate: documented_condition
+    value: EINVAL
+    summary: addrlen is invalid (e.g., is negative)
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f637dbb67e32d6eb4f9241f5df77085696206f5dd3952af5e63d115e31b01027
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 53
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2a6ba8e62036bceec4cadafca04e6d597299159c594b003b5f8c6cc6cdb8d6bf
+  case: errors_einval_53
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 53
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2a6ba8e62036bceec4cadafca04e6d597299159c594b003b5f8c6cc6cdb8d6bf
+  case: errors_einval_53

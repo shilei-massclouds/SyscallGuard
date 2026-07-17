@@ -1,0 +1,43 @@
+# 合规检查：条件：fd does not refer to a directory；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6BBD26053C82AFAA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: fd does not refer to a directory
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:5a48528d4cc740d161aef9ba209c5b46a0beb83060bb3fe07dddc0e1f2a99bcb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dda64da611ceeb38ebb30434ffe129ac9f39a30b371321b1c82e2db228375eab
+  case: errors_enotdir_100
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dda64da611ceeb38ebb30434ffe129ac9f39a30b371321b1c82e2db228375eab
+  case: errors_enotdir_100

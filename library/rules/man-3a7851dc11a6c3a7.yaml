@@ -1,0 +1,39 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled,；检查：调用 lsetxattr(path, name, size, size, flags)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3A7851DC11A6C3A7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled,
+  action:
+    operation: invoke_syscall
+    syscall: lsetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:3a7851dc11a6c3a768f24936b9f5cb2b68209f23c894aaba0efcd96244071be4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 125
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f683e18b86dea685fecd2aae667d3d85d7d15a874089fd9351a80e9e9bcdca8b
+  case: errors_enotsup_125

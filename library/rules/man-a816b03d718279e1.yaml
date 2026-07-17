@@ -1,0 +1,44 @@
+# 合规检查：条件：The current working directory has been unlinked；检查：调用 getcwd(size, size)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A816B03D718279E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: The current working directory has been unlinked
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:a816b03d718279e16a96302bdc5cccf74199a035ce52ab6119fc34cd17ece6cf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 167
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae2cf5a2e87590f8a37bb30b86ce4a379b0a5cd37790551dd63462987144decb
+  case: errors_enoent_167
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcwd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 167
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ae2cf5a2e87590f8a37bb30b86ce4a379b0a5cd37790551dd63462987144decb
+  case: errors_enoent_167

@@ -1,0 +1,48 @@
+# 合规检查：条件：The file descriptor sockfd does not refer to a socket；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C61C57E7130781C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: ENOTSOCK
+    summary: The file descriptor sockfd does not refer to a socket
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:608eedd7c58b09ed9ed63c5813ff29891f963e00a8b34ae6f94621c26bad126c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:30c7dd5f0f8f691e45b4a2cc16807538d93f19897d01d5dd4528bb81b76f81e6
+  case: errors_enotsock_422
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:30c7dd5f0f8f691e45b4a2cc16807538d93f19897d01d5dd4528bb81b76f81e6
+  case: errors_enotsock_422

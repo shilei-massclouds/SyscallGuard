@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:621186c40f1ecb8e6ed3dd50b97d2d15e17c9d3f2ce42b6206d43714bd8afcd9
   case: sendfile02_61_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile02.c
+  line: 61
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:621186c40f1ecb8e6ed3dd50b97d2d15e17c9d3f2ce42b6206d43714bd8afcd9
+  case: sendfile02_61_0_0

@@ -1,0 +1,48 @@
+# 合规检查：条件：(since Linux 3.6) The caller does not have permission to create a hard link to this file (see the description of /proc/sys/fs/protected_hardlinks in...；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_03973C9BB4FFF9D2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: (since Linux 3.6) The caller does not have permission to create a hard link to this file
+      (see the description of /proc/sys/fs/protected_hardlinks in...
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:03973c9bb4fff9d266d018005aa3dd4bad631dd3cb1b2b09267019538c494a32
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1eecfcc28da0d53611774e34b45b138e846ac97199ccba6e61e16ca466fb8db9
+  case: errors_eperm_238
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 238
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1eecfcc28da0d53611774e34b45b138e846ac97199ccba6e61e16ca466fb8db9
+  case: errors_eperm_238

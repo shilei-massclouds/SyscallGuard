@@ -1,0 +1,47 @@
+# 合规检查：条件：The caller does not have permission to send the signal to the target. For the required permissions, see kill (2)；检查：调用 rt_tgsigqueueinfo(tgid, tid, sig, info)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A6DCF38727C07D85
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have permission to send the signal to the target. For the required permissions,
+      see kill (2)
+  action:
+    operation: invoke_syscall
+    syscall: rt_tgsigqueueinfo
+    arguments:
+    - tgid
+    - tid
+    - sig
+    - info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b1d9693da2b664c58cd397b469403c32515edaa9510eb92d7aa24026d40ea271
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c1876f0b8b24b0de0e3082721d9b562dfe4eace7e86d0a2e22b9001bc20e45f2
+  case: errors_eperm_146
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_tgsigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c1876f0b8b24b0de0e3082721d9b562dfe4eace7e86d0a2e22b9001bc20e45f2
+  case: errors_eperm_146

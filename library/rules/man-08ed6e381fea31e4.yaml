@@ -1,0 +1,46 @@
+# 合规检查：条件：mode is nonzero, but how.flags does not contain O_CREAT or O_TMPFILE；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_08ED6E381FEA31E4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: how
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode is nonzero, but how.flags does not contain O_CREAT or O_TMPFILE
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:08ed6e381fea31e424f067b5d74b821344cd236363a2fb7e292c3ecbb8964f88
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8cc303e50304560d67267e283c26e5c526350cbd0349f474c3a5333fe6086157
+  case: errors_einval_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8cc303e50304560d67267e283c26e5c526350cbd0349f474c3a5333fe6086157
+  case: errors_einval_444

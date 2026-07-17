@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient kernel memory was available；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F67A66FC38FEB053
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel memory was available
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:f67a66fc38feb0530ec23cba59d89c6cb79961db45388e80c5b42008c20ee549
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d6333aa81162edfe1d3211aae1c46553096be4a44ce79154063b47f8795a0a56
+  case: errors_enomem_176
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 176
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d6333aa81162edfe1d3211aae1c46553096be4a44ce79154063b47f8795a0a56
+  case: errors_enomem_176

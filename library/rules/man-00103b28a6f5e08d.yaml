@@ -1,0 +1,46 @@
+# 合规检查：条件：One of the pointers ( key or value or log_buf or insns ) is outside the accessible address space；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_00103B28A6F5E08D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of the pointers ( key or value or log_buf or insns ) is outside the accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:00103b28a6f5e08dc39943d068de8734a58aaddda382a7279a15d0fd00db920e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1008
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e1e773e22edb9cb46913dcce21cca9b3b6aae243400bb32570de3b92599d925
+  case: errors_efault_1008
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1008
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9e1e773e22edb9cb46913dcce21cca9b3b6aae243400bb32570de3b92599d925
+  case: errors_efault_1008

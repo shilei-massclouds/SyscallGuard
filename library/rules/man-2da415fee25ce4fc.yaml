@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath or newpath points outside your accessible address space；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2DA415FEE25CE4FC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: oldpath
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: oldpath or newpath points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2da415fee25ce4fc9382b4257b1dbb0c7e9b48ace3e6bac75c9d2614ae7581bd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 321
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:982e5b06472113abf63c7179eb485abc5cf1c6d64de90f05338a787b4587cc2f
+  case: errors_efault_321
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 321
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:982e5b06472113abf63c7179eb485abc5cf1c6d64de90f05338a787b4587cc2f
+  case: errors_efault_321

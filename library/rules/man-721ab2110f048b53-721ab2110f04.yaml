@@ -1,0 +1,35 @@
+# 合规检查：条件：Invalid arguments: pid is negative or param is NULL；检查：调用 sched_getscheduler(pid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_721AB2110F048B53--721ab2110f04
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: pid
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: 'Invalid arguments: pid is negative or param is NULL'
+  action:
+    operation: invoke_syscall
+    syscall: sched_getscheduler
+    arguments:
+    - pid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:721ab2110f048b5313fba3e56b03037473cacf6b234f4cd7f4f5a1570d7147cb
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getscheduler
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setscheduler.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:189510b7ea120fc400d557ad179f26f1f0b2a8ec53fe21cb605638e7bcaa2082
+  case: errors_einval_134

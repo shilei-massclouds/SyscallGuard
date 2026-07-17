@@ -1,0 +1,44 @@
+# 合规检查：条件：The named file resides on a read-only filesystem；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC4C0FE683280E7B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: The named file resides on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:6c55dfcf46706c908f8c8f646522d8db79b1b83acc7a731cd298cc2ae6648c1b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:280f244d21a670c231ded20ba96776744b44704ce9e2c738bcd1b43eb4b8288c
+  case: errors_erofs_148
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 148
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:280f244d21a670c231ded20ba96776744b44704ce9e2c738bcd1b43eb4b8288c
+  case: errors_erofs_148

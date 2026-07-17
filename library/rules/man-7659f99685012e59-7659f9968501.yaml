@@ -1,0 +1,32 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sync()；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7659F99685012E59--7659f9968501
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sync
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:7659f99685012e5918a217af24c14896b309c98ed33d6d5d56f7fe5c5e2a17fe
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sync.2
+  line: 50
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:5ad9aa4ee4d44a59e3c572879674b4ba6266feeef4d7ad4e6efc66678cf8fe93
+  case: return_value_50

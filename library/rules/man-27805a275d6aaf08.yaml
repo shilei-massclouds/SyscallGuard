@@ -1,0 +1,44 @@
+# 合规检查：条件：The underlying filesystem does not support extending a file beyond its current size；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_27805A275D6AAF08
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The underlying filesystem does not support extending a file beyond its current size
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f966dea6bf037c18b8d507020acabf6d7beba08d2abd88cabd4a6f58f5a3a0ab
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0faec9811474fac453cb9fe3b4c007557c255be0d160a7a8349d904c57d537d2
+  case: errors_eperm_137
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 137
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0faec9811474fac453cb9fe3b4c007557c255be0d160a7a8349d904c57d537d2
+  case: errors_eperm_137

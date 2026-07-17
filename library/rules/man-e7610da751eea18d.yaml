@@ -1,0 +1,48 @@
+# 合规检查：条件：The filesystem instance cannot be reconfigured as read-only with \%FSCONFIG_CMD_RECONFIGURE because some programs still hold files open for writing；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E7610DA751EEA18D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EBUSY
+    summary: The filesystem instance cannot be reconfigured as read-only with \%FSCONFIG_CMD_RECONFIGURE
+      because some programs still hold files open for writing
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:e7610da751eea18d9dfdb58f6588967284f57a90b9b80e7b55891276b5c9e574
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e4a106901c4027c7635e1a3902b745fbe4f767ceeb2a04a585bcdae60a7c8ca
+  case: errors_ebusy_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e4a106901c4027c7635e1a3902b745fbe4f767ceeb2a04a585bcdae60a7c8ca
+  case: errors_ebusy_406

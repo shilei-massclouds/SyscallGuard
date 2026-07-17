@@ -1,0 +1,44 @@
+# 合规检查：条件：fd does not reference a regular file or a POSIX shared memory object；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_941DDE995AA26AC2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd does not reference a regular file or a POSIX shared memory object
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:894d5cb0b27f8af186d23622ea773eafaa3803f6187bf714c2ca00eb4d8c11c1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bba2a3a447fc04c01063db4081b3a527272ad40172ca52a1c2689d21fb8c54c9
+  case: errors_einval_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bba2a3a447fc04c01063db4081b3a527272ad40172ca52a1c2689d21fb8c54c9
+  case: errors_einval_169

@@ -1,0 +1,43 @@
+# 合规检查：条件：target could not be unmounted because it is busy；检查：调用 umount2(target)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAB4A58BBA4CA08A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: target
+    predicate: documented_state_condition
+    value: EBUSY
+    summary: target could not be unmounted because it is busy
+  action:
+    operation: invoke_syscall
+    syscall: umount2
+    arguments:
+    - target
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:dab4a58bba4ca08a7f510c6033e214efee54516d9ff6dbeaa1f3195fd3a26e05
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04dea977304276d6081ec574d2ea5608510c919dc7dff9bde3b5fef21571077c
+  case: errors_ebusy_112
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: umount2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/umount.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04dea977304276d6081ec574d2ea5608510c919dc7dff9bde3b5fef21571077c
+  case: errors_ebusy_112

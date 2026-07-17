@@ -1,0 +1,45 @@
+# 合规检查：条件：mount_fd is not an open file descriptor；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_289A48EC5F86B59B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: mount_fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: mount_fd is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:793b5802d15f1b2b551b81a162a65fd0acab7101ebcc0a4d43531c5e238f6827
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 401
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:961d4fcdcbcda3933e8b13251fc41570ea76323ae65ff6f84a7dd0d4dabf1e32
+  case: errors_ebadf_401
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 401
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:961d4fcdcbcda3933e8b13251fc41570ea76323ae65ff6f84a7dd0d4dabf1e32
+  case: errors_ebadf_401

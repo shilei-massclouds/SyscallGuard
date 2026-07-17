@@ -1,0 +1,43 @@
+# 合规检查：条件：The decompressor sanity checks failed, while loading a compressed module with flag MODULE_INIT_COMPRESSED_FILE set；检查：调用 init_module()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D61333A8FF3612C6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The decompressor sanity checks failed, while loading a compressed module with flag MODULE_INIT_COMPRESSED_FILE
+      set
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:06ba5bc17982348d76d6563dede7a9e587c4d563ca66d486f9176cbcfd2265c5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e07b7442bda625db7934304e41da09004c72a574b076237841c7f3a3d1bdfdab
+  case: errors_einval_264
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e07b7442bda625db7934304e41da09004c72a574b076237841c7f3a3d1bdfdab
+  case: errors_einval_264

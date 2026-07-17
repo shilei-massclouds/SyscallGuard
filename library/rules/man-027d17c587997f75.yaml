@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 setdomainname(size, size)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_027D17C587997F75
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: setdomainname
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:027d17c587997f75256e072b071c3a273ff5d10188d90df72df4c83f01dfba17
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdomainname.2
+  line: 69
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d8069a3b4e2db941021d6a548643b3da220497aeb60c66abae6448dbe1efa2eb
+  case: return_value_69
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setdomainname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdomainname.2
+  line: 69
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d8069a3b4e2db941021d6a548643b3da220497aeb60c66abae6448dbe1efa2eb
+  case: return_value_69

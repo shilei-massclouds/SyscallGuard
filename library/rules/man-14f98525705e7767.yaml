@@ -1,0 +1,43 @@
+# 合规检查：条件：The binary image supplied in module_image is not an ELF image, or is an ELF image that is invalid or for a different architecture. The following errors may...；检查：调用 init_module()；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_14F98525705E7767
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOEXEC
+    summary: The binary image supplied in module_image is not an ELF image, or is an ELF image that is
+      invalid or for a different architecture. The following errors may...
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:e81dc88bd4216e4a9dd32146ed83b75de5485ef79bb0fffa9cbf9760a21fdb4b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 241
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d9b05bbbb18059d00beed1e32dad38da303f97caa9c01a8481cb825c9018abee
+  case: errors_enoexec_241
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 241
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d9b05bbbb18059d00beed1e32dad38da303f97caa9c01a8481cb825c9018abee
+  case: errors_enoexec_241

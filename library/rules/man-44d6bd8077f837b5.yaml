@@ -1,0 +1,44 @@
+# 合规检查：条件：pgid is less than 0 ( setpgid (), setpgrp ())；检查：调用 setpgid(pid, pgid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_44D6BD8077F837B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: pgid
+    predicate: insufficient_permission
+    value: EINVAL
+    summary: pgid is less than 0 ( setpgid (), setpgrp ())
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - pid
+    - pgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:44d6bd8077f837b59f4b7446204b778b7317b21c8005c20d9ac23e0747df9c40
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fff6f166ed732e889853f1f0c49caa0f12f55eda71c78c0e3ccc581213da861a
+  case: errors_einval_191
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 191
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fff6f166ed732e889853f1f0c49caa0f12f55eda71c78c0e3ccc581213da861a
+  case: errors_einval_191

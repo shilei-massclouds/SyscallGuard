@@ -1,0 +1,36 @@
+# 合规检查：条件：The filesystem does not support this call；检查：调用 fstatfs(fd, buf)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C1C3070AC65749FA--c1c3070ac657
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: The filesystem does not support this call
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - fd
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:c1c3070ac65749fa600e23e8a393a401c0a308fda275af0e33b6e6d1a2695b50
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstatfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 267
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e6c0cef363845b8240f75d495eda42af5076ab8af4ae2ef2d1afb25e8f41a4b
+  case: errors_enosys_267

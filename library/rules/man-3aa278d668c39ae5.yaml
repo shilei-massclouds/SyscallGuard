@@ -1,0 +1,42 @@
+# 合规检查：条件：n was not in the range [ 1 , FUTEX_WAITV_MAX ]；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3AA278D668C39AE5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: n was not in the range [ 1 , FUTEX_WAITV_MAX ]
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3aa278d668c39ae550f68d06c073acea9a214e7c8f73fd14ed1ec7d21360a8a0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 206
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d563895337b8bdebe890c1c978b2555368624593e2a8585faf0f34600e9088ad
+  case: errors_einval_206
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 206
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d563895337b8bdebe890c1c978b2555368624593e2a8585faf0f34600e9088ad
+  case: errors_einval_206

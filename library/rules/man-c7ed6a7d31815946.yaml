@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C7ED6A7D31815946
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:4a7c8458afa223816d52d3441c8450573acd13cf9ea089d4f672e3eefda1c6db
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 273
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:2da39f28e4411082b8ae82570a90d4f987e5c28f3abbea04e5a9c8d286665a50
+  case: return_value_273
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 273
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:2da39f28e4411082b8ae82570a90d4f987e5c28f3abbea04e5a9c8d286665a50
+  case: return_value_273

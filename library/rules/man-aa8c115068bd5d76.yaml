@@ -1,0 +1,46 @@
+# 合规检查：条件：Bad address；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AA8C115068BD5D76
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: Bad address
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:15c66df636f750867edda37e04c6aac0801789b7e0cd2bcf60c6b6658e3a7807
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a5e851d4f142a40c0e8e517ae74fabc3229ab1f75a110ded6810a061dbb0a61f
+  case: errors_efault_240
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a5e851d4f142a40c0e8e517ae74fabc3229ab1f75a110ded6810a061dbb0a61f
+  case: errors_efault_240

@@ -1,0 +1,46 @@
+# 合规检查：条件：An executable is not in a recognized format, is for the wrong architecture, or has some other format error that means it cannot be executed；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ENOEXEC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_584FB17A96BB2519
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOEXEC
+    summary: An executable is not in a recognized format, is for the wrong architecture, or has some other
+      format error that means it cannot be executed
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOEXEC
+  errno:
+  - ENOEXEC
+semantic_hash: sha256:584fb17a96bb2519dff63f95d2b7edffc365a89e9a3f938cf4ecd6379afeb870
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 519
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69887e094b855de967a0c80d803c65c8162bd8c97db2ef10de128ee70a6d0fea
+  case: errors_enoexec_519
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 519
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:69887e094b855de967a0c80d803c65c8162bd8c97db2ef10de128ee70a6d0fea
+  case: errors_enoexec_519

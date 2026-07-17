@@ -1,0 +1,48 @@
+# 合规检查：条件：One of from_path or to_path is an empty string, but the corresponding MOVE_MOUNT_ * _EMPTY_PATH flag is not specified in flags；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B1C70DEFAF919FA0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: from_path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: One of from_path or to_path is an empty string, but the corresponding MOVE_MOUNT_ * _EMPTY_PATH
+      flag is not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:b1c70defaf919fa0d9f86a0dea064c6f2bf37da3a79d00be3d1a0cb7fa3d6437
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 481
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14722d7c6cdc03970210d77a95fd169ffc6f5a61f68c83bfc6d46f5e1150cff9
+  case: errors_enoent_481
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 481
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14722d7c6cdc03970210d77a95fd169ffc6f5a61f68c83bfc6d46f5e1150cff9
+  case: errors_enoent_481

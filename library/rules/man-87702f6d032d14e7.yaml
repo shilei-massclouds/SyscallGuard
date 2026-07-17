@@ -1,0 +1,45 @@
+# 合规检查：条件：argp references an inaccessible memory area；检查：调用 ioctl(fd, op, arg3)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_87702F6D032D14E7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: argp references an inaccessible memory area
+  action:
+    operation: invoke_syscall
+    syscall: ioctl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:87702f6d032d14e76714dbb0f4a4ee6dc14c6281c749282d74bf5dd959eca07d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db9d00f842ca061c3623a109ae96cffb5ce218b9059cfed3952057e54d4d8b8e
+  case: errors_efault_69
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioctl.2
+  line: 69
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:db9d00f842ca061c3623a109ae96cffb5ce218b9059cfed3952057e54d4d8b8e
+  case: errors_efault_69

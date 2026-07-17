@@ -1,0 +1,46 @@
+# 合规检查：条件：(since Linux 3.14) msgflg specified both MSG_COPY and MSG_EXCEPT；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_26AA0D7BE44FBCDD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 3.14) msgflg specified both MSG_COPY and MSG_EXCEPT
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:4f5c2d93d93bc8d37521b7cb357272ed66eef0ee4b64ef2b220cf8f0e8add3d6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:799f5dc4d0d6f48affd376c7770015ffe89f6795adfa2c2d3337fafea2ecc05b
+  case: errors_einval_410
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 410
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:799f5dc4d0d6f48affd376c7770015ffe89f6795adfa2c2d3337fafea2ecc05b
+  case: errors_einval_410

@@ -1,0 +1,36 @@
+# 合规检查：条件：One of tv or tz pointed outside the accessible address space；检查：调用 gettimeofday(tv, tz)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6242DAB50F5E2ADB--6242dab50f5e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: tv
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of tv or tz pointed outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: gettimeofday
+    arguments:
+    - tv
+    - tz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:6242dab50f5e2adb971b31b80d0ef58e4f42fca6f17070ede84b227904bfb591
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: gettimeofday
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/gettimeofday.2
+  line: 126
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:78e846e37a6f7672effbc45ff7628f081061279b237aa9b1c6db398d849c0edd
+  case: errors_efault_126

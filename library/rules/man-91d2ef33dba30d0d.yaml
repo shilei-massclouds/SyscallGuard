@@ -1,0 +1,48 @@
+# 合规检查：条件：An attempt was made to stack a new mount directly on top of an existing mount point that was created in this mount namespace with the same source and target；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_91D2EF33DBA30D0D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: source
+    predicate: unavailable_or_exhausted
+    value: EBUSY
+    summary: An attempt was made to stack a new mount directly on top of an existing mount point that
+      was created in this mount namespace with the same source and target
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:91d2ef33dba30d0d82d861b2c8b1e343a1e062e186a0fee2337d1ede5b16dddb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 666
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:417b0b2bf99aca6790923a9f2b606cb8069852c2fb39bb931b1d7b32f9bf8b95
+  case: errors_ebusy_666
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 666
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:417b0b2bf99aca6790923a9f2b606cb8069852c2fb39bb931b1d7b32f9bf8b95
+  case: errors_ebusy_666

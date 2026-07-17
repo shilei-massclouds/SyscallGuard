@@ -1,0 +1,47 @@
+# 合规检查：条件：Returned if PERF_SAMPLE_STACK_USER is set in sample_type and it is not supported by hardware；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_03AB8AFA730972F9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: Returned if PERF_SAMPLE_STACK_USER is set in sample_type and it is not supported by hardware
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:03ab8afa730972f9a52b195cc6185532fbac20a2f7d278ff6e90f88a2c2bb91e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3860
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0b7263b9219523d106f119bd885801b006727dd2430aadd5b45f6e160aa6720
+  case: errors_enosys_3860
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3860
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f0b7263b9219523d106f119bd885801b006727dd2430aadd5b45f6e160aa6720
+  case: errors_enosys_3860

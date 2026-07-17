@@ -1,0 +1,47 @@
+# 合规检查：条件：Both RENAME_NOREPLACE and RENAME_EXCHANGE were specified in flags；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D52BB21217EFD80E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both RENAME_NOREPLACE and RENAME_EXCHANGE were specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d52bb21217efd80e5cdbf125e2ad77f2df151c199dae1e5f98b26240c45f9958
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 455
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0b1ed3ec7aa90b07b0acf819e8e6bfc27d97e255eaefc32a4b064ab8f3ec8e48
+  case: errors_einval_455
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 455
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0b1ed3ec7aa90b07b0acf819e8e6bfc27d97e255eaefc32a4b064ab8f3ec8e48
+  case: errors_einval_455

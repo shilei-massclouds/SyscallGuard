@@ -31,3 +31,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:9dd730f16bb8b6def318124d81989f415d8b295695344f5dbdc18999986e85a2
   case: preadv202_71_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/preadv2/preadv202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9dd730f16bb8b6def318124d81989f415d8b295695344f5dbdc18999986e85a2
+  case: preadv202_71_0_0

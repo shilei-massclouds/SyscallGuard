@@ -1,0 +1,40 @@
+# 合规检查：条件：The fixture creates TEMP_FILE1 as a regular file.、The fixture sets TEMP_FILE1 mode to 0700.；检查：调用 rename(TEMP_FILE1, TEMP_FILE2)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_83B1DE66214C655F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEMP_FILE1 as a regular file.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0700'
+    summary: The fixture sets TEMP_FILE1 mode to 0700.
+  action:
+    operation: invoke_syscall
+    syscall: rename
+    arguments:
+    - TEMP_FILE1
+    - TEMP_FILE2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:83b1de66214c655fee7057fdbdb01d4a7b745ca7b7900e1d0697a39c5251d416
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/rename/rename12.c
+  line: 44
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:20878cdeca5e18c685c2f504bee72df65751d496c98ded9fbdc50678980ce52f
+  case: rename12_44_raw_0

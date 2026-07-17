@@ -1,0 +1,46 @@
+# 合规检查：条件：Out of memory (i.e., kernel memory)；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED275A56443D1C45
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Out of memory (i.e., kernel memory)
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:cfa0cb2bebd97eb844f8914f392d6348bd1683e439212dbb9fabd5499b1c5fbb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 267
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca003c6a8463c748296677b54522acde275a28cfd7892855d9a3bf42fcb2bb5b
+  case: errors_enomem_267
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 267
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ca003c6a8463c748296677b54522acde275a28cfd7892855d9a3bf42fcb2bb5b
+  case: errors_enomem_267

@@ -1,0 +1,45 @@
+# 合规检查：条件：The system call was interrupted by a signal that was caught; see signal (7)；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_828CD9CBC91671F3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The system call was interrupted by a signal that was caught; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:828cd9cbc91671f3752341bbfd4e3fb78ac054cfd928eb8f51245342b3183924
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cfa1b5ef53663bc17e080543e0e44b62788a1e1d9c1544edf72233483ae4e2f0
+  case: errors_eintr_182
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cfa1b5ef53663bc17e080543e0e44b62788a1e1d9c1544edf72233483ae4e2f0
+  case: errors_eintr_182

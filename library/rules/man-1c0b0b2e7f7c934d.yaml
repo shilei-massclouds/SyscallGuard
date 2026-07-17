@@ -1,0 +1,48 @@
+# 合规检查：条件：A valid file descriptor value was specified in userns_fd , but the file descriptor did not refer to a user namespace；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1C0B0B2E7F7C934D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: A valid file descriptor value was specified in userns_fd , but the file descriptor did not
+      refer to a user namespace
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1c0b0b2e7f7c934d0b3400bb8266a4afe3f1860f3ee0a16779c3ae105700c32f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b32be0b16f3e5a59aa89947cb8ce2ab2d8ca5706b0e2fc14ab03f73972714d8
+  case: errors_einval_473
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 473
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b32be0b16f3e5a59aa89947cb8ce2ab2d8ca5706b0e2fc14ab03f73972714d8
+  case: errors_einval_473

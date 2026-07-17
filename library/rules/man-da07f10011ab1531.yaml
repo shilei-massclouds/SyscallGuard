@@ -1,0 +1,35 @@
+# 合规检查：条件：The caller tried to increase the hard RLIMIT_NOFILE limit above the maximum defined by /proc/sys/fs/nr_open (see proc (5))；检查：调用 prlimit64()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DA07F10011AB1531
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EPERM
+    summary: The caller tried to increase the hard RLIMIT_NOFILE limit above the maximum defined by /proc/sys/fs/nr_open
+      (see proc (5))
+  action:
+    operation: invoke_syscall
+    syscall: prlimit64
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:da07f10011ab15318339d7a5b34d1039e2fe87d6486c6b602ce3339ca9dc07fc
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: prlimit64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 495
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2df320753de5fc3a38748832f1d22c565599242d990d3cb403ec7a3da8c415eb
+  case: errors_eperm_495

@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient memory. POSIX.1-2008 says that an implementation may generate an EINVAL error if sevp is NULL, and the caller is not currently registered to...；检查：调用 mq_notify(mqdes, sevp)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CFA5EB567B7081CD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: sevp
+    predicate: invalid_or_inaccessible
+    value: ENOMEM
+    summary: Insufficient memory. POSIX.1-2008 says that an implementation may generate an EINVAL error
+      if sevp is NULL, and the caller is not currently registered to...
+  action:
+    operation: invoke_syscall
+    syscall: mq_notify
+    arguments:
+    - mqdes
+    - sevp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:cfa5eb567b7081cd4350cc9de61f4e778a8fe0bc17d54bb7f12232411d0336ca
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5c09c8fc945e66b96a4b354d19f2cc6c9d6e674ebd797b2f27d7cdfa6305cd88
+  case: errors_enomem_145
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_notify
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_notify.3
+  line: 145
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5c09c8fc945e66b96a4b354d19f2cc6c9d6e674ebd797b2f27d7cdfa6305cd88
+  case: errors_enomem_145

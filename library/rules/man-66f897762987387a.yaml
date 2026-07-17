@@ -1,0 +1,43 @@
+# 合规检查：条件：timerid is not a valid timer ID；检查：调用 timer_getoverrun(timerid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_66F897762987387A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: timerid
+    predicate: documented_condition
+    value: EINVAL
+    summary: timerid is not a valid timer ID
+  action:
+    operation: invoke_syscall
+    syscall: timer_getoverrun
+    arguments:
+    - timerid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:66f897762987387a2a887201cc43f6ea419cdcd37f6765b1e9f9f60673d98509
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_getoverrun.2
+  line: 73
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a905cedca533e18eb697e39979aab4b4a678e875a467ecc07719c1e0e89de97
+  case: errors_einval_73
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_getoverrun
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_getoverrun.2
+  line: 73
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a905cedca533e18eb697e39979aab4b4a678e875a467ecc07719c1e0e89de97
+  case: errors_einval_73

@@ -1,0 +1,48 @@
+# 合规检查：条件：Parameter array could not be accessed；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2B891ECEED28A712
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: Parameter array could not be accessed
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2b891eceed28a712b5a6a1f242183285c3a4342f8c9cc768b6c8fa8ae602ecc9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70076278b5abd4df79d88a6978af82fc72f0572458a90bc40563641fb0b41c9b
+  case: errors_efault_185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70076278b5abd4df79d88a6978af82fc72f0572458a90bc40563641fb0b41c9b
+  case: errors_efault_185

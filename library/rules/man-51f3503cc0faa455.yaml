@@ -1,0 +1,46 @@
+# 合规检查：条件：The user's quota of disk blocks or inodes on the filesystem has been exhausted；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EDQUOT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_51F3503CC0FAA455
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EDQUOT
+    summary: The user's quota of disk blocks or inodes on the filesystem has been exhausted
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EDQUOT
+  errno:
+  - EDQUOT
+semantic_hash: sha256:51f3503cc0faa45525f9b305945d5dc1f12054e3ef2ac1a37d6542b6081ab189
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:58a63008ef0b65468a219353975873ba91c7ea42f766e1f7dea8971b976e429d
+  case: errors_edquot_170
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 170
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:58a63008ef0b65468a219353975873ba91c7ea42f766e1f7dea8971b976e429d
+  case: errors_edquot_170

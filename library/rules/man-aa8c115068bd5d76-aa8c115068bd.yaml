@@ -1,0 +1,36 @@
+# 合规检查：条件：Bad address；检查：调用 fstat(fd, statbuf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AA8C115068BD5D76--aa8c115068bd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFAULT
+    summary: Bad address
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fd
+    - statbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:aa8c115068bd5d7652899e73145909343274a585413c093b42f7f32189eaf090
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 240
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d0184a8bc10fdc3c4fe312906b8857f1a591e139d49e2fe6b453a6a937751761
+  case: errors_efault_240

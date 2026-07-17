@@ -1,0 +1,48 @@
+# 合规检查：条件：The caller tried to create an ID-mapped mount raising MOUNT_ATTR_IDMAP and specifying userns_fd but the mount still holds files open for writing；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0236084E65503DBE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: The caller tried to create an ID-mapped mount raising MOUNT_ATTR_IDMAP and specifying userns_fd
+      but the mount still holds files open for writing
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:0236084e65503dbe4f7883a5508353b69391d0bc2b62e684755845fe3510228a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 403
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e1dd06cb3e09abaefa11649eddc4beedf5f3a846465bbb2afb6add2973a7cd8
+  case: errors_ebusy_403
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 403
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4e1dd06cb3e09abaefa11649eddc4beedf5f3a846465bbb2afb6add2973a7cd8
+  case: errors_ebusy_403

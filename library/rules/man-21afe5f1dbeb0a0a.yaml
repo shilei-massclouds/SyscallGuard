@@ -1,0 +1,38 @@
+# 合规检查：条件：(Linux 2.6.9 and later) the caller had a nonzero RLIMIT_MEMLOCK soft resource limit, but tried to lock more memory than the limit permitted. This limit is...；检查：调用 mlock2(size, size, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_21AFE5F1DBEB0A0A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: (Linux 2.6.9 and later) the caller had a nonzero RLIMIT_MEMLOCK soft resource limit, but
+      tried to lock more memory than the limit permitted. This limit is...
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:21afe5f1dbeb0a0a5ea58aeb515c40bf7ef1bafe424762e7218ad9ddb8da4d8f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 234
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9f5e4a36168b5e163b17ae7f9d7bb314b7a5de778ebb2d26abefc73d17a9d469
+  case: errors_enomem_234

@@ -1,0 +1,47 @@
+# 合规检查：条件：An attempt was made to add an ID mapping to a mount that is already ID mapped；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AE06BA421FC93637
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: An attempt was made to add an ID mapping to a mount that is already ID mapped
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:ae06ba421fc93637f5eac661f706730bd45f0cb58c591af34ad18f3bf64a2598
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 565
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fa9f0c44dd29dd19a26e684cbd63cc2b1e9582b3a7bacae7816ca07d95fc799a
+  case: errors_eperm_565
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 565
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fa9f0c44dd29dd19a26e684cbd63cc2b1e9582b3a7bacae7816ca07d95fc799a
+  case: errors_eperm_565

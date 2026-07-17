@@ -1,0 +1,46 @@
+# 合规检查：条件：The system does not allow unlinking of directories, or unlinking of directories requires privileges that the calling process doesn't have. (This is the...；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3A0D7F45C9ADC371
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The system does not allow unlinking of directories, or unlinking of directories requires
+      privileges that the calling process doesn't have. (This is the...
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:3a0d7f45c9adc371ea34ffff55f8cc9ad83aeb3627026ae1bb6b6acda52f18e8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70d7efee4254cbecd2251249bbf5369535018f0a611d921e7d7b6db2db4b38a7
+  case: errors_eperm_184
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70d7efee4254cbecd2251249bbf5369535018f0a611d921e7d7b6db2db4b38a7
+  case: errors_eperm_184

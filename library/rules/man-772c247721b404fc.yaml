@@ -1,0 +1,45 @@
+# 合规检查：条件：path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 open_by_handle_at(mount_fd, handle, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_772C247721B404FC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - mount_fd
+    - handle
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ec330e3f4870010f7da600a5219c6d7721796f26aaef05c1cbc55ae7bab6b86c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e49592de27523c6284fa54d230b72cd5ae2b9ed02c2f913e70f12ceeee8d66d1
+  case: errors_ebadf_405
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: open_by_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e49592de27523c6284fa54d230b72cd5ae2b9ed02c2f913e70f12ceeee8d66d1
+  case: errors_ebadf_405

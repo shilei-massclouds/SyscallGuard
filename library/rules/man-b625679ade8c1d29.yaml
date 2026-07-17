@@ -1,0 +1,44 @@
+# 合规检查：条件：The named file is a directory；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B625679ADE8C1D29
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: The named file is a directory
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:be404be920845e38209e461bbab022ba28d68801b4540fd70fdb7e0604b044bf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7e9b7b1d51dff767094411317bcb79e5ce0064ca691e84866f6fb2b67f293d3
+  case: errors_eisdir_121
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7e9b7b1d51dff767094411317bcb79e5ce0064ca691e84866f6fb2b67f293d3
+  case: errors_eisdir_121

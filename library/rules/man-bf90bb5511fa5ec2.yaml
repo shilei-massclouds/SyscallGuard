@@ -1,0 +1,44 @@
+# 合规检查：条件：The system has too many open files to create more；检查：调用 fsopen(fsname, flags)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BF90BB5511FA5EC2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENFILE
+    summary: The system has too many open files to create more
+  action:
+    operation: invoke_syscall
+    syscall: fsopen
+    arguments:
+    - fsname
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:bf90bb5511fa5ec2b7a923cf5109814206caa66dc146894e667d960e14b2944c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 242
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:846215c9d98914f41ccdf8d1f5a1c9c88e553449216de2bcdb2487970f5033d9
+  case: errors_enfile_242
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsopen
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsopen.2
+  line: 242
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:846215c9d98914f41ccdf8d1f5a1c9c88e553449216de2bcdb2487970f5033d9
+  case: errors_enfile_242

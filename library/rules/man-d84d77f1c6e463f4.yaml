@@ -1,0 +1,36 @@
+# 合规检查：条件：tp points outside the accessible address space；检查：调用 clock_gettime(clockid, tp)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D84D77F1C6E463F4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: tp
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: tp points outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: clock_gettime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d84d77f1c6e463f4f4c3d85ef5c089b81c00e7507cda07eeb705c75bee97da05
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 280
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3e0cd46dfef571d53e285e5b0a0a0f417ccee10fb3f94813a3a8003f916a0c5c
+  case: errors_efault_280

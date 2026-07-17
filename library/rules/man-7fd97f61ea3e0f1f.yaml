@@ -1,0 +1,44 @@
+# 合规检查：条件：An invalid signal was specified；检查：调用 kill(pid, sig)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7FD97F61EA3E0F1F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: An invalid signal was specified
+  action:
+    operation: invoke_syscall
+    syscall: kill
+    arguments:
+    - pid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7fd97f61ea3e0f1f6337f0128e5bcb098831608dbde6170dd9ae07a4afaffcfe
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d1cbc81425edf8306c665b837b3abf1daae73a819af1258f0053800787d0574
+  case: errors_einval_104
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kill.2
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d1cbc81425edf8306c665b837b3abf1daae73a819af1258f0053800787d0574
+  case: errors_einval_104

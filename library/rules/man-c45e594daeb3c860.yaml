@@ -1,0 +1,47 @@
+# 合规检查：条件：The option is unknown at the level indicated；检查：调用 setsockopt(sockfd, level, optname, optlen, optlen)；预期：返回 -1，errno 为 ENOPROTOOPT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C45E594DAEB3C860
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: level
+    predicate: documented_condition
+    value: ENOPROTOOPT
+    summary: The option is unknown at the level indicated
+  action:
+    operation: invoke_syscall
+    syscall: setsockopt
+    arguments:
+    - sockfd
+    - level
+    - optname
+    - optlen
+    - optlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOPROTOOPT
+  errno:
+  - ENOPROTOOPT
+semantic_hash: sha256:c214ffa9d0894d8eb578c325b7476fce53c567c696797e96c1a6f31618a34950
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ffedd281d4c975db2b6cabc0f9f2c20c3a60eb5832f1af0f95abc057baaaaee
+  case: errors_enoprotoopt_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setsockopt
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockopt.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ffedd281d4c975db2b6cabc0f9f2c20c3a60eb5832f1af0f95abc057baaaaee
+  case: errors_enoprotoopt_134

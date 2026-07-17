@@ -1,0 +1,44 @@
+# 合规检查：条件：Insufficient kernel resources are available；检查：调用 io_setup(n, ctx_idp)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5EF2B85535DA2137
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Insufficient kernel resources are available
+  action:
+    operation: invoke_syscall
+    syscall: io_setup
+    arguments:
+    - n
+    - ctx_idp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:5ef2b85535da21372a0713d00925f063c80bbf7494f7b15cc14f0cd4d0f534b6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26c23f8a2c142d5946c4ac7a536ca5499f17dce5d791d79b43dc6f5812936435
+  case: errors_enomem_76
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_setup
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_setup.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26c23f8a2c142d5946c4ac7a536ca5499f17dce5d791d79b43dc6f5812936435
+  case: errors_enomem_76

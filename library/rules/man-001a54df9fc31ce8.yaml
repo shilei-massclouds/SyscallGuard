@@ -1,0 +1,43 @@
+# 合规检查：条件：The argument policy does not identify a defined scheduling policy；检查：调用 sched_get_priority_min(policy)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_001A54DF9FC31CE8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: policy
+    predicate: invalid_value
+    value: EINVAL
+    summary: The argument policy does not identify a defined scheduling policy
+  action:
+    operation: invoke_syscall
+    syscall: sched_get_priority_min
+    arguments:
+    - policy
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:44b928383e3d8326f68bfab9c62adf80731c2209f50f51f93c5f7f76accc6eee
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_get_priority_max.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:03e8522f96aa1e72209c25a36865a8fb65ede4b4b35963279c1740c60cb53eec
+  case: errors_einval_90
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_get_priority_min
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_get_priority_max.2
+  line: 90
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:03e8522f96aa1e72209c25a36865a8fb65ede4b4b35963279c1740c60cb53eec
+  case: errors_einval_90

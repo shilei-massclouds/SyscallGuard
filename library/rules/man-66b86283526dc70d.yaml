@@ -1,0 +1,46 @@
+# 合规检查：条件：A revoked key was found, but no replacement could be obtained；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EKEYREVOKED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_66B86283526DC70D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EKEYREVOKED
+    summary: A revoked key was found, but no replacement could be obtained
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYREVOKED
+  errno:
+  - EKEYREVOKED
+semantic_hash: sha256:66b86283526dc70daab57b210b18ee7cd653155da1d2a775362f256ec2dacf33
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 415
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff9db63c6b4117489e17aaf318424af389d0319188193306d0bdba8d2ce22ae7
+  case: errors_ekeyrevoked_415
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 415
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ff9db63c6b4117489e17aaf318424af389d0319188193306d0bdba8d2ce22ae7
+  case: errors_ekeyrevoked_415

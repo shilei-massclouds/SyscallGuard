@@ -1,0 +1,44 @@
+# 合规检查：条件：The operation is not permitted because the caller lacks a required capability；检查：调用 fanotify_init(flags, event_f_flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_339334472278802F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The operation is not permitted because the caller lacks a required capability
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:339334472278802f5455a6cb38ec4714f79dff691cdeeddd2e453d7d8f238576
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e0c2b7600ed5cd88e274d90d6a61a5d66202379732cb84bd8cd5b5b61fde17a7
+  case: errors_eperm_509
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e0c2b7600ed5cd88e274d90d6a61a5d66202379732cb84bd8cd5b5b61fde17a7
+  case: errors_eperm_509

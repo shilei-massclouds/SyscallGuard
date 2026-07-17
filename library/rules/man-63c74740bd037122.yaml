@@ -1,0 +1,45 @@
+# 合规检查：条件：n is less than 0；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_63C74740BD037122
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: n
+    predicate: documented_condition
+    value: EINVAL
+    summary: n is less than 0
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:63c74740bd037122757bada39640801dddc36648b48952a07394bf4ea4c21336
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 273
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:76cfaab8741ef7000f5310e0a22b2a33a1419e3c67136072da518460cecdb249
+  case: errors_einval_273
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 273
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:76cfaab8741ef7000f5310e0a22b2a33a1419e3c67136072da518460cecdb249
+  case: errors_einval_273

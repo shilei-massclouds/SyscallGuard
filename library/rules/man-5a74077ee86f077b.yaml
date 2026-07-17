@@ -1,0 +1,46 @@
+# 合规检查：条件：A capability-dumb applications would not obtain the full set of permitted capabilities granted by the executable file. See capabilities (7)；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5A74077EE86F077B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: A capability-dumb applications would not obtain the full set of permitted capabilities granted
+      by the executable file. See capabilities (7)
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:5a74077ee86f077b675912308446f0535231c7b8875633ed596c8506e53f2497
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 542
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:59245f803060948feba388c81f3b861b6e715ceef33a5480131beccfdbd46eb4
+  case: errors_eperm_542
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 542
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:59245f803060948feba388c81f3b861b6e715ceef33a5480131beccfdbd46eb4
+  case: errors_eperm_542

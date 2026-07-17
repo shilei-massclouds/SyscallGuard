@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:d848369500c07d54727f0c4b92b8a41537f968bbd884c63435094f56649e0787
   case: getrlimit01_49_2
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getrlimit/getrlimit01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:d848369500c07d54727f0c4b92b8a41537f968bbd884c63435094f56649e0787
+  case: getrlimit01_49_2_0

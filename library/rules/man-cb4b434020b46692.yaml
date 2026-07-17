@@ -1,0 +1,43 @@
+# 合规检查：条件：rt_sigqueueinfo (): No thread group matching tgid was found. rt_tgsigqueinfo (): No thread matching tgid and tid was found；检查：调用 rt_sigqueueinfo()；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CB4B434020B46692
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: ESRCH
+    summary: 'rt_sigqueueinfo (): No thread group matching tgid was found. rt_tgsigqueinfo (): No thread
+      matching tgid and tid was found'
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigqueueinfo
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:cb4b434020b466928fa1f2297e720ea8d0f0dd97bce28a0e1fa1260c635ab694
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cd336efa254a529c4974801b5c775b5f7e770708ce7aa437045c717a95d25d99
+  case: errors_esrch_157
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 157
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cd336efa254a529c4974801b5c775b5f7e770708ce7aa437045c717a95d25d99
+  case: errors_esrch_157

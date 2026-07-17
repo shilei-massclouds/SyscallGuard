@@ -1,0 +1,47 @@
+# 合规检查：条件：One of type , description , or callout_info points outside the process's accessible address space；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9E2263041F8B8CF7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: type
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: One of type , description , or callout_info points outside the process's accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:9e2263041f8b8cf7c2c856a14bf2507047dcff168f355ccf4ce61d26abd85f43
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 384
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9b1191c6f12ab064ed1860fb8b24f229bc077f2bdc8fce9f9d802469ac84005c
+  case: errors_efault_384
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 384
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9b1191c6f12ab064ed1860fb8b24f229bc077f2bdc8fce9f9d802469ac84005c
+  case: errors_efault_384

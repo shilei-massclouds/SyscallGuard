@@ -1,0 +1,45 @@
+# 合规检查：条件：No read access to the memory of a futex word；检查：调用 futex(uaddr, op, arg3)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C390B2BC8654AAA9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EACCES
+    summary: No read access to the memory of a futex word
+  action:
+    operation: invoke_syscall
+    syscall: futex
+    arguments:
+    - uaddr
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:c390b2bc8654aaa990198dfc68bb9842d2fda67e0e3f90d6f8e491edd705b8ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33bccb6581fd2eea0d4e1e18cfb0bb3c59e6fb5aed0e4f15e87fa63f9302c7e9
+  case: errors_eacces_484
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex.2
+  line: 484
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33bccb6581fd2eea0d4e1e18cfb0bb3c59e6fb5aed0e4f15e87fa63f9302c7e9
+  case: errors_eacces_484

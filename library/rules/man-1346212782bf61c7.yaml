@@ -1,0 +1,46 @@
+# 合规检查：条件：The calling process is not privileged (did not have the necessary capability in its user namespace) and tried to change the IDs to values that are not...；检查：调用 setresuid(ruid, euid, suid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1346212782BF61C7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process is not privileged (did not have the necessary capability in its user
+      namespace) and tried to change the IDs to values that are not...
+  action:
+    operation: invoke_syscall
+    syscall: setresuid
+    arguments:
+    - ruid
+    - euid
+    - suid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:1346212782bf61c7188cb2640e5ac4e355e6d6dcbe47fff485a3c3b61baaf9a4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setresuid.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d7dc12fba527ec07a01ef80c0e5e125b92325c9faa5b0d62a7353c77f5374d1
+  case: errors_eperm_88
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setresuid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setresuid.2
+  line: 88
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d7dc12fba527ec07a01ef80c0e5e125b92325c9faa5b0d62a7353c77f5374d1
+  case: errors_eperm_88

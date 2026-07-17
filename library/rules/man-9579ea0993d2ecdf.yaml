@@ -1,0 +1,43 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 chroot(path)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9579EA0993D2ECDF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:9579ea0993d2ecdfa92115e4075e9bb665a69e232ba578060571ce460931ecd7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86638b58963c4c63727cf334bd3ca1217f99fda3b488a2f51e8afa44e0b868de
+  case: errors_eio_111
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 111
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86638b58963c4c63727cf334bd3ca1217f99fda3b488a2f51e8afa44e0b868de
+  case: errors_eio_111

@@ -1,0 +1,49 @@
+# 合规检查：条件：The O_APPEND flag is set for the open file description (see open (2)) referred to by the file descriptor fd_out；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F950D39156CA90DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd_out
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The O_APPEND flag is set for the open file description (see open (2)) referred to by the
+      file descriptor fd_out
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f950d39156ca90dd6a8ad5e592651495dcb0dcdfd05b857fe8b2782946f594cc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c4ab04ab557bcab5c98820cb7f1cfe930880ee0b5b8f62edf37e20103cff342b
+  case: errors_ebadf_100
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 100
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c4ab04ab557bcab5c98820cb7f1cfe930880ee0b5b8f62edf37e20103cff342b
+  case: errors_ebadf_100

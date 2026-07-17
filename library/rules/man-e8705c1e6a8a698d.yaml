@@ -1,0 +1,44 @@
+# 合规检查：条件：The specified size of the new alternate signal stack ss.ss_size was less than MINSIGSTKSZ；检查：调用 sigaltstack(ss, old_ss)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8705C1E6A8A698D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: ss
+    predicate: invalid_value
+    value: ENOMEM
+    summary: The specified size of the new alternate signal stack ss.ss_size was less than MINSIGSTKSZ
+  action:
+    operation: invoke_syscall
+    syscall: sigaltstack
+    arguments:
+    - ss
+    - old_ss
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:e8705c1e6a8a698da054f604486071a0f55cad3c8bb3c0846d353c78a15e6a44
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4dae8ff6854c3c58ceb513928847eea0a0f74b3f7c881fdd0b83355757752b85
+  case: errors_enomem_217
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sigaltstack
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sigaltstack.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4dae8ff6854c3c58ceb513928847eea0a0f74b3f7c881fdd0b83355757752b85
+  case: errors_enomem_217

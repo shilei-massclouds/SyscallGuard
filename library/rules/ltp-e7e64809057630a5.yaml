@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:06460b70646f14109ab9a535ca3b9182e352a27affb2d040df4906242c06f313
   case: request_key03_117_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/request_key/request_key03.c
+  line: 117
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:06460b70646f14109ab9a535ca3b9182e352a27affb2d040df4906242c06f313
+  case: request_key03_117_raw_0

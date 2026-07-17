@@ -1,0 +1,50 @@
+# 合规检查：条件：The fixture creates TEST_EACCES as a regular file.、The caller lacks a permission required by the operation.、The fixture sets TEST_EACCES mode to MODE_RWX.、The argument is a userspace buffer.；检查：调用 lstat(TEST_EACCES, &stat_buf)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_E9690AB9682FCE47
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates TEST_EACCES as a regular file.
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  - kind: path
+    subject: path
+    predicate: mode
+    value: MODE_RWX
+    summary: The fixture sets TEST_EACCES mode to MODE_RWX.
+  - kind: pointer
+    subject: stat_buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - TEST_EACCES
+    - '&stat_buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:e9690ab9682fce472e97bb505601d9bb24aadf4bd67cb3fb0770e5f139f6db4d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:37c9b4dce3179253a71b50d988e5460af5b350ced611e692a3b1d010a864b40b
+  case: lstat02_63_0_0

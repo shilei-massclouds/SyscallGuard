@@ -1,0 +1,39 @@
+# 合规检查：条件：path , mount_id , or handle points outside your accessible address space；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A5DF7E1179E6ED23--a5df7e1179e6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path , mount_id , or handle points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:a5df7e1179e6ed239622336115ed6c10b7ac5aa969fd4bea2e203579221c7914
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 350
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:35e378021a4899422c996239e3d654aa451e7dfd6212925e9592982a35b58169
+  case: errors_efault_350

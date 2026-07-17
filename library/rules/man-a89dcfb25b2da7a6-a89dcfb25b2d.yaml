@@ -1,0 +1,38 @@
+# 合规检查：条件：Write access was requested to an executable which is being executed；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ETXTBSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A89DCFB25B2DA7A6--a89dcfb25b2d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ETXTBSY
+    summary: Write access was requested to an executable which is being executed
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ETXTBSY
+  errno:
+  - ETXTBSY
+semantic_hash: sha256:a89dcfb25b2da7a6cd34f2afa0909e036b46005295ee0d9f025ba3e1582ab64f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 282
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9ff17ad186df02cb4b3a7d5b8cadbb02428caa7cf4d9ce6b4554655932096f9e
+  case: errors_etxtbsy_282

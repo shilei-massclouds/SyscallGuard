@@ -1,0 +1,46 @@
+# 合规检查：条件：(Since Linux 2.6.9), SHM_LOCK was specified and the size of the to-be-locked segment would mean that the total bytes in locked shared memory segments would...；检查：调用 shmctl(shmid, op, buf)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A31A9CCB700DE939
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: (Since Linux 2.6.9), SHM_LOCK was specified and the size of the to-be-locked segment would
+      mean that the total bytes in locked shared memory segments would...
+  action:
+    operation: invoke_syscall
+    syscall: shmctl
+    arguments:
+    - shmid
+    - op
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:a31a9ccb700de939c44134dcae90449e23b7c96c2a807d61d07da5c2fc8b9a32
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:68753787dcd7b2d6567f8be674689ac0b5ae5f6b889295c16e83477cd4f4e365
+  case: errors_enomem_405
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmctl.2
+  line: 405
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:68753787dcd7b2d6567f8be674689ac0b5ae5f6b889295c16e83477cd4f4e365
+  case: errors_enomem_405

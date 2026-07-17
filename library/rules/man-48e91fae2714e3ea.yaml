@@ -1,0 +1,46 @@
+# 合规检查：条件：The aio_reqprio field is set with the class IOPRIO_CLASS_RT , but the submitting context does not have the CAP_SYS_ADMIN capability；检查：调用 io_submit(ctx_id, n, n)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_48E91FAE2714E3EA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The aio_reqprio field is set with the class IOPRIO_CLASS_RT , but the submitting context
+      does not have the CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: io_submit
+    arguments:
+    - ctx_id
+    - n
+    - n
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:48e91fae2714e3eafa9fec6ca359082840b68340780ed38fd0fcb54d286f75ed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 298
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dbb5f1f4101e3e190f080b37d800a85e1506686c393e7c0e8ee1e172154808db
+  case: errors_eperm_298
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_submit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_submit.2
+  line: 298
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dbb5f1f4101e3e190f080b37d800a85e1506686c393e7c0e8ee1e172154808db
+  case: errors_eperm_298

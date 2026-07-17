@@ -1,0 +1,46 @@
+# 合规检查：条件：See EOVERFLOW；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5C4059CF30633E55
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EFBIG
+    summary: See EOVERFLOW
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:5c4059cf30633e558d38404a57daa799cc41f044e9cffc8ba1d9a982fc76a2f1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1043
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57953f6242e7553f4a8d2f26a238104a8809901f1e828eef31100cc615113447
+  case: errors_efbig_1043
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1043
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:57953f6242e7553f4a8d2f26a238104a8809901f1e828eef31100cc615113447
+  case: errors_efbig_1043

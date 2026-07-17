@@ -1,0 +1,48 @@
+# 合规检查：条件：The command given by cmd was \%FSCONFIG_CMD_CREATE , \%FSCONFIG_CMD_CREATE_EXCL , or \%FSCONFIG_CMD_RECONFIGURE , but the calling process does not have the...；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E3993BD58D128E81
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: cmd
+    predicate: documented_condition
+    value: EPERM
+    summary: The command given by cmd was \%FSCONFIG_CMD_CREATE , \%FSCONFIG_CMD_CREATE_EXCL , or \%FSCONFIG_CMD_RECONFIGURE
+      , but the calling process does not have the...
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e3993bd58d128e8171df9caecd9d851f847b0c5f66657e208a34bed23a076305
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 495
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3cd5f293022359f7731dfb3b973d3eb5ab04e2c0331a66494ed5335705793511
+  case: errors_eperm_495
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 495
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3cd5f293022359f7731dfb3b973d3eb5ab04e2c0331a66494ed5335705793511
+  case: errors_eperm_495

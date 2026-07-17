@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath or newpath was too long；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_060281D47FA8D7BC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: oldpath
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: oldpath or newpath was too long
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:060281d47fa8d7bc5d976ee1c681100a26c606466497ea862ecc9aa4bba9334d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 209
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25749b324654690f7b16926a380328dc33d511d747a640379f0eac46b1838313
+  case: errors_enametoolong_209
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 209
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25749b324654690f7b16926a380328dc33d511d747a640379f0eac46b1838313
+  case: errors_enametoolong_209

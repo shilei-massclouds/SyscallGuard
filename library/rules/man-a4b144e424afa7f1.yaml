@@ -1,0 +1,46 @@
+# 合规检查：条件：For BPF_MAP_LOOKUP_ELEM or BPF_MAP_DELETE_ELEM , indicates that the element with the given key was not found；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A4B144E424AFA7F1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: For BPF_MAP_LOOKUP_ELEM or BPF_MAP_DELETE_ELEM , indicates that the element with the given
+      key was not found
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:a4b144e424afa7f1084635b315a9256638e6eab415775abe321e04bb02382c9e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1048
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a99e7b50b7caf65020f8f0749090ebd54812405cceb378ec5fe939fc9928e40e
+  case: errors_enoent_1048
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1048
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a99e7b50b7caf65020f8f0749090ebd54812405cceb378ec5fe939fc9928e40e
+  case: errors_enoent_1048

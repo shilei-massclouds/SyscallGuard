@@ -1,0 +1,45 @@
+# 合规检查：条件：The value specified in op is not recognized by this kernel；检查：调用 fcntl(fd, op, arg3)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6D0725D21560A32
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: op
+    predicate: invalid_value
+    value: EINVAL
+    summary: The value specified in op is not recognized by this kernel
+  action:
+    operation: invoke_syscall
+    syscall: fcntl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f6d0725d21560a321c919db22f4f3dfce84014d35f923dd6f9006bcab6e97826
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d61982b7d915390ac92b277277ef66a04c938ce39a8ce723f6ca49a629e27651
+  case: errors_einval_133
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fcntl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 133
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d61982b7d915390ac92b277277ef66a04c938ce39a8ce723f6ca49a629e27651
+  case: errors_einval_133

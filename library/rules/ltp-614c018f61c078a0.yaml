@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:d9eb23249edf5d0ff98afbd681691d6283c9f2402df30e376ce14ea40f326a3e
   case: waitpid03_26_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitpid/waitpid03.c
+  line: 26
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d9eb23249edf5d0ff98afbd681691d6283c9f2402df30e376ce14ea40f326a3e
+  case: waitpid03_26_raw_0

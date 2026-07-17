@@ -1,0 +1,45 @@
+# 合规检查：条件：The given address is already in use；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EADDRINUSE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B58395BCFB66624C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EADDRINUSE
+    summary: The given address is already in use
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRINUSE
+  errno:
+  - EADDRINUSE
+semantic_hash: sha256:b58395bcfb66624c778a6260188df5dd6144acb0767ba8254ab4303d249407b5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 110
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81cf54d64c365540b9de44223510cc06dc3b716fd1738f932f1cf28af4751fc2
+  case: errors_eaddrinuse_110
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 110
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81cf54d64c365540b9de44223510cc06dc3b716fd1738f932f1cf28af4751fc2
+  case: errors_eaddrinuse_110

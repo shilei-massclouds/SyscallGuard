@@ -1,0 +1,44 @@
+# 合规检查：条件：Could not find a process with the ID pid；检查：调用 sched_rr_get_interval(pid, tp)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6BEAAED04206F36C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: Could not find a process with the ID pid
+  action:
+    operation: invoke_syscall
+    syscall: sched_rr_get_interval
+    arguments:
+    - pid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:6beaaed04206f36c99ec97cd1d3a2b486c011ba4e138314802156d83bb0caae0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8c125627c5e4315cab2dc590612bf5757c80e1ccc3dac0b502a240df1dfd447d
+  case: errors_esrch_61
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_rr_get_interval
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8c125627c5e4315cab2dc590612bf5757c80e1ccc3dac0b502a240df1dfd447d
+  case: errors_esrch_61

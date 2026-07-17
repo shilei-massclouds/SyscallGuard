@@ -3,10 +3,7 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
 title: fd lookup reports EBADF and allocation enforces RLIMIT_NOFILE
 rule_refs:
-- LTP_0EBD1214FC6BB6D5
-- LTP_311F7A773994720E
 - LTP_511185D6DE2A63A0
-- LTP_594FA5B54CA204E5
 - LTP_84DBE108A850E845
 - LTP_A774FC10727E8ED2
 - LTP_ED2BA909DF79625A
@@ -22,18 +19,9 @@ patterns:
   regex: pub fn add_file_like\([\s\S]*?Ok\(table\.add\(fd\)\.map_err\(\|_\| AxError::TooManyOpenFiles\)\?
     as c_int\)
 upstream_dependencies:
-- id: LTP_0EBD1214FC6BB6D5
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:0ebd1214fc6bb6d5e224e50177509f565c7be9ba6ad0d4842779e564b71dedbb
-- id: LTP_311F7A773994720E
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:311f7a773994720e7cac8cd3d2b12c6938f7c13b7a4eff6dbcfe843e466448ac
 - id: LTP_511185D6DE2A63A0
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:511185d6de2a63a045d2f5f65babdf4c25b4066ece863b9f121419045563d4c9
-- id: LTP_594FA5B54CA204E5
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:594fa5b54ca204e5062358a745af4921e86e002d54071b19f1650a69d2d468f7
 - id: LTP_84DBE108A850E845
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:84dbe108a850e845bf4a3cfc65c984525f06a85bcf44e616283b5ef4e16bb451
@@ -58,6 +46,13 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols:
   - add_file_like
@@ -70,22 +65,15 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:accae0bd44f82207f244b85e252120122e3b3901e4993ca1e9d0d58d21c015cf
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:bd827252df728b42d92d796615fe61d8f95c136dcaa581616d2ee188965d8ee1
-- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols:
   - dup_fd
   - sys_dup
   scope: symbols
-  file_hash: sha256:4b7bc168ed7c3c25fad81a4c8594b3db51fe9d3c0a7fb9f5426cd67fa7e034a0
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
   symbol_hashes:
     dup_fd: sha256:eaec9c14d0e633561d5e7dab7814d80af12077a8ac49269599fbb20d08c1608e
     sys_dup: sha256:5e9bb21b22d3d2d0a1ac3ef1e283fe060fb06087f994c793ba135cc476cf133c
   missing_symbols: []
   content_hash: sha256:d0701994de39f5838c32092d701b853fb90fb05609a6e509f2562b12fac6b7b9
-target_content_fingerprint: sha256:c8dcc4950a9f0cb600461edbaec55ddd178b1bca8ed9c37ffc8de43cac04322c
-generated_at_utc: '2026-07-16T03:17:56.282688Z'
+target_content_fingerprint: sha256:b6aec054573da41c1c7eb2251cccfbcaac3b5caf012c31768edfa49c9d4e68fe
+generated_at_utc: '2026-07-17T05:28:28.281302Z'

@@ -1,0 +1,44 @@
+# 合规检查：条件：Arguments point outside the calling process's address space；检查：调用 getcpu(cpu, node)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C72E4E80234A34D4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Arguments point outside the calling process's address space
+  action:
+    operation: invoke_syscall
+    syscall: getcpu
+    arguments:
+    - cpu
+    - node
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:c72e4e80234a34d415255419e3b82bc3774331864d8d5dd57c12018dc6c348e8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getcpu.2
+  line: 57
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ad47aa8bd2256229600cd2699d76b49bbbcb61f3a092e65aa5321744121ca54
+  case: errors_efault_57
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcpu
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getcpu.2
+  line: 57
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ad47aa8bd2256229600cd2699d76b49bbbcb61f3a092e65aa5321744121ca54
+  case: errors_efault_57

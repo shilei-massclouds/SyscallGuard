@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 clock_nanosleep(clockid, flags, t, remain)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD66BC96095868B7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: clock_nanosleep
+    arguments:
+    - clockid
+    - flags
+    - t
+    - remain
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:ad66bc96095868b7ab6033b4fdcc732579bf33df93a0d23e0cc74d6efffabbd0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 140
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:bc7c9dec68b92ddd356e93da60b9d3cc8a17806d90441123fc7b0bbe99a1cba6
+  case: return_value_140
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 140
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:bc7c9dec68b92ddd356e93da60b9d3cc8a17806d90441123fc7b0bbe99a1cba6
+  case: return_value_140

@@ -1,0 +1,44 @@
+# 合规检查：条件：Both O_CREAT and O_EXCL were specified in oflag , but a queue with this name already exists；检查：调用 mq_open(name, oflag)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_073953AAA1410D13
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: name
+    predicate: documented_state_condition
+    value: EEXIST
+    summary: Both O_CREAT and O_EXCL were specified in oflag , but a queue with this name already exists
+  action:
+    operation: invoke_syscall
+    syscall: mq_open
+    arguments:
+    - name
+    - oflag
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:073953aaa1410d13fdda7d129248b600798c532c43ce8cb691fb455120ac41f9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 163
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a6762034364443f17a56bef55be7d7316a14f879f6ca2ae443b465f543a60a1
+  case: errors_eexist_163
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_open.3
+  line: 163
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a6762034364443f17a56bef55be7d7316a14f879f6ca2ae443b465f543a60a1
+  case: errors_eexist_163

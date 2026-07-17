@@ -1,0 +1,39 @@
+# 合规检查：条件：(since Linux 3.14) msgflg specified MSG_COPY , but not IPC_NOWAIT；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_202EF9D1C280FD44--202ef9d1c280
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: EINVAL
+    summary: (since Linux 3.14) msgflg specified MSG_COPY , but not IPC_NOWAIT
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:202ef9d1c280fd44281f86b3513d2598f84a2d6402be8ff3618b7e62c77c1814
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 403
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:90f2d825db37b8d2b76f74118792013cb25134efb7991388cea440ea24a87796
+  case: errors_einval_403

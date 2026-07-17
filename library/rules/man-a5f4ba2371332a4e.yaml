@@ -1,0 +1,40 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 eventfd2()；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A5F4BA2371332A4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: eventfd2
+    arguments: []
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:a5f4ba2371332a4e5ad6c94bd808ca1e5d12b3f4ebba27c6a38bce0993ea1676
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 223
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0aa61e3ac69d3ff6ac6890bbff0517fa61f1491b599652ad9cf3a3c106286add
+  case: return_value_223
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: eventfd2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 223
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:0aa61e3ac69d3ff6ac6890bbff0517fa61f1491b599652ad9cf3a3c106286add
+  case: return_value_223

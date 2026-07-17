@@ -1,0 +1,38 @@
+# 合规检查：条件：path is too long；检查：调用 faccessat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_21B60AD7C0F6FC76--21b60ad7c0f6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: faccessat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:21b60ad7c0f6fc7616aa738719635f93fd1f989ad1e1656bda4af94c0a1e179a
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 250
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0157a329c769c6537eba9fb3198f6043fdc8d9da3fbdc284f57102ea6e0122c7
+  case: errors_enametoolong_250

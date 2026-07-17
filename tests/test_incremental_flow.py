@@ -380,6 +380,24 @@ class FlowTestCase(unittest.TestCase):
 
 
 class IngestTests(FlowTestCase):
+    def test_source_disappearance_retires_rule_without_deleting_history(self) -> None:
+        source, descriptor = self.make_ltp()
+        run_ingest(descriptor, root=self.root, requested_run_id="spec-active", syscalls="alpha")
+        before = load_mapping(self.root / "library/syscalls.yaml")
+        rule_id = before["syscalls"]["alpha"][0]["rule_id"]
+        rule_path = self.root / before["syscalls"]["alpha"][0]["path"]
+        commit_file(
+            source,
+            "testcases/kernel/syscalls/alpha/alpha01.c",
+            "void run(void) { helper(); }\n",
+        )
+        run_ingest(descriptor, root=self.root, requested_run_id="spec-retired", syscalls="alpha")
+        after = load_mapping(self.root / "library/syscalls.yaml")
+        self.assertEqual(after["syscalls"]["alpha"], [])
+        inactive = {row["rule_id"]: row for row in after["inactive_rules"]}
+        self.assertEqual(inactive[rule_id]["original_syscalls"], ["alpha"])
+        self.assertTrue(rule_path.is_file())
+
     def test_generated_run_id_is_valid(self) -> None:
         run_id = new_run_id("spec", {"fixture": True})
         self.assertEqual(normalize_run_id(run_id), run_id)
@@ -706,6 +724,80 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
+    def test_static_only_defers_dynamic_and_full_requeues_it(self) -> None:
+        self.prepare_spec_run()
+        self.add_dynamic_test("TEST_ONE", ["/bin/true"])
+        dynamic_index_before = (
+            self.root / "targets/starry/dynamic-tests.yaml"
+        ).read_bytes()
+        repo, _descriptor, _snapshot = self.make_target("implementation\n")
+        commit_file(
+            repo,
+            "os/StarryOS/kernel/src/syscall/mod.rs",
+            "fn dispatch() { match sysno { Sysno::alpha => implementation(), } }\n",
+        )
+        run_mapping(
+            None,
+            self.root,
+            "mapping-static-only",
+            target_branch(self.root),
+            coverage="static-only",
+        )
+        report = load_mapping_report(self.root, "mapping-static-only")
+        self.assertEqual(report["coverage_mode"], "static-only")
+        self.assertEqual(report["counts"]["dynamic_tests"], 0)
+        self.assertEqual(report["execution_scope"]["dynamic_tests"], [])
+        self.assertEqual(
+            (self.root / "targets/starry/dynamic-tests.yaml").read_bytes(),
+            dynamic_index_before,
+        )
+        self.assertEqual(report["rules"]["RULE_ONE"]["status"], "needs_review")
+        self.assertEqual(report["rules"]["RULE_ONE"]["deferred"], "dynamic_test")
+
+        run_id = prepare_mapping(
+            None,
+            self.root,
+            "mapping-full-after-static",
+            target_branch(self.root),
+            coverage="full",
+        )
+        preparation = load_mapping(TEMP_ROOT / run_id / "preparation.yaml")
+        self.assertEqual(preparation["selected_rule_ids"], ["RULE_ONE"])
+        self.assertEqual(
+            preparation["pending_reasons"]["RULE_ONE"],
+            ["deferred_dynamic_test_retry"],
+        )
+
+    def test_static_only_finalizer_rejects_dynamic_reference(self) -> None:
+        self.prepare_spec_run()
+        repo, _descriptor, _snapshot = self.make_target("implementation\n")
+        commit_file(
+            repo,
+            "os/StarryOS/kernel/src/syscall/mod.rs",
+            "fn dispatch() { match sysno { Sysno::alpha => implementation(), } }\n",
+        )
+        run_id = prepare_mapping(
+            None,
+            self.root,
+            "mapping-static-reject",
+            target_branch(self.root),
+            coverage="static-only",
+        )
+        result_path = TEMP_ROOT / run_id / "staged/rule-results/rule-one.yaml"
+        result = load_mapping(result_path)
+        result.update(
+            {
+                "status": "covered",
+                "target_locations": [{"path": "code.txt", "symbols": []}],
+                "dynamic_test_refs": ["TEST_FORBIDDEN"],
+            }
+        )
+        result.pop("deferred", None)
+        atomic_write_yaml(result_path, result)
+        with self.assertRaisesRegex(SyscallGuardError, "static-only"):
+            finalize_mapping(run_id, self.root)
+        self.assertFalse((self.root / f"runs/{run_id}").exists())
+
     def test_shared_check_selection_is_closed_before_staging(self) -> None:
         self.prepare_spec_run()
         rule_two = load_mapping(self.root / "library/rules/rule-one.yaml")
@@ -1798,9 +1890,9 @@ class RepositoryMappingScopeTests(unittest.TestCase):
         all_rules = {
             row["rule_id"] for refs in index.values() for row in refs
         }
-        self.assertEqual(len(all_rules), 1184)
-        self.assertEqual(len({row["rule_id"] for row in index["mmap"]}), 9)
-        self.assertEqual(len({row["rule_id"] for row in index["close"]}), 5)
+        self.assertEqual(len(all_rules), 3233)
+        self.assertEqual(len({row["rule_id"] for row in index["mmap"]}), 26)
+        self.assertEqual(len({row["rule_id"] for row in index["close"]}), 11)
 
 
 if __name__ == "__main__":

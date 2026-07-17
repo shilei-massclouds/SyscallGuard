@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.fd
   evidence_hash: sha256:39f6d617f1879399441db7e84acde1c0ae3097ee3c9c6aad15938cb46d060b8a
   case: pidfd_open04_35_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+  line: 35
+  recognizer_id: ltp.tst-exp.fd
+  evidence_hash: sha256:39f6d617f1879399441db7e84acde1c0ae3097ee3c9c6aad15938cb46d060b8a
+  case: pidfd_open04_35_raw_0

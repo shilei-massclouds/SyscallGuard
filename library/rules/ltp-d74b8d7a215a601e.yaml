@@ -1,0 +1,38 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 move_mount(fsmfd, "", AT_FDCWD, "invalid", MOVE_MOUNT_F_EMPTY_PATH)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D74B8D7A215A601E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - fsmfd
+    - '""'
+    - AT_FDCWD
+    - '"invalid"'
+    - MOVE_MOUNT_F_EMPTY_PATH
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:d74b8d7a215a601eabedc58d6a8f0ddbf97b8b53eb37dd47e98c632b00a835c2
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/move_mount/move_mount02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:fbd24b9b8603684810eca402d178ad7c4fafcb08dbb8d7bed50ba500d4922c12
+  case: move_mount02_63_3_0

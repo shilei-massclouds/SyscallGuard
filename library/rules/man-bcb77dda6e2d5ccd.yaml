@@ -1,0 +1,47 @@
+# 合规检查：条件：The target file is not present in epoll (7) instance；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BCB77DDA6E2D5CCD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The target file is not present in epoll (7) instance
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:bcb77dda6e2d5ccd2d38af884b77288026dd2d9e585fd16f9f028be7f406ec71
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2e0b31ab6907493b3a5db515ede65582285517a3746311381fc4fe4d34ca705a
+  case: errors_enoent_264
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 264
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2e0b31ab6907493b3a5db515ede65582285517a3746311381fc4fe4d34ca705a
+  case: errors_enoent_264

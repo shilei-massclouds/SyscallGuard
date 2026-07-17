@@ -1,0 +1,46 @@
+# 合规检查：条件：or EWOULDBLOCK The socket is marked nonblocking and the receive operation would block, or a receive timeout had been set and the timeout expired before data...；检查：调用 recvmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C87D13932F9035C5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: or EWOULDBLOCK The socket is marked nonblocking and the receive operation would block, or
+      a receive timeout had been set and the timeout expired before data...
+  action:
+    operation: invoke_syscall
+    syscall: recvmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:972f936b33159a4ad7492103c5472f62ddfb038e25051dbac38579f8c13b57c5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f11140e6466b535f42954c9aa83eb5669e3f652e5725c82fdbefe44b35567188
+  case: errors_eagain_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f11140e6466b535f42954c9aa83eb5669e3f652e5725c82fdbefe44b35567188
+  case: errors_eagain_444

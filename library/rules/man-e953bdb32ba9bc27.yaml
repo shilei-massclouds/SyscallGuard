@@ -1,0 +1,46 @@
+# 合规检查：条件：For BPF_PROG_LOAD , indicates that needed resources are blocked. This happens when the verifier detects pending signals while it is checking the validity of...；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E953BDB32BA9BC27
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: For BPF_PROG_LOAD , indicates that needed resources are blocked. This happens when the verifier
+      detects pending signals while it is checking the validity of...
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:e953bdb32ba9bc275858e571cfd920fa3c8b46238f55bf5d9de7ccb9eaf65ef6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 994
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e06958fd3726c55a2b131b7e161a70d0fb3fdae96fef99656b9873b117d3813
+  case: errors_eagain_994
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 994
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1e06958fd3726c55a2b131b7e161a70d0fb3fdae96fef99656b9873b117d3813
+  case: errors_eagain_994

@@ -1,0 +1,45 @@
+# 合规检查：条件：For getpgid (): pid does not match any process. For setpgid (): pid is not the calling process and not a child of the calling process；检查：调用 setpgid(pid, pgid)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_045719AC8992819E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: pid
+    predicate: insufficient_permission
+    value: ESRCH
+    summary: 'For getpgid (): pid does not match any process. For setpgid (): pid is not the calling process
+      and not a child of the calling process'
+  action:
+    operation: invoke_syscall
+    syscall: setpgid
+    arguments:
+    - pid
+    - pgid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:2c57030f31c12064ff8536eb2c5702dc9509085516171b98636c9a64bc4ad91f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ea8f1f1d805d80c7a538afdb2810c3db0c551a8415d90fb0c4b03e6eebedf435
+  case: errors_esrch_211
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setpgid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setpgid.2
+  line: 211
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ea8f1f1d805d80c7a538afdb2810c3db0c551a8415d90fb0c4b03e6eebedf435
+  case: errors_esrch_211

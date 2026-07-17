@@ -1,0 +1,37 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 accept(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2B5A35D041B6CDCB--2b5a35d041b6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:2b5a35d041b6cdcb218f49c9e3c17af83f93853017a330b102132a3449a5b396
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 214
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9094d2cf0b8b282335c0ad5b3683f52ca3fccb3ec2a2ac48ac6bf4cd218fc674
+  case: errors_emfile_214

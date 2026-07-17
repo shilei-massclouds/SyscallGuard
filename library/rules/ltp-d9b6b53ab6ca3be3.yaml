@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 readahead(-1, 0, getpagesize())；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_D9B6B53AB6CA3BE3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: readahead
+    arguments:
+    - '-1'
+    - '0'
+    - getpagesize()
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:d9b6b53ab6ca3be366995aad76b94602f7d9fdf01b996ec51c09ff3664b0f5ec
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readahead/readahead01.c
+  line: 34
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:9a82af95e099fd4f2fd3f410494a519e27da6479401081ca038f0d7ff02c6c48
+  case: readahead01_34_raw_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：The pause has been interrupted by a signal that was delivered to the thread (see signal (7)). The remaining sleep time has been written into *rem so that...；检查：调用 nanosleep(duration, rem)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_54494C742FBC3DA2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: rem
+    predicate: documented_condition
+    value: EINTR
+    summary: The pause has been interrupted by a signal that was delivered to the thread (see signal (7)).
+      The remaining sleep time has been written into *rem so that...
+  action:
+    operation: invoke_syscall
+    syscall: nanosleep
+    arguments:
+    - duration
+    - rem
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:54494c742fbc3da2476098867bbb708fcbe1835a8a7a8ff91afbb1e6dffdbf77
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/nanosleep.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d881ad5cb41bafe171f1708db0460e3be8c8c320daf8d09999551bd3081b8b4
+  case: errors_eintr_85
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/nanosleep.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4d881ad5cb41bafe171f1708db0460e3be8c8c320daf8d09999551bd3081b8b4
+  case: errors_eintr_85

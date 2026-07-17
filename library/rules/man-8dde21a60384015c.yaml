@@ -1,0 +1,43 @@
+# 合规检查：条件：Search permission was denied on the directory open on fd；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8DDE21A60384015C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EACCES
+    summary: Search permission was denied on the directory open on fd
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:9ee9f66ee9ac9c7f1e88934084b2d083de778be759d6f1832161b00181190878
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ff42e4942dc660d62e7d376483f37c8066c6051abab77cbf3bf41fab12f695
+  case: errors_eacces_92
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 92
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63ff42e4942dc660d62e7d376483f37c8066c6051abab77cbf3bf41fab12f695
+  case: errors_eacces_92

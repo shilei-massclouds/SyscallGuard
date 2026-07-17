@@ -1,0 +1,46 @@
+# 合规检查：条件：The file is on a read-only filesystem；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BBC1439D735A48EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: The file is on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:bbc1439d735a48ebe950d130fcc2bf18c8210329d3840449880cd3f467423250
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 389
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:817e2744b0df11f0b270aeffa1aa162710442c50fb5b5b8c49264e3254c5072d
+  case: errors_erofs_389
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 389
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:817e2744b0df11f0b270aeffa1aa162710442c50fb5b5b8c49264e3254c5072d
+  case: errors_erofs_389

@@ -1,0 +1,44 @@
+# 合规检查：条件：Too many symbolic links were encountered in translating the pathname；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6373791A7F233D7F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in translating the pathname
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:2f4e4fe598ce1ec43ad3bda0f6aeb2a2ac6db51f5613563d12e59298827c4cfd
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47ea3efe9e9e0b9f2d3f16e148009f0565779106321eeff19e711b7533485549
+  case: errors_eloop_124
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:47ea3efe9e9e0b9f2d3f16e148009f0565779106321eeff19e711b7533485549
+  case: errors_eloop_124

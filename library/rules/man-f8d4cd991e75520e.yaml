@@ -1,0 +1,48 @@
+# 合规检查：条件：Returned if the type setting is not valid. This error is also returned for some unsupported generic events；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F8D4CD991E75520E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: Returned if the type setting is not valid. This error is also returned for some unsupported
+      generic events
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:f8d4cd991e75520ebd22a4e91515e08f5118b19df03a02aeb94b50a61fc1f3a1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3842
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:971bc9888be8a40d32a880c1a2e979fa9a88869e3f1fbee92b215db97c903b10
+  case: errors_enoent_3842
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3842
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:971bc9888be8a40d32a880c1a2e979fa9a88869e3f1fbee92b215db97c903b10
+  case: errors_enoent_3842

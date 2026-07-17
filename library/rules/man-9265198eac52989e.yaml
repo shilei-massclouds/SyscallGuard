@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 timerfd_settime(fd, flags, new_value, old_value)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9265198EAC52989E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_settime
+    arguments:
+    - fd
+    - flags
+    - new_value
+    - old_value
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:95c898fa0d79ba095976ecbe2a0d0b9ef9a6336c2f94f4a514c9a93cf074b581
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 387
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:6ea6eb2782e458b4444165c3ff023a5781105e1f07c107f6756275cedb228b70
+  case: return_value_387
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 387
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:6ea6eb2782e458b4444165c3ff023a5781105e1f07c107f6756275cedb228b70
+  case: return_value_387

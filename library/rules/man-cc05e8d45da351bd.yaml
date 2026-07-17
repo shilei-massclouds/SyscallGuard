@@ -1,0 +1,46 @@
+# 合规检查：条件：The total length of all filter programs attached to the calling thread would exceed MAX_INSNS_PER_PATH (32768) instructions. Note that for the purposes of...；检查：调用 seccomp(operation, flags, args)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC05E8D45DA351BD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOMEM
+    summary: The total length of all filter programs attached to the calling thread would exceed MAX_INSNS_PER_PATH
+      (32768) instructions. Note that for the purposes of...
+  action:
+    operation: invoke_syscall
+    syscall: seccomp
+    arguments:
+    - operation
+    - flags
+    - args
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:cc05e8d45da351bdf82a99a06c4dcd6159155b9b9d3e43c1b7cc2f6b1669b177
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 867
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1563b7e537044573d127de6bed20a9d43e90d949e4a9d0ac14554d718e6a580d
+  case: errors_enomem_867
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: seccomp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/seccomp.2
+  line: 867
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1563b7e537044573d127de6bed20a9d43e90d949e4a9d0ac14554d718e6a580d
+  case: errors_enomem_867

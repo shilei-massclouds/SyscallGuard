@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_NEWIPC was specified in the flags mask, but the kernel was not configured with the CONFIG_SYSVIPC and CONFIG_IPC_NS options；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F7A0EA90AF901E6B--f7a0ea90af90
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWIPC was specified in the flags mask, but the kernel was not configured with the
+      CONFIG_SYSVIPC and CONFIG_IPC_NS options
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f7a0ea90af901e6b381c85bfd385d590a51210326cf3b83cf76a04938dd112ad
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1338
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:20691421ef9dacbc4c1b80454cf0bea32c1f44db70d9a9062a89b01e86c03485
+  case: errors_einval_1338

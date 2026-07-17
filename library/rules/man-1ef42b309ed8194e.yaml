@@ -1,0 +1,47 @@
+# 合规检查：条件：times is NULL, or both tv_nsec values are UTIME_NOW , and the effective user ID of the caller does not match the owner of the file, the caller does not have...；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1EF42B309ED8194E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EACCES
+    summary: times is NULL, or both tv_nsec values are UTIME_NOW , and the effective user ID of the caller
+      does not match the owner of the file, the caller does not have...
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:1ef42b309ed8194eb4268f17916e66eae83f8da4a3fa23e66677961e26c8208f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 228
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d49fcc66a201654a64565d6937c9204af750530ad5da31b8bd370aa3717e0e5c
+  case: errors_eacces_228
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 228
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d49fcc66a201654a64565d6937c9204af750530ad5da31b8bd370aa3717e0e5c
+  case: errors_eacces_228

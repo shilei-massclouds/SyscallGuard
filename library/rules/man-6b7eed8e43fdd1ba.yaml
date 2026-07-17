@@ -1,0 +1,43 @@
+# 合规检查：条件：( epoll_create1 ()) Invalid value specified in flags；检查：调用 epoll_create1(flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6B7EED8E43FDD1BA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( epoll_create1 ()) Invalid value specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: epoll_create1
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:6b7eed8e43fdd1baacff9af9940105f4955ac0d16ac86e722e3c31fce38962d3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_create.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3168eedf61862cc43436056f455a1a7fce2c643ae0b4270d801f4379e42072f8
+  case: errors_einval_76
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_create1
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_create.2
+  line: 76
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3168eedf61862cc43436056f455a1a7fce2c643ae0b4270d801f4379e42072f8
+  case: errors_einval_76

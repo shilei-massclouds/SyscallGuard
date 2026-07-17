@@ -1,0 +1,39 @@
+# 合规检查：条件：Sleeping on a full message queue condition, the process caught a signal；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0F286F1FE274A8E9--0f286f1fe274
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: Sleeping on a full message queue condition, the process caught a signal
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:0f286f1fe274a8e9d2ab9a187c76ce739ce8409847038bd17e1ca2dfcc8e5e59
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 346
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d837296867a3754976b3f324f05625acd03243c40386be2a2c763da740770e38
+  case: errors_eintr_346

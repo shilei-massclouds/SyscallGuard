@@ -1,0 +1,46 @@
+# 合规检查：条件：mode is invalid. Or, mode is MPOL_DEFAULT and nodemask is nonempty, or mode is MPOL_BIND or MPOL_INTERLEAVE and nodemask is empty. Or, maxnode specifies...；检查：调用 set_mempolicy(mode, nodemask, maxnode)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_BF0AE6B4EE7A8148
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mode
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode is invalid. Or, mode is MPOL_DEFAULT and nodemask is nonempty, or mode is MPOL_BIND
+      or MPOL_INTERLEAVE and nodemask is empty. Or, maxnode specifies...
+  action:
+    operation: invoke_syscall
+    syscall: set_mempolicy
+    arguments:
+    - mode
+    - nodemask
+    - maxnode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:bf0ae6b4ee7a8148348230d1eb32eafa5f3422c434df40d8b3a0684e509570b3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:558d419f6e8845d0cf118f35b6c6ecb3ecef9a880218d361197efeb1e7f9ef60
+  case: errors_einval_292
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: set_mempolicy
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/set_mempolicy.2
+  line: 292
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:558d419f6e8845d0cf118f35b6c6ecb3ecef9a880218d361197efeb1e7f9ef60
+  case: errors_einval_292

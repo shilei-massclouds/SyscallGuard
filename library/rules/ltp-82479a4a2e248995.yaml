@@ -1,0 +1,37 @@
+# 合规检查：条件：Path resolution encounters a symlink loop.；检查：调用 epoll_ctl(origin_epfd, EPOLL_CTL_ADD, epfd, &events)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_82479A4A2E248995
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - origin_epfd
+    - EPOLL_CTL_ADD
+    - epfd
+    - '&events'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:82479a4a2e248995f5895ae35ed4681f3a19a267672d269747f2153c269965cb
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
+  line: 61
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:fbbd6600fd793a392b0f801c905dc265560aeb4aa74b6d5b2bc7b6af00816bb7
+  case: epoll_ctl05_61_raw_0

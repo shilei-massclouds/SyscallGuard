@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to a device special file and no corresponding device exists. (This is a Linux kernel bug; in this situation ENXIO must be returned.)；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4BC9B841AF8A465A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENODEV
+    summary: path refers to a device special file and no corresponding device exists. (This is a Linux
+      kernel bug; in this situation ENXIO must be returned.)
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:4bc9b841af8a465a67f71369bb72dd1ca9b2e193bfcce91d3520fc97de24d23b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f3be36595c550b4492a2ac52c7fc9d696910ab75142b41c541fd76d42bbf3195
+  case: errors_enodev_1154
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1154
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f3be36595c550b4492a2ac52c7fc9d696910ab75142b41c541fd76d42bbf3195
+  case: errors_enodev_1154

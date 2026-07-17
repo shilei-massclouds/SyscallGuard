@@ -1,0 +1,46 @@
+# 合规检查：条件：SPLICE_F_NONBLOCK was specified in flags , and the operation would block；检查：调用 vmsplice(fd, iov, nr_segs, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_858379EE26708EF4
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EAGAIN
+    summary: SPLICE_F_NONBLOCK was specified in flags , and the operation would block
+  action:
+    operation: invoke_syscall
+    syscall: vmsplice
+    arguments:
+    - fd
+    - iov
+    - nr_segs
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:858379ee26708ef4e53383b91bbc97f0a11386a62a97319fec2b8f9c370e0911
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 117
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4322bc6e09c7009248d54b44d267145b8477491299e6ea94b6fddd9a57a225f8
+  case: errors_eagain_117
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: vmsplice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 117
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4322bc6e09c7009248d54b44d267145b8477491299e6ea94b6fddd9a57a225f8
+  case: errors_eagain_117

@@ -1,0 +1,47 @@
+# 合规检查：条件：SPLICE_F_NONBLOCK was specified in flags or one of the file descriptors had been marked as nonblocking ( O_NONBLOCK ) , and the operation would block；检查：调用 tee(fd_in, fd_out, size, flags)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0CF0F09EAB24DE1F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: flags
+    predicate: invalid_or_wrong_type
+    value: EAGAIN
+    summary: SPLICE_F_NONBLOCK was specified in flags or one of the file descriptors had been marked as
+      nonblocking ( O_NONBLOCK ) , and the operation would block
+  action:
+    operation: invoke_syscall
+    syscall: tee
+    arguments:
+    - fd_in
+    - fd_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:0cf0f09eab24de1fba6bdb566fc4613749e05208f66dc90c1540cb05f0f595c7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tee.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6921f32277636f25d85e8bdb657d3c9bede7ab29cc424ed1ce4989632c2e93b1
+  case: errors_eagain_85
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tee
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tee.2
+  line: 85
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6921f32277636f25d85e8bdb657d3c9bede7ab29cc424ed1ce4989632c2e93b1
+  case: errors_eagain_85

@@ -1,0 +1,39 @@
+# 合规检查：条件：An unknown flag is specified in flags；检查：调用 preadv2(fd, iov, iovcnt, offset, flags)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B5E18528035F6F87
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EOPNOTSUPP
+    summary: An unknown flag is specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: preadv2
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:b5e18528035f6f870e341e70298511e7345c4884bd66257f3c095ba8b605ca69
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: preadv2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 411
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d07656198f6afe57db41b1f7408ba293020a992384157ac9ca5d9a6e3d4209c8
+  case: errors_eopnotsupp_411

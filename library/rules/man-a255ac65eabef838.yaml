@@ -1,0 +1,45 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 socket(domain, type, protocol)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A255AC65EABEF838
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - domain
+    - type
+    - protocol
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:a255ac65eabef83833d3bc02ef94b71f759796f72f9b89f721a515a40d3162cf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 420
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:72fa8c02e2d8cc65cce8630e19ea066ac0d519f3ffde811530228638838ce203
+  case: errors_enfile_420
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socket
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 420
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:72fa8c02e2d8cc65cce8630e19ea066ac0d519f3ffde811530228638838ce203
+  case: errors_enfile_420

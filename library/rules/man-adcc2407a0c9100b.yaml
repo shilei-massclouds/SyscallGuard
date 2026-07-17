@@ -1,0 +1,46 @@
+# 合规检查：条件：path or one of the pointers in the vectors argv or envp points outside your accessible address space；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ADCC2407A0C9100B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path or one of the pointers in the vectors argv or envp points outside your accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:adcc2407a0c9100b155cf8df9a273233304be88c6ac7c2683e3363d86680de6e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 471
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01ca3656ba27af29d6ce21d549d8bb86eb0491bd37bc61c3df95c21c439e3759
+  case: errors_efault_471
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 471
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01ca3656ba27af29d6ce21d549d8bb86eb0491bd37bc61c3df95c21c439e3759
+  case: errors_efault_471

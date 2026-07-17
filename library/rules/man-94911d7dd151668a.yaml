@@ -1,0 +1,47 @@
+# 合规检查：条件：addr does not refer to a valid mapping created with the MAP_SHARED flag；检查：调用 remap_file_pages(size, size, prot, pgoff, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_94911D7DD151668A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: addr does not refer to a valid mapping created with the MAP_SHARED flag
+  action:
+    operation: invoke_syscall
+    syscall: remap_file_pages
+    arguments:
+    - size
+    - size
+    - prot
+    - pgoff
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:94911d7dd151668a25a57dee7f6bcca5e2f7405282bdd4cbccf571223262b04f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fc9da006c0e324a2ab3d545498649a7ea8198e40831af515c6ad06aed46374c8
+  case: errors_einval_128
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: remap_file_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fc9da006c0e324a2ab3d545498649a7ea8198e40831af515c6ad06aed46374c8
+  case: errors_einval_128

@@ -1,0 +1,35 @@
+# 合规检查：条件：fd is not a valid open file descriptor；检查：调用 fdatasync(fd)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B4E9426B661E238A--b4e9426b661e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fdatasync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b4e9426b661e238af8963755d5a00d390c0e90e944fa75784cf60f4c84460d26
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fdatasync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4da04c1c81f529b6dca609e7e0c1b4d593f7b1466b7795cfbad6697fc3d55b0d
+  case: errors_ebadf_97

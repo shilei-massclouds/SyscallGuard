@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling process does not have permission to see the robust futex list of the thread with the thread ID pid , and does not have the CAP_SYS_PTRACE capability；检查：调用 set_robust_list(head, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9D6B030DFB14753E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have permission to see the robust futex list of the thread with
+      the thread ID pid , and does not have the CAP_SYS_PTRACE capability
+  action:
+    operation: invoke_syscall
+    syscall: set_robust_list
+    arguments:
+    - head
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:7a52729182072a83c303dfcffe0a51b1946c2ce077815e8bf0c269854706d4c6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b145009558db6fa1882a567222ac400f2338184e387df91b085298b2d30ec46f
+  case: errors_eperm_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: set_robust_list
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/get_robust_list.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b145009558db6fa1882a567222ac400f2338184e387df91b085298b2d30ec46f
+  case: errors_eperm_113

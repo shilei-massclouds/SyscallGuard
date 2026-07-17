@@ -1,0 +1,47 @@
+# 合规检查：条件：One of from_path or to_path is longer than PATH_MAX；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D6D0F5D75DB16A8E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: from_path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: One of from_path or to_path is longer than PATH_MAX
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:d6d0f5d75db16a8e6e57632973023068906d5e1f4173a2861842cd4dbde22b04
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:048edaf5467608d4a5d8477ce76c46610710cf5154b0c50db3d979072ef9ab87
+  case: errors_enametoolong_466
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 466
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:048edaf5467608d4a5d8477ce76c46610710cf5154b0c50db3d979072ef9ab87
+  case: errors_enametoolong_466

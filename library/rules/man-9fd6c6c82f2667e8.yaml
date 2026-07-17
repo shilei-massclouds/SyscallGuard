@@ -1,0 +1,45 @@
+# 合规检查：条件：Clock ID, sigev_notify , sigev_signo , or sigev_notify_thread_id is invalid；检查：调用 timer_create(clockid, sevp, timerid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9FD6C6C82F2667E8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: Clock ID, sigev_notify , sigev_signo , or sigev_notify_thread_id is invalid
+  action:
+    operation: invoke_syscall
+    syscall: timer_create
+    arguments:
+    - clockid
+    - sevp
+    - timerid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9fd6c6c82f2667e8b8dab277276a152de98a2c00e9cb5afcb104013f98390f80
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 199
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c42a6a627106fca0542961c87f7a8c54f2975512d63a74100d7f421857336e0d
+  case: errors_einval_199
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timer_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timer_create.2
+  line: 199
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c42a6a627106fca0542961c87f7a8c54f2975512d63a74100d7f421857336e0d
+  case: errors_einval_199

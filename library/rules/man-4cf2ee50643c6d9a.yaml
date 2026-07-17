@@ -1,0 +1,40 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 signalfd4()；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4CF2EE50643C6D9A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: signalfd4
+    arguments: []
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:4cf2ee50643c6d9a795a25165bb59ec814b5d3b037eb6b82babf9370ac23fd6e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/signalfd.2
+  line: 289
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:bdb27fe1855b03325e86e857eeb8db742bb8e341bbf325d716368a033523bac4
+  case: return_value_289
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: signalfd4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/signalfd.2
+  line: 289
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:bdb27fe1855b03325e86e857eeb8db742bb8e341bbf325d716368a033523bac4
+  case: return_value_289

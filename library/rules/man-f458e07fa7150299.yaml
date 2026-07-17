@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling process does not have the required CAP_SYS_ADMIN capability；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F458E07FA7150299
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The calling process does not have the required CAP_SYS_ADMIN capability
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:f458e07fa7150299088a87d403cbf6f103eb9082f312455e6e2cb8b862517bba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 193
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2c3d5e6c273b1c5f046851a768f61cddeb245164949458fcaf48c9e709abb23
+  case: errors_eperm_193
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 193
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f2c3d5e6c273b1c5f046851a768f61cddeb245164949458fcaf48c9e709abb23
+  case: errors_eperm_193

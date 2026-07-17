@@ -1,0 +1,42 @@
+# 合规检查：条件：(since Linux 4.9; beforehand EUSERS ) CLONE_NEWUSER was specified in the flags mask, and the call would cause the limit on the number of nested user...；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_881F5DA24E112BB1--881f5da24e11
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: (since Linux 4.9; beforehand EUSERS ) CLONE_NEWUSER was specified in the flags mask, and
+      the call would cause the limit on the number of nested user...
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:881f5da24e112bb199f579a7c2884bffedec45e89b970d560409c7ce4282bb8d
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1461
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3489a7ee9d47792a0f9c6fb5216b34afc2087b6721027227bacde19673fcca9e
+  case: errors_enospc_1461

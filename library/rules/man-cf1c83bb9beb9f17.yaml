@@ -1,0 +1,44 @@
+# 合规检查：条件：An error occurred during synchronization. This error may relate to data written to some other file descriptor on the same file. Since Linux 4.13, errors...；检查：调用 fsync(fd)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CF1C83BB9BEB9F17
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EIO
+    summary: An error occurred during synchronization. This error may relate to data written to some other
+      file descriptor on the same file. Since Linux 4.13, errors...
+  action:
+    operation: invoke_syscall
+    syscall: fsync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:fa678a218b4f885ebf47607850bbd49608c3da6bd52938a67fd90e237bdbbce3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fcb81779f0bebc1e01c36f0ba54b0ba2e27bc5a24e9cd038712efa7d15a3d5ef
+  case: errors_eio_106
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fcb81779f0bebc1e01c36f0ba54b0ba2e27bc5a24e9cd038712efa7d15a3d5ef
+  case: errors_eio_106

@@ -1,0 +1,45 @@
+# 合规检查：条件：A component used as a directory in path is not, in fact, a directory；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_66D864DABC0A2276
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component used as a directory in path is not, in fact, a directory
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:66d864dabc0a227622c59d1d236d1528cd981dc0c134a6b94231a4c18f3001a3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98fe2880f88d0a1948c196f5b41b66b979d6752ba6334cf232db25c334d5b63c
+  case: errors_enotdir_187
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 187
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98fe2880f88d0a1948c196f5b41b66b979d6752ba6334cf232db25c334d5b63c
+  case: errors_enotdir_187

@@ -1,0 +1,38 @@
+# 合规检查：条件：The fixture creates TESTSYML as a symbolic link.、The argument is a userspace buffer.；检查：调用 lstat(TESTSYML, &stat_buf)；预期：{'kind': 'return_value', 'return': '-1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_9E1134B051A31DAD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates TESTSYML as a symbolic link.
+  - kind: pointer
+    subject: stat_buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - TESTSYML
+    - '&stat_buf'
+  expected_result:
+    kind: return_value
+    return: '-1'
+  errno: []
+semantic_hash: sha256:9e1134b051a31dadb8e67630d1cdbe007fe4ee16f80db10ce77f08682d717d25
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat01.c
+  line: 35
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d02a13b87af25a8eba8f5080461107fb6d13fff54ffd5da805c3215c0ba6adfc
+  case: lstat01_35_raw_0

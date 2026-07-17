@@ -1,0 +1,47 @@
+# 合规检查：条件：The calling process does not have write permission on the message queue, and does not have the CAP_IPC_OWNER capability in the user namespace that governs...；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B821196BEABAEB30
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: The calling process does not have write permission on the message queue, and does not have
+      the CAP_IPC_OWNER capability in the user namespace that governs...
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:e0179354352efec1d14be5a0fa96af4c536147f7ae7127c6558ab2363fc01535
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b7fd7a6e041e511ff8372023ee66f873ca6882c4b6be7ec596a83fa4e4e88c1
+  case: errors_eacces_324
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4b7fd7a6e041e511ff8372023ee66f873ca6882c4b6be7ec596a83fa4e4e88c1
+  case: errors_eacces_324

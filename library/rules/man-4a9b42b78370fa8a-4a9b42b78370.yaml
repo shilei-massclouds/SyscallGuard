@@ -1,0 +1,38 @@
+# 合规检查：条件：The caller does not have appropriate privileges；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4A9B42B78370FA8A--4a9b42b78370
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have appropriate privileges
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:4a9b42b78370fa8afa6fcdfd18c505766707b51ebcec6bb00f52f03b21f677fd
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 451
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:78d8fadbc90101e4236efa0a2089c6ebdb5c78ca724b6ebb6a04bd17289de1bd
+  case: errors_eperm_451

@@ -1,0 +1,47 @@
+# 合规检查：条件：An invalid file descriptor was passed in fanotify_fd；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0B1567EB33F0D067
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fanotify_fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: An invalid file descriptor was passed in fanotify_fd
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:0b1567eb33f0d067865605b1ee138b949e083881727a330a31a954e2ae26dae1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 600
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3bcd06814053c047ef8057d422ab7e041a0c50d4e5b63c0a181a743b17d21f6
+  case: errors_ebadf_600
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 600
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b3bcd06814053c047ef8057d422ab7e041a0c50d4e5b63c0a181a743b17d21f6
+  case: errors_ebadf_600

@@ -1,0 +1,43 @@
+# 合规检查：条件：or EWOULDBLOCK The value in .uaddr[0] was not equal to the expected value .val at the time of the call；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0B167B276CAE7738
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EAGAIN
+    summary: or EWOULDBLOCK The value in .uaddr[0] was not equal to the expected value .val at the time
+      of the call
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:0b167b276cae77388d46738d0d1e75154777a34854df695a4c46410490438a95
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 268
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9405d9429ddb5b664f6701f49305e2f62750383152d45fa160e45d9c1ed0ff7b
+  case: errors_eagain_268
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 268
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9405d9429ddb5b664f6701f49305e2f62750383152d45fa160e45d9c1ed0ff7b
+  case: errors_eagain_268

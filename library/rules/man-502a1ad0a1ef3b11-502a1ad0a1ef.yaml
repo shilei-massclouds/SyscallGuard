@@ -1,0 +1,37 @@
+# 合规检查：条件：addr is not a valid pointer, or not a multiple of the system page size；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_502A1AD0A1EF3B11--502a1ad0a1ef
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: size
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: addr is not a valid pointer, or not a multiple of the system page size
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:502a1ad0a1ef3b113ef7669e9862aa6669d9498528af21be20fdcd687d5398dc
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 139
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d5fd83aa916a357f68e6c28896e9d657fbac07a5d2ec6d0a650ba29f6ede8aa8
+  case: errors_einval_139

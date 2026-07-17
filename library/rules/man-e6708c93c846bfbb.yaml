@@ -1,0 +1,37 @@
+# 合规检查：条件：The sum of the iov_len values overflows an ssize_t value；检查：调用 readv(fd, iov, iovcnt)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E6708C93C846BFBB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The sum of the iov_len values overflows an ssize_t value
+  action:
+    operation: invoke_syscall
+    syscall: readv
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e6708c93c846bfbbd47d52957bd64b72af0b90a9b02d78c49500c9335c15728f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:76b1f44860f788c46e1a430adb09ed0a56831b98be3e7ea095ba9218f0459d86
+  case: errors_einval_376

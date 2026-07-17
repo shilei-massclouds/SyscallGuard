@@ -1,0 +1,47 @@
+# 合规检查：条件：The file is on a read-only filesystem；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_140158F63072686C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: The file is on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:140158f63072686cb3f149f75c07635ba6d97c249110e0c28535ad1c6de54fed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 251
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6dc114088e99911ec9515bdf08fb7e06b3e5ebd03330e5dd8b3a5ee973fedc06
+  case: errors_erofs_251
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 251
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6dc114088e99911ec9515bdf08fb7e06b3e5ebd03330e5dd8b3a5ee973fedc06
+  case: errors_erofs_251

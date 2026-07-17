@@ -1,0 +1,43 @@
+# 合规检查：条件：An invalid file descriptor was given in one of the sets. (Perhaps a file descriptor that was already closed, or one on which an error has occurred.)...；检查：调用 pselect6()；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EC3BA27562609F21
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: An invalid file descriptor was given in one of the sets. (Perhaps a file descriptor that
+      was already closed, or one on which an error has occurred.)...
+  action:
+    operation: invoke_syscall
+    syscall: pselect6
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ec3ba27562609f219fd8cc7ef9b06e5ad8bd8402fdca82de0aac572cbcaa3bb6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a4ddd117f6406e565dd70af737cd6594214d2dbe5efde19f97eb6263791a515
+  case: errors_ebadf_396
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pselect6
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/select.2
+  line: 396
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a4ddd117f6406e565dd70af737cd6594214d2dbe5efde19f97eb6263791a515
+  case: errors_ebadf_396

@@ -1,0 +1,37 @@
+# 合规检查：条件：The socket is not connected, and no target has been given；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 ENOTCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED76A5F89A22FE98--ed76a5f89a22
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTCONN
+    summary: The socket is not connected, and no target has been given
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTCONN
+  errno:
+  - ENOTCONN
+semantic_hash: sha256:ed76a5f89a22fe984f994fc670356c64183c1b4960cdcb99b004ffc72fc8b971
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 419
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:77102d42aafcf2ca48e9a624a02a2ce71f0795aa5c6626dcde0d435c7f906509
+  case: errors_enotconn_419

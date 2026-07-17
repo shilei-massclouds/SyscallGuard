@@ -1,0 +1,47 @@
+# 合规检查：条件：The descriptor specified in mqdes was invalid or not opened for reading；检查：调用 mq_timedreceive(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B0EBC4F02BF1D777
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: mqdes
+    predicate: documented_condition
+    value: EBADF
+    summary: The descriptor specified in mqdes was invalid or not opened for reading
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedreceive
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:b0ebc4f02bf1d7777be09da56553cc98117db5824512315f854989b59e7e9440
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd69c8e79d0fd87be9f9fc157048eac3ffdd3a54810b511a2225215d7ca10e7b
+  case: errors_ebadf_104
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedreceive
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_receive.3
+  line: 104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bd69c8e79d0fd87be9f9fc157048eac3ffdd3a54810b511a2225215d7ca10e7b
+  case: errors_ebadf_104

@@ -1,0 +1,46 @@
+# 合规检查：条件：or ENOMEM Insufficient memory is available. The socket cannot be created until sufficient resources are freed；检查：调用 socket(domain, type, protocol)；预期：返回 -1，errno 为 ENOBUFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B78223A10681416D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOBUFS
+    summary: or ENOMEM Insufficient memory is available. The socket cannot be created until sufficient
+      resources are freed
+  action:
+    operation: invoke_syscall
+    syscall: socket
+    arguments:
+    - domain
+    - type
+    - protocol
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOBUFS
+  errno:
+  - ENOBUFS
+semantic_hash: sha256:b78223a10681416dfab7c44ce5eb703f37dbdccef579869b0252a8be5e2c1080
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ab9cc7f4ea6485647a265d2768d88fa4ff6e055817d84f10da955a8374cff27
+  case: errors_enobufs_423
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socket
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socket.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1ab9cc7f4ea6485647a265d2768d88fa4ff6e055817d84f10da955a8374cff27
+  case: errors_enobufs_423

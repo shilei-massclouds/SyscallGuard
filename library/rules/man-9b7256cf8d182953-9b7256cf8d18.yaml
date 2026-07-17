@@ -1,0 +1,37 @@
+# 合规检查：条件：Both PROT_GROWSUP and PROT_GROWSDOWN were specified in prot；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9B7256CF8D182953--9b7256cf8d18
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: prot
+    predicate: documented_condition
+    value: EINVAL
+    summary: Both PROT_GROWSUP and PROT_GROWSDOWN were specified in prot
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9b7256cf8d18295342453c4e88559710b69a200a4445978df2c3082208b712db
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 150
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0cbb67d917ab86605c99971817d8d925ad9e8878de5f2004b8404f194e1b9d0e
+  case: errors_einval_150

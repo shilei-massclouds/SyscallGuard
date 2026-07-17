@@ -1,0 +1,46 @@
+# 合规检查：条件：The filesystem containing path does not support O_TMPFILE；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_117B1556465C7385
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EOPNOTSUPP
+    summary: The filesystem containing path does not support O_TMPFILE
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:117b1556465c73858ca012a9815d153122063930e6dff3d31e7e584272147f58
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:949af7838dae35dc84ec575d88d89a957b1c4e811358bd866255b74ab0c560b8
+  case: errors_eopnotsupp_1229
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:949af7838dae35dc84ec575d88d89a957b1c4e811358bd866255b74ab0c560b8
+  case: errors_eopnotsupp_1229

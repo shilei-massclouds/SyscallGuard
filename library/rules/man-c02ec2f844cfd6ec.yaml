@@ -1,0 +1,47 @@
+# 合规检查：条件：type is KCMP_FILE and fd1 or fd2 is not an open file descriptor；检查：调用 kcmp(pid1, pid2, type, idx1, idx2)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C02EC2F844CFD6EC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: type
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: type is KCMP_FILE and fd1 or fd2 is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: kcmp
+    arguments:
+    - pid1
+    - pid2
+    - type
+    - idx1
+    - idx2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:c02ec2f844cfd6ec70d6fca0b94ba21813c8c9957be834c6e7d828e8b26ad545
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0dae218f4f80faae78c8faa051d7925ca0e3e9407d7ab339f79432c7301f5bdb
+  case: errors_ebadf_245
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kcmp
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kcmp.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0dae218f4f80faae78c8faa051d7925ca0e3e9407d7ab339f79432c7301f5bdb
+  case: errors_ebadf_245

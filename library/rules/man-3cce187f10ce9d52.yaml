@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 rt_tgsigqueueinfo(tgid, tid, sig, info)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3CCE187F10CE9D52
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: rt_tgsigqueueinfo
+    arguments:
+    - tgid
+    - tid
+    - sig
+    - info
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:64a8f8113034d4cd48c5bfd457ab2756b61fafb7e68109584b771df2845b0f88
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 128
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:44cd9a0812bb1732659d7f96d23f2b1c3e9143591abe30b39418692e9fc5e0bc
+  case: return_value_128
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_tgsigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 128
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:44cd9a0812bb1732659d7f96d23f2b1c3e9143591abe30b39418692e9fc5e0bc
+  case: return_value_128

@@ -1,0 +1,47 @@
+# 合规检查：条件：An unsupported value was specified in the propagation field of mount_attr；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_69B9B9B89FEEE610
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: An unsupported value was specified in the propagation field of mount_attr
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:69b9b9b89feee610e7dea580d13a8065f4c9a1e572d5d646b5f2a0ce4cf8ce3d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 435
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed6b3b91d53294ba52ae938c9d0f0eff9b1b8ba661cfce37180344c654bb4c82
+  case: errors_einval_435
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 435
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ed6b3b91d53294ba52ae938c9d0f0eff9b1b8ba661cfce37180344c654bb4c82
+  case: errors_einval_435

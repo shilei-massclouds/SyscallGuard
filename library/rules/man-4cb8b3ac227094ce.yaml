@@ -1,0 +1,44 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 memfd_create(name, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4CB8B3AC227094CE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: memfd_create
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:4cb8b3ac227094ce42118b40a8d962cd743ba1eabdad3696ebd2564cedf445eb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25c9f913b8a18e2c90468432745d950a51a9b077d0879fa939b9646fb2d69ef8
+  case: errors_emfile_183
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: memfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/memfd_create.2
+  line: 183
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:25c9f913b8a18e2c90468432745d950a51a9b077d0879fa939b9646fb2d69ef8
+  case: errors_emfile_183

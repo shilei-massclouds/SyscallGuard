@@ -1,0 +1,45 @@
+# 合规检查：条件：Insufficient resources were available in the system to perform the operation；检查：调用 getpeername(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENOBUFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_89E33C13364E12DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOBUFS
+    summary: Insufficient resources were available in the system to perform the operation
+  action:
+    operation: invoke_syscall
+    syscall: getpeername
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOBUFS
+  errno:
+  - ENOBUFS
+semantic_hash: sha256:89e33c13364e12dd7fed678267146250fd8d854c1180ac8eca69bdbacd5c7327
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 58
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32a6fd5204dfac2e251fc6cb7a8f74092190111fd1db2fb2ba4b5e9e38004438
+  case: errors_enobufs_58
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getpeername
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 58
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32a6fd5204dfac2e251fc6cb7a8f74092190111fd1db2fb2ba4b5e9e38004438
+  case: errors_enobufs_58

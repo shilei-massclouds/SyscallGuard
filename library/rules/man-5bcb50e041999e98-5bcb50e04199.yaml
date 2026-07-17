@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_NEWCGROUP , CLONE_NEWIPC , CLONE_NEWNET , CLONE_NEWNS , CLONE_NEWPID , or CLONE_NEWUTS was specified by an unprivileged process (process without...；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5BCB50E041999E98--5bcb50e04199
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: CLONE_NEWCGROUP , CLONE_NEWIPC , CLONE_NEWNET , CLONE_NEWNS , CLONE_NEWPID , or CLONE_NEWUTS
+      was specified by an unprivileged process (process without...
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:5bcb50e041999e9850ba57aea7c09cd985d5ac8cb70c9b8b6b3bd4f43505ca52
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1493
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0c047bcc34d695e64ee8ca603aca025f5b7c6ff78c0dfae4be6b6da03ce84ef6
+  case: errors_eperm_1493

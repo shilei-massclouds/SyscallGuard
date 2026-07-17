@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath or newpath points outside your accessible address space；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_88AA1B8D587246C5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: oldpath
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: oldpath or newpath points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:88aa1b8d587246c5eef1ab525d2c1a045efad5db24241dc137e40c874df04657
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67786ed18752b40a7ad70eb0e9a59303e04947ee31be683132c9898fbc3f8e80
+  case: errors_efault_185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:67786ed18752b40a7ad70eb0e9a59303e04947ee31be683132c9898fbc3f8e80
+  case: errors_efault_185

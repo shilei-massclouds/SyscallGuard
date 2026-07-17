@@ -1,0 +1,45 @@
+# 合规检查：条件：pidfd is not a valid PID file descriptor；检查：调用 pidfd_getfd(pidfd, targetfd, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A34A09D80EA6D8E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: pidfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: pidfd is not a valid PID file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: pidfd_getfd
+    arguments:
+    - pidfd
+    - targetfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:2a34a09d80ea6d8e5b3666719645fee5d3d04f36d1423eaeb71e433ada4b8dcc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_getfd.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa70f640e44aaaec8a6b17f7aa1ccec625f33c4a0f94f0ca8da2fcb2775978af
+  case: errors_ebadf_70
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pidfd_getfd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pidfd_getfd.2
+  line: 70
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:aa70f640e44aaaec8a6b17f7aa1ccec625f33c4a0f94f0ca8da2fcb2775978af
+  case: errors_ebadf_70

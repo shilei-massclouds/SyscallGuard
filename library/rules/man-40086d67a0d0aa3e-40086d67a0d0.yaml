@@ -1,0 +1,36 @@
+# 合规检查：条件：An I/O error occurred updating the inode；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_40086D67A0D0AA3E--40086d67a0d0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred updating the inode
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:40086d67a0d0aa3e7540abf6299a5c2aa9a7d91745b50d0ae70f22fd37006894
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 118
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:86e52d3fa534d186ca68a706d6f71d350c63de5e364fd5ebd7fa7ba8cdc687cb
+  case: errors_eio_118

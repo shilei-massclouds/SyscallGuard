@@ -1,0 +1,45 @@
+# 合规检查：条件：( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the restrictions (described in cgroups (7)) on placing the child process into the...；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D630FA19E1123B77
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: cl_args
+    predicate: invalid_value
+    value: EACCES
+    summary: ( clone3 () only) CLONE_INTO_CGROUP was specified in cl_args.flags , but the restrictions
+      (described in cgroups (7)) on placing the child process into the...
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d630fa19e1123b77bfd7272ff2c9715637bd99359301f27d63a9698ad1ee3813
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:262e3c37e1166924943c47c43096313c92718a127d503d658d0c0af56377b728
+  case: errors_eacces_1202
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:262e3c37e1166924943c47c43096313c92718a127d503d658d0c0af56377b728
+  case: errors_eacces_1202

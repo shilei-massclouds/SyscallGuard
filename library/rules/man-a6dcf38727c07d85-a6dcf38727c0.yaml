@@ -1,0 +1,35 @@
+# 合规检查：条件：The caller does not have permission to send the signal to the target. For the required permissions, see kill (2)；检查：调用 rt_sigqueueinfo()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A6DCF38727C07D85--a6dcf38727c0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller does not have permission to send the signal to the target. For the required permissions,
+      see kill (2)
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigqueueinfo
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:a6dcf38727c07d857e68b63140c15e4d65676e809851c75e9a04904efdca2382
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4f2757dd099226128e424e9374bb9194918a8cb160873a2948322df169658698
+  case: errors_eperm_146

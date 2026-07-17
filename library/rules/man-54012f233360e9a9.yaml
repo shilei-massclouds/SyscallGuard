@@ -1,0 +1,44 @@
+# 合规检查：条件：The caller tried to join an ancestor (parent, grandparent, and so on) PID namespace；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_54012F233360E9A9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The caller tried to join an ancestor (parent, grandparent, and so on) PID namespace
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:54012f233360e9a9b908de28b201bd4e10a74e8d415108f5284958c5dbb44003
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 278
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b971125d19ca2d566386377009d03a5f10ec1e9b82ae2f71e89a5f34d504781
+  case: errors_einval_278
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 278
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8b971125d19ca2d566386377009d03a5f10ec1e9b82ae2f71e89a5f34d504781
+  case: errors_einval_278

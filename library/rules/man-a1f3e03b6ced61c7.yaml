@@ -1,0 +1,38 @@
+# 合规检查：条件：The sum of the iov_len values overflows an ssize_t value；检查：调用 pwritev(fd, iov, iovcnt, offset)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1F3E03B6CED61C7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: The sum of the iov_len values overflows an ssize_t value
+  action:
+    operation: invoke_syscall
+    syscall: pwritev
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a1f3e03b6ced61c775e5e7f355865b8cdf54fe2bb125446cc186c6f9de17df17
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pwritev
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 376
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:04813fb9626932853ff3081c972adf4be4f3a755e62b59d0c0faab6af6736645
+  case: errors_einval_376

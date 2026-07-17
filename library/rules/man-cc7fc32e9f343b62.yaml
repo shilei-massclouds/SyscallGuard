@@ -1,0 +1,50 @@
+# 合规检查：条件：An invalid value was specified for flags or mode ; or addr + size was less than addr ; or addr is not a multiple of the system page size. Or, mode is...；检查：调用 mbind(size, size, size, mode, ULONG_WIDTH, maxnode, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CC7FC32E9F343B62
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: An invalid value was specified for flags or mode ; or addr + size was less than addr ; or
+      addr is not a multiple of the system page size. Or, mode is...
+  action:
+    operation: invoke_syscall
+    syscall: mbind
+    arguments:
+    - size
+    - size
+    - size
+    - mode
+    - ULONG_WIDTH
+    - maxnode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:cc7fc32e9f343b62013caa169d99dfbe9542844cbec296ddde849d12def3ea06
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 389
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de6aed94fc5a2884cf6f733aea2a9d8aa4b926ba0ce0c9aa972a76bf270e07ac
+  case: errors_einval_389
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mbind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mbind.2
+  line: 389
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de6aed94fc5a2884cf6f733aea2a9d8aa4b926ba0ce0c9aa972a76bf270e07ac
+  case: errors_einval_389

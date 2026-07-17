@@ -1,0 +1,45 @@
+# 合规检查：条件：The file descriptor sockfd does not refer to a socket；检查：调用 getsockname(sockfd, addr, addrlen)；预期：返回 -1，errno 为 ENOTSOCK。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_56E378DC4A4562E7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: ENOTSOCK
+    summary: The file descriptor sockfd does not refer to a socket
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSOCK
+  errno:
+  - ENOTSOCK
+semantic_hash: sha256:56e378dc4a4562e742ab6c3139c247372668f54c4f48dd69f92a52cc4fe2bb45
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fc2d8c65e01d8fe0f9a78bbc7e442dcbe7bb867c8bc642197fd85aaa2c1894f
+  case: errors_enotsock_61
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getsockname
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getsockname.2
+  line: 61
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2fc2d8c65e01d8fe0f9a78bbc7e442dcbe7bb867c8bc642197fd85aaa2c1894f
+  case: errors_enotsock_61

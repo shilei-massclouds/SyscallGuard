@@ -1,0 +1,48 @@
+# 合规检查：条件：A valid file descriptor value was specified in userns_fd , but the file descriptor refers to the initial user namespace；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DFE30F511AD57632
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EPERM
+    summary: A valid file descriptor value was specified in userns_fd , but the file descriptor refers
+      to the initial user namespace
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:dfe30f511ad576322ca0c31c2e5e36a0606e805072124ec1ded6ce3e5f66deed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 560
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a51c86919d1aa0bb3903533ffe9c7d24b7d6402a73a5ccc9f1fc977e4f1f5d9
+  case: errors_eperm_560
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 560
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a51c86919d1aa0bb3903533ffe9c7d24b7d6402a73a5ccc9f1fc977e4f1f5d9
+  case: errors_eperm_560

@@ -1,0 +1,45 @@
+# 合规检查：条件：No semaphore set exists for key and semflg did not specify IPC_CREAT；检查：调用 semget(key, nsems, semflg)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6E72A4C6A8F2BDA3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: ENOENT
+    summary: No semaphore set exists for key and semflg did not specify IPC_CREAT
+  action:
+    operation: invoke_syscall
+    syscall: semget
+    arguments:
+    - key
+    - nsems
+    - semflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:6e72a4c6a8f2bda3f48e07e6a106a5f8b5e8e022d6ba791e330fbee9d8bf4bb5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:09dd8ca49e8ec53acf6f60995e949b4d767db07a8046ae774c938a4f31332ce3
+  case: errors_enoent_169
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semget.2
+  line: 169
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:09dd8ca49e8ec53acf6f60995e949b4d767db07a8046ae774c938a4f31332ce3
+  case: errors_enoent_169

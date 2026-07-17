@@ -1,0 +1,47 @@
+# 合规检查：条件：Interrupted by a signal handler; see signal (7)；检查：调用 io_getevents(ctx_id, min_nr, nr, events, timeout)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0752801C163AD8EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: Interrupted by a signal handler; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: io_getevents
+    arguments:
+    - ctx_id
+    - min_nr
+    - nr
+    - events
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:0752801c163ad8ef5b6cfd83bac71cb2bfb7b272dae11ec41b62104ae98bbbe5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_getevents.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9965591907cdf5cd4202328ba1ed15020503b4cc76d88ef931373fffaf7cc0b2
+  case: errors_eintr_83
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_getevents
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_getevents.2
+  line: 83
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9965591907cdf5cd4202328ba1ed15020503b4cc76d88ef931373fffaf7cc0b2
+  case: errors_eintr_83

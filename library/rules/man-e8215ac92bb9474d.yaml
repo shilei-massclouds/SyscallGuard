@@ -1,0 +1,45 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 unlinkat(dirfd, path, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8215AC92BB9474D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: unlinkat
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:e8215ac92bb9474dcedf5e430296c751d7f66b149a71d7238c3831cf84c34c15
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75d7636a840457724689438ddd5e17a77c2f077bec7c736ce34526510bba05f3
+  case: errors_efault_149
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unlink.2
+  line: 149
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:75d7636a840457724689438ddd5e17a77c2f077bec7c736ce34526510bba05f3
+  case: errors_efault_149

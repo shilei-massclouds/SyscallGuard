@@ -218,6 +218,52 @@ def validate_syscall_index(errors: list[str], rules: dict[str, dict[str, Any]]) 
                 needle = f"  {comment}\n  - rule_id: {rule_id}\n"
                 if not comment.startswith("# 合规检查：") or needle not in index_text:
                     errors.append(f"missing matching Chinese comment for {rule_id!r} in syscall index")
+    inactive = index.get("inactive_rules", [])
+    if not isinstance(inactive, list):
+        errors.append("syscall index inactive_rules must be a list")
+        return
+    for row in inactive:
+        if not isinstance(row, dict):
+            errors.append("invalid inactive rule row")
+            continue
+        rule_id = row.get("rule_id")
+        owners = row.get("original_syscalls")
+        if (
+            not isinstance(rule_id, str)
+            or rule_id not in rules
+            or not isinstance(row.get("path"), str)
+            or not isinstance(row.get("reason"), str)
+            or not isinstance(owners, list)
+            or not all(isinstance(item, str) for item in owners)
+        ):
+            errors.append(f"invalid inactive rule row: {rule_id!r}")
+            continue
+        expected = f"library/rules/{re.sub(r'[^a-z0-9]+', '-', rule_id.lower()).strip('-')}.yaml"
+        if row["path"] != expected:
+            errors.append(f"wrong inactive rule path for {rule_id!r}")
+
+    active_ids = {
+        str(ref.get("rule_id"))
+        for refs in syscalls.values()
+        if isinstance(refs, list)
+        for ref in refs
+        if isinstance(ref, dict)
+    }
+    for rule_id in active_ids:
+        semantics = rules.get(rule_id, {}).get("semantics", {})
+        expected = semantics.get("expected_result", {}) if isinstance(semantics, dict) else {}
+        if isinstance(expected, dict) and expected.get("kind") == "return_errno":
+            errno = expected.get("errno")
+            if not isinstance(errno, str) or not re.fullmatch(r"E[A-Z0-9_]+", errno):
+                errors.append(f"active rule {rule_id!r} has unresolved expected errno")
+        preconditions = semantics.get("preconditions", []) if isinstance(semantics, dict) else []
+        for condition in preconditions:
+            if not isinstance(condition, dict):
+                continue  # Legacy active rules remain valid until their source is reprocessed.
+            if set(condition) != {"kind", "subject", "predicate", "value", "summary"}:
+                errors.append(f"active rule {rule_id!r} has invalid structured precondition")
+            elif not isinstance(condition.get("summary"), str) or len(condition["summary"]) > 160:
+                errors.append(f"active rule {rule_id!r} has invalid precondition summary")
 
 
 def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
@@ -318,6 +364,19 @@ def validate_reports(errors: list[str]) -> dict[str, dict[str, Any]]:
 def validate_mapping_reports(
     errors: list[str], rules: dict[str, dict[str, Any]]
 ) -> dict[str, dict[str, Any]]:
+    syscall_index = load(ROOT / "library/syscalls.yaml", errors)
+    active_rule_ids = {
+        str(ref.get("rule_id"))
+        for refs in (
+            syscall_index.get("syscalls", {}).values()
+            if isinstance(syscall_index, dict)
+            and isinstance(syscall_index.get("syscalls"), dict)
+            else []
+        )
+        if isinstance(refs, list)
+        for ref in refs
+        if isinstance(ref, dict) and isinstance(ref.get("rule_id"), str)
+    }
     reports: dict[str, dict[str, Any]] = {}
     for path in sorted((ROOT / "runs").glob("mapping-*/report.md")):
         value = frontmatter(path, errors)
@@ -393,9 +452,10 @@ def validate_mapping_reports(
             key=lambda row: (str(row.get("generated_at_utc", "")), str(row.get("report_id", ""))),
         )
         latest_rows = latest.get("rules", {})
-        if set(latest_rows) != set(rules):
-            errors.append("latest mapping report does not exactly cover the general rule library")
-        for rule_id, entity in rules.items():
+        if set(latest_rows) != active_rule_ids:
+            errors.append("latest mapping report does not exactly cover the active rule library")
+        for rule_id in sorted(active_rule_ids):
+            entity = rules.get(rule_id, {})
             row = latest_rows.get(rule_id, {})
             if isinstance(row, dict) and row.get("rule_version", {}).get("content_hash") != version_hash(
                 entity
@@ -689,6 +749,7 @@ def validate_executable_indexes(
 ) -> dict[str, dict[str, Any]]:
     entities: dict[str, dict[str, Any]] = {}
     referenced_assets: set[Path] = set()
+    rule_relation = _rule_syscall_relation()
     for relative, (index_kind, entity_kind, id_field, directory) in EXECUTABLE_INDEXES.items():
         index = load(ROOT / relative, errors)
         if not isinstance(index, dict):
@@ -734,7 +795,7 @@ def validate_executable_indexes(
                 expected_syscalls = {
                     owner
                     for rule_id in refs
-                    for owner, rule_refs in _rule_syscall_relation().items()
+                    for owner, rule_refs in rule_relation.items()
                     if rule_id in rule_refs
                 }
                 if syscall not in expected_syscalls:
@@ -792,11 +853,25 @@ def _rule_syscall_relation() -> dict[str, list[str]]:
         return {}
     value = yaml.safe_load(path.read_text(encoding="utf-8"))
     syscalls = value.get("syscalls", {}) if isinstance(value, dict) else {}
-    return {
+    result = {
         syscall: [str(row.get("rule_id")) for row in rows if isinstance(row, dict)]
         for syscall, rows in syscalls.items()
         if isinstance(syscall, str) and isinstance(rows, list)
     }
+    inactive = value.get("inactive_rules", []) if isinstance(value, dict) else []
+    if isinstance(inactive, list):
+        for row in inactive:
+            if not isinstance(row, dict) or not isinstance(row.get("rule_id"), str):
+                continue
+            owners = row.get("original_syscalls", [])
+            if not isinstance(owners, list):
+                continue
+            for syscall in owners:
+                if isinstance(syscall, str):
+                    result.setdefault(syscall, [])
+                    if row["rule_id"] not in result[syscall]:
+                        result[syscall].append(row["rule_id"])
+    return result
 
 
 def validate_sources(errors: list[str]) -> None:
@@ -808,6 +883,17 @@ def validate_sources(errors: list[str]) -> None:
     ids = [row.get("id") for row in recognizers if isinstance(row, dict)]
     if not ids or len(ids) != len(set(ids)):
         errors.append("LTP recognizers need unique stable ids")
+    aliases = index.get("sources", {}) if isinstance(index, dict) else {}
+    man_descriptor = load(ROOT / "sources/man-pages-local.yaml", errors)
+    if (
+        not isinstance(aliases, dict)
+        or aliases.get("man-pages-local") != "sources/man-pages-local.yaml"
+        or not isinstance(man_descriptor, dict)
+        or man_descriptor.get("adapter") != "man_pages"
+        or man_descriptor.get("arch") != "riscv64"
+        or man_descriptor.get("default_count") != "all"
+    ):
+        errors.append("man-pages-local source descriptor is invalid")
     target = load(ROOT / "targets/starry/target.yaml", errors)
     if (
         not isinstance(target, dict)

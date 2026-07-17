@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:1a7750a0a5f83d0c9ecdf042ca651c6a72696958ce394845c941af9f74a28657
   case: getcwd01_48_4
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getcwd/getcwd01.c
+  line: 48
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1a7750a0a5f83d0c9ecdf042ca651c6a72696958ce394845c941af9f74a28657
+  case: getcwd01_48_4_0

@@ -1,0 +1,38 @@
+# 合规检查：条件：An address argument referred to a location that is outside the process's accessible address space；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D69AA1715418F1C3--d69aa1715418
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: An address argument referred to a location that is outside the process's accessible address
+      space
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d69aa1715418f1c3f73a8f471fd1dc497cc642700fef2869a398fc24cccb7a0e
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:afdff9a2fea5f538418be1eaf40a8c6790ff188580f736dbdc8ab10551a4d569
+  case: errors_efault_190

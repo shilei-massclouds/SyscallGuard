@@ -1,0 +1,38 @@
+# 合规检查：条件：( mlock (), mlock2 (), and munlock ()) Locking or unlocking a region would result in the total number of mappings with distinct attributes (e.g., locked...；检查：调用 mlock2(size, size, flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E5D9BEF1312E2965
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOMEM
+    summary: ( mlock (), mlock2 (), and munlock ()) Locking or unlocking a region would result in the
+      total number of mappings with distinct attributes (e.g., locked...
+  action:
+    operation: invoke_syscall
+    syscall: mlock2
+    arguments:
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:e5d9bef1312e2965d970db631483806e83348e0bbc825b2fe9b41420c4b6ec08
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 221
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:099cc4b651e9e4455192cdd18ac1677b79e5e84aa4c56d475a1596f5477b1a98
+  case: errors_enomem_221

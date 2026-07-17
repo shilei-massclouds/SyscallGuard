@@ -1,0 +1,45 @@
+# 合规检查：条件：The size argument is less than the length of the absolute pathname of the working directory, including the terminating null byte. You need to allocate a...；检查：调用 getcwd(size, size)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0D9E79AEB44B7510
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: size
+    predicate: invalid_or_inaccessible
+    value: ERANGE
+    summary: The size argument is less than the length of the absolute pathname of the working directory,
+      including the terminating null byte. You need to allocate a...
+  action:
+    operation: invoke_syscall
+    syscall: getcwd
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:0d9e79aeb44b7510ce5ee4e104044aeede91e05c93347751fa947026b35c616a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e35cb6970f7ce415caafb06d13571ce2b642819b7dce662cd67887cb8a7ab5bf
+  case: errors_erange_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getcwd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/getcwd.3
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e35cb6970f7ce415caafb06d13571ce2b642819b7dce662cd67887cb8a7ab5bf
+  case: errors_erange_173

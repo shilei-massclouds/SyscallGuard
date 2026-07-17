@@ -1,0 +1,44 @@
+# 合规检查：条件：A key of keyring type was expected but the ID of a key with a different type was provided；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3E73A66430354EA0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTDIR
+    summary: A key of keyring type was expected but the ID of a key with a different type was provided
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:3e73a66430354ea000ae0aba01969619b0631f50fa187710f20a4995fdd23f32
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e20e7a84d4993b69f6f8edcb0e872b1dd79f0a719a87ef3296d8612b0f1e2b32
+  case: errors_enotdir_130
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e20e7a84d4993b69f6f8edcb0e872b1dd79f0a719a87ef3296d8612b0f1e2b32
+  case: errors_enotdir_130

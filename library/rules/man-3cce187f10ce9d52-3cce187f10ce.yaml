@@ -1,0 +1,32 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 rt_sigqueueinfo()；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3CCE187F10CE9D52--3cce187f10ce
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: rt_sigqueueinfo
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:3cce187f10ce9d52b857c173bac36ed56cb8714b960a29e9eba2435c5a0a46b7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_sigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 128
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:f78982e07fa3b25d6afb6c01b43b95abef565d3b75d3ef4dd900f88ea42c9369
+  case: return_value_128

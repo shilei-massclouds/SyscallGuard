@@ -1,0 +1,36 @@
+# 合规检查：条件：new_value , old_value , or curr_value is not a valid pointer；检查：调用 getitimer(which, curr_value)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5B7786EEFCC29842--5b7786eefcc2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: curr_value
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: new_value , old_value , or curr_value is not a valid pointer
+  action:
+    operation: invoke_syscall
+    syscall: getitimer
+    arguments:
+    - which
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:5b7786eefcc298421b375bd6d66329f16f7532e92f8ce5da4f6c497464d14b28
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getitimer
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getitimer.2
+  line: 138
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fa3208668304ede8e438e46bf40d9afd37f64a7dbdff68e84c993b50c01e9b96
+  case: errors_efault_138

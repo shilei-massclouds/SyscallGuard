@@ -1,0 +1,48 @@
+# 合规检查：条件：When changing mount propagation to MS_SHARED , a new peer group ID needs to be allocated for all mounts without a peer group ID set. This allocation failed...；检查：调用 mount_setattr(dirfd, path, flags, attr, size)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3E366D9575E87972
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSPC
+    summary: When changing mount propagation to MS_SHARED , a new peer group ID needs to be allocated
+      for all mounts without a peer group ID set. This allocation failed...
+  action:
+    operation: invoke_syscall
+    syscall: mount_setattr
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:3e366d9575e879729303226b2f906dfe730d8a7811d950750d575f44ba5141be
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 510
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81e1d1bbe5ba241cf921645fd0071cba9d442bb9c94d567296baf8746f25d25b
+  case: errors_enospc_510
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount_setattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount_setattr.2
+  line: 510
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:81e1d1bbe5ba241cf921645fd0071cba9d442bb9c94d567296baf8746f25d25b
+  case: errors_enospc_510

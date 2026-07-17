@@ -1,0 +1,46 @@
+# 合规检查：条件：The documented ENOBUFS condition applies.；检查：调用 accept4(sockfd, addr, addrlen, flags)；预期：返回 -1，errno 为 ENOBUFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7505628CCA74CC9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOBUFS
+    summary: The documented ENOBUFS condition applies.
+  action:
+    operation: invoke_syscall
+    syscall: accept4
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOBUFS
+  errno:
+  - ENOBUFS
+semantic_hash: sha256:86f790d0437b2a7b024bb3b4f380962ca0c7903f1a4765a4521e2562ee4e5e1d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f351ffffabc127a9194e23c15b296ead5903bc4e167b288c05326f2e284203e0
+  case: errors_enobufs_220
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept4
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 220
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f351ffffabc127a9194e23c15b296ead5903bc4e167b288c05326f2e284203e0
+  case: errors_enobufs_220

@@ -1,0 +1,45 @@
+# 合规检查：条件：File descriptor does not refer to a directory；检查：调用 getdents64(fd, count, count)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1C0DA43350202758
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: File descriptor does not refer to a directory
+  action:
+    operation: invoke_syscall
+    syscall: getdents64
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:1c0da4335020275801e92c05e9959c97f4acfcc2cd9a09b513b5fcd72bc22053
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f0b8162e7d867308ea23e913615fc7fb3ddf6bd4390bba36e2777bdcc05f372
+  case: errors_enotdir_198
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getdents64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 198
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5f0b8162e7d867308ea23e913615fc7fb3ddf6bd4390bba36e2777bdcc05f372
+  case: errors_enotdir_198

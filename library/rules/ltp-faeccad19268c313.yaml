@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:a4d9a0afad392e313ef7c0be3a29891a8419b0b3755f413246a3e9ff00031a72
   case: pidfd_send_signal01_57_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:a4d9a0afad392e313ef7c0be3a29891a8419b0b3755f413246a3e9ff00031a72
+  case: pidfd_send_signal01_57_raw_0

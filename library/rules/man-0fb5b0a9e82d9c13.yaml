@@ -1,0 +1,44 @@
+# 合规检查：条件：Insufficient kernel memory was available and sig is a real-time signal；检查：调用 tkill(tid, sig)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0FB5B0A9E82D9C13
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: sig
+    predicate: unavailable_or_exhausted
+    value: EAGAIN
+    summary: Insufficient kernel memory was available and sig is a real-time signal
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:ed59fdc143ea765d05d895790bea58817e2136072272a84316274848b6658e46
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6241842c160d897a1df7f9c22f265a9b8ee279dd07a9aba1a2c8d97a922886b2
+  case: errors_eagain_93
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 93
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6241842c160d897a1df7f9c22f265a9b8ee279dd07a9aba1a2c8d97a922886b2
+  case: errors_eagain_93

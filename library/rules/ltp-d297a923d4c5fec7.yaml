@@ -30,7 +30,23 @@ sources:
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
+  line: 55
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:a26b88fe36e9f64e715108b696d133d00170cced7e39caf0f873e883e7c08edc
+  case: mq_notify03_55_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
   line: 62
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:334ec539dfeeaf022bbe0c69ea905616bfabfd546575965aabbb94de9e07dc8f
   case: mq_notify03_62_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mq_notify/mq_notify03.c
+  line: 62
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:334ec539dfeeaf022bbe0c69ea905616bfabfd546575965aabbb94de9e07dc8f
+  case: mq_notify03_62_raw_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：or EBADF The file descriptor fd is not open for writing. POSIX permits, and portable applications should handle, either error for this case. (Linux produces...；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1013DB4ACEFF4120
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: or EBADF The file descriptor fd is not open for writing. POSIX permits, and portable applications
+      should handle, either error for this case. (Linux produces...
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1f896efd0665a5ba3be71b8e64a1fc4c5090fd97984d242f711ab8034f7bcbed
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:288b161a3e64437eb0e8059b2531fcf97abc216243719c3ed28ac8db85a47843
+  case: errors_einval_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:288b161a3e64437eb0e8059b2531fcf97abc216243719c3ed28ac8db85a47843
+  case: errors_einval_173

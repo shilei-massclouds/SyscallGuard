@@ -1,0 +1,48 @@
+# 合规检查：条件：Number of mounts will exceed the limit after this syscall in some mount namespaces. This limit is controlled by /proc/sys/fs/mount-max , see proc_sys_fs (5)...；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7277495AFCCD0F3D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSPC
+    summary: Number of mounts will exceed the limit after this syscall in some mount namespaces. This
+      limit is controlled by /proc/sys/fs/mount-max , see proc_sys_fs (5)...
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:7277495afccd0f3dc4e2e4e1367e498f9d33c991bf63fd8a553a649f91dfdaf8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0239d91a2627e606a82d58fcb7796c5f0ad3657a06b0e12f89481f744d209807
+  case: errors_enospc_798
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 798
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0239d91a2627e606a82d58fcb7796c5f0ad3657a06b0e12f89481f744d209807
+  case: errors_enospc_798

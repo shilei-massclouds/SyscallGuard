@@ -1,0 +1,45 @@
+# 合规检查：条件：Either the mount point at new_root , or the parent mount of that mount point, has propagation type MS_SHARED；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_25356B76779B1451
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: new_root
+    predicate: documented_condition
+    value: EINVAL
+    summary: Either the mount point at new_root , or the parent mount of that mount point, has propagation
+      type MS_SHARED
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:25356b76779b1451e0e35e24983c38ccd8eb9dfc7ad847734aecf1847fa76ab1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c34b72f7c518648eef67e8916a0390e53ba202e7429cfc53e14e59ebad29d9d
+  case: errors_einval_147
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 147
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6c34b72f7c518648eef67e8916a0390e53ba202e7429cfc53e14e59ebad29d9d
+  case: errors_einval_147

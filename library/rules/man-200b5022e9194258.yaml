@@ -1,0 +1,43 @@
+# 合规检查：条件：The directory specified in path does not exist；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_200B5022E9194258
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: The directory specified in path does not exist
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:11324b6e177c33425c9fe61f8ab419a5c0f897958b3dec7417a48c4debe42514
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba0d165a6514eb9325d50c2bff8b45ea910f2b7ca377b13610cb84c16db2a1d0
+  case: errors_enoent_75
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba0d165a6514eb9325d50c2bff8b45ea910f2b7ca377b13610cb84c16db2a1d0
+  case: errors_enoent_75

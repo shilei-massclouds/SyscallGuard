@@ -1,0 +1,46 @@
+# 合规检查：条件：The address sv does not specify a valid part of the process address space；检查：调用 socketpair(domain, type, protocol, sv)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_43BBCE48C452BDDD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: sv
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The address sv does not specify a valid part of the process address space
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:43bbce48c452bddd06147e2192897e4fc4a09fa385581fb17623e8ebffabded5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 55
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fdf0f36475201b946e7f0d49ff8678121f6cf8bf0d9b8c122741edc091c7d499
+  case: errors_efault_55
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 55
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fdf0f36475201b946e7f0d49ff8678121f6cf8bf0d9b8c122741edc091c7d499
+  case: errors_efault_55

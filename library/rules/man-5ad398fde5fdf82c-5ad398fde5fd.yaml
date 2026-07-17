@@ -1,0 +1,37 @@
+# 合规检查：条件：The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5AD398FDE5FDF82C--5ad398fde5fd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EPERM
+    summary: The file is marked immutable or append-only. (See FS_IOC_SETFLAGS (2const).)
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:5ad398fde5fdf82c5b9c44139e5d615b6ea98f51633445b25b52af8e6966467c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 263
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:96c553bd62aa1f4b8b7a13f85779c42399a95c97bd842f82e5d3b86fa42189ae
+  case: errors_eperm_263

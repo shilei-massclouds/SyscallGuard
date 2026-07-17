@@ -1,0 +1,43 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EC934DB31C08321C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:f9684fd8c973623419925b36fb1edf53fb6a17ad1282e3e8f2d633b5a9878a3f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 64
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7ff1c4b89b2d183d974b9f7bc165a566859c3dbaba3f4dd79023de593d57f6d
+  case: errors_eio_64
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 64
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f7ff1c4b89b2d183d974b9f7bc165a566859c3dbaba3f4dd79023de593d57f6d
+  case: errors_eio_64

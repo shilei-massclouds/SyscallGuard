@@ -1,0 +1,42 @@
+# 合规检查：条件：Could not mount (internal) anonymous inode device；检查：调用 eventfd2()；预期：返回 -1，errno 为 ENODEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_59855F72BABB2E05
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODEV
+    summary: Could not mount (internal) anonymous inode device
+  action:
+    operation: invoke_syscall
+    syscall: eventfd2
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODEV
+  errno:
+  - ENODEV
+semantic_hash: sha256:59855f72babb2e05d2f4126be82909d9056e7d975ce517d220c61217b1c973d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 241
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0194d0729c8d4de0cedd58dd1722d4cc3c9d704b5618c48d3af487e123928ac7
+  case: errors_enodev_241
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: eventfd2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/eventfd.2
+  line: 241
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0194d0729c8d4de0cedd58dd1722d4cc3c9d704b5618c48d3af487e123928ac7
+  case: errors_enodev_241

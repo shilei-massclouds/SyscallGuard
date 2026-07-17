@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_NEWPID and one (or both) of CLONE_THREAD or CLONE_PARENT were specified in the flags mask；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_28F7CBBC6CF8B3DB--28f7cbbc6cf8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWPID and one (or both) of CLONE_THREAD or CLONE_PARENT were specified in the flags
+      mask
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:28f7cbbc6cf8b3db39bf324a1b82d33d8517ee3c85fa6d7fb74ef43894c006de
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:30ac03f209e0584a1b059df7ff241d11638b7e621b6b71895e940c43669e3cf9
+  case: errors_einval_1306

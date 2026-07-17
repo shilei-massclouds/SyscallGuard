@@ -1,0 +1,46 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix of path or the name of a script interpreter. (See also path_resolution (7).)；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_86F55F465483D85E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix of path or the name of a script
+      interpreter. (See also path_resolution (7).)
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:86f55f465483d85eb6761f1c107c096239656b7becfe0002ab9a1d4678a0d359
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6557acaeee49e7f02bed26535c9faf5777cb46a6751f60cb0a1d57c600e88cea
+  case: errors_eacces_444
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 444
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6557acaeee49e7f02bed26535c9faf5777cb46a6751f60cb0a1d57c600e88cea
+  case: errors_eacces_444

@@ -1,0 +1,44 @@
+# 合规检查：条件：sockfd is not a valid file descriptor；检查：调用 shutdown(sockfd, how)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5F5865EF1A8D5904
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: shutdown
+    arguments:
+    - sockfd
+    - how
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:5f5865ef1a8d5904288de6b5062ee6d1e7fb74125ddf77ba8807847569a6d951
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 46
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c94da09f46a2802364324326102613410bd1a6885484dc65e1de937a56575250
+  case: errors_ebadf_46
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shutdown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shutdown.2
+  line: 46
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c94da09f46a2802364324326102613410bd1a6885484dc65e1de937a56575250
+  case: errors_ebadf_46

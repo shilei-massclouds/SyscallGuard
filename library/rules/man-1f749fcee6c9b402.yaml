@@ -1,0 +1,44 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached；检查：调用 fanotify_init(flags, event_f_flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1F749FCEE6C9B402
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:1f749fcee6c9b4028b27acd5885bf541d5ccad1457fa7234be8b22a8a0003ad7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 497
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecacde65e5a04588e7e88679dea03435b6e53010e344282f43c2709e48e5a6c3
+  case: errors_emfile_497
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 497
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ecacde65e5a04588e7e88679dea03435b6e53010e344282f43c2709e48e5a6c3
+  case: errors_emfile_497

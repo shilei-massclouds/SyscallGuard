@@ -1,0 +1,39 @@
+# 合规检查：条件：The message text length is greater than msgsz and MSG_NOERROR isn't specified in msgflg；检查：调用 msgrcv(msqid, msgsz, msgsz, msgtyp, msgflg)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_41C9898038029FC7--41c989803802
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgsz
+    predicate: documented_condition
+    value: E2BIG
+    summary: The message text length is greater than msgsz and MSG_NOERROR isn't specified in msgflg
+  action:
+    operation: invoke_syscall
+    syscall: msgrcv
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgtyp
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:41c9898038029fc7c872a0f99f2be9b0a17d16b44a82944f04267c6e4228f352
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgrcv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 368
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bd91ecf5b4938483086879ceabbe2375501e249388086218bb9f8e3126af9d6
+  case: errors_e2big_368

@@ -1,0 +1,37 @@
+# 合规检查：条件：The caller is not privileged, but needs privilege ( CAP_IPC_LOCK ) to perform the requested operation；检查：调用 mlock(size, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_007841377EBEE116--007841377ebe
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The caller is not privileged, but needs privilege ( CAP_IPC_LOCK ) to perform the requested
+      operation
+  action:
+    operation: invoke_syscall
+    syscall: mlock
+    arguments:
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:007841377ebee1160fd67e1147bf3cfd7ec711c515fb8594af24b86aa513e732
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mlock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 254
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3880838770b71988db42d6224cd6360df09fdc6b189bdcf8fa0192143a61de19
+  case: errors_eperm_254

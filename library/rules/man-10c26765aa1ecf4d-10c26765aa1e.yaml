@@ -1,0 +1,39 @@
+# 合规检查：条件：The namespace prefix of name is not valid；检查：调用 fsetxattr(fd, name, size, size, flags)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_10C26765AA1ECF4D--10c26765aa1e
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: name
+    predicate: unavailable_or_exhausted
+    value: ENOTSUP
+    summary: The namespace prefix of name is not valid
+  action:
+    operation: invoke_syscall
+    syscall: fsetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:10c26765aa1ecf4d81142b52dfdf226ae1f3179e692f3925a23ef2a3b6063423
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 120
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a694104f00090e92ca94840ffcd46663a8b6bdff386084e8299856b97d7af32b
+  case: errors_enotsup_120

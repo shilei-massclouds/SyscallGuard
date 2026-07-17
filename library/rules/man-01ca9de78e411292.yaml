@@ -1,0 +1,43 @@
+# 合规检查：条件：The kernel was unable to change the personality；检查：调用 personality(persona)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_01CA9DE78E411292
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: The kernel was unable to change the personality
+  action:
+    operation: invoke_syscall
+    syscall: personality
+    arguments:
+    - persona
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:01ca9de78e411292c46186e1f426b1dfa3e3fb301b198f6242b5d05d4fe2c506
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/personality.2
+  line: 280
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df4d026e49bd42ab9f9c9f31905ad689127d06b47883b6098c9720c5a77f209a
+  case: errors_einval_280
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: personality
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/personality.2
+  line: 280
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df4d026e49bd42ab9f9c9f31905ad689127d06b47883b6098c9720c5a77f209a
+  case: errors_einval_280

@@ -1,0 +1,49 @@
+# 合规检查：条件：Flags other than MPOL_MF_MOVE and MPOL_MF_MOVE_ALL was specified or an attempt was made to migrate pages of a kernel thread；检查：调用 move_pages(pid, count, count, count, count, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A1A5EBA2742E6366
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Flags other than MPOL_MF_MOVE and MPOL_MF_MOVE_ALL was specified or an attempt was made to
+      migrate pages of a kernel thread
+  action:
+    operation: invoke_syscall
+    syscall: move_pages
+    arguments:
+    - pid
+    - count
+    - count
+    - count
+    - count
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:a1a5eba2742e6366bbd90c0762ff655683f3714eb8f4c544b9e0d204d8057484
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 188
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f8af587d06813cccb4d7d5513e2b04f9c841c346854076d2cb56eee79e2ae59b
+  case: errors_einval_188
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_pages.2
+  line: 188
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:f8af587d06813cccb4d7d5513e2b04f9c841c346854076d2cb56eee79e2ae59b
+  case: errors_einval_188

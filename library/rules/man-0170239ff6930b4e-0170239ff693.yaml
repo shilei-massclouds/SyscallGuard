@@ -1,0 +1,36 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 fchmod(fd, mode)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0170239FF6930B4E--0170239ff693
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: fchmod
+    arguments:
+    - fd
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:0170239ff6930b4e5be5430dcd01776f7505b765d0de439fc5ef2e93b5d92102
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmod
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:494b4dbd4344755eb1ece8078a1c2b53ef4367278b3cb6bc768cda2bfdec291f
+  case: errors_eio_272

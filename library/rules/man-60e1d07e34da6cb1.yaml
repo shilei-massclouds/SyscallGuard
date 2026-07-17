@@ -1,0 +1,48 @@
+# 合规检查：条件：The source mount object's parent mount has shared mount propagation, and thus cannot be moved (as described in mount_namespaces (7))；检查：调用 move_mount(from_dirfd, from_path, to_dirfd, to_path, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_60E1D07E34DA6CB1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EINVAL
+    summary: The source mount object's parent mount has shared mount propagation, and thus cannot be moved
+      (as described in mount_namespaces (7))
+  action:
+    operation: invoke_syscall
+    syscall: move_mount
+    arguments:
+    - from_dirfd
+    - from_path
+    - to_dirfd
+    - to_path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:60e1d07e34da6cb173d2fb0afd614562abb33bf5b768e2170aebc2e7cf8d62da
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 437
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61ba4ac87a17ed833a801e777dcaaf8690af998326eaa9e6bcfb61dba380b8ad
+  case: errors_einval_437
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: move_mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/move_mount.2
+  line: 437
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61ba4ac87a17ed833a801e777dcaaf8690af998326eaa9e6bcfb61dba380b8ad
+  case: errors_einval_437

@@ -1,0 +1,46 @@
+# 合规检查：条件：op was EPOLL_CTL_MOD and events included EPOLLEXCLUSIVE；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F02261D5F2501D56
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: op
+    predicate: documented_condition
+    value: EINVAL
+    summary: op was EPOLL_CTL_MOD and events included EPOLLEXCLUSIVE
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:f02261d5f2501d56f4b4ff9f91a2b2b40e262f06ed25d23791a97748e24e7537
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 304
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34fc98d86c5727a1f58c3f82f48edc92008426cfa46ba7fbf27723d1d0d0a0e0
+  case: errors_einval_304
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 304
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:34fc98d86c5727a1f58c3f82f48edc92008426cfa46ba7fbf27723d1d0d0a0e0
+  case: errors_einval_304

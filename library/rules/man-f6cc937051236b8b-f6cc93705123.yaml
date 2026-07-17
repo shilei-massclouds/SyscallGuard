@@ -1,0 +1,36 @@
+# 合规检查：条件：Could not find a process with the ID specified in pid；检查：调用 getrlimit(resource, rlim)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F6CC937051236B8B--f6cc93705123
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ESRCH
+    summary: Could not find a process with the ID specified in pid
+  action:
+    operation: invoke_syscall
+    syscall: getrlimit
+    arguments:
+    - resource
+    - rlim
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:f6cc937051236b8b323629e54de21ec0f576dba8d1540ddbe97cbbd27005dbbf
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getrlimit
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getrlimit.2
+  line: 509
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d4a5ef094d7667e4efa39ee0ead837bd04be923e992cb8bc4d63e17c7eba71c1
+  case: errors_esrch_509

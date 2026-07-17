@@ -1,0 +1,42 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.、The argument is a userspace buffer.；检查：调用 readlinkat(dir_fd, "test_file/test_file", buf, BUFF_SIZE)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_326165BAA61906DB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - '"test_file/test_file"'
+    - buf
+    - BUFF_SIZE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:326165baa61906db1dc06bb4b7ec35cc7a435e546dffb9e766d6f52ed8c82c55
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_3_0

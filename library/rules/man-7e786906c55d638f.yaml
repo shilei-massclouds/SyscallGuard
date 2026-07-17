@@ -1,0 +1,45 @@
+# 合规检查：条件：This kernel does not implement fanotify_init (). The fanotify API is available only if the kernel was configured with CONFIG_FANOTIFY；检查：调用 fanotify_init(flags, event_f_flags)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7E786906C55D638F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: This kernel does not implement fanotify_init (). The fanotify API is available only if the
+      kernel was configured with CONFIG_FANOTIFY
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:7e786906c55d638f095e49f5601374e63b952f279f7ad7e645e9e19a272945da
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7db66509fbcdc030dfc7158059cda8dc742462550624ac68679eb5b75e1cdd6
+  case: errors_enosys_503
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 503
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a7db66509fbcdc030dfc7158059cda8dc742462550624ac68679eb5b75e1cdd6
+  case: errors_enosys_503

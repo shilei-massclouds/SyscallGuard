@@ -1,0 +1,46 @@
+# 合规检查：条件：epfd or fd is not a valid file descriptor；检查：调用 epoll_ctl(epfd, op, fd, event)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E32B6349055FCEF9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: epfd or fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: epoll_ctl
+    arguments:
+    - epfd
+    - op
+    - fd
+    - event
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:e32b6349055fcef9e6437dc8e1eaf495d3d56f10b316987a403c37553056a544
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 271
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a0a0a251869ff7b037eb948e4a37c644121908c8d293dc861b8562a7c626855f
+  case: errors_ebadf_271
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: epoll_ctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/epoll_ctl.2
+  line: 271
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a0a0a251869ff7b037eb948e4a37c644121908c8d293dc861b8562a7c626855f
+  case: errors_ebadf_271

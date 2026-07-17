@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_COLD or MADV_PAGEOUT and the specified address range includes locked, Huge TLB pages, or VM_PFNMAP pages；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_83C42EA54C4F01DB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: advice
+    predicate: invalid_value
+    value: EINVAL
+    summary: advice is MADV_COLD or MADV_PAGEOUT and the specified address range includes locked, Huge
+      TLB pages, or VM_PFNMAP pages
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:83c42ea54c4f01dbf71a73fd60e8a5286abe31071cc4d915c27ef439326a0b52
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 850
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61abaa4d67acce784db00e8c25d4dc871e8f97c69066fb0cf427d686ba2009e4
+  case: errors_einval_850
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 850
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:61abaa4d67acce784db00e8c25d4dc871e8f97c69066fb0cf427d686ba2009e4
+  case: errors_einval_850

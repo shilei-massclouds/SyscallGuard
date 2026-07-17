@@ -1,0 +1,46 @@
+# 合规检查：条件：The per-process limit on the number of open file descriptors has been reached (see the discussion of RLIMIT_NOFILE in getrlimit (2))；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7F34A257DE64CAFE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: EMFILE
+    summary: The per-process limit on the number of open file descriptors has been reached (see the discussion
+      of RLIMIT_NOFILE in getrlimit (2))
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:6bc7d12960be006c33a1e88231b3256558780373828dbdc2e73a4b0a0f7023a8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a010b85561482ff38a539bacfc91d40b332ea4858baab15665b473214051cda7
+  case: errors_emfile_184
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 184
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a010b85561482ff38a539bacfc91d40b332ea4858baab15665b473214051cda7
+  case: errors_emfile_184

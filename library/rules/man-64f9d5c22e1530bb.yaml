@@ -1,0 +1,46 @@
+# 合规检查：条件：( symlinkat ()) linkpath is relative and newdirfd is a file descriptor referring to a file other than a directory；检查：调用 symlinkat(target, newdirfd, linkpath)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_64F9D5C22E1530BB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: newdirfd
+    predicate: invalid_or_wrong_type
+    value: ENOTDIR
+    summary: ( symlinkat ()) linkpath is relative and newdirfd is a file descriptor referring to a file
+      other than a directory
+  action:
+    operation: invoke_syscall
+    syscall: symlinkat
+    arguments:
+    - target
+    - newdirfd
+    - linkpath
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:64f9d5c22e1530bb3ca84aa3dd3153b1cc33eec4d8ad90c7275706df59cabb2d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a8c23d805561213a52dda968dcdc67968cdf9282e7c61638021943843a74c92
+  case: errors_enotdir_200
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: symlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/symlink.2
+  line: 200
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0a8c23d805561213a52dda968dcdc67968cdf9282e7c61638021943843a74c92
+  case: errors_enotdir_200

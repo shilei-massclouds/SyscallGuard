@@ -1,0 +1,46 @@
+# 合规检查：条件：fd is connected to a pipe or socket whose reading end is closed. When this happens the writing process will also receive a SIGPIPE signal. (Thus, the write...；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_416BAD24203FEA52
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EPIPE
+    summary: fd is connected to a pipe or socket whose reading end is closed. When this happens the writing
+      process will also receive a SIGPIPE signal. (Thus, the write...
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPIPE
+  errno:
+  - EPIPE
+semantic_hash: sha256:416bad24203fea5236c159b109b076083e8dcc5fb376725cabdbf188a9683b7c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a15e0a24ed62f445f2757dde25f6f566a2bc410c9c4fcf3e9da77dbd545835e
+  case: errors_epipe_213
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 213
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a15e0a24ed62f445f2757dde25f6f566a2bc410c9c4fcf3e9da77dbd545835e
+  case: errors_epipe_213

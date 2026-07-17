@@ -1,0 +1,37 @@
+# 合规检查：条件：A component of the path prefix is not a directory；检查：调用 fchown(fd, owner, group)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B0C5FA353BC03C32--b0c5fa353bc0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: fchown
+    arguments:
+    - fd
+    - owner
+    - group
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:b0c5fa353bc03c329a7d15ea5254e2afb3d4d285e05fc1d4020d2d52a7928476
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchown
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 249
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:46b922338cff164af4000ba0eb219e147a817c07b40408844750f7f04451dd43
+  case: errors_enotdir_249

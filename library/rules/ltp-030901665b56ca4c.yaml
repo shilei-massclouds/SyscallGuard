@@ -1,0 +1,36 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 getsockname(sock_bind, (struct sockaddr *) NULL, &sinlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_030901665B56CA4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: struct
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: getsockname
+    arguments:
+    - sock_bind
+    - (struct sockaddr *) NULL
+    - '&sinlen'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:030901665b56ca4cd25c96eaeaded751caca10fe95582bd8babc9d7231a59254
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/getsockname/getsockname01.c
+  line: 49
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:6c11595385c27f1c2ea193165281a79518f506fe0c3bd6554cada88ecc72c645
+  case: getsockname01_49_2_0

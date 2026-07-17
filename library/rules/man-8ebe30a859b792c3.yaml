@@ -1,0 +1,46 @@
+# 合规检查：条件：t or remain specified an invalid address；检查：调用 clock_nanosleep(clockid, flags, t, remain)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8EBE30A859B792C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: t
+    predicate: documented_condition
+    value: EFAULT
+    summary: t or remain specified an invalid address
+  action:
+    operation: invoke_syscall
+    syscall: clock_nanosleep
+    arguments:
+    - clockid
+    - flags
+    - t
+    - remain
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:8ebe30a859b792c3536add4a5ec18ec0406da63f0bd6d7ffa93e42ad5ff61957
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a0be272ea762bc3e273d29304d3deda6fb2d95929d005b3767e2baa3de51f680
+  case: errors_efault_146
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_nanosleep
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_nanosleep.2
+  line: 146
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a0be272ea762bc3e273d29304d3deda6fb2d95929d005b3767e2baa3de51f680
+  case: errors_efault_146

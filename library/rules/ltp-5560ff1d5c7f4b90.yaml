@@ -24,3 +24,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:7ce48205989e2e09b6276ba455e951750b85dab4dea77d29fe806e6b6b8b04a5
   case: sgetmask01_132_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sgetmask/sgetmask01.c
+  line: 132
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:7ce48205989e2e09b6276ba455e951750b85dab4dea77d29fe806e6b6b8b04a5
+  case: sgetmask01_132_raw_0

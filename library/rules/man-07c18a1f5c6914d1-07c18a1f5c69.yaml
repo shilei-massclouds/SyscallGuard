@@ -1,0 +1,38 @@
+# 合规检查：条件：or EWOULDBLOCK The socket is marked nonblocking and no connections are present to be accepted. POSIX.1-2001 and POSIX.1-2008 allow either error to be...；检查：调用 accept(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_07C18A1F5C6914D1--07c18a1f5c69
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: or EWOULDBLOCK The socket is marked nonblocking and no connections are present to be accepted.
+      POSIX.1-2001 and POSIX.1-2008 allow either error to be...
+  action:
+    operation: invoke_syscall
+    syscall: accept
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:07c18a1f5c6914d17c17e357fcdd535c8f4c1187ef9ef34d1e579c206af89fe6
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: accept
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/accept.2
+  line: 177
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a863dcc8540d7651881ce7ac35d58b8373a51fb8b54cb674581dcf7268997c9e
+  case: errors_eagain_177

@@ -1,0 +1,37 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 cachestat(fd, cs_range, cs, -1)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_EB646AEB1D23725B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: cachestat
+    arguments:
+    - fd
+    - cs_range
+    - cs
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:eb646aeb1d23725b0a99a9ca649937758cb4f46ea2dee50bcdc4f419022fabac
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/cachestat/cachestat03.c
+  line: 47
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a64b48a50df72f6694e757feae2e300dca56c869cfe56f74040f2951024365c1
+  case: cachestat03_47_3_0

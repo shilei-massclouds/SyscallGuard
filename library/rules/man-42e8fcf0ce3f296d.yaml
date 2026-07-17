@@ -1,0 +1,44 @@
+# 合规检查：条件：Invalid pid；检查：调用 sched_rr_get_interval(pid, tp)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_42E8FCF0CE3F296D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: EINVAL
+    summary: Invalid pid
+  action:
+    operation: invoke_syscall
+    syscall: sched_rr_get_interval
+    arguments:
+    - pid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:42e8fcf0ce3f296dfa09dda43c268fea0ee9af05717db0d5e1343831383100b8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:827d371d8319838e32cbd38908d59adf3489ec004b55b6f287a7c99c2405fcf5
+  case: errors_einval_54
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_rr_get_interval
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 54
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:827d371d8319838e32cbd38908d59adf3489ec004b55b6f287a7c99c2405fcf5
+  case: errors_einval_54

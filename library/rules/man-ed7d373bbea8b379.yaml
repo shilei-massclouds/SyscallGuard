@@ -1,0 +1,45 @@
+# 合规检查：条件：A segment for the given key exists, but size is greater than the size of that segment；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ED7D373BBEA8B379
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: EINVAL
+    summary: A segment for the given key exists, but size is greater than the size of that segment
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:ed7d373bbea8b37935528710e1f708d03299ddc3a42cd66e17f98c20dc766f92
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4919813448f677929de3710225dcdbac6cc0ddc8e359c7923f37a9cf4e510949
+  case: errors_einval_217
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4919813448f677929de3710225dcdbac6cc0ddc8e359c7923f37a9cf4e510949
+  case: errors_einval_217

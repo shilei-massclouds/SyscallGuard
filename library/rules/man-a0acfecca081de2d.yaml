@@ -1,0 +1,45 @@
+# 合规检查：条件：The argument sockfd is not a valid file descriptor；检查：调用 getpeername(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A0ACFECCA081DE2D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: The argument sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: getpeername
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:a0acfecca081de2d52a4e1fc2457607121a8ddb04fbd384690edc41f25948100
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 43
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:814f7cf15c92dd022ad95643571cb85f39bb9a14272b83db2b233b30ca8c41f8
+  case: errors_ebadf_43
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getpeername
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getpeername.2
+  line: 43
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:814f7cf15c92dd022ad95643571cb85f39bb9a14272b83db2b233b30ca8c41f8
+  case: errors_ebadf_43

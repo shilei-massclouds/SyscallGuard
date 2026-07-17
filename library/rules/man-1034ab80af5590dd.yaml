@@ -1,0 +1,46 @@
+# 合规检查：条件：The options argument was invalid；检查：调用 waitid(idtype, id, infop, options)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1034AB80AF5590DD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: options
+    predicate: invalid_value
+    value: EINVAL
+    summary: The options argument was invalid
+  action:
+    operation: invoke_syscall
+    syscall: waitid
+    arguments:
+    - idtype
+    - id
+    - infop
+    - options
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1034ab80af5590dd065f2e05b90c9300b8707b7cc036b93b60fe0b06fa9e94de
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 436
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33cb3c4234a0938c752802ceaa9030d4b57ebea584e9f2328e0ffea0d716fc2f
+  case: errors_einval_436
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: waitid
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/wait.2
+  line: 436
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:33cb3c4234a0938c752802ceaa9030d4b57ebea584e9f2328e0ffea0d716fc2f
+  case: errors_einval_436

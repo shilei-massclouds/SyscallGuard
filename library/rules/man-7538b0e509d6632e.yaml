@@ -1,0 +1,44 @@
+# 合规检查：条件：(from Linux 3.11 to Linux 4.8) CLONE_NEWUSER was specified in flags , and the limit on the number of nested user namespaces would be exceeded. See the...；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EUSERS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7538B0E509D6632E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: flags
+    predicate: unavailable_or_exhausted
+    value: EUSERS
+    summary: (from Linux 3.11 to Linux 4.8) CLONE_NEWUSER was specified in flags , and the limit on the
+      number of nested user namespaces would be exceeded. See the...
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EUSERS
+  errno:
+  - EUSERS
+semantic_hash: sha256:7538b0e509d6632e6ff3d95664c3fd537621300e7f4585a7c75753f52a753d7e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fdb8de116aca27f4a11467c6eb022fc1a48de50c81b74a85eb1de865eeb09bd
+  case: errors_eusers_416
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 416
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8fdb8de116aca27f4a11467c6eb022fc1a48de50c81b74a85eb1de865eeb09bd
+  case: errors_eusers_416

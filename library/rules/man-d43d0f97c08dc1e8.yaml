@@ -1,0 +1,46 @@
+# 合规检查：条件：path is NULL, dirfd is not AT_FDCWD , and flags contains AT_SYMLINK_NOFOLLOW；检查：调用 utimensat(dirfd, path, _Nullable, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D43D0F97C08DC1E8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: dirfd
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: path is NULL, dirfd is not AT_FDCWD , and flags contains AT_SYMLINK_NOFOLLOW
+  action:
+    operation: invoke_syscall
+    syscall: utimensat
+    arguments:
+    - dirfd
+    - path
+    - _Nullable
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d43d0f97c08dc1e88da41014fb44805f6f956e6ba8a69fae0b736810026d0453
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe29d42710c89b267c3eb9c97e60359e71e528864f29b26f2c3d2c1cce64f569
+  case: errors_einval_307
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: utimensat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/utimensat.2
+  line: 307
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:fe29d42710c89b267c3eb9c97e60359e71e528864f29b26f2c3d2c1cce64f569
+  case: errors_einval_307

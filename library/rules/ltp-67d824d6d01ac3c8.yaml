@@ -1,0 +1,35 @@
+# 合规检查：条件：The pathname exceeds the supported limit.；检查：调用 pathconf(long_path, 0)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_67D824D6D01AC3C8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: length
+    value: too_long
+    summary: The pathname exceeds the supported limit.
+  action:
+    operation: invoke_syscall
+    syscall: pathconf
+    arguments:
+    - long_path
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:67d824d6d01ac3c8587084088abc6ba6d2afbdbc07e3c226b8ee1631772a7979
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf02.c
+  line: 58
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:a8ca298ba98e8d8fc1d3559917b8109efed8e4fd325fe09ae6b5c74491fea1fe
+  case: pathconf02_58_2_0

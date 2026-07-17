@@ -1,0 +1,42 @@
+# 合规检查：条件：timeout is not NULL and points outside the accessible address space；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2806B68B6EAD9BCE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: timeout is not NULL and points outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:2806b68b6ead9bce33a7f7d8684d0fb2cf59c44ad0064c77259b135cde9ebf3c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ff7beacee5b226a65a0197b163c14f54bd3ba1e38ba4cd0a9d2968939cb564a
+  case: errors_efault_186
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 186
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2ff7beacee5b226a65a0197b163c14f54bd3ba1e38ba4cd0a9d2968939cb564a
+  case: errors_efault_186

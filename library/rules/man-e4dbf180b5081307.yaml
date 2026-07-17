@@ -1,0 +1,45 @@
+# 合规检查：条件：( pipe2 ()) O_NOTIFICATION_PIPE was passed in flags and support for notifications ( CONFIG_WATCH_QUEUE ) is not compiled into the kernel；检查：调用 pipe2(pipefd, flags)；预期：返回 -1，errno 为 ENOPKG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E4DBF180B5081307
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: ENOPKG
+    summary: ( pipe2 ()) O_NOTIFICATION_PIPE was passed in flags and support for notifications ( CONFIG_WATCH_QUEUE
+      ) is not compiled into the kernel
+  action:
+    operation: invoke_syscall
+    syscall: pipe2
+    arguments:
+    - pipefd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOPKG
+  errno:
+  - ENOPKG
+semantic_hash: sha256:e4dbf180b50813070570069b9856064e20c6afd1c37ad989e753eb885a2f9ef5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:263c4139c52863051bacdc727521688a645a9e0cccc886af2e24cb8bf0b9994e
+  case: errors_enopkg_178
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pipe2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pipe.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:263c4139c52863051bacdc727521688a645a9e0cccc886af2e24cb8bf0b9994e
+  case: errors_enopkg_178

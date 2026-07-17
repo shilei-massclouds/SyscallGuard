@@ -1,0 +1,49 @@
+# 合规检查：条件：Either off_in or off_out was not NULL, but the corresponding file descriptor refers to a pipe；检查：调用 splice(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 ESPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2FB2D9D518231198
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: off_in
+    predicate: invalid_or_inaccessible
+    value: ESPIPE
+    summary: Either off_in or off_out was not NULL, but the corresponding file descriptor refers to a
+      pipe
+  action:
+    operation: invoke_syscall
+    syscall: splice
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESPIPE
+  errno:
+  - ESPIPE
+semantic_hash: sha256:2fb2d9d518231198d5b6a3198b8b1357258659bf813c1ac6ee0046f8e0c1152c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 177
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8a36a1ae224b8121bd18e72650db14440817900e779a46f8615e0ee8553c000
+  case: errors_espipe_177
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: splice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/splice.2
+  line: 177
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8a36a1ae224b8121bd18e72650db14440817900e779a46f8615e0ee8553c000
+  case: errors_espipe_177

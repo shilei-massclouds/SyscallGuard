@@ -1,0 +1,46 @@
+# 合规检查：条件：The memory cannot be given the specified access. This can happen, for example, if you mmap (2) a file to which you have read-only access, then ask mprotect...；检查：调用 mprotect(size, size, prot)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D96BEFFD9E8D80F6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EACCES
+    summary: The memory cannot be given the specified access. This can happen, for example, if you mmap
+      (2) a file to which you have read-only access, then ask mprotect...
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - size
+    - size
+    - prot
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:d96beffd9e8d80f65cd557d3dcfce59b958d504d6c35cad833d8a68475305034
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d52d2d2cbaa6901f689adc01b8fb83b3e96f72f1b47572c245d1f4665883444b
+  case: errors_eacces_130
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mprotect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mprotect.2
+  line: 130
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d52d2d2cbaa6901f689adc01b8fb83b3e96f72f1b47572c245d1f4665883444b
+  case: errors_eacces_130

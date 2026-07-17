@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:3aff68259e6e21bfc1552592ee2674a975dfb9f6e5f64a94188c2fbf3c5367a1
   case: kill05_59_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/kill/kill05.c
+  line: 59
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3aff68259e6e21bfc1552592ee2674a975dfb9f6e5f64a94188c2fbf3c5367a1
+  case: kill05_59_raw_0

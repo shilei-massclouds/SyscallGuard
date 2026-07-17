@@ -1,0 +1,40 @@
+# 合规检查：条件：The fixture creates symname as a symbolic link.、Path resolution encounters a symlink loop.；检查：调用 utime(symname, &utimes)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0433C0FC2D4AD1EE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates symname as a symbolic link.
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  action:
+    operation: invoke_syscall
+    syscall: utime
+    arguments:
+    - symname
+    - '&utimes'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:0433c0fc2d4ad1ee5e378f4d92a8f423248c70ef1c86427edad8ec47b98d518e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime07.c
+  line: 82
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:ec8ee6cf8ddcef56a38c2dc5f539f69f0ebf3637b6fe64630c1dd2ac52964408
+  case: utime07_82_raw_0

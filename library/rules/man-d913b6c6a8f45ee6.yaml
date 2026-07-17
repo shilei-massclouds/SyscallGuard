@@ -1,0 +1,46 @@
+# 合规检查：条件：path is an empty string and AT_EMPTY_PATH was not specified in flags；检查：调用 newfstatat(dirfd, path, statbuf, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D913B6C6A8F45EE6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path is an empty string and AT_EMPTY_PATH was not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: newfstatat
+    arguments:
+    - dirfd
+    - path
+    - statbuf
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:99c023c475fe86886aa8e4fbc0d5088f621470b3dbf8fbac5fe7dcc9364f209d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a25c9dbe4694604e0bd4d7b2a006a76eb8f66fb51134b7fba18250381f16a033
+  case: errors_enoent_260
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: newfstatat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/stat.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a25c9dbe4694604e0bd4d7b2a006a76eb8f66fb51134b7fba18250381f16a033
+  case: errors_enoent_260

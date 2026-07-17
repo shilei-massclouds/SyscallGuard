@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 remap_file_pages(size, size, prot, pgoff, flags)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D24B6269E613A2B5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: remap_file_pages
+    arguments:
+    - size
+    - size
+    - prot
+    - pgoff
+    - flags
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:d24b6269e613a2b5a18ad68aa6634f2fa25c324677c7ce2170b84078fa51649c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 121
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d634e867e090138cf561b53841daf1a989f946384c76d7af35c4b508fd0b2387
+  case: return_value_121
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: remap_file_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/remap_file_pages.2
+  line: 121
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:d634e867e090138cf561b53841daf1a989f946384c76d7af35c4b508fd0b2387
+  case: return_value_121

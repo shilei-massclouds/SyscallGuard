@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 perf_event_open(attr, pid, cpu, group_fd, flags)；预期：{'kind': 'return_fd', 'return': 'FD'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B7636B4F22A1320E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: perf_event_open
+    arguments:
+    - attr
+    - pid
+    - cpu
+    - group_fd
+    - flags
+  expected_result:
+    kind: return_fd
+    return: FD
+  errno: []
+semantic_hash: sha256:b7636b4f22a1320e441a3d7aa37446da3ded1c156bfd6463bb52dea0987757c3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3737
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:cdf8b6153fceb56dd811dbcfa2fcd4cb243cba9b23f38b042bd6d699e1d4f0bc
+  case: return_value_3737
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: perf_event_open
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/perf_event_open.2
+  line: 3737
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:cdf8b6153fceb56dd811dbcfa2fcd4cb243cba9b23f38b042bd6d699e1d4f0bc
+  case: return_value_3737

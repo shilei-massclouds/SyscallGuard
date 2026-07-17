@@ -1,0 +1,45 @@
+# 合规检查：条件：An ELF interpreter was not in a recognized format；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ELIBBAD。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_667D4B2CC64A44F2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ELIBBAD
+    summary: An ELF interpreter was not in a recognized format
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELIBBAD
+  errno:
+  - ELIBBAD
+semantic_hash: sha256:667d4b2cc64a44f26523eb8c73aa18802d76cbb4364c99711cd0330579f7b5ce
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af65f9d6dc7d94a2336cb19be7ca66530f5906306835898a809fa145a44e8e47
+  case: errors_elibbad_489
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 489
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:af65f9d6dc7d94a2336cb19be7ca66530f5906306835898a809fa145a44e8e47
+  case: errors_elibbad_489

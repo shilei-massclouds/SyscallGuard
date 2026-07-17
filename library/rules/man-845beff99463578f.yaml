@@ -1,0 +1,48 @@
+# 合规检查：条件：Search permission is denied on a component of the path prefix. (See also path_resolution (7).)；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_845BEFF99463578F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EACCES
+    summary: Search permission is denied on a component of the path prefix. (See also path_resolution
+      (7).)
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:bbf23cc2e59f51b3f022cb5196a0acac8a94be917bbfc5244939ea94846a47c7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 203
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a6e8bed00dbf4f4d50b7e313de24b2399f4e641b05f51288caac00de306c50b
+  case: errors_eacces_203
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 203
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1a6e8bed00dbf4f4d50b7e313de24b2399f4e641b05f51288caac00de306c50b
+  case: errors_eacces_203

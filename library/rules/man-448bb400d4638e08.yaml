@@ -1,0 +1,42 @@
+# 合规检查：条件：waiters points outside the accessible address space；检查：调用 futex_waitv()；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_448BB400D4638E08
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: waiters points outside the accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: futex_waitv
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:448bb400d4638e089311d06c2b33f5d6508a5d4638f64776ab6991da871fa36d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60b1c41c91ca64c0820bf54bb68ce4b71a99b32cd4d024ecfa7ffc82969bd2dc
+  case: errors_efault_182
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: futex_waitv
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/futex_waitv.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:60b1c41c91ca64c0820bf54bb68ce4b71a99b32cd4d024ecfa7ffc82969bd2dc
+  case: errors_efault_182

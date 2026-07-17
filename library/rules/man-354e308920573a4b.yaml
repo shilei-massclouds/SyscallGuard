@@ -1,0 +1,48 @@
+# 合规检查：条件：The new pathname contained a path prefix of the old, or, more generally, an attempt was made to make a directory a subdirectory of itself；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_354E308920573A4B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The new pathname contained a path prefix of the old, or, more generally, an attempt was made
+      to make a directory a subdirectory of itself
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:354e308920573a4bd6a6bd5c869e40b37fa0557168f761c7e64f290ac32396da
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0405eee65b961b4d5327812a1457ce5c6bccd6c43e9fa6ce83d8a246a9b50b2e
+  case: errors_einval_324
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 324
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0405eee65b961b4d5327812a1457ce5c6bccd6c43e9fa6ce83d8a246a9b50b2e
+  case: errors_einval_324

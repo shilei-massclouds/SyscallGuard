@@ -1,0 +1,47 @@
+# 合规检查：条件：O_EXCL was specified in flags and path refers to a block device that is in use by the system (e.g., it is mounted)；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D0590EE27937CF0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EBUSY
+    summary: O_EXCL was specified in flags and path refers to a block device that is in use by the system
+      (e.g., it is mounted)
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:7d0590ee27937cf02b89496b01528867153697e527e2c6d75df1fc3e5aaaa88a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1019
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba48151c8f6202f90f2f91c898fbf571c27fe0c67c345af0245c586b74a81b2d
+  case: errors_ebusy_1019
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1019
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba48151c8f6202f90f2f91c898fbf571c27fe0c67c345af0245c586b74a81b2d
+  case: errors_ebusy_1019

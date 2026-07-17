@@ -1,0 +1,47 @@
+# 合规检查：条件：The size of the attribute value is larger than the maximum size allowed; the attribute cannot be retrieved. This can happen on filesystems that support very...；检查：调用 lgetxattr(path, name, size, size)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1306E9D30B932F05
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: E2BIG
+    summary: The size of the attribute value is larger than the maximum size allowed; the attribute cannot
+      be retrieved. This can happen on filesystems that support very...
+  action:
+    operation: invoke_syscall
+    syscall: lgetxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:f35e37770765d646e90e447da896e4125097525edeba34633538b6ea403d9eb9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01887215dccff156696e6beb899ee5609f781770e696eb8b03893cae1b4a2735
+  case: errors_e2big_97
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:01887215dccff156696e6beb899ee5609f781770e696eb8b03893cae1b4a2735
+  case: errors_e2big_97

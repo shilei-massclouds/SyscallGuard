@@ -1,0 +1,38 @@
+# 合规检查：条件：For some operation the value of sem_num is less than 0 or greater than or equal to the number of semaphores in the set；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DAFD5BBDE8A57BCE--dafd5bbde8a5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EFBIG
+    summary: For some operation the value of sem_num is less than 0 or greater than or equal to the number
+      of semaphores in the set
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:dafd5bbde8a57bce0d41917db08cc569df8a7a94f1b5d0135d7d15eed4bc6245
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 313
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b970219da56c9fb4fef01e6d7e0737b2c2f09b9ebcd6f2e62d2d3e0bd1d1083
+  case: errors_efbig_313

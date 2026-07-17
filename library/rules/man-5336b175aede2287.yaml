@@ -1,0 +1,34 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 lremovexattr(path, name)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5336B175AEDE2287
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: lremovexattr
+    arguments:
+    - path
+    - name
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:5336b175aede22874a582b9557e88e8fd8d16a9f4e9e73ffa6a299319b3c2cdf
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lremovexattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 62
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a657d5296c3150307598e0f6f3d2b4ee4fb3cd17a96912639cc4b3f3e212eee3
+  case: return_value_62

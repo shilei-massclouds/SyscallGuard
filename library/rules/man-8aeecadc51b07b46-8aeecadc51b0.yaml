@@ -1,0 +1,37 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 fsetxattr(fd, name, size, size, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8AEECADC51B07B46--8aeecadc51b0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: fsetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:8aeecadc51b07b46199ce509e7aed9cae24ddd43ab3b54d4e480603faa3b1fc4
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 95
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:f039a4f69f3b494d59575e856276df494e6b043ef9f75ca5122f20a592383ece
+  case: return_value_95

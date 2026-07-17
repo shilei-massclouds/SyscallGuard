@@ -1,0 +1,46 @@
+# 合规检查：条件：size was smaller than any known version of struct open_how；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_25CD94348F7360E1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: size was smaller than any known version of struct open_how
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:25cd94348f7360e150dc548a260da0605fcd58b66138e98b2c44ff75e6a1f7c6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ba91617a9892f3374bcd8021f4232cc6379aef6c57644aa881884bdc210a835
+  case: errors_einval_453
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 453
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4ba91617a9892f3374bcd8021f4232cc6379aef6c57644aa881884bdc210a835
+  case: errors_einval_453

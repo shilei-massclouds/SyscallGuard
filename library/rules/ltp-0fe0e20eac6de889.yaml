@@ -31,6 +31,14 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid01.c
+  line: 26
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:8c280cf0d7f38ecd762918807f3c7bfb2a1ef45e7b0980fb0c1011f294d5d47c
+  case: waitid01_26_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/waitid/waitid10.c
   line: 34
   recognizer_id: ltp.tst-exp.pass
@@ -39,8 +47,24 @@ sources:
 - source_id: ltp-local
   source_type: ltp
   source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid10.c
+  line: 34
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:b2183b870e1d5a72f378fdb651a6176c839cc26dd50aca2ab22e59d3ffe67e09
+  case: waitid10_34_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
   file: testcases/kernel/syscalls/waitid/waitid11.c
   line: 31
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:8afd6b29f45a9823a65538006b63e8f59cffe9e3d7d131d5cc070338ada57342
   case: waitid11_31_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/waitid/waitid11.c
+  line: 31
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:8afd6b29f45a9823a65538006b63e8f59cffe9e3d7d131d5cc070338ada57342
+  case: waitid11_31_raw_0

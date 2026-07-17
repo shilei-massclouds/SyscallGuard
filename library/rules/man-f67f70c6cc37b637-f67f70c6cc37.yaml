@@ -1,0 +1,37 @@
+# 合规检查：条件：The file referred to by fd is too large；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EFBIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F67F70C6CC37B637--f67f70c6cc37
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EFBIG
+    summary: The file referred to by fd is too large
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFBIG
+  errno:
+  - EFBIG
+semantic_hash: sha256:f67f70c6cc37b637d7b545086aecd9fcfa87508c98b0e788fb3ac3b05f25cd79
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9a319951a4fd19798f589daa886c3ac10a5c242a1c8394db0fe3e4967dabe4b4
+  case: errors_efbig_255

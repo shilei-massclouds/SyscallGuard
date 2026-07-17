@@ -1,0 +1,38 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled；检查：调用 fgetxattr(fd, name, size, size)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ECDB44F1A6E7CCDF--ecdb44f1a6e7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled
+  action:
+    operation: invoke_syscall
+    syscall: fgetxattr
+    arguments:
+    - fd
+    - name
+    - size
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:ecdb44f1a6e7ccdfc6b3e6f9c337bc6eabf575e9cdd3dfe93784b85c87742911
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fgetxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getxattr.2
+  line: 112
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ba8756ea84a98a72d216a74d96e29deba65c4f0cfd3753cf8fa2ed51c7bda2d8
+  case: errors_enotsup_112

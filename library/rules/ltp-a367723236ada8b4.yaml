@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:539b7e2476c6c06153860d17b42303f7d88471e77fe94f854ad46133f6a8d2f5
   case: sysinfo01_29_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sysinfo/sysinfo01.c
+  line: 29
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:539b7e2476c6c06153860d17b42303f7d88471e77fe94f854ad46133f6a8d2f5
+  case: sysinfo01_29_raw_0

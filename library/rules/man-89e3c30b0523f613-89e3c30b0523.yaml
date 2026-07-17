@@ -1,0 +1,35 @@
+# 合规检查：条件：Too many symbolic links were encountered in resolving path；检查：调用 chdir(path)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_89E3C30B0523F613--89e3c30b0523
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in resolving path
+  action:
+    operation: invoke_syscall
+    syscall: chdir
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:89e3c30b0523f613532ef7cd947ae4ec8a7eb63ca5c3049c7d7a992313f0aef1
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:19dafa1a156bd714c8590df644ceb49b51a1e1158e119f1a2624ee05c7748fa6
+  case: errors_eloop_67

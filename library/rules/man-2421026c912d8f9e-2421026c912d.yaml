@@ -1,0 +1,37 @@
+# 合规检查：条件：flags is invalid；检查：调用 finit_module(fd, param_values, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2421026C912D8F9E--2421026c912d
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is invalid
+  action:
+    operation: invoke_syscall
+    syscall: finit_module
+    arguments:
+    - fd
+    - param_values
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:2421026c912d8f9ec305c5e9751f0d1163b29ca9fe10d9174b6eee31c9ffceb9
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: finit_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:dca6e3c26b5c49b8752762b87429d96537f15d3ccfa2977a730f0a2a94bf9ef9
+  case: errors_einval_260

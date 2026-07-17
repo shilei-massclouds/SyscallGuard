@@ -1,0 +1,45 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3B0E429D6A498259
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:3b0e429d6a498259b1c8438e0597e5c4fb02873e73cb14da91566d4ce6f1ea79
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 637
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:208255e21322df2acb3f4f942349621476035350d5304af04fc84d5b287d48f7
+  case: return_value_637
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 637
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:208255e21322df2acb3f4f942349621476035350d5304af04fc84d5b287d48f7
+  case: return_value_637

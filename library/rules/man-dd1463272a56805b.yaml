@@ -1,0 +1,36 @@
+# 合规检查：条件：See NOTES；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 ECANCELED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DD1463272A56805B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ECANCELED
+    summary: See NOTES
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ECANCELED
+  errno:
+  - ECANCELED
+semantic_hash: sha256:dd1463272a56805b74f5f6478f964246712f74b893e46b6ae4171fcbd64b3a4c
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 462
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:63088695b4ffb7305feb13064dc9cf74273613d89565a396bf83fd1bdc3b4e9e
+  case: errors_ecanceled_462

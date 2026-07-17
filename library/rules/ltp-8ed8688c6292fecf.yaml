@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:397bf469836dd0a156606f7904221464f5597e3666e1351406b4894bd5bbdc7c
   case: symlink04_42_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/symlink/symlink04.c
+  line: 42
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:397bf469836dd0a156606f7904221464f5597e3666e1351406b4894bd5bbdc7c
+  case: symlink04_42_0_0

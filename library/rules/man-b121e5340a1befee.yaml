@@ -1,0 +1,44 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 socketpair(domain, type, protocol, sv)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B121E5340A1BEFEE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: socketpair
+    arguments:
+    - domain
+    - type
+    - protocol
+    - sv
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:b121e5340a1befee27d9cf92690b4f7e0255b871a8235f4fa5739aa1411a566f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 37
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:be73a9c18192204809bc22034ec01c1c2ca6a6fcf88864d14c7becb212365b9b
+  case: return_value_37
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: socketpair
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/socketpair.2
+  line: 37
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:be73a9c18192204809bc22034ec01c1c2ca6a6fcf88864d14c7becb212365b9b
+  case: return_value_37

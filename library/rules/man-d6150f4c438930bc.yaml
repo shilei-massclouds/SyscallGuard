@@ -1,0 +1,43 @@
+# 合规检查：条件：path is too long；检查：调用 fchdir(fd)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D6150F4C438930BC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: fchdir
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:6cd79a6418c53312cfbe7015015ab39d27ccf5aa82b2cd0abfd46406986e0b8d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 71
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f26f853de6a800a0a79b6d610a6780c6d97d27b041f24dbafc67562419bbc68
+  case: errors_enametoolong_71
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchdir
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chdir.2
+  line: 71
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f26f853de6a800a0a79b6d610a6780c6d97d27b041f24dbafc67562419bbc68
+  case: errors_enametoolong_71

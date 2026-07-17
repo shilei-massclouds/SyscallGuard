@@ -1,0 +1,46 @@
+# 合规检查：条件：fd is attached to an object which is unsuitable for writing; or the file was opened with the O_DIRECT flag, and either the address specified in buf , the...；检查：调用 write(fd, count, count)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7C5C13EDDD337B2E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EINVAL
+    summary: fd is attached to an object which is unsuitable for writing; or the file was opened with
+      the O_DIRECT flag, and either the address specified in buf , the...
+  action:
+    operation: invoke_syscall
+    syscall: write
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7c5c13eddd337b2e022f6cab94945ddb01fa80a9dbd59d219b11be73c2032134
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ea82606138b43ec5a34698b90daa58d3532d62405831a57c6875ce348e93178
+  case: errors_einval_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: write
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/write.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ea82606138b43ec5a34698b90daa58d3532d62405831a57c6875ce348e93178
+  case: errors_einval_164

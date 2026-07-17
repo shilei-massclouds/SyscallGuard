@@ -1,0 +1,45 @@
+# 合规检查：条件：buf.modes is neither 0 nor ADJ_OFFSET_SS_READ , and the caller does not have sufficient privilege. Under Linux, the CAP_SYS_TIME capability is required；检查：调用 clock_adjtime(clk_id, buf)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C9A1723E41A5C912
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: buf
+    predicate: insufficient_permission
+    value: EPERM
+    summary: buf.modes is neither 0 nor ADJ_OFFSET_SS_READ , and the caller does not have sufficient privilege.
+      Under Linux, the CAP_SYS_TIME capability is required
+  action:
+    operation: invoke_syscall
+    syscall: clock_adjtime
+    arguments:
+    - clk_id
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8934cf6c56cf8d9548456940a6dce8d461f42760d685cec6a0fc17685aeefd0c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 528
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:39be1932ff1f98e9713aa1acd246b673af48dec3b33f38cf75597edf88946fa0
+  case: errors_eperm_528
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_adjtime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/adjtimex.2
+  line: 528
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:39be1932ff1f98e9713aa1acd246b673af48dec3b33f38cf75597edf88946fa0
+  case: errors_eperm_528

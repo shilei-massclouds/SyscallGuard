@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.tst-exp.pass
   evidence_hash: sha256:2b8b07ee264b1908d6af1057881513d041167964c52299e5f58b9a127b4de54b
   case: gethostname01_18_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gethostname/gethostname01.c
+  line: 18
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:2b8b07ee264b1908d6af1057881513d041167964c52299e5f58b9a127b4de54b
+  case: gethostname01_18_raw_0

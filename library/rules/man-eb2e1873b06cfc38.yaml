@@ -1,0 +1,44 @@
+# 合规检查：条件：The named attribute does not exist；检查：调用 removexattr(path, name)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EB2E1873B06CFC38
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: The named attribute does not exist
+  action:
+    operation: invoke_syscall
+    syscall: removexattr
+    arguments:
+    - path
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:407ef378b8063e3a4fd13b1cdf64e7daa5b058978c651f1b69f1e03e2922556d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:187239baeeb94ec4fffed8618fdb8910bd38016cde396d61f9149385d0ac63c9
+  case: errors_enodata_67
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: removexattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:187239baeeb94ec4fffed8618fdb8910bd38016cde396d61f9149385d0ac63c9
+  case: errors_enodata_67

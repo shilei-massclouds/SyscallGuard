@@ -1,0 +1,49 @@
+# 合规检查：条件：The local end has been shut down on a connection oriented socket. In this case, the process will also receive a SIGPIPE unless MSG_NOSIGNAL is set；检查：调用 sendto(sockfd, size, size, flags, dest_addr, addrlen)；预期：返回 -1，errno 为 EPIPE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C9B95BE858EE810B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPIPE
+    summary: The local end has been shut down on a connection oriented socket. In this case, the process
+      will also receive a SIGPIPE unless MSG_NOSIGNAL is set
+  action:
+    operation: invoke_syscall
+    syscall: sendto
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - dest_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPIPE
+  errno:
+  - EPIPE
+semantic_hash: sha256:84679b7bc4fb65619253a3f1b8056d1b4444c6932046235718738c04425b40c5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ef84a8d921035590120be02f4799cef6f601795249e775b5f3c9191a8d9ffbbc
+  case: errors_epipe_432
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendto
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 432
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ef84a8d921035590120be02f4799cef6f601795249e775b5f3c9191a8d9ffbbc
+  case: errors_epipe_432

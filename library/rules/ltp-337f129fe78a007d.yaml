@@ -1,0 +1,35 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 epoll_wait(epfd, ret_evs, 2, -1)；预期：{'kind': 'return_value', 'return': 'events_matched'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_337F129FE78A007D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - ret_evs
+    - '2'
+    - '-1'
+  expected_result:
+    kind: return_value
+    return: events_matched
+  errno: []
+semantic_hash: sha256:337f129fe78a007d42d70488e45137b429d687efe4f0671d06d4b854e900a581
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+  line: 183
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:dffdb39e434596bbcb206b83f94f9a0d14fa3c9c5a3738fa30fa2fd9c8572ea8
+  case: epoll_wait01_183_raw_0

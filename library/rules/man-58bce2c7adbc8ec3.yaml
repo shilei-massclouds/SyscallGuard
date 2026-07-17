@@ -1,0 +1,47 @@
+# 合规检查：条件：count is too large, the operation would result in exceeding the maximum size of either the input file or the output file；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 EOVERFLOW。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_58BCE2C7ADBC8EC3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: count
+    predicate: invalid_value
+    value: EOVERFLOW
+    summary: count is too large, the operation would result in exceeding the maximum size of either the
+      input file or the output file
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EOVERFLOW
+  errno:
+  - EOVERFLOW
+semantic_hash: sha256:58bce2c7adbc8ec3f43315938faa4b2afc329cb4033ec8e856be59aa06b8b94c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55ebbfe700cdacbafa8e8ce4468eaa53da355453758a08e9c8953d78e90ce30f
+  case: errors_eoverflow_153
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 153
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55ebbfe700cdacbafa8e8ce4468eaa53da355453758a08e9c8953d78e90ce30f
+  case: errors_eoverflow_153

@@ -1,0 +1,39 @@
+# 合规检查：条件：size is invalid; that is, it is smaller than the initial version of the sched_attr structure (48 bytes) or larger than the system page size. In addition,...；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D2EE362B3084F84--7d2ee362b308
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: size is invalid; that is, it is smaller than the initial version of the sched_attr structure
+      (48 bytes) or larger than the system page size. In addition,...
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7d2ee362b3084f84d2c46863c436467685725c559f7a878e1c5577b14c6ce5b5
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 387
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:42292e5742da43616252c45aa231b89eca264da7c21ace9f16b72ae4ddbc7a49
+  case: errors_einval_387

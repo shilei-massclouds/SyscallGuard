@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:5d44ad73db64706091c4df868991b73d3e783a894640b02763374a54cc7f8670
   case: setpgid02_52_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/setpgid/setpgid02.c
+  line: 52
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:5d44ad73db64706091c4df868991b73d3e783a894640b02763374a54cc7f8670
+  case: setpgid02_52_0_0

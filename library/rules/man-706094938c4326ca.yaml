@@ -1,0 +1,45 @@
+# 合规检查：条件：The system-wide limit on the total number of open files has been reached；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 ENFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_706094938C4326CA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENFILE
+    summary: The system-wide limit on the total number of open files has been reached
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENFILE
+  errno:
+  - ENFILE
+semantic_hash: sha256:706094938c4326ca4421f8ca1cfb9972e0cec4e13412cb225d8db5d97d31c9f3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e6b3cbf5b89aaf450847cf9e48ec829cd8772b66250daeb97510577a1dfa028
+  case: errors_enfile_225
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 225
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e6b3cbf5b89aaf450847cf9e48ec829cd8772b66250daeb97510577a1dfa028
+  case: errors_enfile_225

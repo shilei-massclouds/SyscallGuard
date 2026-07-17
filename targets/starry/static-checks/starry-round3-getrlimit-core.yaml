@@ -13,7 +13,6 @@ rule_refs:
 - LTP_914935DA5C379DA1
 - LTP_91ED7E85761CE00F
 - LTP_9305FA6D8B835652
-- LTP_963957F80E751EE6
 - LTP_A0547B601C515355
 - LTP_B058D6B9CBBB459D
 - LTP_BD5C209F4C6EE910
@@ -62,9 +61,6 @@ upstream_dependencies:
 - id: LTP_9305FA6D8B835652
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:9305fa6d8b8356529faec8a8a060de73350f98dc7a1db1af07a5e45a6f6e11ae
-- id: LTP_963957F80E751EE6
-  generated_at_utc: '2026-07-16T03:35:24.146836Z'
-  content_hash: sha256:963957f80e751ee69ad1bc37cd06dda20a9abc3d44b32496ea0aae263fe7715f
 - id: LTP_A0547B601C515355
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:a0547b601c51535524cdadea7c3abcbc2fcd16157591cc2322cd1def6a08cc56
@@ -97,10 +93,10 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/mod.rs
   symbols: []
   scope: file
-  file_hash: sha256:22af2a4f7e463d4867e9489dcdd8f37d67cdd1f2c101ab52dce33e094cae029c
+  file_hash: sha256:0b28fde515d0a745a3d1ab7bfbc8325f676a966be3637553ff6845f92a44140e
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:5c62bcf8e4f696da055ae4d63f934efaa3690e0ceef7d7f1ff5ffe5b33bc6794
+  content_hash: sha256:0f07384a7bcf8c66bc125dceda8aa78e51403cfcea87f3d9bf4f965851341039
 - path: os/StarryOS/kernel/src/syscall/resources.rs
   symbols:
   - sys_prlimit64
@@ -110,5 +106,5 @@ target_dependencies:
     sys_prlimit64: sha256:24402ae650988f58bbf3e8b32422abceb0115d31c2b260e3a9f7aa419e0f5bf2
   missing_symbols: []
   content_hash: sha256:dd8562c8d78c2144f81bdc981654e60f6e6447e6b5a72c20803ba9776e148575
-target_content_fingerprint: sha256:50782e50e0a28234626b32832293bb8c5d6a3a3e8d4d3c6b87e8cf5396d1dfbe
-generated_at_utc: '2026-07-16T04:30:54.819863Z'
+target_content_fingerprint: sha256:0201977b996dd193375c022a76489a2ac99819dbbc8c1de0c0730fe481da6dc7
+generated_at_utc: '2026-07-17T05:29:50.139264Z'

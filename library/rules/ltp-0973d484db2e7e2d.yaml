@@ -1,0 +1,35 @@
+# 合规检查：条件：The pathname exceeds the supported limit.；检查：调用 access(longpathname, R_OK)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_0973D484DB2E7E2D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: length
+    value: too_long
+    summary: The pathname exceeds the supported limit.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - longpathname
+    - R_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:0973d484db2e7e2dca4389dbb1cbf116e2fd7df79047fa139d7703fb62e0a653
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access04.c
+  line: 66
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:bccd5b82a0f931294b3ccfe9f727c641c4fd575588e33aeea6a7da8e1182c3e7
+  case: access04_66_2_0

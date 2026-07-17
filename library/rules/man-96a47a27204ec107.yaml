@@ -1,0 +1,47 @@
+# 合规检查：条件：A component used as a directory in path is not, in fact, a directory, or O_DIRECTORY was specified and path was not a directory；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_96A47A27204EC107
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component used as a directory in path is not, in fact, a directory, or O_DIRECTORY was
+      specified and path was not a directory
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:96a47a27204ec107125b62512aaf73ad1593c2c8fe41e0213641e30ba021cb34
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8ccdc48ff9ec01c177bdae9d30f918d2ecfdfd167b04a64a030164d95f86367
+  case: errors_enotdir_1202
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1202
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d8ccdc48ff9ec01c177bdae9d30f918d2ecfdfd167b04a64a030164d95f86367
+  case: errors_enotdir_1202

@@ -1,0 +1,47 @@
+# 合规检查：条件：path is too long；检查：调用 statx(dirfd, path, flags, mask, statxbuf)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_647CCF3ED2CB7E7D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: path is too long
+  action:
+    operation: invoke_syscall
+    syscall: statx
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mask
+    - statxbuf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:647ccf3ed2cb7e7d8f158d14908bba994e7223d887ac8464a0f569ebbb187be3
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 684
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bda4cc19d4d38459c9f6f5029b154da99006f8df52949c89a5af7ddc81de1ff
+  case: errors_enametoolong_684
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: statx
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statx.2
+  line: 684
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bda4cc19d4d38459c9f6f5029b154da99006f8df52949c89a5af7ddc81de1ff
+  case: errors_enametoolong_684

@@ -1,0 +1,44 @@
+# 合规检查：条件：No process with the specified thread ID (and thread group ID) exists；检查：调用 tkill(tid, sig)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F2F62EBCDA82729C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: ESRCH
+    summary: No process with the specified thread ID (and thread group ID) exists
+  action:
+    operation: invoke_syscall
+    syscall: tkill
+    arguments:
+    - tid
+    - sig
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:00aa49328b7b9214814bc1b82ee72fc41dbb587c5d60a468a861e07fdfbaf858
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eaa7570027008342c7c2f35c3ef37ca02889472613362000d5ac0ec93acc434f
+  case: errors_esrch_106
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: tkill
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/tkill.2
+  line: 106
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:eaa7570027008342c7c2f35c3ef37ca02889472613362000d5ac0ec93acc434f
+  case: errors_esrch_106

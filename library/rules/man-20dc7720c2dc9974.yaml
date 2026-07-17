@@ -1,0 +1,45 @@
+# 合规检查：条件：For BPF_MAP_CREATE , either map_type or attributes are invalid；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_20DC7720C2DC9974
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: For BPF_MAP_CREATE , either map_type or attributes are invalid
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:20dc7720c2dc9974e3c6e15212ae441116d0be32166ecdbec3d60472445ea0d0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1024
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5410cac362fe4623f7d856fb3b678654fc281e02ab9dc81b2831bc4c7dd39342
+  case: errors_einval_1024
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1024
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5410cac362fe4623f7d856fb3b678654fc281e02ab9dc81b2831bc4c7dd39342
+  case: errors_einval_1024

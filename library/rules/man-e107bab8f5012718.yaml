@@ -1,0 +1,46 @@
+# 合规检查：条件：For BPF_PROG_LOAD , indicates an attempt to load an invalid program. eBPF programs can be deemed invalid due to unrecognized instructions, the use of...；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E107BAB8F5012718
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: For BPF_PROG_LOAD , indicates an attempt to load an invalid program. eBPF programs can be
+      deemed invalid due to unrecognized instructions, the use of...
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e107bab8f5012718c771fe878b585822bf328a72e385348131f63dadac94da49
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1040
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c36b3b187d7ff27e85e660537b3e40e5990ff505851076e0f58a0dba8b2a246
+  case: errors_einval_1040
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 1040
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c36b3b187d7ff27e85e660537b3e40e5990ff505851076e0f58a0dba8b2a246
+  case: errors_einval_1040

@@ -1,0 +1,44 @@
+# 合规检查：条件：A component of the path prefix is not a directory；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1A7DF9D4B4186AB1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: A component of the path prefix is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:82ca45e399cddda2eacabc38d07f1dbdb259ffdfd8f7c94e35dbf1fe85da8d28
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:168175d467251d07fad77a2290ba84652e7651f7e314c0ccf733848c9f7ca652
+  case: errors_enotdir_134
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 134
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:168175d467251d07fad77a2290ba84652e7651f7e314c0ccf733848c9f7ca652
+  case: errors_enotdir_134

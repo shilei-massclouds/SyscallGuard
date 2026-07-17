@@ -3,3 +3,4 @@ kind: syscallguard_source_index
 default_source: ltp-local
 sources:
   ltp-local: sources/ltp-local.yaml
+  man-pages-local: sources/man-pages-local.yaml

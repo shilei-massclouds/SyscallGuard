@@ -1,0 +1,45 @@
+# 合规检查：条件：fd is not an open file descriptor；检查：调用 lseek(fd, offset, whence)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2CAF91F7A677785D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: lseek
+    arguments:
+    - fd
+    - offset
+    - whence
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:2caf91f7a677785d0a16e88d438bcf3b0e792cd96ecea9473aa5a90596a04177
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f1356a9dd1339c24ec09a72ee2523e85d2cf57a10c00f747d9ac825961491da
+  case: errors_ebadf_162
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lseek
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lseek.2
+  line: 162
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2f1356a9dd1339c24ec09a72ee2523e85d2cf57a10c00f747d9ac825961491da
+  case: errors_ebadf_162

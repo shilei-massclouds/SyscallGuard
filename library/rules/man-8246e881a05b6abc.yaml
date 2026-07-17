@@ -1,0 +1,46 @@
+# 合规检查：条件：The file referred to by fd is marked immutable (see chattr (1))；检查：调用 fallocate(fd, mode, offset, size)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8246E881A05B6ABC
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EPERM
+    summary: The file referred to by fd is marked immutable (see chattr (1))
+  action:
+    operation: invoke_syscall
+    syscall: fallocate
+    arguments:
+    - fd
+    - mode
+    - offset
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:8246e881a05b6abc311fdc64a466a17304939a1161e0ed50454a68cf026f0021
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bb59f53b2f6c3883f9e102ae73a8a2b1f6e1d995a7acea2fbaabd62a56bcfe5
+  case: errors_eperm_428
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fallocate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fallocate.2
+  line: 428
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8bb59f53b2f6c3883f9e102ae73a8a2b1f6e1d995a7acea2fbaabd62a56bcfe5
+  case: errors_eperm_428

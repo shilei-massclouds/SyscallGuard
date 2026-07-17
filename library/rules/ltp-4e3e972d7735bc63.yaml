@@ -1,0 +1,36 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 open_by_handle_at(-1, valid_fhp, O_RDWR)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4E3E972D7735BC63
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: open_by_handle_at
+    arguments:
+    - '-1'
+    - valid_fhp
+    - O_RDWR
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:4e3e972d7735bc63898a8664e0624b7b2d7e74c2f64c7bc091474aad8e1dc28f
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+  line: 78
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:2323b0c8c76b130457901d472003c43518497dfd55d203b089d56a8ab29d4b3b
+  case: open_by_handle_at02_78_0_0

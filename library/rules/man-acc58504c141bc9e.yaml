@@ -1,0 +1,46 @@
+# 合规检查：条件：advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , and populating (prefaulting) page tables failed because a HW poisoned page (HW poisoned pages can, for...；检查：调用 madvise(size, size, advice)；预期：返回 -1，errno 为 EHWPOISON。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_ACC58504C141BC9E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: advice
+    predicate: documented_condition
+    value: EHWPOISON
+    summary: advice is MADV_POPULATE_READ or MADV_POPULATE_WRITE , and populating (prefaulting) page tables
+      failed because a HW poisoned page (HW poisoned pages can, for...
+  action:
+    operation: invoke_syscall
+    syscall: madvise
+    arguments:
+    - size
+    - size
+    - advice
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EHWPOISON
+  errno:
+  - EHWPOISON
+semantic_hash: sha256:acc58504c141bc9e34260bd0b440f8ca91da8eb3c55d28e739effa9dc80df082
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 952
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:318ab0c4ded4ce3a4fa47501b5ab240fcd1927208db35136044e8c5c3ca44881
+  case: errors_ehwpoison_952
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: madvise
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/madvise.2
+  line: 952
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:318ab0c4ded4ce3a4fa47501b5ab240fcd1927208db35136044e8c5c3ca44881
+  case: errors_ehwpoison_952

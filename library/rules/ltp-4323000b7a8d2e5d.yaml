@@ -1,0 +1,40 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.、The argument is a userspace buffer.；检查：调用 lstat(NULL, &stat_buf)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_4323000B7A8D2E5D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: stat_buf
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  - kind: pointer
+    subject: stat_buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: lstat
+    arguments:
+    - 'NULL'
+    - '&stat_buf'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:4323000b7a8d2e5dc9f9d920cff992a51a67180fd6b83ea69dcd29a6e742f371
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/lstat/lstat02.c
+  line: 63
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:37c9b4dce3179253a71b50d988e5460af5b350ced611e692a3b1d010a864b40b
+  case: lstat02_63_2_0

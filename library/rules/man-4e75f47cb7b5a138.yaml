@@ -1,0 +1,44 @@
+# 合规检查：条件：The file path does not exist；检查：调用 swapon(path, swapflags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4E75F47CB7B5A138
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: The file path does not exist
+  action:
+    operation: invoke_syscall
+    syscall: swapon
+    arguments:
+    - path
+    - swapflags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:93dd5b047c10ccad877ad60d1d7b0c1071abb8fde4981972814832ffba59ae25
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26abd71900e88ff139e07c5b4e11dd92da0e0f6e71ab5e60ff34769fbbc72db7
+  case: errors_enoent_121
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapon
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:26abd71900e88ff139e07c5b4e11dd92da0e0f6e71ab5e60ff34769fbbc72db7
+  case: errors_enoent_121

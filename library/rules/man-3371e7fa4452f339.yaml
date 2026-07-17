@@ -1,0 +1,40 @@
+# 合规检查：条件：The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC is specified, this maximum is given by the...；检查：调用 pwritev2(fd, iov, iovcnt, offset, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3371E7FA4452F339
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: iovcnt
+    predicate: documented_condition
+    value: EINVAL
+    summary: The vector count, iovcnt , is less than zero or greater than the permitted maximum. If RWF_ATOMIC
+      is specified, this maximum is given by the...
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd
+    - iov
+    - iovcnt
+    - offset
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3371e7fa4452f3398de0219a2f9539c0de0f87635ff75c405b3dfc825067df60
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pwritev2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readv.2
+  line: 393
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3b582c09c893a7ed3ef9593e0ce78d531c98a86cde05277933d4990c414a219e
+  case: errors_einval_393

@@ -1,0 +1,43 @@
+# 合规检查：条件：path points outside your accessible address space；检查：调用 chroot(path)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7D7A6F112E3F4A42
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: path
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: path points outside your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: chroot
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:7d7a6f112e3f4a425ac1c33bb7a2716b882535cffb909e13e7520f2b0ee108e0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32022a6ccb085d8a0fcb38c739d7c6b11ba84ef15944578c7ad3d06db282029f
+  case: errors_efault_107
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: chroot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chroot.2
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:32022a6ccb085d8a0fcb38c739d7c6b11ba84ef15944578c7ad3d06db282029f
+  case: errors_efault_107

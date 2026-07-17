@@ -1,0 +1,46 @@
+# 合规检查：条件：Unable to allocate memory for kernel data structures；检查：调用 ppoll(fds, nfds, tmo_p, sigmask)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F3AE80946B3A4936
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: Unable to allocate memory for kernel data structures
+  action:
+    operation: invoke_syscall
+    syscall: ppoll
+    arguments:
+    - fds
+    - nfds
+    - tmo_p
+    - sigmask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:f3ae80946b3a4936dcec4855cd0d85f7fd5013c469883f0cf206de787faaa18d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 365
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b9e66fa65e24972efe2e0a2068d3c9fd4fb3b915cd64c7ddd17fcc145623b0eb
+  case: errors_enomem_365
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ppoll
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/poll.2
+  line: 365
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:b9e66fa65e24972efe2e0a2068d3c9fd4fb3b915cd64c7ddd17fcc145623b0eb
+  case: errors_enomem_365

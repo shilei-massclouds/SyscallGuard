@@ -1,0 +1,46 @@
+# 合规检查：条件：The maximum recursion limit was reached during recursive script interpretation (see Interpreter scripts, above). Before Linux 3.8, the error produced for...；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_DBCF419F762F0AD2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ELOOP
+    summary: The maximum recursion limit was reached during recursive script interpretation (see Interpreter
+      scripts, above). Before Linux 3.8, the error produced for...
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:dbcf419f762f0ad2d4ea0bb47b5a61d5a669fc180b80cf260367a73def575b79
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 497
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:700c0d09574a051ea0a551aee4e2526c2dbdb11dc9067f0c40b5b7790aeb5f89
+  case: errors_eloop_497
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 497
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:700c0d09574a051ea0a551aee4e2526c2dbdb11dc9067f0c40b5b7790aeb5f89
+  case: errors_eloop_497

@@ -1,0 +1,46 @@
+# 合规检查：条件：path already exists. This includes the case where path is a symbolic link, dangling or not；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EEXIST。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FBC8A59AEBFE9691
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EEXIST
+    summary: path already exists. This includes the case where path is a symbolic link, dangling or not
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EEXIST
+  errno:
+  - EEXIST
+semantic_hash: sha256:fbc8a59aebfe969106f656fb754d73845604e52851df66651ac3b0c783372246
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9c5236ab12009a045eccb869865d224610de3f3c8c7c3c5b2daa396e67b7f89
+  case: errors_eexist_174
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c9c5236ab12009a045eccb869865d224610de3f3c8c7c3c5b2daa396e67b7f89
+  case: errors_eexist_174

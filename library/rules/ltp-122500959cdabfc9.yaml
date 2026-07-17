@@ -1,0 +1,40 @@
+# 合规检查：条件：The fixture sets abs_path mode to 0444.、The fixture creates abs_path as a regular file.；检查：调用 faccessat2(bad_fd, abs_path, R_OK, 0)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_122500959CDABFC9
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: mode
+    value: '0444'
+    summary: The fixture sets abs_path mode to 0444.
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: regular_file
+    summary: The fixture creates abs_path as a regular file.
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - bad_fd
+    - abs_path
+    - R_OK
+    - '0'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:122500959cdabfc9d20c8aa9d99107a6125c31bffec0135b65b5973aea5f5be4
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/faccessat2/faccessat201.c
+  line: 50
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:32b0f5fbdb0d7155dd505fb49f7e51a4484bf9d5abe3194a8e3d703c2289af68
+  case: faccessat201_50_1_0

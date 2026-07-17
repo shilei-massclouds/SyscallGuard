@@ -1,0 +1,45 @@
+# 合规检查：条件：oldfd isn't an open file descriptor；检查：调用 dup3(oldfd, newfd, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_794294DBD03CA974
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: oldfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: oldfd isn't an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: dup3
+    arguments:
+    - oldfd
+    - newfd
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:d902d1f5fea87f82fb55ca1f8cde202501fd23595ec05f804e4b48f30a3c046b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:879d5d522a3ddfab5afd807db4a8909a94beeecd95a5533229a2bd6c5058f2bc
+  case: errors_ebadf_143
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: dup3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/dup.2
+  line: 143
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:879d5d522a3ddfab5afd807db4a8909a94beeecd95a5533229a2bd6c5058f2bc
+  case: errors_ebadf_143

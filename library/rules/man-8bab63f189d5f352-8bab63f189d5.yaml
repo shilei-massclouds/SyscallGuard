@@ -1,0 +1,40 @@
+# 合规检查：条件：The value in a mem or memsz field in one of the segments entries is not a multiple of the system page size；检查：调用 kexec_file_load(kernel_fd, initrd_fd, cmdline_len, cmdline_len, flags)；预期：返回 -1，errno 为 EADDRNOTAVAIL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8BAB63F189D5F352--8bab63f189d5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EADDRNOTAVAIL
+    summary: The value in a mem or memsz field in one of the segments entries is not a multiple of the
+      system page size
+  action:
+    operation: invoke_syscall
+    syscall: kexec_file_load
+    arguments:
+    - kernel_fd
+    - initrd_fd
+    - cmdline_len
+    - cmdline_len
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EADDRNOTAVAIL
+  errno:
+  - EADDRNOTAVAIL
+semantic_hash: sha256:8bab63f189d5f3525140b067fbd67cb6a52f438ef0595641e59b58cb4a123c76
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: kexec_file_load
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/kexec_load.2
+  line: 247
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:14aaffcc571c88542db5ad3c1d40d064e5a4eb2a6efba39d6d9754f5ed6ee305
+  case: errors_eaddrnotavail_247

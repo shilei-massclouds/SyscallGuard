@@ -1,0 +1,48 @@
+# 合规检查：条件：The flags argument is not 0；检查：调用 copy_file_range(fd_in, off_in, fd_out, off_out, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D405972253EA086F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: The flags argument is not 0
+  action:
+    operation: invoke_syscall
+    syscall: copy_file_range
+    arguments:
+    - fd_in
+    - off_in
+    - fd_out
+    - off_out
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d405972253ea086f3ed41a70328bf8f5f2b5a09a52c24d2a641223dcc95011e0
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bfeb6c61f25f64151d6bcfebc0d1b9f1ae73a39d6e021ec4f23613259bc57835
+  case: errors_einval_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: copy_file_range
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/copy_file_range.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bfeb6c61f25f64151d6bcfebc0d1b9f1ae73a39d6e021ec4f23613259bc57835
+  case: errors_einval_123

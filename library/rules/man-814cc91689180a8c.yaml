@@ -1,0 +1,47 @@
+# 合规检查：条件：mode requested creation of something other than a regular file, device special file, FIFO or socket；检查：调用 mknodat(dirfd, path, mode, dev)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_814CC91689180A8C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mode
+    predicate: invalid_value
+    value: EINVAL
+    summary: mode requested creation of something other than a regular file, device special file, FIFO
+      or socket
+  action:
+    operation: invoke_syscall
+    syscall: mknodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - dev
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:814cc91689180a8c6318723d55fdb511436a4b116a3d59ff5456f01df6cff4bf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c7190045707265089a8bb350ea5c9705ca6e0f087f1bcfbe47bb477a5d51945
+  case: errors_einval_185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mknodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mknod.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2c7190045707265089a8bb350ea5c9705ca6e0f087f1bcfbe47bb477a5d51945
+  case: errors_einval_185

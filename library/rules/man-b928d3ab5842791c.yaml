@@ -1,0 +1,46 @@
+# 合规检查：条件：( sched_setaffinity ()) The calling thread does not have appropriate privileges. The caller needs an effective user ID equal to the real user ID or...；检查：调用 sched_setaffinity(pid, cpusetsize, mask)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B928D3AB5842791C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: ( sched_setaffinity ()) The calling thread does not have appropriate privileges. The caller
+      needs an effective user ID equal to the real user ID or...
+  action:
+    operation: invoke_syscall
+    syscall: sched_setaffinity
+    arguments:
+    - pid
+    - cpusetsize
+    - mask
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:b928d3ab5842791c6d453df3d224186a4dac8d2f940f67d4754e7ac2b7b48313
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:796881244331a39e718cdf5fccaa36fec3619e10fb284a0e02b50f47708f4009
+  case: errors_eperm_115
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setaffinity
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setaffinity.2
+  line: 115
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:796881244331a39e718cdf5fccaa36fec3619e10fb284a0e02b50f47708f4009
+  case: errors_eperm_115

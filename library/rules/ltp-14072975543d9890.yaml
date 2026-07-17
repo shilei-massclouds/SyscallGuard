@@ -1,0 +1,35 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 fstatfs(fd, (void *)-1)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_14072975543D9890
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - fd
+    - (void *)-1
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:14072975543d989032ee2c1247c1cb9fca032296f9b07f3e40d9eee84ddd0465
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstatfs/fstatfs02.c
+  line: 38
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:468d840d7f8f3ac1c36cb0bce83495b996186a55a4c35e1f6746098c919e4cdc
+  case: fstatfs02_38_1_0

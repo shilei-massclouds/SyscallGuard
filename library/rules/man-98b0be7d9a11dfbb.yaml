@@ -1,0 +1,46 @@
+# 合规检查：条件：The process is being traced, the user is not the superuser and the file has the set-user-ID or set-group-ID bit set；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_98B0BE7D9A11DFBB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: The process is being traced, the user is not the superuser and the file has the set-user-ID
+      or set-group-ID bit set
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:98b0be7d9a11dfbb60322bcc26b141a415902f2e694bc5f1a1f948978c4574ba
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 538
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b02a397fcc3b247bb0036a057536156fef48d18548006f214853545d9c79892
+  case: errors_eperm_538
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 538
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5b02a397fcc3b247bb0036a057536156fef48d18548006f214853545d9c79892
+  case: errors_eperm_538

@@ -1,0 +1,47 @@
+# 合规检查：条件：IPC_NOWAIT and MSG_COPY were specified in msgflg and the queue contains fewer than msgtyp messages；检查：调用 msgsnd(msqid, msgsz, msgsz, msgflg)；预期：返回 -1，errno 为 ENOMSG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0985C968EEE2B273
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: msgflg
+    predicate: documented_condition
+    value: ENOMSG
+    summary: IPC_NOWAIT and MSG_COPY were specified in msgflg and the queue contains fewer than msgtyp
+      messages
+  action:
+    operation: invoke_syscall
+    syscall: msgsnd
+    arguments:
+    - msqid
+    - msgsz
+    - msgsz
+    - msgflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMSG
+  errno:
+  - ENOMSG
+semantic_hash: sha256:6c288b71d8fe4b0d4b686b48e7b73b6bfd43d9ab8c4fc4f441e7510a7022300a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e722ccae970ed1ba2521b4dc485f310da85b090a83eefc411b8ea011eed000d7
+  case: errors_enomsg_423
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msgsnd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msgop.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e722ccae970ed1ba2521b4dc485f310da85b090a83eefc411b8ea011eed000d7
+  case: errors_enomsg_423

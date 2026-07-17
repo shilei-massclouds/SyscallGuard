@@ -1,0 +1,45 @@
+# 合规检查：条件：The socket is already connected；检查：调用 connect(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EISCONN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_60A919B520D2A680
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EISCONN
+    summary: The socket is already connected
+  action:
+    operation: invoke_syscall
+    syscall: connect
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISCONN
+  errno:
+  - EISCONN
+semantic_hash: sha256:60a919b520d2a680592ded2caef2407b16e5d6d0ebb251887288dc4c865bde83
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 189
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de6d98ba341a9341a11a2825ee475252bc489d900f094cbbafeb5d64382dd2a1
+  case: errors_eisconn_189
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: connect
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/connect.2
+  line: 189
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de6d98ba341a9341a11a2825ee475252bc489d900f094cbbafeb5d64382dd2a1
+  case: errors_eisconn_189

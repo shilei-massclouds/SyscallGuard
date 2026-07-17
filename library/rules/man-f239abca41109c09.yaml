@@ -1,0 +1,46 @@
+# 合规检查：条件：A pathname, or a component of a pathname, was too long；检查：调用 readlinkat(dirfd, path, bufsiz, bufsiz)；预期：返回 -1，errno 为 ENAMETOOLONG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F239ABCA41109C09
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ENAMETOOLONG
+    summary: A pathname, or a component of a pathname, was too long
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dirfd
+    - path
+    - bufsiz
+    - bufsiz
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENAMETOOLONG
+  errno:
+  - ENAMETOOLONG
+semantic_hash: sha256:f239abca41109c09a1ee822a9bdb285170abd46302297fc9747c7a7577685a7b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fa1b1c1b1dff5037a32ad3006a9340ce342964cfa46064c35d3cbfe440c14db
+  case: errors_enametoolong_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: readlinkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/readlink.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fa1b1c1b1dff5037a32ad3006a9340ce342964cfa46064c35d3cbfe440c14db
+  case: errors_enametoolong_164

@@ -23,6 +23,8 @@
 ## Syscall index 与 Rule
 
 `library/syscalls.yaml` 是一级表，以 syscall 为索引引用若干规则 ID 和详情文件。
+其中 `syscalls` 只含 active 规则；`inactive_rules` 保存退役或冲突规则的详情路径、原 syscall
+归属、原因和可选替代规则。历史二级规则及其下游引用不删除。
 `library/rules/*.yaml` 目录是二级表，每个 YAML 是一条规则详情。Rule 包含 category、semantics、
 `semantic_hash`、`generated_at_utc` 和 sources。`semantic_hash` 只覆盖 category 与 semantics。
 新增或更新 sources 时不推进规则时间戳；语义变化同时推进时间戳与 hash。
@@ -38,6 +40,8 @@ checkout 一个干净的专用分支，再将名称明确交给工具；报告 `
 全局剩余数和完整 rule—syscall 关系；末尾元数据保存当前规则库全部规则。规则状态只有
 `covered`、`needs_review`、`unsupported` 和 `pending`。`covered` 通过静态/动态引用组合表达覆盖方式。
 每行同时保存规则版本、引用实体版本、目标文件/符号内容指纹、最后验证快照、最后处理报告和原因。
+Mapping report 另存 `coverage_mode`。`static-only` 不产生动态 execution scope，需要运行时夹具的
+规则以 `deferred: dynamic_test` 留待 `full` 模式重试。
 
 `targets/starry/static-checks.yaml` 与 `targets/starry/dynamic-tests.yaml` 是按 syscall 分组的一级索引；
 同名目录保存一个实体一个 YAML 的二级详情。动态测试的独立源码或 patch 位于其 `assets/` 子目录。

@@ -1,0 +1,44 @@
+# 合规检查：条件：( sched_setparam ()) The argument param does not make sense for the current scheduling policy；检查：调用 sched_setparam(pid, param)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E110E8D2BC3B4653
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: param
+    predicate: invalid_value
+    value: EINVAL
+    summary: ( sched_setparam ()) The argument param does not make sense for the current scheduling policy
+  action:
+    operation: invoke_syscall
+    syscall: sched_setparam
+    arguments:
+    - pid
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:e110e8d2bc3b465313d6f0465dc3325d32128e4bce6386cbe8d188626523dda4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 95
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:073edf08955f00f06701115d01e20dea49ca38bd888e6a721f7a93677c8ee674
+  case: errors_einval_95
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setparam
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 95
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:073edf08955f00f06701115d01e20dea49ca38bd888e6a721f7a93677c8ee674
+  case: errors_einval_95

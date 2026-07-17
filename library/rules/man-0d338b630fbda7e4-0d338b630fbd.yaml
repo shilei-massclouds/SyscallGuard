@@ -1,0 +1,39 @@
+# 合规检查：条件：handle refers to a symbolic link, but O_PATH was not specified in flags；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0D338B630FBDA7E4--0d338b630fbd
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: handle
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: handle refers to a symbolic link, but O_PATH was not specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:0d338b630fbda7e43019194bd05c5c6471422138138f92f19343eaa185116a7f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 423
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ab30ea9a5d629c044be03e46143cd2818b7cf19df52837a6a804b24c8164c29
+  case: errors_eloop_423

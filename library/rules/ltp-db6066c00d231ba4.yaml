@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:1db58c8870b6fad211d6c09038c9137f48eceed4ab8f969b8a3c8d58553ebcc1
   case: copy_file_range03_39_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+  line: 39
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:1db58c8870b6fad211d6c09038c9137f48eceed4ab8f969b8a3c8d58553ebcc1
+  case: copy_file_range03_39_raw_0

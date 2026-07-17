@@ -1,0 +1,38 @@
+# 合规检查：条件：Path resolution encounters a symlink loop.；检查：调用 execveat(fd, app_sym_path, argv, environ, AT_SYMLINK_NOFOLLOW)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_137CD2E37BF545BF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: symlink_resolution
+    value: loop
+    summary: Path resolution encounters a symlink loop.
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - fd
+    - app_sym_path
+    - argv
+    - environ
+    - AT_SYMLINK_NOFOLLOW
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:137cd2e37bf545bf278b5e0ebcb6ca710389422a5eecfd8aa175376062576801
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/execveat/execveat02.c
+  line: 57
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:9ef68674328fd1b436f1c23c8bd8e5b00842b2c8c45af6b7b0791d237a333b29
+  case: execveat02_57_2_0

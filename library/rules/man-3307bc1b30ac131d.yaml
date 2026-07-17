@@ -1,0 +1,47 @@
+# 合规检查：条件：The kernel could not allocate a free page to copy filenames or data into；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3307BC1B30AC131D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: data
+    predicate: documented_condition
+    value: ENOMEM
+    summary: The kernel could not allocate a free page to copy filenames or data into
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:3307bc1b30ac131de1c131c72567ab9512f8009f07fd976ec1821bf9062c4c78
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 795
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0539e01a5b48666a463cddd0fc8ef0c1650e1ea41bb6da8016a4f08de53233c2
+  case: errors_enomem_795
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 795
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0539e01a5b48666a463cddd0fc8ef0c1650e1ea41bb6da8016a4f08de53233c2
+  case: errors_enomem_795

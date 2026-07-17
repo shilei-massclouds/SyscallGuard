@@ -1,0 +1,45 @@
+# 合规检查：条件：The prot argument asks for PROT_EXEC but the mapped area belongs to a file on a filesystem that was mounted no-exec；检查：调用 munmap(length, length)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6150CE201F892BEF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EPERM
+    summary: The prot argument asks for PROT_EXEC but the mapped area belongs to a file on a filesystem
+      that was mounted no-exec
+  action:
+    operation: invoke_syscall
+    syscall: munmap
+    arguments:
+    - length
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:c896e564920045448bf2901d79f592e59f40087d4a6bdf8a5f27a3fcc134782d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 600
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65ee4f926b3f16c314cd78f079485dca0b8f805cbf3419719c8cc84a0b43b8c0
+  case: errors_eperm_600
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munmap
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mmap.2
+  line: 600
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:65ee4f926b3f16c314cd78f079485dca0b8f805cbf3419719c8cc84a0b43b8c0
+  case: errors_eperm_600

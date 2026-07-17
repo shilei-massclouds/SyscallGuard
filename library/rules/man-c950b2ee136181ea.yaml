@@ -1,0 +1,47 @@
+# 合规检查：条件：A move operation ( MS_MOVE ) was attempted, but source was not a mount, or was /；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C950B2EE136181EA
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: source
+    predicate: documented_condition
+    value: EINVAL
+    summary: A move operation ( MS_MOVE ) was attempted, but source was not a mount, or was /
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:c950b2ee136181ea98ecc40eef95f2d6e639c540c67f42d1ad31ab7132f72950
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 712
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:112fcece228fecd93487f5ea9eea18ea3e42f904449c1502ab6ba570668fc956
+  case: errors_einval_712
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 712
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:112fcece228fecd93487f5ea9eea18ea3e42f904449c1502ab6ba570668fc956
+  case: errors_einval_712

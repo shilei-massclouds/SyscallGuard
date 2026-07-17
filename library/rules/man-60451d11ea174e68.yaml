@@ -1,0 +1,40 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 munlockall()；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_60451D11EA174E68
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: munlockall
+    arguments: []
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:3a087b88f071c5c13f941d3d3820f4c568b6008f93a3d0e7cf92f4209de4fd7f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8ba7a117f92aa0c879f9413210c8c183dcce869ee019a9abb50ebb936a0b701b
+  case: return_value_165
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 165
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:8ba7a117f92aa0c879f9413210c8c183dcce869ee019a9abb50ebb936a0b701b
+  case: return_value_165

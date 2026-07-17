@@ -1,0 +1,47 @@
+# 合规检查：条件：The O_NOATIME flag was specified, but the effective user ID of the caller did not match the owner of the file and the caller was not privileged；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D3111E273EAB1465
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The O_NOATIME flag was specified, but the effective user ID of the caller did not match the
+      owner of the file and the caller was not privileged
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:d3111e273eab1465bfc2d1fe5ca0e02cb42afe2c40d607c6651be6c0995ed00f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55841e2cb3d6653d9a4886d8641b3815aa1f09893cb25dce9be6ad59e2b56ef5
+  case: errors_eperm_1255
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1255
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:55841e2cb3d6653d9a4886d8641b3815aa1f09893cb25dce9be6ad59e2b56ef5
+  case: errors_eperm_1255

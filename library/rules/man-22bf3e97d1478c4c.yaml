@@ -1,0 +1,37 @@
+# 合规检查：条件：Extended attributes are not supported by the filesystem, or are disabled. In addition, the errors documented in stat (2) can also occur；检查：调用 lremovexattr(path, name)；预期：返回 -1，errno 为 ENOTSUP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_22BF3E97D1478C4C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOTSUP
+    summary: Extended attributes are not supported by the filesystem, or are disabled. In addition, the
+      errors documented in stat (2) can also occur
+  action:
+    operation: invoke_syscall
+    syscall: lremovexattr
+    arguments:
+    - path
+    - name
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTSUP
+  errno:
+  - ENOTSUP
+semantic_hash: sha256:22bf3e97d1478c4c0e6e9596b0ace955b6d5df551d3dee3d19b8db906483ec76
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lremovexattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/removexattr.2
+  line: 75
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2e20b3df840e84f677328d655ce678d20adc651cca080321270e2b4465da6972
+  case: errors_enotsup_75

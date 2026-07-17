@@ -1,0 +1,47 @@
+# 合规检查：条件：The argument nsops is greater than SEMOPM , the maximum number of operations allowed per system call；检查：调用 semtimedop(semid, sops, nsops, timeout)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_783663C239851918
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: nsops
+    predicate: invalid_value
+    value: E2BIG
+    summary: The argument nsops is greater than SEMOPM , the maximum number of operations allowed per
+      system call
+  action:
+    operation: invoke_syscall
+    syscall: semtimedop
+    arguments:
+    - semid
+    - sops
+    - nsops
+    - timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:9c7b175a50231409705788b3f85dfc4bd1141fcb2d4f8fc065ebc9e50bc20d42
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 282
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:356e5a94d940987437dc7cd463df1d66baea3387597d48e4b99c6efb314b14dc
+  case: errors_e2big_282
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semtimedop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 282
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:356e5a94d940987437dc7cd463df1d66baea3387597d48e4b99c6efb314b14dc
+  case: errors_e2big_282

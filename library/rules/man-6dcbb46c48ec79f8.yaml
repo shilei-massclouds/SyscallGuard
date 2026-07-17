@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 delete_module(name, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6DCBB46C48EC79F8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: delete_module
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:6dcbb46c48ec79f853074c5836b44639a700b48b7a1c93ecc76da215c815a851
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 116
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:7c598f507880ada65bc21f7a6f591bd3ae88aaf573cba6e29246f48a90a00107
+  case: return_value_116
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: delete_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 116
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:7c598f507880ada65bc21f7a6f591bd3ae88aaf573cba6e29246f48a90a00107
+  case: return_value_116

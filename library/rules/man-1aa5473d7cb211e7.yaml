@@ -1,0 +1,45 @@
+# 合规检查：条件：Invalid file descriptor fd；检查：调用 getdents64(fd, count, count)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1AA5473D7CB211E7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: Invalid file descriptor fd
+  action:
+    operation: invoke_syscall
+    syscall: getdents64
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:1aa5473d7cb211e74efbf918cfe6b280b4dfcbaaea45ec5f594a76e03e7d09fb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62f035574acb5512cca910e243e332189064992b58ecc86740f92eb5eae6e845
+  case: errors_ebadf_185
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: getdents64
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/getdents.2
+  line: 185
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:62f035574acb5512cca910e243e332189064992b58ecc86740f92eb5eae6e845
+  case: errors_ebadf_185

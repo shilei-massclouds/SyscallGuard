@@ -1,0 +1,35 @@
+# 合规检查：条件：The function was interrupted by a signal; see signal (7)；检查：调用 fdatasync(fd)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F995353DC7284138--f995353dc728
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: The function was interrupted by a signal; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: fdatasync
+    arguments:
+    - fd
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:f995353dc728413818d47ab0d4cc74df91359f9dc431a7ab0835eb24c0f9512f
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fdatasync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsync.2
+  line: 101
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ad6acd285c40d839841cb5c642f9c93900cee6a0a6a5f99e1de7d2c82e4a4be
+  case: errors_eintr_101

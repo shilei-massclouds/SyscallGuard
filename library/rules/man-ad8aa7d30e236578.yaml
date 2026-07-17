@@ -1,0 +1,44 @@
+# 合规检查：条件：The argument length is negative or larger than the maximum file size；检查：调用 truncate(path, length)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AD8AA7D30E236578
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: length
+    predicate: invalid_value
+    value: EINVAL
+    summary: The argument length is negative or larger than the maximum file size
+  action:
+    operation: invoke_syscall
+    syscall: truncate
+    arguments:
+    - path
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:1098a19eb3f456c5356d1e30ec23b1047fc18295553191a35a4a564c283c5863
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e5cd34dc4dc79dc5f13f2323599deae99e7358ac2d599da55fb105243c3fff6b
+  case: errors_einval_113
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: truncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 113
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e5cd34dc4dc79dc5f13f2323599deae99e7358ac2d599da55fb105243c3fff6b
+  case: errors_einval_113

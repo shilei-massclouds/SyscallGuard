@@ -1,0 +1,43 @@
+# 合规检查：条件：Problem with getting user-space data under LINUX_REBOOT_CMD_RESTART2；检查：调用 reboot(op)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F3E8CCCFECEE96C3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: EFAULT
+    summary: Problem with getting user-space data under LINUX_REBOOT_CMD_RESTART2
+  action:
+    operation: invoke_syscall
+    syscall: reboot
+    arguments:
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:f3e8cccfecee96c3e037f638f9d47791b4d4252ea56a98e8198f129b7cfe94b5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/reboot.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0bf0036c1742ec4b3d5af9ed33775d298edc2245ce471319c3f23ef057bd121c
+  case: errors_efault_217
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: reboot
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/reboot.2
+  line: 217
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0bf0036c1742ec4b3d5af9ed33775d298edc2245ce471319c3f23ef057bd121c
+  case: errors_efault_217

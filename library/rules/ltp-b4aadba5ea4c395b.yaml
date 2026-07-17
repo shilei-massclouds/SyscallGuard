@@ -1,0 +1,33 @@
+# 合规检查：条件：The argument is a userspace buffer.；检查：调用 fstat(fildes, &stat_buf)；预期：调用成功，返回 SUCCESS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_B4AADBA5EA4C395B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: stat_buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: fstat
+    arguments:
+    - fildes
+    - '&stat_buf'
+  expected_result:
+    kind: success
+    return: SUCCESS
+  errno: []
+semantic_hash: sha256:b4aadba5ea4c395b6ed2195c452ebb3f4f82718e245ac8f343487dba3a2d5b01
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fstat/fstat02.c
+  line: 28
+  recognizer_id: ltp.tst-exp.pass
+  evidence_hash: sha256:71f676f7f89ce4867d22c2c7cd84d24ff8bba839413c236af4b924b1507a90f4
+  case: fstat02_28_raw_0

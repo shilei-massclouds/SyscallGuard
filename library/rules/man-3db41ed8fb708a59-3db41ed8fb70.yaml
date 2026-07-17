@@ -1,0 +1,35 @@
+# 合规检查：条件：The file path exists, but refers neither to a regular file nor to a block device;；检查：调用 swapoff(path)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_3DB41ED8FB708A59--3db41ed8fb70
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EINVAL
+    summary: The file path exists, but refers neither to a regular file nor to a block device;
+  action:
+    operation: invoke_syscall
+    syscall: swapoff
+    arguments:
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:3db41ed8fb708a599e82de39e6169ed69b9acaa4863d49d8ca5921dc3fdee5de
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: swapoff
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/swapon.2
+  line: 97
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:89145f62b952bd74338209f430b0ee2128dced933b8dd0db3680da99c03a75c7
+  case: errors_einval_97

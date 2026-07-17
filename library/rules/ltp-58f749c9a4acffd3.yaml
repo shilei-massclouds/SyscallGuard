@@ -1,0 +1,38 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 pwritev2(fd1, wr_iovec2, 1, 1, -1)；预期：返回 0，errno 为 EOPNOTSUPP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_58F749C9A4ACFFD3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd1
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: pwritev2
+    arguments:
+    - fd1
+    - wr_iovec2
+    - '1'
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '0'
+    errno: EOPNOTSUPP
+  errno:
+  - EOPNOTSUPP
+semantic_hash: sha256:58f749c9a4acffd3e3448fe1c1f88565100e870c096073776f1c2efe604ae7a9
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pwritev2/pwritev202.c
+  line: 71
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:3f0219732dee8a05bd47792a9bc127609644a2d81bdf62c0ddd05452597864ec
+  case: pwritev202_71_2_0

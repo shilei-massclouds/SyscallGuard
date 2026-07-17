@@ -1,0 +1,36 @@
+# 合规检查：条件：Too many symbolic links were encountered in translating the pathname；检查：调用 ftruncate(fd, length)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6373791A7F233D7F--6373791a7f23
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: call
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links were encountered in translating the pathname
+  action:
+    operation: invoke_syscall
+    syscall: ftruncate
+    arguments:
+    - fd
+    - length
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:6373791a7f233d7fc5451f40fb0f0e576d294e0db056ea0f3f452867f267a356
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ftruncate
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/truncate.2
+  line: 124
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:17940429d39ce8ed2d7d1457316d346d78ca2951e15a6bba487f2b98e90862f8
+  case: errors_eloop_124

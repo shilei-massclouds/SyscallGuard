@@ -1,0 +1,48 @@
+# 合规检查：条件：The queue was full, and the O_NONBLOCK flag was set for the message queue description referred to by mqdes；检查：调用 mq_timedsend(mqdes, msg_len, msg_len, msg_prio, abs_timeout)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9E6C8CDC569BD8EB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: mqdes
+    predicate: invalid_value
+    value: EAGAIN
+    summary: The queue was full, and the O_NONBLOCK flag was set for the message queue description referred
+      to by mqdes
+  action:
+    operation: invoke_syscall
+    syscall: mq_timedsend
+    arguments:
+    - mqdes
+    - msg_len
+    - msg_len
+    - msg_prio
+    - abs_timeout
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:9e6c8cdc569bd8eb3f0ed5342afea1dcad6b60fbe895f7227027eeaec712af98
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fafb0ab698d28394b476abd8267dc20e0476bc9707519e397fbba9799c79f07
+  case: errors_eagain_107
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mq_timedsend
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man3/mq_send.3
+  line: 107
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5fafb0ab698d28394b476abd8267dc20e0476bc9707519e397fbba9799c79f07
+  case: errors_eagain_107

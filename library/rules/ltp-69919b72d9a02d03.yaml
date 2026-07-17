@@ -1,0 +1,35 @@
+# 合规检查：条件：The userspace pointer is outside accessible memory.；检查：调用 gettimeofday((void *)-1, NULL)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_69919B72D9A02D03
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: inaccessible
+    value: bad_address
+    summary: The userspace pointer is outside accessible memory.
+  action:
+    operation: invoke_syscall
+    syscall: gettimeofday
+    arguments:
+    - (void *)-1
+    - 'NULL'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:69919b72d9a02d031f23c5989a971aa794c86301d2a4941a95a6f8d6598db9eb
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+  line: 34
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:df298fec19df106c5664163a9b1b3aae091fc713190424c8394362fadbc3d5ab
+  case: gettimeofday01_34_0_0

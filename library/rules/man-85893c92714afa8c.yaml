@@ -1,0 +1,44 @@
+# 合规检查：条件：fd is not a valid file descriptor；检查：调用 setns(fd, nstype)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_85893C92714AFA8C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: setns
+    arguments:
+    - fd
+    - nstype
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:85893c92714afa8cea916e1ea274b26512dec09fb38401a58f7a9b281e0d5b08
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93e9b210ddce8172be6f7960e1d023fef041cf8062a9c9fcb30e8725f8860341
+  case: errors_ebadf_265
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setns
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setns.2
+  line: 265
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:93e9b210ddce8172be6f7960e1d023fef041cf8062a9c9fcb30e8725f8860341
+  case: errors_ebadf_265

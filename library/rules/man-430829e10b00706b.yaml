@@ -1,0 +1,47 @@
+# 合规检查：条件：The file does not exist；检查：调用 fchownat(dirfd, path, owner, group, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_430829E10B00706B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOENT
+    summary: The file does not exist
+  action:
+    operation: invoke_syscall
+    syscall: fchownat
+    arguments:
+    - dirfd
+    - path
+    - owner
+    - group
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:62615652414918d4484da7f1598eb96f757b7748beab182e9e6cb6371e9b05e7
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:198da017112e9eb96c1d25be813a127ba29b5f325bcb3edb2136c953082675e8
+  case: errors_enoent_243
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchownat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chown.2
+  line: 243
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:198da017112e9eb96c1d25be813a127ba29b5f325bcb3edb2136c953082675e8
+  case: errors_enoent_243

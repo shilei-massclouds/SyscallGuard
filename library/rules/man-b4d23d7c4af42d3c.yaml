@@ -1,0 +1,45 @@
+# 合规检查：条件：size is too big；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B4D23D7C4AF42D3C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: E2BIG
+    summary: size is too big
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:b4d23d7c4af42d3cf43ba587f6f9e4828f811d8ec5c70edf8812e41946f8e076
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70cbe3cda0f84b1e274d53d44ef1ae883dbf057b7a942cd8a6eaeef650c87d54
+  case: errors_e2big_182
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 182
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:70cbe3cda0f84b1e274d53d44ef1ae883dbf057b7a942cd8a6eaeef650c87d54
+  case: errors_e2big_182

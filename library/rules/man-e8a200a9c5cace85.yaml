@@ -1,0 +1,42 @@
+# 合规检查：条件：( munlockall ()) (Linux 2.6.8 and earlier) The caller was not privileged ( CAP_IPC_LOCK )；检查：调用 munlockall()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_E8A200A9C5CACE85
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: ( munlockall ()) (Linux 2.6.8 and earlier) The caller was not privileged ( CAP_IPC_LOCK )
+  action:
+    operation: invoke_syscall
+    syscall: munlockall
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:e8a200a9c5cace85b8957fca7f44ddff3896e0454a28d91a51d16a436197b39d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 259
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:638025da25807a2b81b408402361b8b6a7a2d46f8934257f2e81d88668c4b677
+  case: errors_eperm_259
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: munlockall
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mlock.2
+  line: 259
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:638025da25807a2b81b408402361b8b6a7a2d46f8934257f2e81d88668c4b677
+  case: errors_eperm_259

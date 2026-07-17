@@ -1,0 +1,47 @@
+# 合规检查：条件：The filesystem context associated with fd is in the wrong state for the given command；检查：调用 fsconfig(fd, cmd, key, value, aux)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D025E1D680FE45ED
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBUSY
+    summary: The filesystem context associated with fd is in the wrong state for the given command
+  action:
+    operation: invoke_syscall
+    syscall: fsconfig
+    arguments:
+    - fd
+    - cmd
+    - key
+    - value
+    - aux
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:d025e1d680fe45ed0b3a960f465e6cfc11f4a80ee1032d2154d4992524214014
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 400
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:06bae091a1a5a299de748562304727df6199a0425067c52b6288c3cb1828975b
+  case: errors_ebusy_400
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsconfig
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsconfig.2
+  line: 400
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:06bae091a1a5a299de748562304727df6199a0425067c52b6288c3cb1828975b
+  case: errors_ebusy_400

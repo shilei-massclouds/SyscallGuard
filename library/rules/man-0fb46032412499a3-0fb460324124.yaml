@@ -1,0 +1,39 @@
+# 合规检查：条件：handle->handle_bytes is greater than MAX_HANDLE_SZ；检查：调用 name_to_handle_at(dirfd, path, handle, mount_id, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0FB46032412499A3--0fb460324124
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: handle
+    predicate: documented_condition
+    value: EINVAL
+    summary: handle->handle_bytes is greater than MAX_HANDLE_SZ
+  action:
+    operation: invoke_syscall
+    syscall: name_to_handle_at
+    arguments:
+    - dirfd
+    - path
+    - handle
+    - mount_id
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0fb46032412499a35de2f18c66fbb74d710e05784bda39b6f344862d87648c49
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: name_to_handle_at
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open_by_handle_at.2
+  line: 361
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a283d061470cf6620b9c7556f10a3de3fb9dfb0c1e8ee26aa9f2e15cedf4d301
+  case: errors_einval_361

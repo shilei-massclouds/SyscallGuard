@@ -1,0 +1,46 @@
+# 合规检查：条件：System call was interrupted by a signal; nothing was read. (This can be seen only during a trace.)；检查：调用 syslog(type, bufp, size)；预期：返回 -1，errno 为 ERESTARTSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D3D27ED470AE00BD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ERESTARTSYS
+    summary: System call was interrupted by a signal; nothing was read. (This can be seen only during
+      a trace.)
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - type
+    - bufp
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERESTARTSYS
+  errno:
+  - ERESTARTSYS
+semantic_hash: sha256:d3d27ed470ae00bdf7419d790a8291c17386b61f7fced93df4a730ef5f6a3d29
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 372
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5325fc076caa09c39e09be2fb109420441ec1e2a9592b6ffe33177b208d57c23
+  case: errors_erestartsys_372
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syslog
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 372
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5325fc076caa09c39e09be2fb109420441ec1e2a9592b6ffe33177b208d57c23
+  case: errors_erestartsys_372

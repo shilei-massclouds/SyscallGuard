@@ -1,0 +1,45 @@
+# 合规检查：条件：The calling process has too many open files to create more；检查：调用 fsmount(fsfd, flags, attr_flags)；预期：返回 -1，errno 为 EMFILE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8853FCE83FBE1DF6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EMFILE
+    summary: The calling process has too many open files to create more
+  action:
+    operation: invoke_syscall
+    syscall: fsmount
+    arguments:
+    - fsfd
+    - flags
+    - attr_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EMFILE
+  errno:
+  - EMFILE
+semantic_hash: sha256:8853fce83fbe1df620fb27279c366116773ae5d9564d0e3a754f53f1acb05a85
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8127bb51ccc51db25426a64813659d61ddf7dbe2b3f510f592ac737a56cf6535
+  case: errors_emfile_174
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fsmount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fsmount.2
+  line: 174
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8127bb51ccc51db25426a64813659d61ddf7dbe2b3f510f592ac737a56cf6535
+  case: errors_emfile_174

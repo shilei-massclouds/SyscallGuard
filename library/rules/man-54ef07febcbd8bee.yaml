@@ -1,0 +1,46 @@
+# 合规检查：条件：tgid specifies a process other than the caller and info->si_code is invalid；检查：调用 rt_tgsigqueueinfo(tgid, tid, sig, info)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_54EF07FEBCBD8BEE
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: tgid
+    predicate: insufficient_permission
+    value: EPERM
+    summary: tgid specifies a process other than the caller and info->si_code is invalid
+  action:
+    operation: invoke_syscall
+    syscall: rt_tgsigqueueinfo
+    arguments:
+    - tgid
+    - tid
+    - sig
+    - info
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:273e785439c06e0436f53771b0f7aa9f379f4b0d4ed3d20a4df7f99330295ab6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e6c079275bc9d21020af0f98735bed2b4545281c80da3a870dfd00479432826
+  case: errors_eperm_151
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: rt_tgsigqueueinfo
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rt_sigqueueinfo.2
+  line: 151
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0e6c079275bc9d21020af0f98735bed2b4545281c80da3a870dfd00479432826
+  case: errors_eperm_151

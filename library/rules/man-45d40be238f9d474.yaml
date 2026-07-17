@@ -1,0 +1,46 @@
+# 合规检查：条件：( fchmodat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_45D40BE238F9D474
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: dirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ( fchmodat ()) path is relative but dirfd is neither AT_FDCWD nor a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:45d40be238f9d474637fec22e0be94705573c932e85d68a94869b3d9e2af3d03
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 254
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d2bd719015d26c3d176a64016a22a17a53293bb2fe866e0ee47ddfde7f95cc0a
+  case: errors_ebadf_254
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 254
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d2bd719015d26c3d176a64016a22a17a53293bb2fe866e0ee47ddfde7f95cc0a
+  case: errors_ebadf_254

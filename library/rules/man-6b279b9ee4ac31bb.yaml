@@ -1,0 +1,46 @@
+# 合规检查：条件：I/O error. This will happen for example when the process is in a background process group, tries to read from its controlling terminal, and either it is...；检查：调用 read(fd, count, count)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6B279B9EE4AC31BB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: I/O error. This will happen for example when the process is in a background process group,
+      tries to read from its controlling terminal, and either it is...
+  action:
+    operation: invoke_syscall
+    syscall: read
+    arguments:
+    - fd
+    - count
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:6b279b9ee4ac31bb1602dbf21dc94841c8ad990b334f09bc66107edba72eccb1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 136
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:167967bf5f2cb4d7d8f7209990d1653a5b230afbc543a4ee6e11f7095de4b025
+  case: errors_eio_136
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: read
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/read.2
+  line: 136
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:167967bf5f2cb4d7d8f7209990d1653a5b230afbc543a4ee6e11f7095de4b025
+  case: errors_eio_136

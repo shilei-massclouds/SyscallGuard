@@ -1,0 +1,34 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 dup(-1)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2553A6069EE908FB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: dup
+    arguments:
+    - '-1'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:2553a6069ee908fb6de7add1ca2d92763bbabf890ce22d83d51d4857ff607d6d
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/dup/dup02.c
+  line: 27
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:04f9902f3c7c9a239a35da869dbb4c3a7e9a4c0fc9dec2ab08ccd43caaad2d45
+  case: dup02_27_0_0

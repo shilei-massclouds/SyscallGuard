@@ -1,0 +1,46 @@
+# 合规检查：条件：how.resolve contains RESOLVE_NO_MAGICLINKS , and one of the path components was a magic link；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A68CC55C5764955D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: how.resolve contains RESOLVE_NO_MAGICLINKS , and one of the path components was a magic link
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:a68cc55c5764955d92af8a6083c204d2767a4c91a0646249f837e225855e53cb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 464
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a022fadd2f136c5e2f6a40b9a6d2ad46b44b2b72add09c28d2f61ecf245b33d0
+  case: errors_eloop_464
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 464
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a022fadd2f136c5e2f6a40b9a6d2ad46b44b2b72add09c28d2f61ecf245b33d0
+  case: errors_eloop_464

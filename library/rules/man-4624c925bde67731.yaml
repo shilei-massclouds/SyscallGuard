@@ -1,0 +1,48 @@
+# 合规检查：条件：An attempt was made to link to the /proc/self/fd/NN file corresponding to a file descriptor created with open(path, O_TMPFILE | O_EXCL, mode); See open (2)；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4624C925BDE67731
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOENT
+    summary: An attempt was made to link to the /proc/self/fd/NN file corresponding to a file descriptor
+      created with open(path, O_TMPFILE | O_EXCL, mode); See open (2)
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:4624c925bde677318e9b1f8cb468316d56fa650b1319fbe3da8ff98555a01cb4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 287
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d737ac902989155af3ece8dfb79a34a606a13f491fc63d1788661959ec97c9a
+  case: errors_enoent_287
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 287
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8d737ac902989155af3ece8dfb79a34a606a13f491fc63d1788661959ec97c9a
+  case: errors_enoent_287

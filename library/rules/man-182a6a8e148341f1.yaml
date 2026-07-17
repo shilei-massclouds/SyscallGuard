@@ -1,0 +1,47 @@
+# 合规检查：条件：path refers to a directory and the access requested involved writing (that is, O_WRONLY or O_RDWR is set)；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 EISDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_182A6A8E148341F1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EISDIR
+    summary: path refers to a directory and the access requested involved writing (that is, O_WRONLY or
+      O_RDWR is set)
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EISDIR
+  errno:
+  - EISDIR
+semantic_hash: sha256:182a6a8e148341f1548e06c0af716470607a6c25e8cf67be0c2af454c7a40544
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3752d8c9f12a9899692d81a8fdf3d86fbf2b30f37ffbe39752a3b39ce48d0908
+  case: errors_eisdir_1104
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1104
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3752d8c9f12a9899692d81a8fdf3d86fbf2b30f37ffbe39752a3b39ce48d0908
+  case: errors_eisdir_1104

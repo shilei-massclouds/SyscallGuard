@@ -1,0 +1,46 @@
+# 合规检查：条件：For BPF_PROG_LOAD , even though all program instructions are valid, the program has been rejected because it was deemed unsafe. This may be because it may...；检查：调用 bpf(cmd, attr, size)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1DBDA8BA316CDCFD
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: For BPF_PROG_LOAD , even though all program instructions are valid, the program has been
+      rejected because it was deemed unsafe. This may be because it may...
+  action:
+    operation: invoke_syscall
+    syscall: bpf
+    arguments:
+    - cmd
+    - attr
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:1dbda8ba316cdcfdffbcdeb3cebfe2dd105e76912c14cb1b295ec1dafef7739c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 977
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c080d8b626668fbf35766aec367b45e6548e518e04fa9ecaf29f11afbc246d1
+  case: errors_eacces_977
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bpf
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bpf.2
+  line: 977
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:1c080d8b626668fbf35766aec367b45e6548e518e04fa9ecaf29f11afbc246d1
+  case: errors_eacces_977

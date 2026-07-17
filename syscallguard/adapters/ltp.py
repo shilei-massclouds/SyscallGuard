@@ -534,7 +534,7 @@ class LtpAdapter:
     """
 
     adapter_id = "ltp"
-    adapter_version = "3"
+    adapter_version = "4"
 
     def __init__(
         self, location: Path, rules_path: Path, extractor_profile: str = "candidate"
@@ -830,7 +830,39 @@ class LtpAdapter:
             return {"kind": "return_value", "return": returns[0]}
         return None
 
-    def _preconditions(self, syscall: str, args: list[str], expected: dict[str, Any], source: str) -> list[str]:
+    @staticmethod
+    def _condition(
+        kind: str,
+        subject: str,
+        predicate: str,
+        value: Any,
+        summary: str,
+    ) -> dict[str, Any]:
+        return {
+            "kind": kind,
+            "subject": subject,
+            "predicate": predicate,
+            "value": value,
+            "summary": summary[:160],
+        }
+
+    @staticmethod
+    def _subject(args: list[str], *needles: str) -> str:
+        for argument in args:
+            lowered = argument.lower()
+            if any(needle in lowered for needle in needles):
+                match = re.search(r"[A-Za-z_][A-Za-z0-9_]*", argument)
+                return match.group(0) if match else argument
+        return "call"
+
+    def _preconditions(
+        self,
+        syscall: str,
+        args: list[str],
+        expected: dict[str, Any],
+        source: str,
+        text: str = "",
+    ) -> list[dict[str, Any]]:
         rules = self.config.get("preconditions", [])
         haystack = " ".join([syscall, source, *[str(arg) for arg in args], str(expected)])
         tags: list[str] = []
@@ -845,7 +877,205 @@ class LtpAdapter:
                     matched = matched or any(re.search(str(pattern), haystack) for pattern in patterns)
                 if matched and row["tag"] not in tags:
                     tags.append(row["tag"])
-        return tags
+        definitions = {
+            "INVALID_FD": self._condition(
+                "fd",
+                self._subject(args, "fd"),
+                "invalid",
+                -1,
+                "The file descriptor is invalid.",
+            ),
+            "BAD_USER_ADDRESS": self._condition(
+                "pointer",
+                self._subject(args, "addr", "buf", "ptr"),
+                "inaccessible",
+                "bad_address",
+                "The userspace pointer is outside accessible memory.",
+            ),
+            "NONEXISTENT_PATH": self._condition(
+                "path", "path", "missing", True, "The referenced path does not exist."
+            ),
+            "NON_DIRECTORY_PATH_COMPONENT": self._condition(
+                "path",
+                "path",
+                "component_type",
+                "not_directory",
+                "A path component that must be a directory is not a directory.",
+            ),
+            "PATH_TOO_LONG": self._condition(
+                "path", "path", "length", "too_long", "The pathname exceeds the supported limit."
+            ),
+            "SYMLINK_LOOP": self._condition(
+                "path", "path", "symlink_resolution", "loop", "Path resolution encounters a symlink loop."
+            ),
+            "PERMISSION_DENIED_STATE": self._condition(
+                "credential",
+                "caller",
+                "permission",
+                "denied",
+                "The caller lacks a permission required by the operation.",
+            ),
+            "OBJECT_ALREADY_EXISTS": self._condition(
+                "object_state",
+                "object",
+                "exists",
+                True,
+                "The target object already exists.",
+            ),
+            "USER_BUFFER": self._condition(
+                "pointer",
+                self._subject(args, "buf", "stat", "dirp"),
+                "userspace_buffer",
+                True,
+                "The argument is a userspace buffer.",
+            ),
+        }
+        conditions = [definitions[tag] for tag in tags if tag in definitions]
+        conditions.extend(self._fixture_preconditions(args, text))
+        unique: dict[str, dict[str, Any]] = {
+            content_hash(condition): condition for condition in conditions
+        }
+        return [unique[key] for key in sorted(unique)]
+
+    def _fixture_preconditions(
+        self, args: list[str], text: str
+    ) -> list[dict[str, Any]]:
+        """Relate common LTP fixture helpers to syscall path arguments."""
+        if not text:
+            return []
+        expressions = {clean_expr(argument) for argument in args}
+        result: list[dict[str, Any]] = []
+        helper_names = {
+            "SAFE_TOUCH",
+            "SAFE_MKDIR",
+            "SAFE_SYMLINK",
+            "SAFE_CHMOD",
+            "SAFE_LCHMOD",
+        }
+        for call in find_calls(text, Path("fixture.c"), helper_names):
+            if not call.args:
+                continue
+            path_index = 1 if call.name == "SAFE_SYMLINK" else 0
+            if path_index >= len(call.args):
+                continue
+            fixture_path = clean_expr(call.args[path_index])
+            if fixture_path not in expressions:
+                continue
+            if call.name == "SAFE_TOUCH":
+                result.append(
+                    self._condition(
+                        "object_state",
+                        "path",
+                        "object_type",
+                        "regular_file",
+                        f"The fixture creates {fixture_path} as a regular file.",
+                    )
+                )
+            elif call.name == "SAFE_MKDIR":
+                result.append(
+                    self._condition(
+                        "object_state",
+                        "path",
+                        "object_type",
+                        "directory",
+                        f"The fixture creates {fixture_path} as a directory.",
+                    )
+                )
+            elif call.name == "SAFE_SYMLINK":
+                result.append(
+                    self._condition(
+                        "object_state",
+                        "path",
+                        "object_type",
+                        "symlink",
+                        f"The fixture creates {fixture_path} as a symbolic link.",
+                    )
+                )
+            mode_index = 1
+            if call.name in {"SAFE_TOUCH", "SAFE_MKDIR", "SAFE_CHMOD", "SAFE_LCHMOD"} and len(call.args) > mode_index:
+                mode = clean_expr(call.args[mode_index])
+                result.append(
+                    self._condition(
+                        "path",
+                        "path",
+                        "mode",
+                        mode,
+                        f"The fixture sets {fixture_path} mode to {mode}.",
+                    )
+                )
+        return result
+
+    @staticmethod
+    def _truthy(value: str) -> bool | None:
+        value = clean_expr(value).strip("() ")
+        try:
+            return int(value, 0) != 0
+        except ValueError:
+            pass
+        if value in {"NULL", "false", "FALSE"}:
+            return False
+        if re.fullmatch(r"E[A-Z0-9_]+", value):
+            return True
+        return None
+
+    @staticmethod
+    def _guards(text: str, call: Call) -> list[tuple[str, bool]]:
+        """Return simple tc->field branches whose body contains the call."""
+        result: list[tuple[str, bool]] = []
+        pattern = re.compile(r"\bif\s*\(\s*tc->([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*\{")
+        for match in pattern.finditer(text, 0, call.start):
+            opening = text.find("{", match.start())
+            closing = _matching(text, opening, "{", "}")
+            if closing is None:
+                continue
+            if opening < call.start < closing:
+                result.append((match.group(1), True))
+                continue
+            tail = text[closing + 1 :]
+            otherwise = re.match(r"\s*else\s*\{", tail)
+            if otherwise:
+                else_open = closing + 1 + otherwise.end() - 1
+                else_close = _matching(text, else_open, "{", "}")
+                if else_close is not None and else_open < call.start < else_close:
+                    result.append((match.group(1), False))
+        return result
+
+    def _identity_variants(
+        self, expansion: dict[str, Any]
+    ) -> list[list[dict[str, Any]]]:
+        fields = expansion.get("case_fields", {})
+        if not isinstance(fields, dict) or "exp_user" not in fields:
+            return [[]]
+        try:
+            value = int(clean_expr(str(fields["exp_user"])), 0)
+        except ValueError:
+            return [[]]
+        variants: list[list[dict[str, Any]]] = []
+        if value & 0x02:
+            variants.append(
+                [
+                    self._condition(
+                        "credential",
+                        "caller",
+                        "effective_identity",
+                        "root",
+                        "The test invokes the syscall as root.",
+                    )
+                ]
+            )
+        if value & 0x01:
+            variants.append(
+                [
+                    self._condition(
+                        "credential",
+                        "caller",
+                        "effective_identity",
+                        "nobody",
+                        "The test drops privileges and invokes the syscall as nobody.",
+                    )
+                ]
+            )
+        return variants or [[]]
 
     def _expand_baseline(
         self,
@@ -943,6 +1173,7 @@ class LtpAdapter:
         arrays: list[StructArray],
         aliases: list[PointerAlias],
         call: Call,
+        text: str,
     ) -> tuple[
         list[tuple[list[str], dict[str, Any], dict[str, Any]]],
         str | None,
@@ -1048,11 +1279,30 @@ class LtpAdapter:
                 else value
                 for key, value in expected.items()
             }
+            reachable = True
+            for field, desired in self._guards(text, call):
+                if field not in row:
+                    continue
+                actual = self._truthy(row[field])
+                if actual is not None and actual != desired:
+                    reachable = False
+                    break
+            if not reachable:
+                continue
             result.append(
                 (
                     args,
                     expanded_expected,
-                    {"array": array.name, "case_index": index, "origin": "struct"},
+                    {
+                        "array": array.name,
+                        "case_index": index,
+                        "origin": "struct",
+                        "case_fields": {
+                            key: value
+                            for key, value in row.items()
+                            if key in {"exp_user", "exp_errno"}
+                        },
+                    },
                 )
             )
         linked = {
@@ -1206,6 +1456,7 @@ class LtpAdapter:
     def extract(self, item: dict[str, Any]) -> dict[str, Any]:
         raw: list[dict[str, Any]] = []
         normalized: list[dict[str, Any]] = []
+        inactive: list[dict[str, Any]] = []
         diagnostics: list[dict[str, Any]] = []
         matched_ids = {row["recognizer_id"] for row in item["recognition"]}
         recognizers = [row for row in self.recognizers if row["id"] in matched_ids]
@@ -1280,7 +1531,7 @@ class LtpAdapter:
                             self._expected_field_refs(expected, arrays, aliases, call)
                         )
                         cases, unresolved_reason, resolved_fields = self._expand_candidate(
-                            item["syscall"], expression, expected, arrays, aliases, call
+                            item["syscall"], expression, expected, arrays, aliases, call, text
                         )
                         linked_fields.update(resolved_fields)
                         if unresolved_reason or not cases:
@@ -1300,52 +1551,90 @@ class LtpAdapter:
                         )
                         if not cases and "tc->" not in expression:
                             cases = [(evidence["args"], expected, {})]
+                    valid_cases: list[
+                        tuple[list[str], dict[str, Any], dict[str, Any]]
+                    ] = []
+                    invalid_reasons: list[str] = []
+                    for case_args, case_expected, expansion in cases:
+                        if case_expected.get("kind") == "return_errno":
+                            errno = case_expected.get("errno")
+                            if not isinstance(errno, str) or not re.fullmatch(
+                                r"E[A-Z0-9_]+", errno
+                            ):
+                                invalid_reasons.append(
+                                    "errno_zero"
+                                    if clean_expr(str(errno)) == "0"
+                                    else "expected_errno_unresolved"
+                                )
+                                continue
+                        valid_cases.append((case_args, case_expected, expansion))
+                    cases = valid_cases
+                    if not cases and invalid_reasons:
+                        evidence["evidence_class"] = "inactive"
+                        evidence["resolution_reason"] = sorted(set(invalid_reasons))[0]
+                        inactive.append(
+                            {
+                                "syscall": item["syscall"],
+                                "source": evidence["source"],
+                                "reason": evidence["resolution_reason"],
+                            }
+                        )
                     evidence["evidence_hash"] = content_hash(evidence)
                     raw.append(evidence)
                     if expected is None or recognizer.get("emit_rule", True) is False:
                         continue
                     for args, case_expected, expansion in cases:
-                        preconditions = self._preconditions(item["syscall"], args, case_expected, relative)
-                        semantics = {
-                            "preconditions": preconditions,
-                            "action": {
-                                "operation": "invoke_syscall",
-                                "syscall": item["syscall"],
-                                "arguments": args,
-                            },
-                            "expected_result": case_expected,
-                            "errno": [case_expected["errno"]]
-                            if isinstance(case_expected.get("errno"), str) and case_expected["errno"]
-                            else [],
-                        }
-                        template = self.config.get("rule_template", {})
-                        category = (
-                            template.get("category", "syscall_behavior")
-                            if isinstance(template, dict)
-                            else "syscall_behavior"
+                        base_preconditions = self._preconditions(
+                            item["syscall"], args, case_expected, relative, text
                         )
-                        normalized_row = {
-                            **evidence,
-                            "case": re.sub(
-                                r"[^A-Za-z0-9_]+",
-                                "_",
-                                f"{source.stem}_{call.line}_{expansion.get('case_index', 'raw')}",
-                            ),
-                            "args": args,
-                            "preconditions": preconditions,
-                            "semantics": semantics,
-                            "category": category,
-                            "expansion": expansion,
-                        }
-                        stable_rule_id = recognizer.get("rule_id")
-                        if not isinstance(stable_rule_id, str) and isinstance(template, dict):
-                            stable_rule_id = template.get("rule_id")
-                        if isinstance(stable_rule_id, str) and stable_rule_id:
-                            normalized_row["rule_id"] = stable_rule_id.format(
-                                syscall=item["syscall"], recognizer_id=recognizer["id"]
+                        for identity_index, identity in enumerate(
+                            self._identity_variants(expansion)
+                        ):
+                            preconditions = [*base_preconditions, *identity]
+                            semantics = {
+                                "preconditions": preconditions,
+                                "action": {
+                                    "operation": "invoke_syscall",
+                                    "syscall": item["syscall"],
+                                    "arguments": args,
+                                },
+                                "expected_result": case_expected,
+                                "errno": [case_expected["errno"]]
+                                if isinstance(case_expected.get("errno"), str)
+                                and case_expected["errno"]
+                                else [],
+                            }
+                            template = self.config.get("rule_template", {})
+                            category = (
+                                template.get("category", "syscall_behavior")
+                                if isinstance(template, dict)
+                                else "syscall_behavior"
                             )
-                        normalized.append(normalized_row)
-                        file_normalized.append(normalized_row)
+                            normalized_row = {
+                                **evidence,
+                                "case": re.sub(
+                                    r"[^A-Za-z0-9_]+",
+                                    "_",
+                                    f"{source.stem}_{call.line}_{expansion.get('case_index', 'raw')}_{identity_index}",
+                                ),
+                                "args": args,
+                                "preconditions": preconditions,
+                                "semantics": semantics,
+                                "category": category,
+                                "expansion": expansion,
+                            }
+                            stable_rule_id = recognizer.get("rule_id")
+                            if not isinstance(stable_rule_id, str) and isinstance(
+                                template, dict
+                            ):
+                                stable_rule_id = template.get("rule_id")
+                            if isinstance(stable_rule_id, str) and stable_rule_id:
+                                normalized_row["rule_id"] = stable_rule_id.format(
+                                    syscall=item["syscall"],
+                                    recognizer_id=recognizer["id"],
+                                )
+                            normalized.append(normalized_row)
+                            file_normalized.append(normalized_row)
             if self.extractor_profile == "candidate":
                 for array in arrays:
                     for field in array.fields:
@@ -1371,4 +1660,47 @@ class LtpAdapter:
                         item["syscall"], relative, documents, file_normalized
                     )
                 )
-        return {"raw": raw, "normalized": normalized, "diagnostics": diagnostics}
+        by_condition: dict[str, list[dict[str, Any]]] = {}
+        for row in normalized:
+            semantics = row.get("semantics", {})
+            condition_key = content_hash(
+                {
+                    "category": row.get("category"),
+                    "preconditions": semantics.get("preconditions"),
+                    "action": semantics.get("action"),
+                }
+            )
+            by_condition.setdefault(condition_key, []).append(row)
+        conflicted_hashes: set[str] = set()
+        for rows in by_condition.values():
+            outcomes = {
+                content_hash(row["semantics"].get("expected_result")) for row in rows
+            }
+            if len(outcomes) <= 1:
+                continue
+            conflicted_hashes.update(str(row.get("evidence_hash")) for row in rows)
+            for row in rows:
+                inactive.append(
+                    {
+                        "syscall": item["syscall"],
+                        "source": row.get("source"),
+                        "reason": "same_condition_conflict",
+                        "case": row.get("case"),
+                    }
+                )
+        if conflicted_hashes:
+            normalized = [
+                row
+                for row in normalized
+                if str(row.get("evidence_hash")) not in conflicted_hashes
+            ]
+            for evidence in raw:
+                if str(evidence.get("evidence_hash")) in conflicted_hashes:
+                    evidence["evidence_class"] = "inactive"
+                    evidence["resolution_reason"] = "same_condition_conflict"
+        return {
+            "raw": raw,
+            "normalized": normalized,
+            "diagnostics": diagnostics,
+            "inactive": inactive,
+        }

@@ -1,0 +1,47 @@
+# 合规检查：条件：ruleset_fd is not a file descriptor for the current thread, or a member of rule_attr is not a file descriptor as expected；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_CA78A8C72D82663C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: ruleset_fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: ruleset_fd is not a file descriptor for the current thread, or a member of rule_attr is not
+      a file descriptor as expected
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:ca78a8c72d82663c8e9bb0741e0b6adb3d11e09f00be3e9ec6c7613c76e8bcdb
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b0cb605cf70b739dc20a7e807d6b392705e95f2bd9829b8399c23f36e8e089d
+  case: errors_ebadf_141
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 141
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:7b0cb605cf70b739dc20a7e807d6b392705e95f2bd9829b8399c23f36e8e089d
+  case: errors_ebadf_141

@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 sched_rr_get_interval(pid, tp)；预期：{'kind': 'return_value', 'return': '0'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7264A19C5EA0AD3B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: sched_rr_get_interval
+    arguments:
+    - pid
+    - tp
+  expected_result:
+    kind: return_value
+    return: '0'
+  errno: []
+semantic_hash: sha256:7264a19c5ea0ad3bbbb33ec1385994b52e349d6f3b6eadfe6f2958179d254fa9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 44
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a9c8383d26bacec1a63cebb4777cdac03cf6559d64b871c7be71ca9b82c5c1b1
+  case: return_value_44
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_rr_get_interval
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_rr_get_interval.2
+  line: 44
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:a9c8383d26bacec1a63cebb4777cdac03cf6559d64b871c7be71ca9b82c5c1b1
+  case: return_value_44

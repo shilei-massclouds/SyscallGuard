@@ -1,0 +1,45 @@
+# 合规检查：条件：The module is not live (i.e., it is still being initialized or is already marked for removal); or, the module has an init function but has no exit function,...；检查：调用 delete_module(name, flags)；预期：返回 -1，errno 为 EBUSY。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_1B09107973DFD85E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EBUSY
+    summary: The module is not live (i.e., it is still being initialized or is already marked for removal);
+      or, the module has an init function but has no exit function,...
+  action:
+    operation: invoke_syscall
+    syscall: delete_module
+    arguments:
+    - name
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBUSY
+  errno:
+  - EBUSY
+semantic_hash: sha256:1b09107973dfd85e850e688713a90cda0d4eac033b181ba5065108399a48754d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e144259064ce232dfbe414773657b2fee7abc7ec3b02b234fcfbf357dfef942c
+  case: errors_ebusy_121
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: delete_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/delete_module.2
+  line: 121
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e144259064ce232dfbe414773657b2fee7abc7ec3b02b234fcfbf357dfef942c
+  case: errors_ebusy_121

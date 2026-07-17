@@ -1,0 +1,47 @@
+# 合规检查：条件：target , or a prefix of source , is not a directory；检查：调用 mount(source, target, filesystemtype, mountflags, data)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A5C000C82107F300
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: source
+    predicate: documented_path_condition
+    value: ENOTDIR
+    summary: target , or a prefix of source , is not a directory
+  action:
+    operation: invoke_syscall
+    syscall: mount
+    arguments:
+    - source
+    - target
+    - filesystemtype
+    - mountflags
+    - data
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:a5c000c82107f300d7a767ec80269559385cbea62d34ab30a9fcb653b6c61f82
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 817
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c10b34f1ae63aa1081dbf00fc3ece073e2a3c074e8e6ca88c7ee7fea849d6f9b
+  case: errors_enotdir_817
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mount
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mount.2
+  line: 817
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c10b34f1ae63aa1081dbf00fc3ece073e2a3c074e8e6ca88c7ee7fea849d6f9b
+  case: errors_enotdir_817

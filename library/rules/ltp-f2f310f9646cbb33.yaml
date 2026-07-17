@@ -1,0 +1,36 @@
+# 合规检查：条件：The caller lacks a permission required by the operation.；检查：调用 mprotect(NULL, 0, PROT_WRITE)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_F2F310F9646CBB33
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: caller
+    predicate: permission
+    value: denied
+    summary: The caller lacks a permission required by the operation.
+  action:
+    operation: invoke_syscall
+    syscall: mprotect
+    arguments:
+    - 'NULL'
+    - '0'
+    - PROT_WRITE
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:f2f310f9646cbb33375caf2d5ce5539d045055f0346cf9c3078cebc924c5ed73
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect01.c
+  line: 101
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:567e9ad6d10565f7996d052e1220251373f0af10bc7a41532ab77daa87e22afc
+  case: mprotect01_101_2_0

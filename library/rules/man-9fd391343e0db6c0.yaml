@@ -1,0 +1,45 @@
+# 合规检查：条件：path or a script or ELF interpreter does not exist；检查：调用 execve(path, argv, envp)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9FD391343E0DB6C0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: path or a script or ELF interpreter does not exist
+  action:
+    operation: invoke_syscall
+    syscall: execve
+    arguments:
+    - path
+    - argv
+    - envp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:9fd391343e0db6c008d09abfc415a97549549c73a8b36294d12e61acc397ea5f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 515
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b8cd0696abd7ba6be896efaf214f65c22917443c04061744c240964dfef0398
+  case: errors_enoent_515
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execve
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execve.2
+  line: 515
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2b8cd0696abd7ba6be896efaf214f65c22917443c04061744c240964dfef0398
+  case: errors_enoent_515

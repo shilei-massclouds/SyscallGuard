@@ -1,0 +1,42 @@
+# 合规检查：条件：flags is invalid；检查：调用 init_module()；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2421026C912D8F9E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is invalid
+  action:
+    operation: invoke_syscall
+    syscall: init_module
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:709e16e7e280d4a3909e7a7d8f80f4d1dc655c81e868e179cbdc180edcce72b5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d134593191f715aed5bfa3b8fe752bbce995d83d660fc0f6333d0eb7c6d5345
+  case: errors_einval_260
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: init_module
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/init_module.2
+  line: 260
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2d134593191f715aed5bfa3b8fe752bbce995d83d660fc0f6333d0eb7c6d5345
+  case: errors_einval_260

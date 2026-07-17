@@ -1,0 +1,46 @@
+# 合规检查：条件：fd either not valid, or doesn't refer to a pipe；检查：调用 vmsplice(fd, iov, nr_segs, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EB9E751639BF9272
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd either not valid, or doesn't refer to a pipe
+  action:
+    operation: invoke_syscall
+    syscall: vmsplice
+    arguments:
+    - fd
+    - iov
+    - nr_segs
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:eb9e751639bf92721355705176c67d387a803b32ca6846c47adad144ec546ec6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:80872413f1a2ef9dbb4dbbf064e727722c24d3a17fa3ea84781add367b9113f9
+  case: errors_ebadf_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: vmsplice
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/vmsplice.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:80872413f1a2ef9dbb4dbbf064e727722c24d3a17fa3ea84781add367b9113f9
+  case: errors_ebadf_123

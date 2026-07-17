@@ -1,0 +1,46 @@
+# 合规检查：条件：An I/O error occurred；检查：调用 fchmodat(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0170239FF6930B4E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred
+  action:
+    operation: invoke_syscall
+    syscall: fchmodat
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:e77eaad8f2b0088ffd1197a8d06a33e146ab9d8e7ee9ca273983a0ba17439ddf
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a524082e687105cba40dd5f62e0393e550bf566081f1a6b954fe2322f9ca186f
+  case: errors_eio_272
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fchmodat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/chmod.2
+  line: 272
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a524082e687105cba40dd5f62e0393e550bf566081f1a6b954fe2322f9ca186f
+  case: errors_eio_272

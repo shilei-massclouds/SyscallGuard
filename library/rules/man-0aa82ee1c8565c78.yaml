@@ -1,0 +1,45 @@
+# 合规检查：条件：sockfd is not a valid file descriptor；检查：调用 bind(sockfd, addr, addrlen)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0AA82EE1C8565C78
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: sockfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: sockfd is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:0aa82ee1c8565c78e9fe8322c5a3b8ca19a18a2f7d9f2e1363307f489c4fdb9f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5964a894f5c8e955823c25649404c9d656b05001331a697805515556b2e46f94
+  case: errors_ebadf_123
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 123
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5964a894f5c8e955823c25649404c9d656b05001331a697805515556b2e46f94
+  case: errors_ebadf_123

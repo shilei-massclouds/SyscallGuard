@@ -1,0 +1,44 @@
+# 合规检查：条件：The thread whose ID is pid could not be found；检查：调用 sched_setparam(pid, param)；预期：返回 -1，errno 为 ESRCH。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7B51488F99889D7D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: pid
+    predicate: documented_condition
+    value: ESRCH
+    summary: The thread whose ID is pid could not be found
+  action:
+    operation: invoke_syscall
+    syscall: sched_setparam
+    arguments:
+    - pid
+    - param
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ESRCH
+  errno:
+  - ESRCH
+semantic_hash: sha256:b2d06cd12575351c0f4e92072252f65896b5dbc45a572b1c7e3f3cce89597b08
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d3f5d35b1d9141ac57cb8f93d782b39330c41410b9ef18f20c80fe74566dbc8
+  case: errors_esrch_109
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_setparam
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setparam.2
+  line: 109
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d3f5d35b1d9141ac57cb8f93d782b39330c41410b9ef18f20c80fe74566dbc8
+  case: errors_esrch_109

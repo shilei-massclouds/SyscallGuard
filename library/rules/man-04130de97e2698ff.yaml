@@ -1,0 +1,44 @@
+# 合规检查：条件：The allocation of memory for the notification group failed；检查：调用 fanotify_init(flags, event_f_flags)；预期：返回 -1，errno 为 ENOMEM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_04130DE97E2698FF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOMEM
+    summary: The allocation of memory for the notification group failed
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_init
+    arguments:
+    - flags
+    - event_f_flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOMEM
+  errno:
+  - ENOMEM
+semantic_hash: sha256:04130de97e2698ffcc7774adfe5b79320641a9225af110b0dc403f7981511e03
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 500
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f3f755fd83ead3687a06d2804229d4dbd10d9fe936b54c80429624c2a777137
+  case: errors_enomem_500
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_init
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_init.2
+  line: 500
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8f3f755fd83ead3687a06d2804229d4dbd10d9fe936b54c80429624c2a777137
+  case: errors_enomem_500

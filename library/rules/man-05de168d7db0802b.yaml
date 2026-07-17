@@ -1,0 +1,46 @@
+# 合规检查：条件：flags is not 0；检查：调用 landlock_add_rule(ruleset_fd, rule_type, rule_attr, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_05DE168D7DB0802B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is not 0
+  action:
+    operation: invoke_syscall
+    syscall: landlock_add_rule
+    arguments:
+    - ruleset_fd
+    - rule_type
+    - rule_attr
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:05de168d7db0802b06b7de17631a4b44092a5b20a4a5f82970cf29ab59e1ed62
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a5d263ad95901201036bf2b99a62b0866c95034f0f944624a00bdc2047052251
+  case: errors_einval_159
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_add_rule
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_add_rule.2
+  line: 159
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:a5d263ad95901201036bf2b99a62b0866c95034f0f944624a00bdc2047052251
+  case: errors_einval_159

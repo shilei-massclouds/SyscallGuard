@@ -25,3 +25,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:85973c673d740b7fda7df9e9844722c6dd237c6bdd0bc7063706bf505c75565c
   case: umask01_28_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/umask/umask01.c
+  line: 28
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:85973c673d740b7fda7df9e9844722c6dd237c6bdd0bc7063706bf505c75565c
+  case: umask01_28_raw_0

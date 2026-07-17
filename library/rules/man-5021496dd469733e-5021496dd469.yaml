@@ -1,0 +1,41 @@
+# 合规检查：条件：Both CLONE_FS and CLONE_NEWNS were specified in the flags mask；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5021496DD469733E--5021496dd469
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both CLONE_FS and CLONE_NEWNS were specified in the flags mask
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5021496dd469733e83a6e956a531ceff9b6b80df4743ddd237de2870f8893935
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1278
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:955bf1a407d6ba9d29cec2052fe20c1c76ea8c82804eaeb95bf19cf31a211c10
+  case: errors_einval_1278

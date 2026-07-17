@@ -1,0 +1,47 @@
+# 合规检查：条件：Part or all of the memory range specified by old_nodes / new_nodes and maxnode points outside your accessible address space；检查：调用 migrate_pages(pid, maxnode, old_nodes, new_nodes)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4BDABB3297C3A5EF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: maxnode
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: Part or all of the memory range specified by old_nodes / new_nodes and maxnode points outside
+      your accessible address space
+  action:
+    operation: invoke_syscall
+    syscall: migrate_pages
+    arguments:
+    - pid
+    - maxnode
+    - old_nodes
+    - new_nodes
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:4bdabb3297c3a5ef619f7331edbd5fbac7e01f22c66bae9722096681a6623dd4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/migrate_pages.2
+  line: 87
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:745e8f7987344195eabcff12e284978d168727fad6ee9f5599bbb34ea77e04d1
+  case: errors_efault_87
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: migrate_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/migrate_pages.2
+  line: 87
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:745e8f7987344195eabcff12e284978d168727fad6ee9f5599bbb34ea77e04d1
+  case: errors_efault_87

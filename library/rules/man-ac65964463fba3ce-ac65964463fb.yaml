@@ -1,0 +1,38 @@
+# 合规检查：条件：For some operation sem_op+semval is greater than SEMVMX , the implementation dependent maximum value for semval；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 ERANGE。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AC65964463FBA3CE--ac65964463fb
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: ERANGE
+    summary: For some operation sem_op+semval is greater than SEMVMX , the implementation dependent maximum
+      value for semval
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ERANGE
+  errno:
+  - ERANGE
+semantic_hash: sha256:ac65964463fba3ce6f894c758d388c48898f2aa787d0e7ae30ae61d708a756e7
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 343
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:66139c64ef0266803dc49397cf9aea875e7b2b1e1ee3306fd9ce671d61619c6d
+  case: errors_erange_343

@@ -1,0 +1,45 @@
+# 合规检查：条件：The device containing path has no room for the new directory；检查：调用 mkdirat(dirfd, path, mode)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_247817CBE3E20431
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOSPC
+    summary: The device containing path has no room for the new directory
+  action:
+    operation: invoke_syscall
+    syscall: mkdirat
+    arguments:
+    - dirfd
+    - path
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:247817cbe3e2043125b47437dca39f7d16d0fba5fee89cd5c49a609abe807092
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ea1724c516352160f2bfa85f7f1c664cadd0b72a73e66726813d0756e810a19
+  case: errors_enospc_178
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: mkdirat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/mkdir.2
+  line: 178
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0ea1724c516352160f2bfa85f7f1c664cadd0b72a73e66726813d0756e810a19
+  case: errors_enospc_178

@@ -1,0 +1,47 @@
+# 合规检查：条件：how.resolve contains either RESOLVE_IN_ROOT or RESOLVE_BENEATH , and an escape from the root during path resolution was detected；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EXDEV。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_34D46B3AA947FA44
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: EXDEV
+    summary: how.resolve contains either RESOLVE_IN_ROOT or RESOLVE_BENEATH , and an escape from the root
+      during path resolution was detected
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EXDEV
+  errno:
+  - EXDEV
+semantic_hash: sha256:34d46b3aa947fa44c22beeebfb53ec05955c1ba6a06f5614d5bd0b2484d267a8
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 470
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:52e49fcfdb01bce8780b76025258de090acd67621ec752890b516242f6d14c33
+  case: errors_exdev_470
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 470
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:52e49fcfdb01bce8780b76025258de090acd67621ec752890b516242f6d14c33
+  case: errors_exdev_470

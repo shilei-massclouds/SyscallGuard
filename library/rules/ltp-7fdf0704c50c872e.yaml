@@ -26,3 +26,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:c2be0d3985cc0012dc6630668625a1c5814094a361c6e2c8298282ee8716614a
   case: pathconf01_48_5
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/pathconf/pathconf01.c
+  line: 48
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c2be0d3985cc0012dc6630668625a1c5814094a361c6e2c8298282ee8716614a
+  case: pathconf01_48_5_0

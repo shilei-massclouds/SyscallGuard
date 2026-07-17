@@ -1,0 +1,45 @@
+# 合规检查：条件：fd is not an open file descriptor；检查：调用 fcntl(fd, op, arg3)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_20E72B974AE0878B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: fd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: fd is not an open file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: fcntl
+    arguments:
+    - fd
+    - op
+    - arg3
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:20e72b974ae0878b2f7307d934070a7b4e887fd1c96469af337fcf2dcb95b0dc
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:babe82de3aa5454616607b193860e84c7742b5f778f06bb47bf0f8345c361d7d
+  case: errors_ebadf_129
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fcntl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fcntl.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:babe82de3aa5454616607b193860e84c7742b5f778f06bb47bf0f8345c361d7d
+  case: errors_ebadf_129

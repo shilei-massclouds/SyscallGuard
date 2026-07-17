@@ -1,0 +1,46 @@
+# 合规检查：条件：path was to be created but the device containing path has no room for the new file；检查：调用 openat(dirfd, path, flags, mode)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8D5685E6EF9F9E48
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ENOSPC
+    summary: path was to be created but the device containing path has no room for the new file
+  action:
+    operation: invoke_syscall
+    syscall: openat
+    arguments:
+    - dirfd
+    - path
+    - flags
+    - mode
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:8d5685e6ef9f9e4893a8f362f6c6cef7b32b76d92855586f5d0bf005cbeac4a4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:877fc82a580e670b642568ff78447f8eca86c636a0d68dd5982010dad4aa173d
+  case: errors_enospc_1196
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/open.2
+  line: 1196
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:877fc82a580e670b642568ff78447f8eca86c636a0d68dd5982010dad4aa173d
+  case: errors_enospc_1196

@@ -1,0 +1,38 @@
+# 合规检查：条件：The argument nsops is greater than SEMOPM , the maximum number of operations allowed per system call；检查：调用 semop(semid, sops, nsops)；预期：返回 -1，errno 为 E2BIG。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_783663C239851918--783663c23985
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: nsops
+    predicate: invalid_value
+    value: E2BIG
+    summary: The argument nsops is greater than SEMOPM , the maximum number of operations allowed per
+      system call
+  action:
+    operation: invoke_syscall
+    syscall: semop
+    arguments:
+    - semid
+    - sops
+    - nsops
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: E2BIG
+  errno:
+  - E2BIG
+semantic_hash: sha256:783663c2398519185d7535f3349524f2491a7e0f4d89e59e0a9b7df8400b3ffa
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: semop
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/semop.2
+  line: 282
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:bc22cd810a1f6cb602b939be8b5848486d14fa2af6b1bf0702498f00a99c814e
+  case: errors_e2big_282

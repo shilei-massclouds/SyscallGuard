@@ -1,0 +1,35 @@
+# 合规检查：条件：The referenced path does not exist.；检查：调用 access(empty_fname, W_OK)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_639CB00D5B06579C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - empty_fname
+    - W_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:639cb00d5b06579ca9d5adc985d73d44d007b59b4c5263724ac94b72c41ba66e
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access04.c
+  line: 66
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:bccd5b82a0f931294b3ccfe9f727c641c4fd575588e33aeea6a7da8e1182c3e7
+  case: access04_66_1_0

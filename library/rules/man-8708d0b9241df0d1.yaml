@@ -1,0 +1,47 @@
+# 合规检查：条件：Descriptor is not valid or locked, or an mmap (2)-like operation is not available for in_fd , or count is negative；检查：调用 sendfile(out_fd, in_fd, offset, count)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8708D0B9241DF0D1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: in_fd
+    predicate: documented_condition
+    value: EINVAL
+    summary: Descriptor is not valid or locked, or an mmap (2)-like operation is not available for in_fd
+      , or count is negative
+  action:
+    operation: invoke_syscall
+    syscall: sendfile
+    arguments:
+    - out_fd
+    - in_fd
+    - offset
+    - count
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8708d0b9241df0d19d43da962189e81f172dd47588961f1dc9dd48961c73a820
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e3375bebaa8862ae48656989b1c65de60b170cab1bfe71184ef2757461e3ca30
+  case: errors_einval_128
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendfile
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sendfile.2
+  line: 128
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e3375bebaa8862ae48656989b1c65de60b170cab1bfe71184ef2757461e3ca30
+  case: errors_einval_128

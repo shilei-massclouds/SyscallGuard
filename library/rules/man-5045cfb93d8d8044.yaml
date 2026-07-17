@@ -1,0 +1,47 @@
+# 合规检查：条件：Both RENAME_WHITEOUT and RENAME_EXCHANGE were specified in flags；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5045CFB93D8D8044
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: Both RENAME_WHITEOUT and RENAME_EXCHANGE were specified in flags
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:5045cfb93d8d804472943c5f64b9f7d8b2941f930ea8e47fe221d445e895f247
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 463
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2018f2bf423a69860bf12412e662246276f3976afd2c2c4c81397f02d8bb63e4
+  case: errors_einval_463
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 463
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:2018f2bf423a69860bf12412e662246276f3976afd2c2c4c81397f02d8bb63e4
+  case: errors_einval_463

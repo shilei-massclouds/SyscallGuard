@@ -1,0 +1,42 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 flock(fd, op)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C58A86C162E52514
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:c58a86c162e52514cd3ab9dc7a3218d5997abc80edfdf07b219a7dc4a04f23e1
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 93
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:6fa1cc7fd04ffcaa548717dc79b0747a6c8f93143a5aa713ce97406f51afb652
+  case: return_value_93
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 93
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:6fa1cc7fd04ffcaa548717dc79b0747a6c8f93143a5aa713ce97406f51afb652
+  case: return_value_93

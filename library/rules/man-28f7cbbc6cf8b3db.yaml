@@ -1,0 +1,45 @@
+# 合规检查：条件：CLONE_NEWPID and one (or both) of CLONE_THREAD or CLONE_PARENT were specified in the flags mask；检查：调用 clone3(cl_args, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_28F7CBBC6CF8B3DB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: call
+    predicate: invalid_value
+    value: EINVAL
+    summary: CLONE_NEWPID and one (or both) of CLONE_THREAD or CLONE_PARENT were specified in the flags
+      mask
+  action:
+    operation: invoke_syscall
+    syscall: clone3
+    arguments:
+    - cl_args
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d8cebd6c84b204403befc0a2239b1e76414f4da35180fd64e8ecc7b9849044ab
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a06ed80dd81cfddcb7159088f6545023a6e38ec47b0df335bde1224bfe312f9
+  case: errors_einval_1306
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone3
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1306
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3a06ed80dd81cfddcb7159088f6545023a6e38ec47b0df335bde1224bfe312f9
+  case: errors_einval_1306

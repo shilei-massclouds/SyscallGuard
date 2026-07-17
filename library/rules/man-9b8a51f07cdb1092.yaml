@@ -1,0 +1,45 @@
+# 合规检查：条件：While waiting to acquire a lock, the call was interrupted by delivery of a signal caught by a handler; see signal (7)；检查：调用 flock(fd, op)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9B8A51F07CDB1092
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: While waiting to acquire a lock, the call was interrupted by delivery of a signal caught
+      by a handler; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: flock
+    arguments:
+    - fd
+    - op
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:9b8a51f07cdb1092c4e7cf466e1ccc196883c8a80455b3b3d56c3a07bae26b6f
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:707fb3468dd087acc82318d0a8754890ef5029df089021fe778b63c1375ca995
+  case: errors_eintr_102
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: flock
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/flock.2
+  line: 102
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:707fb3468dd087acc82318d0a8754890ef5029df089021fe778b63c1375ca995
+  case: errors_eintr_102

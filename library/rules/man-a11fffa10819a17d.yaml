@@ -1,0 +1,47 @@
+# 合规检查：条件：The file is on a read-only filesystem；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EROFS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A11FFFA10819A17D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: call
+    predicate: documented_state_condition
+    value: EROFS
+    summary: The file is on a read-only filesystem
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EROFS
+  errno:
+  - EROFS
+semantic_hash: sha256:a11fffa10819a17df68f3818bc91e763a369acf6b0ce6cf3ad21c5d1a3714955
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6a8a20a5094c892d6bb1e6b5f425b3ea4b0326e9c0315634b74ab6b687328770
+  case: errors_erofs_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6a8a20a5094c892d6bb1e6b5f425b3ea4b0326e9c0315634b74ab6b687328770
+  case: errors_erofs_406

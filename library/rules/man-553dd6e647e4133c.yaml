@@ -1,0 +1,48 @@
+# 合规检查：条件：flags includes AT_SYMLINK_NOFOLLOW and the file identified by dirfd and a non-NULL path is a symbolic link；检查：调用 execveat(dirfd, path, argv, envp, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_553DD6E647E4133C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: dirfd
+    predicate: invalid_or_inaccessible
+    value: ELOOP
+    summary: flags includes AT_SYMLINK_NOFOLLOW and the file identified by dirfd and a non-NULL path is
+      a symbolic link
+  action:
+    operation: invoke_syscall
+    syscall: execveat
+    arguments:
+    - dirfd
+    - path
+    - argv
+    - envp
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:553dd6e647e4133c02c29ae6ad5789cf81e77617bb9b232a4fea69baf7069c66
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execveat.2
+  line: 119
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e2e7ba41c5daa36912f82b39c210d1b6aa55497b0f9d85b796ae0315e0fa184
+  case: errors_eloop_119
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: execveat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/execveat.2
+  line: 119
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:6e2e7ba41c5daa36912f82b39c210d1b6aa55497b0f9d85b796ae0315e0fa184
+  case: errors_eloop_119

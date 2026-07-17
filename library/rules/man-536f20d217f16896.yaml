@@ -1,0 +1,47 @@
+# 合规检查：条件：XATTR_REPLACE was specified, and the attribute does not exist；检查：调用 setxattr(path, name, size, size, flags)；预期：返回 -1，errno 为 ENODATA。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_536F20D217F16896
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENODATA
+    summary: XATTR_REPLACE was specified, and the attribute does not exist
+  action:
+    operation: invoke_syscall
+    syscall: setxattr
+    arguments:
+    - path
+    - name
+    - size
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENODATA
+  errno:
+  - ENODATA
+semantic_hash: sha256:b0583aafc4ad02d5f20d7a944c50044f00d361b572ec07edcef1f04459357c8c
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9450b2bee809e1d62b2c99c498193f709635ffb8108fd710e3c8e888aadc4681
+  case: errors_enodata_108
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: setxattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/setxattr.2
+  line: 108
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9450b2bee809e1d62b2c99c498193f709635ffb8108fd710e3c8e888aadc4681
+  case: errors_enodata_108

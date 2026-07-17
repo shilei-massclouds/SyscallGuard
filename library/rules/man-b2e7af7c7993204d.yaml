@@ -1,0 +1,45 @@
+# 合规检查：条件：Unknown flags , or unknown access, or unknown scope, or too small size；检查：调用 landlock_create_ruleset(attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_B2E7AF7C7993204D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: size
+    predicate: invalid_value
+    value: EINVAL
+    summary: Unknown flags , or unknown access, or unknown scope, or too small size
+  action:
+    operation: invoke_syscall
+    syscall: landlock_create_ruleset
+    arguments:
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:b2e7af7c7993204d3fe2bff40252c0793a56e5c611d3d5376e75c52fee19b2b9
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8edffb3f7a51d408273ba694af0890ca768715c36c738c6e3a9f0d8155c5a34f
+  case: errors_einval_190
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: landlock_create_ruleset
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/landlock_create_ruleset.2
+  line: 190
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8edffb3f7a51d408273ba694af0890ca768715c36c738c6e3a9f0d8155c5a34f
+  case: errors_einval_190

@@ -29,3 +29,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:f0d7a92a5e031f129756bda9616dfde4ee5425473d01031225684734215a7ef5
   case: mlock203_33_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mlock2/mlock203.c
+  line: 33
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:f0d7a92a5e031f129756bda9616dfde4ee5425473d01031225684734215a7ef5
+  case: mlock203_33_raw_0

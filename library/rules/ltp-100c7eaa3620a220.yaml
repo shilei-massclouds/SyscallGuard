@@ -1,0 +1,40 @@
+# 合规检查：条件：The fixture creates symname as a symbolic link.、The referenced path does not exist.；检查：调用 utime(symname, &utimes)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_100C7EAA3620A220
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates symname as a symbolic link.
+  - kind: path
+    subject: path
+    predicate: missing
+    value: true
+    summary: The referenced path does not exist.
+  action:
+    operation: invoke_syscall
+    syscall: utime
+    arguments:
+    - symname
+    - '&utimes'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:100c7eaa3620a220766d6aa605b004def657eb4bf3692b5bd0be05b130d13986
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/utime/utime07.c
+  line: 69
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:cfbcc00d23ffd8d158dd36994704c4963322cc77bee2eebb8402e1c41fbc8c86
+  case: utime07_69_raw_0

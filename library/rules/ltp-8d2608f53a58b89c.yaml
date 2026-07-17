@@ -1,0 +1,42 @@
+# 合规检查：条件：The fixture creates SYMLINK_FILE as a symbolic link.、The argument is a userspace buffer.；检查：调用 readlinkat(dir_fd, SYMLINK_FILE, buf, 0)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_8D2608F53A58B89C
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: path
+    predicate: object_type
+    value: symlink
+    summary: The fixture creates SYMLINK_FILE as a symbolic link.
+  - kind: pointer
+    subject: buf
+    predicate: userspace_buffer
+    value: true
+    summary: The argument is a userspace buffer.
+  action:
+    operation: invoke_syscall
+    syscall: readlinkat
+    arguments:
+    - dir_fd
+    - SYMLINK_FILE
+    - buf
+    - '0'
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:8d2608f53a58b89c369eaf78efdd9d4e1ae7080c2b6a6e43184fc6ef348803d0
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/readlinkat/readlinkat02.c
+  line: 54
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:75748f7dd38fdcbee89d99393454bf459e03317d6cb150573988f961c175bbaa
+  case: readlinkat02_54_0_0

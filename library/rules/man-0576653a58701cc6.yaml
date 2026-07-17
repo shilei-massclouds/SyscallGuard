@@ -1,0 +1,46 @@
+# 合规检查：条件：Bad arguments (e.g., bad type ; or for type 2, 3, or 4, buf is NULL, or size is less than zero; or for type 8, the level is outside the range 1 to 8)；检查：调用 syslog(type, bufp, size)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0576653A58701CC6
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: type
+    predicate: invalid_or_inaccessible
+    value: EINVAL
+    summary: Bad arguments (e.g., bad type ; or for type 2, 3, or 4, buf is NULL, or size is less than
+      zero; or for type 8, the level is outside the range 1 to 8)
+  action:
+    operation: invoke_syscall
+    syscall: syslog
+    arguments:
+    - type
+    - bufp
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:0576653a58701cc6e75215b3d5efb1c631128b661739d4ebed967b904074661e
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 336
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d076c2d98da202b1feebe4dd62df9987c8a897b1eb87a08f57845e342425280
+  case: errors_einval_336
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: syslog
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/syslog.2
+  line: 336
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:3d076c2d98da202b1feebe4dd62df9987c8a897b1eb87a08f57845e342425280
+  case: errors_einval_336

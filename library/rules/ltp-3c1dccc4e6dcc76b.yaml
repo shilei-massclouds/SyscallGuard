@@ -30,3 +30,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:1efb40ef96b573603cb6cb2c3f475c8fabe69011dd4cfe9c5c801db1d76d3ed9
   case: sendfile03_51_3
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile03.c
+  line: 51
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:1efb40ef96b573603cb6cb2c3f475c8fabe69011dd4cfe9c5c801db1d76d3ed9
+  case: sendfile03_51_3_0

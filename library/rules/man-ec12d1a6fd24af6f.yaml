@@ -1,0 +1,46 @@
+# 合规检查：条件：An expired key was found, but no replacement could be obtained；检查：调用 request_key(type, description, callout_info, dest_keyring)；预期：返回 -1，errno 为 EKEYEXPIRED。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_EC12D1A6FD24AF6F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EKEYEXPIRED
+    summary: An expired key was found, but no replacement could be obtained
+  action:
+    operation: invoke_syscall
+    syscall: request_key
+    arguments:
+    - type
+    - description
+    - callout_info
+    - dest_keyring
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EKEYEXPIRED
+  errno:
+  - EKEYEXPIRED
+semantic_hash: sha256:ec12d1a6fd24af6f45e1de2cd08cf13d6b8608b604129a094eaca9382d7f55c6
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 409
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12c9bd877a63f0f74ee40208e4740806fbf97250b4230e42a75a75bd0a937df6
+  case: errors_ekeyexpired_409
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: request_key
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/request_key.2
+  line: 409
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:12c9bd877a63f0f74ee40208e4740806fbf97250b4230e42a75a75bd0a937df6
+  case: errors_ekeyexpired_409

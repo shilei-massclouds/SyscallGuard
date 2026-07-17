@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 bind(sockfd, addr, addrlen)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_82592148B6764875
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: bind
+    arguments:
+    - sockfd
+    - addr
+    - addrlen
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:82592148b6764875d13828ae1c0df2f96ccae40ca54bcde36da1db3608c4cfe4
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 101
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:86dd6ae96fa1378cba48709fcc6d522011ac30f596192a16725425859956fbd9
+  case: return_value_101
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: bind
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/bind.2
+  line: 101
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:86dd6ae96fa1378cba48709fcc6d522011ac30f596192a16725425859956fbd9
+  case: return_value_101

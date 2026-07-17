@@ -1,0 +1,44 @@
+# 合规检查：条件：(since Linux 3.9) CLONE_NEWUSER was specified in flags and the caller is in a chroot environment (i.e., the caller's root directory does not match the root...；检查：调用 unshare(flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FDC0817D43BF0BD8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: flags
+    predicate: documented_path_condition
+    value: EPERM
+    summary: (since Linux 3.9) CLONE_NEWUSER was specified in flags and the caller is in a chroot environment
+      (i.e., the caller's root directory does not match the root...
+  action:
+    operation: invoke_syscall
+    syscall: unshare
+    arguments:
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:fdc0817d43bf0bd8fe8f49bcfdb91732a32738b3dea40cc7206fce49b321a101
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0119dc44a2bcf4d665a73b137c8c66db7b041fc8f52e7bd84d7df55466e3d190
+  case: errors_eperm_406
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: unshare
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/unshare.2
+  line: 406
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:0119dc44a2bcf4d665a73b137c8c66db7b041fc8f52e7bd84d7df55466e3d190
+  case: errors_eperm_406

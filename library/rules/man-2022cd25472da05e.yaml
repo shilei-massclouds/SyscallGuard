@@ -1,0 +1,44 @@
+# 合规检查：条件：clock_settime () does not have write permission for the dynamic POSIX clock device indicated；检查：调用 clock_settime(clockid, tp)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2022CD25472DA05E
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EACCES
+    summary: clock_settime () does not have write permission for the dynamic POSIX clock device indicated
+  action:
+    operation: invoke_syscall
+    syscall: clock_settime
+    arguments:
+    - clockid
+    - tp
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:2022cd25472da05ed6ab7a17beddaa39cd4fca13661d0ed8439615e680729a89
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ded0cd586799d03f8864deb26d7de7035ca0ca93707233e051429c6b9d34e5da
+  case: errors_eacces_275
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clock_settime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clock_getres.2
+  line: 275
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:ded0cd586799d03f8864deb26d7de7035ca0ca93707233e051429c6b9d34e5da
+  case: errors_eacces_275

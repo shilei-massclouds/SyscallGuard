@@ -1,0 +1,42 @@
+# 合规检查：条件：CLONE_PID was specified by a process other than process 0. (This error occurs only on Linux 2.5.15 and earlier.)；检查：调用 clone(fn, stack, flags, arg, parent_tid, tls, child_tid)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_91B064A60E749B82--91b064a60e74
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EPERM
+    summary: CLONE_PID was specified by a process other than process 0. (This error occurs only on Linux
+      2.5.15 and earlier.)
+  action:
+    operation: invoke_syscall
+    syscall: clone
+    arguments:
+    - fn
+    - stack
+    - flags
+    - arg
+    - parent_tid
+    - tls
+    - child_tid
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:91b064a60e749b82abac15a94639ef2915619c6d140521b89bfc9eca5e7f3974
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: clone
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/clone.2
+  line: 1504
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:df551b4abb0ed8f1b54d70f0d348d9f096ff049306d674978c1a8ce2c19bea54
+  case: errors_eperm_1504

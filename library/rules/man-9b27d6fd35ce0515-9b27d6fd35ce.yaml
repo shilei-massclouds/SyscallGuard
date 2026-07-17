@@ -1,0 +1,38 @@
+# 合规检查：条件：attr.sched_policy is not one of the recognized policies；检查：调用 sched_getattr(pid, attr, size, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_9B27D6FD35CE0515--9b27d6fd35ce
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: attr
+    predicate: documented_condition
+    value: EINVAL
+    summary: attr.sched_policy is not one of the recognized policies
+  action:
+    operation: invoke_syscall
+    syscall: sched_getattr
+    arguments:
+    - pid
+    - attr
+    - size
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:9b27d6fd35ce0515de2cd461e0479a82d529d0291122627b0096a21b07739f87
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sched_getattr
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/sched_setattr.2
+  line: 412
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8febe82e0db1f9c6e601de906a16e20b9e01b7615067ea48eddb6b3bf616bece
+  case: errors_einval_412

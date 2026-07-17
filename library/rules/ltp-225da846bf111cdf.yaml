@@ -1,0 +1,43 @@
+# 合规检查：条件：The file descriptor is invalid.；检查：调用 epoll_wait(epfd, &ret_evs, 1, -1)；预期：{'kind': 'return_value', 'return': '1'}。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_225DA846BF111CDF
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: epfd
+    predicate: invalid
+    value: -1
+    summary: The file descriptor is invalid.
+  action:
+    operation: invoke_syscall
+    syscall: epoll_wait
+    arguments:
+    - epfd
+    - '&ret_evs'
+    - '1'
+    - '-1'
+  expected_result:
+    kind: return_value
+    return: '1'
+  errno: []
+semantic_hash: sha256:225da846bf111cdf019d15ff5353a73eea9ac275f40c47c96f53b174fd78a3bd
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+  line: 101
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:c119a1eb65556356d950f3c9fb6954f7fa3308cd0610b6ad4da471dc63e82a5f
+  case: epoll_wait01_101_raw_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+  line: 139
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:b5d5a8aa3be897f1ad8d816d46f2d654d08493b6c81fa256d7019873c2f381b9
+  case: epoll_wait01_139_raw_0

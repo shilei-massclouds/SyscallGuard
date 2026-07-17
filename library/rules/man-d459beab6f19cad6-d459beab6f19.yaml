@@ -1,0 +1,40 @@
+# 合规检查：条件：The receive buffer pointer(s) point outside the process's address space；检查：调用 recvfrom(sockfd, size, size, flags, src_addr, addrlen)；预期：返回 -1，errno 为 EFAULT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_D459BEAB6F19CAD6--d459beab6f19
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: pointer
+    subject: call
+    predicate: invalid_or_inaccessible
+    value: EFAULT
+    summary: The receive buffer pointer(s) point outside the process's address space
+  action:
+    operation: invoke_syscall
+    syscall: recvfrom
+    arguments:
+    - sockfd
+    - size
+    - size
+    - flags
+    - src_addr
+    - addrlen
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EFAULT
+  errno:
+  - EFAULT
+semantic_hash: sha256:d459beab6f19cad654246be7b7a9ffcb53018461116b785bba2709888dabb5df
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: recvfrom
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/recv.2
+  line: 462
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:194e22020c622113d122e26e67976c8ce021cc02411b3fe08dcd66d375d5e7a1
+  case: errors_efault_462

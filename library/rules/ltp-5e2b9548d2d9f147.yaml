@@ -27,3 +27,11 @@ sources:
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:4762e4d9f944d385be89521018ad83461b1d33c10eafd180d6da587128f30b56
   case: mprotect04_255_raw
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/mprotect/mprotect04.c
+  line: 255
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:4762e4d9f944d385be89521018ad83461b1d33c10eafd180d6da587128f30b56
+  case: mprotect04_255_raw_0

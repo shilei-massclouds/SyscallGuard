@@ -1,0 +1,45 @@
+# 合规检查：条件：Too many symbolic links encountered when resolving path；检查：调用 fspick(dirfd, path, flags)；预期：返回 -1，errno 为 ELOOP。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_5B5730F8A05AEA1D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: documented_path_condition
+    value: ELOOP
+    summary: Too many symbolic links encountered when resolving path
+  action:
+    operation: invoke_syscall
+    syscall: fspick
+    arguments:
+    - dirfd
+    - path
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ELOOP
+  errno:
+  - ELOOP
+semantic_hash: sha256:5b5730f8a05aea1d9fa14e001cf202b719a134aedfa4a03e7bb5434c6517499b
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 246
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d8ed43c6b05b7e44f1f3311900b234e449fca3a2019008bf73ebe3ae830fe25
+  case: errors_eloop_246
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fspick
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fspick.2
+  line: 246
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d8ed43c6b05b7e44f1f3311900b234e449fca3a2019008bf73ebe3ae830fe25
+  case: errors_eloop_246

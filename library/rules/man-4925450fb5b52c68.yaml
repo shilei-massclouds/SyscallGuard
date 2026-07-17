@@ -1,0 +1,46 @@
+# 合规检查：条件：Invalid value for which or ioprio . Refer to the NOTES section for available scheduler classes and priority levels for ioprio；检查：调用 ioprio_set(which, who, ioprio)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_4925450FB5B52C68
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: which
+    predicate: invalid_value
+    value: EINVAL
+    summary: Invalid value for which or ioprio . Refer to the NOTES section for available scheduler classes
+      and priority levels for ioprio
+  action:
+    operation: invoke_syscall
+    syscall: ioprio_set
+    arguments:
+    - which
+    - who
+    - ioprio
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:d2e46a81bd0649e91297c53423ecfb460068726c019359b7ffb0df77ea599c5a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d93f2169490ea0b0fe42021c29aa816e0a35628bec527b8f0d51f0ccac6ac26a
+  case: errors_einval_164
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: ioprio_set
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/ioprio_set.2
+  line: 164
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:d93f2169490ea0b0fe42021c29aa816e0a35628bec527b8f0d51f0ccac6ac26a
+  case: errors_einval_164

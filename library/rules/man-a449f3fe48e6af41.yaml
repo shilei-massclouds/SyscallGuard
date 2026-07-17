@@ -1,0 +1,48 @@
+# 合规检查：条件：The number of marks for this user exceeds the limit and the FAN_UNLIMITED_MARKS flag was not specified when the fanotify file descriptor was created with...；检查：调用 fanotify_mark(fanotify_fd, flags, mask, dirfd, path)；预期：返回 -1，errno 为 ENOSPC。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_A449F3FE48E6AF41
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: call
+    predicate: invalid_or_wrong_type
+    value: ENOSPC
+    summary: The number of marks for this user exceeds the limit and the FAN_UNLIMITED_MARKS flag was
+      not specified when the fanotify file descriptor was created with...
+  action:
+    operation: invoke_syscall
+    syscall: fanotify_mark
+    arguments:
+    - fanotify_fd
+    - flags
+    - mask
+    - dirfd
+    - path
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSPC
+  errno:
+  - ENOSPC
+semantic_hash: sha256:a449f3fe48e6af4109f897a7b06736a2fa2157d8b16de3c60c196348a7348957
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 726
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98a10b0936f62066393e0b5d68a46293ed7141804c820fe4880772f5062a1b4c
+  case: errors_enospc_726
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fanotify_mark
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/fanotify_mark.2
+  line: 726
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:98a10b0936f62066393e0b5d68a46293ed7141804c820fe4880772f5062a1b4c
+  case: errors_enospc_726

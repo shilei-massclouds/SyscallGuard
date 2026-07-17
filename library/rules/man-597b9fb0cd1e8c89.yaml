@@ -1,0 +1,44 @@
+# 合规检查：条件：The requested operation wasn't permitted；检查：调用 keyctl(op, arg2)；预期：返回 -1，errno 为 EACCES。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_597B9FB0CD1E8C89
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EACCES
+    summary: The requested operation wasn't permitted
+  action:
+    operation: invoke_syscall
+    syscall: keyctl
+    arguments:
+    - op
+    - arg2
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EACCES
+  errno:
+  - EACCES
+semantic_hash: sha256:597b9fb0cd1e8c89c6af5baed74e1cf8c3e5467faca6326565afab25ed678233
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ed605b2cb08a078b36a3145942d42469d5bd627d543f8f8ad4fc3beb0d6a0fa
+  case: errors_eacces_98
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: keyctl
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/keyctl.2
+  line: 98
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:8ed605b2cb08a078b36a3145942d42469d5bd627d543f8f8ad4fc3beb0d6a0fa
+  case: errors_eacces_98

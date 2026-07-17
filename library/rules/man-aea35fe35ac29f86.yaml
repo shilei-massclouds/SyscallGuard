@@ -1,0 +1,46 @@
+# 合规检查：条件：The kernel has not been compiled with the CONFIG_QUOTA option；检查：调用 quotactl_fd(fd, op, id, addr)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_AEA35FE35AC29F86
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: resource
+    subject: call
+    predicate: unavailable_or_exhausted
+    value: ENOSYS
+    summary: The kernel has not been compiled with the CONFIG_QUOTA option
+  action:
+    operation: invoke_syscall
+    syscall: quotactl_fd
+    arguments:
+    - fd
+    - op
+    - id
+    - addr
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:b9b8e6600d4f90430773e727f44589ca8230c663bddf536ca4cb75598627e76a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9528516ef09eaa72f400f7f6072f2bca4924a0b89ca2ea636959611208112fd1
+  case: errors_enosys_173
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: quotactl_fd
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/quotactl.2
+  line: 173
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:9528516ef09eaa72f400f7f6072f2bca4924a0b89ca2ea636959611208112fd1
+  case: errors_enosys_173

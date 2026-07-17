@@ -1,0 +1,42 @@
+# 合规检查：条件：The process does not have the capability CAP_SYS_ADMIN required to look up cookie values；检查：调用 lookup_dcookie()；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_74F3A325C42F5CE5
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: The process does not have the capability CAP_SYS_ADMIN required to look up cookie values
+  action:
+    operation: invoke_syscall
+    syscall: lookup_dcookie
+    arguments: []
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:74f3a325c42f5ce5d189117dccc64e77a12abbd999ee6efd58fd358e72f5f755
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41a722764bb25504ab9a92a87bb41b9f64e3e9534ab594fba39450a5d1c25b84
+  case: errors_eperm_60
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: lookup_dcookie
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/lookup_dcookie.2
+  line: 60
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:41a722764bb25504ab9a92a87bb41b9f64e3e9534ab594fba39450a5d1c25b84
+  case: errors_eperm_60

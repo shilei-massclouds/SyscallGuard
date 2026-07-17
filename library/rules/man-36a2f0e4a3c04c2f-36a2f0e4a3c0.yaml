@@ -1,0 +1,36 @@
+# 合规检查：条件：flags is invalid；检查：调用 timerfd_create(clockid, flags)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_36A2F0E4A3C04C2F--36a2f0e4a3c0
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: argument
+    subject: flags
+    predicate: invalid_value
+    value: EINVAL
+    summary: flags is invalid
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_create
+    arguments:
+    - clockid
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:36a2f0e4a3c04c2f14096ab7ebd2293f074df5cb2248fd025a5b3d3b8de3e2d2
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_create
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 471
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:4fe5bfb2a0d70b6825b9ca20a8963679c17a2b06e1650b05db92a8728a0b294f
+  case: errors_einval_471

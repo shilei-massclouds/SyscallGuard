@@ -1,0 +1,48 @@
+# 合规检查：条件：AT_EMPTY_PATH was specified in flags , but the caller did not have the CAP_DAC_READ_SEARCH capability；检查：调用 linkat(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_C4337A8B73D63333
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: flags
+    predicate: documented_path_condition
+    value: ENOENT
+    summary: AT_EMPTY_PATH was specified in flags , but the caller did not have the CAP_DAC_READ_SEARCH
+      capability
+  action:
+    operation: invoke_syscall
+    syscall: linkat
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:c4337a8b73d633330f153f88c25be311585251e3156d3ad3310e5478fd4fc12a
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 279
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c23eac8fa72e638cdfa9dc6fb7728a97b0c6394c6c3cbc83e8c1eb3ca421eb11
+  case: errors_enoent_279
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: linkat
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/link.2
+  line: 279
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:c23eac8fa72e638cdfa9dc6fb7728a97b0c6394c6c3cbc83e8c1eb3ca421eb11
+  case: errors_enoent_279

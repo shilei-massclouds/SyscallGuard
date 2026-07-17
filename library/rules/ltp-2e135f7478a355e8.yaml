@@ -1,0 +1,35 @@
+# 合规检查：条件：A path component that must be a directory is not a directory.；检查：调用 access(fname2, R_OK)；预期：返回 -1，errno 为 ENOTDIR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: LTP_2E135F7478A355E8
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: path
+    subject: path
+    predicate: component_type
+    value: not_directory
+    summary: A path component that must be a directory is not a directory.
+  action:
+    operation: invoke_syscall
+    syscall: access
+    arguments:
+    - fname2
+    - R_OK
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOTDIR
+  errno:
+  - ENOTDIR
+semantic_hash: sha256:2e135f7478a355e838494a99e3a6e0a9dde3f5833ca606267e252c6e3b144260
+generated_at_utc: '2026-07-17T05:17:17.636551Z'
+sources:
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/access/access04.c
+  line: 66
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:bccd5b82a0f931294b3ccfe9f727c641c4fd575588e33aeea6a7da8e1182c3e7
+  case: access04_66_3_0

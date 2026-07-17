@@ -28,3 +28,11 @@ sources:
   recognizer_id: ltp.tst-exp.fail
   evidence_hash: sha256:3ade827d2136dfbc33d579b78d4e000a9b3b75771384280ec793323ffe6bd605
   case: fchmod06_44_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/fchmod/fchmod06.c
+  line: 44
+  recognizer_id: ltp.tst-exp.fail
+  evidence_hash: sha256:3ade827d2136dfbc33d579b78d4e000a9b3b75771384280ec793323ffe6bd605
+  case: fchmod06_44_1_0

@@ -1,0 +1,45 @@
+# 合规检查：条件：No segment exists for the given key , and IPC_CREAT was not specified；检查：调用 shmget(key, size, shmflg)；预期：返回 -1，errno 为 ENOENT。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_8F57FC9DB76DC9F7
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: object_state
+    subject: key
+    predicate: documented_state_condition
+    value: ENOENT
+    summary: No segment exists for the given key , and IPC_CREAT was not specified
+  action:
+    operation: invoke_syscall
+    syscall: shmget
+    arguments:
+    - key
+    - size
+    - shmflg
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOENT
+  errno:
+  - ENOENT
+semantic_hash: sha256:8f57fc9db76dc9f7ecafc08e97148a0837891271e6a1f783ae19fd955c5dd347
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cab20c567ef2efab4183886667ecf4a5dd233a73986e06a20195cf2e51562a4d
+  case: errors_enoent_229
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: shmget
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/shmget.2
+  line: 229
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cab20c567ef2efab4183886667ecf4a5dd233a73986e06a20195cf2e51562a4d
+  case: errors_enoent_229

@@ -1,0 +1,36 @@
+# 合规检查：条件：An I/O error occurred while reading from the filesystem；检查：调用 fstatfs(fd, buf)；预期：返回 -1，errno 为 EIO。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_327D891ACDF2F86D--327d891acdf2
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EIO
+    summary: An I/O error occurred while reading from the filesystem
+  action:
+    operation: invoke_syscall
+    syscall: fstatfs
+    arguments:
+    - fd
+    - buf
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EIO
+  errno:
+  - EIO
+semantic_hash: sha256:327d891acdf2f86d403e646280dae102f90e0cb2de6b55b5515dd9b03b204a71
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: fstatfs
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/statfs.2
+  line: 245
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:cb2be68300e8cc56d061e3d4108bc3396c9efae4b1707c613f52cf071936ee7c
+  case: errors_eio_245

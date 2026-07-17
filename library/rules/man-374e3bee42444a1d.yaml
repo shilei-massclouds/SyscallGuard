@@ -1,0 +1,44 @@
+# 合规检查：条件：new_root is not a mount point；检查：调用 pivot_root(new_root, put_old)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_374E3BEE42444A1D
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: new_root
+    predicate: documented_condition
+    value: EINVAL
+    summary: new_root is not a mount point
+  action:
+    operation: invoke_syscall
+    syscall: pivot_root
+    arguments:
+    - new_root
+    - put_old
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:374e3bee42444a1dfded6901af76204feb17e751a81a16b8e6c69dd5c07c22d5
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:20ac83ce7e4e2a07cb43c7fb7a646b3b8bef06f2fd657c035a3790af35bdd70d
+  case: errors_einval_129
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: pivot_root
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/pivot_root.2
+  line: 129
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:20ac83ce7e4e2a07cb43c7fb7a646b3b8bef06f2fd657c035a3790af35bdd70d
+  case: errors_einval_129

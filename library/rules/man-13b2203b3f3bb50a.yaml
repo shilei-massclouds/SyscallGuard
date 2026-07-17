@@ -1,0 +1,45 @@
+# 合规检查：条件：io_cancel () is not implemented on this architecture；检查：调用 io_cancel(ctx_id, iocb, result)；预期：返回 -1，errno 为 ENOSYS。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_13B2203B3F3BB50A
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: ENOSYS
+    summary: io_cancel () is not implemented on this architecture
+  action:
+    operation: invoke_syscall
+    syscall: io_cancel
+    arguments:
+    - ctx_id
+    - iocb
+    - result
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: ENOSYS
+  errno:
+  - ENOSYS
+semantic_hash: sha256:13b2203b3f3bb50a4a057584897f99686d7104ecff31e6ecf86b5d7ed9b19e60
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de7baece7f4d71a34c0b72ded40974b590f81129a89292e6d6536ea1afb0c15b
+  case: errors_enosys_67
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: io_cancel
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/io_cancel.2
+  line: 67
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:de7baece7f4d71a34c0b72ded40974b590f81129a89292e6d6536ea1afb0c15b
+  case: errors_enosys_67

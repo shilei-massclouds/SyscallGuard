@@ -1,0 +1,43 @@
+# 合规检查：条件：The syscall completes successfully.；检查：调用 msync(length, length, flags)；预期：调用成功，返回 0。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_6FE4E78E13C3DA4F
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_success_condition
+    value: success
+    summary: The syscall completes successfully.
+  action:
+    operation: invoke_syscall
+    syscall: msync
+    arguments:
+    - length
+    - length
+    - flags
+  expected_result:
+    kind: success
+    return: '0'
+  errno: []
+semantic_hash: sha256:6fe4e78e13c3da4f8f49d6398b83fd4ce66addc683ee0677703d37d624989571
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 59
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:dc5bfd22e0e781a5182cc3e59ba87f081bb1966da0e52c3d1d00ab0748db3a54
+  case: return_value_59
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: msync
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/msync.2
+  line: 59
+  recognizer_id: man_pages.return.simple
+  evidence_hash: sha256:dc5bfd22e0e781a5182cc3e59ba87f081bb1966da0e52c3d1d00ab0748db3a54
+  case: return_value_59

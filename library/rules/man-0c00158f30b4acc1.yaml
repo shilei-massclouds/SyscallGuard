@@ -1,0 +1,47 @@
+# 合规检查：条件：RESOLVE_CACHED was set, and the open operation cannot be performed using only cached information. The caller should retry without RESOLVE_CACHED set in...；检查：调用 openat2(dirfd, path, how, size)；预期：返回 -1，errno 为 EAGAIN。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_0C00158F30B4ACC1
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EAGAIN
+    summary: RESOLVE_CACHED was set, and the open operation cannot be performed using only cached information.
+      The caller should retry without RESOLVE_CACHED set in...
+  action:
+    operation: invoke_syscall
+    syscall: openat2
+    arguments:
+    - dirfd
+    - path
+    - how
+    - size
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EAGAIN
+  errno:
+  - EAGAIN
+semantic_hash: sha256:0c00158f30b4acc13c4d6d5e147d6ad7e2f7580b25e0497e1a04a711546c0a3d
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 431
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d8c0588b681d67a0450d07502f08fc097965aac54e3a8582a595da866d4b67d
+  case: errors_eagain_431
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: openat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/openat2.2
+  line: 431
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:5d8c0588b681d67a0450d07502f08fc097965aac54e3a8582a595da866d4b67d
+  case: errors_eagain_431

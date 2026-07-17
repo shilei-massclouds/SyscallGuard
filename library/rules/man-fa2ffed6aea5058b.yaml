@@ -1,0 +1,47 @@
+# 合规检查：条件：Write permission was requested to a file that has the immutable flag set. See also FS_IOC_SETFLAGS (2const)；检查：调用 faccessat2(dirfd, path, mode, flags)；预期：返回 -1，errno 为 EPERM。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_FA2FFED6AEA5058B
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: credential
+    subject: call
+    predicate: insufficient_permission
+    value: EPERM
+    summary: Write permission was requested to a file that has the immutable flag set. See also FS_IOC_SETFLAGS
+      (2const)
+  action:
+    operation: invoke_syscall
+    syscall: faccessat2
+    arguments:
+    - dirfd
+    - path
+    - mode
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EPERM
+  errno:
+  - EPERM
+semantic_hash: sha256:df99bbce89219879bb2343a81842ffa7fefae9378ab7aa0029d5e312e59fa754
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2c9736662c3722fa5ccb00937ed0ebf1377136ece311ae339b185724fb20607
+  case: errors_eperm_274
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: faccessat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/access.2
+  line: 274
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:e2c9736662c3722fa5ccb00937ed0ebf1377136ece311ae339b185724fb20607
+  case: errors_eperm_274

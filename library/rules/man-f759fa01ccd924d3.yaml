@@ -1,0 +1,47 @@
+# 合规检查：条件：oldpath ( newpath ) is relative but olddirfd ( newdirfd ) is not a valid file descriptor；检查：调用 renameat2(olddirfd, oldpath, newdirfd, newpath, flags)；预期：返回 -1，errno 为 EBADF。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_F759FA01CCD924D3
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: fd
+    subject: olddirfd
+    predicate: invalid_or_wrong_type
+    value: EBADF
+    summary: oldpath ( newpath ) is relative but olddirfd ( newdirfd ) is not a valid file descriptor
+  action:
+    operation: invoke_syscall
+    syscall: renameat2
+    arguments:
+    - olddirfd
+    - oldpath
+    - newdirfd
+    - newpath
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EBADF
+  errno:
+  - EBADF
+semantic_hash: sha256:f759fa01ccd924d3dd9d806d7f68b073d381721ebaaeb8c4cbe7d48a2c52b058
+generated_at_utc: '2026-07-17T05:18:12.210893Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:371f528b15d058861014284a62aa65c2ececdffad86fd589959f5436cc3e0184
+  case: errors_ebadf_422
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: renameat2
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/rename.2
+  line: 422
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:371f528b15d058861014284a62aa65c2ececdffad86fd589959f5436cc3e0184
+  case: errors_ebadf_422

@@ -1,0 +1,36 @@
+# 合规检查：条件：The clockid is not valid；检查：调用 timerfd_gettime(fd, curr_value)；预期：返回 -1，errno 为 EINVAL。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_7AD2ED6AD70C6CEB
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINVAL
+    summary: The clockid is not valid
+  action:
+    operation: invoke_syscall
+    syscall: timerfd_gettime
+    arguments:
+    - fd
+    - curr_value
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINVAL
+  errno:
+  - EINVAL
+semantic_hash: sha256:7ad2ed6ad70c6ceb252eb223b33c63bfa09db695b05dce03a72b7581c84d9e36
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: timerfd_gettime
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/timerfd_create.2
+  line: 404
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:49c4d617475f8bbbc5bc40bf524bd0bba979e4550937e0d5960afd3b62ae9779
+  case: errors_einval_404

@@ -1,0 +1,37 @@
+# 合规检查：条件：A signal occurred before any data was transmitted; see signal (7)；检查：调用 sendmsg(sockfd, msg, flags)；预期：返回 -1，errno 为 EINTR。
+schema_version: 1
+kind: syscallguard_rule
+rule_id: MAN_2A5407BCF324A398--2a5407bcf324
+category: syscall_behavior
+semantics:
+  preconditions:
+  - kind: documented
+    subject: call
+    predicate: documented_condition
+    value: EINTR
+    summary: A signal occurred before any data was transmitted; see signal (7)
+  action:
+    operation: invoke_syscall
+    syscall: sendmsg
+    arguments:
+    - sockfd
+    - msg
+    - flags
+  expected_result:
+    kind: return_errno
+    return: '-1'
+    errno: EINTR
+  errno:
+  - EINTR
+semantic_hash: sha256:2a5407bcf324a39891a336b19ba91438572b00edfa492989d63e89f252527696
+generated_at_utc: '2026-07-17T05:51:19.977994Z'
+sources:
+- source_id: man-pages-local
+  source_type: man_pages
+  syscall: sendmsg
+  source_snapshot_hash: sha256:c30d1fd56be00411ee41b4240668693a60b776f20f9d3b41162ce0dc300c048f
+  file: man/man2/send.2
+  line: 388
+  recognizer_id: man_pages.errors.clause
+  evidence_hash: sha256:381c30a5337092c5cd885306f45bd897ca0de70bc026f260d8b3d73f2d04852e
+  case: errors_eintr_388

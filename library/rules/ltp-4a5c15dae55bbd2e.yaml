@@ -35,4 +35,20 @@ sources:
   line: 66
   recognizer_id: ltp.legacy-test.result
   evidence_hash: sha256:d8267ab8400c87d7ee5a9b51662a10b9449c4960e8766c0726f5add74fb0ccb8
+  case: sendfile09_66_0_0
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile09.c
+  line: 66
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d8267ab8400c87d7ee5a9b51662a10b9449c4960e8766c0726f5add74fb0ccb8
   case: sendfile09_66_1
+- source_id: ltp-local
+  source_type: ltp
+  source_snapshot_hash: sha256:d789747f0c0bf1697f538bc5166073fd8449dec3beac7b12ac0be0b1b716dcb4
+  file: testcases/kernel/syscalls/sendfile/sendfile09.c
+  line: 66
+  recognizer_id: ltp.legacy-test.result
+  evidence_hash: sha256:d8267ab8400c87d7ee5a9b51662a10b9449c4960e8766c0726f5add74fb0ccb8
+  case: sendfile09_66_1_0
