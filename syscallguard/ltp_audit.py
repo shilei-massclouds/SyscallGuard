@@ -133,6 +133,118 @@ def _published_records(root: Path, source_id: str) -> dict[str, list[dict[str, A
     return result
 
 
+def _referencing_entity_summary(
+    root: Path,
+    relative_path: str,
+    expected_kind: str,
+    id_field: str,
+    rule_ids: set[str],
+) -> tuple[int, set[str]]:
+    path = root / relative_path
+    if not path.is_file():
+        return 0, set()
+    index = load_mapping(path)
+    if index.get("kind") != expected_kind or not isinstance(index.get("syscalls"), dict):
+        raise SyscallGuardError(f"invalid cumulative index: {path}")
+    entity_ids: set[str] = set()
+    covered_syscalls: set[str] = set()
+    for syscall, rows in index["syscalls"].items():
+        if not isinstance(rows, list):
+            raise SyscallGuardError(f"invalid cumulative index rows: {path}")
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            entity_id = row.get(id_field)
+            refs = row.get("rule_refs")
+            if (
+                isinstance(entity_id, str)
+                and isinstance(refs, list)
+                and rule_ids.intersection(
+                    ref for ref in refs if isinstance(ref, str)
+                )
+            ):
+                entity_ids.add(entity_id)
+                if isinstance(syscall, str):
+                    covered_syscalls.add(syscall)
+    return len(entity_ids), covered_syscalls
+
+
+def _fixed_finding_count(root: Path, rule_ids: set[str]) -> int:
+    path = root / "targets/starry/findings/index.yaml"
+    if not path.is_file():
+        return 0
+    index = load_mapping(path)
+    if (
+        index.get("kind") != "syscallguard_starry_finding_index"
+        or not isinstance(index.get("entities"), list)
+    ):
+        raise SyscallGuardError(f"invalid cumulative index: {path}")
+    return len(
+        {
+            row["id"]
+            for row in index["entities"]
+            if isinstance(row, dict)
+            and isinstance(row.get("id"), str)
+            and row.get("rule_id") in rule_ids
+            and row.get("resolution") == "fixed"
+        }
+    )
+
+
+def _cumulative_summary(
+    root: Path,
+    published: dict[str, list[dict[str, Any]]],
+    analyzed_syscall_count: int,
+) -> dict[str, int]:
+    rule_ids: set[str] = set()
+    for rows in published.values():
+        for row in rows:
+            rule_id = row.get("rule_id")
+            if isinstance(rule_id, str):
+                rule_ids.add(rule_id)
+    covered_syscalls = {
+        syscall
+        for syscall, rows in published.items()
+        if any(row.get("rule_id") in rule_ids for row in rows)
+    }
+    static_check_count, static_check_syscalls = _referencing_entity_summary(
+        root,
+        "targets/starry/static-checks.yaml",
+        "syscallguard_starry_static_check_index",
+        "check_id",
+        rule_ids,
+    )
+    dynamic_test_count, dynamic_test_syscalls = _referencing_entity_summary(
+        root,
+        "targets/starry/dynamic-tests.yaml",
+        "syscallguard_starry_dynamic_test_index",
+        "test_id",
+        rule_ids,
+    )
+    return {
+        "extracted_rules": len(rule_ids),
+        "analyzed_syscalls": analyzed_syscall_count,
+        "covered_syscalls": len(covered_syscalls),
+        "starry_checked_syscalls": len(static_check_syscalls | dynamic_test_syscalls),
+        "starry_static_checks": static_check_count,
+        "starry_dynamic_tests": dynamic_test_count,
+        "fixed_findings": _fixed_finding_count(root, rule_ids),
+    }
+
+
+def format_cumulative_summary(summary: dict[str, Any]) -> list[str]:
+    return [
+        "累计概要：",
+        f"  分析系统调用：{summary['analyzed_syscalls']} 个",
+        "  当前规则库包含 "
+        f"{summary['extracted_rules']} 条规则，覆盖 {summary['covered_syscalls']} 个系统调用",
+        f"  Starry 合规检查覆盖系统调用：{summary['starry_checked_syscalls']} 个",
+        f"  Starry 静态检查：{summary['starry_static_checks']} 条",
+        f"  Starry 动态测试：{summary['starry_dynamic_tests']} 项",
+        f"  已修复问题：{summary['fixed_findings']} 个",
+    ]
+
+
 def _exact_key(record: dict[str, Any]) -> tuple[Any, ...]:
     return (
         record.get("syscall"),
@@ -472,6 +584,7 @@ def run_audit(
                 "requested syscalls do not exist in source: " + ", ".join(unknown)
             )
     published = _published_records(root, str(descriptor["source_id"]))
+    cumulative_summary = _cumulative_summary(root, published, len(discovered))
     details: list[dict[str, Any]] = []
     for item in discovered:
         baseline_item = baseline_adapter.prescan(item)
@@ -528,16 +641,11 @@ def run_audit(
         "kind": "syscallguard_ltp_audit_report",
         "audit_id": resolved_id,
         "generated_at_utc": generated_at,
-        "read_only": True,
-        "status_definitions": {
-            "unchanged": "baseline and candidate rule fields match",
-            "added": "candidate rule has no baseline counterpart",
-            "removed": "baseline rule has no candidate evidence counterpart",
-            "changed": "paired baseline and candidate rule fields differ",
-            "resolved": "candidate formed a rule from baseline-unresolved evidence",
-            "regressed": "a published rule became unresolved in the candidate",
-            "conflict": "code, comment, publication, or conservative resolution disagrees",
+        "cumulative_summary": {
+            "description_zh": "当前来源累计，不受 syscall 过滤影响",
+            **cumulative_summary,
         },
+        "read_only": True,
         "source": {
             "id": descriptor["source_id"],
             "descriptor": str(descriptor_path),
@@ -550,6 +658,15 @@ def run_audit(
             "discovered_syscall_count": len(discovered),
             "selected_syscalls": requested or [detail["syscall"] for detail in details],
             "filter": requested,
+        },
+        "status_definitions": {
+            "unchanged": "baseline and candidate rule fields match",
+            "added": "candidate rule has no baseline counterpart",
+            "removed": "baseline rule has no candidate evidence counterpart",
+            "changed": "paired baseline and candidate rule fields differ",
+            "resolved": "candidate formed a rule from baseline-unresolved evidence",
+            "regressed": "a published rule became unresolved in the candidate",
+            "conflict": "code, comment, publication, or conservative resolution disagrees",
         },
         "full_counts": {
             status: full_counts.get(status, 0) for status in sorted(AUDIT_STATUSES)
@@ -597,6 +714,9 @@ def main(argv: list[str] | None = None) -> int:
     except SyscallGuardError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
+    summary = report["cumulative_summary"]
+    for line in format_cumulative_summary(summary):
+        print(line)
     print(f"source: {report['source']['id']} ({report['source']['snapshot_hash']})")
     print(f"audited_syscalls: {report['scope']['discovered_syscall_count']}")
     if report["scope"]["filter"]:

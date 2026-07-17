@@ -5,6 +5,8 @@
 SyscallGuard 是面向 Starry 的增量 syscall 合规性工具。仓库提供五个彼此独立的
 Codex SKILL；每个阶段都需要单独调用，不会自动编排或触发下一阶段。
 
+![SyscallGuard 流程](docs/process.png)
+
 ## 快速开始
 
 按默认参数依次调用主流程：
@@ -42,8 +44,12 @@ $修复缺口
 python3 tools/audit_ltp.py [--source <source>] [--syscalls <name1,name2,...>]
 ```
 
-该只读工具对旧 baseline、候选 extractor 和已发布 LTP 规则进行三方审计，并输出全量统计。
-完整 YAML 报告写入 `/tmp/syscallguard-ltp-audit/<audit-id>/report.yaml`；`--syscalls`
+该只读工具先以中文显示当前来源的累计概要：分析的 syscall、当前规则库的规则及 syscall
+覆盖量、Starry 合规检查覆盖的 syscall、静态检查、动态测试和已修复问题的总数；这些总数
+来自完整来源和当前共享库，不是最近一批，也不受 `--syscalls` 过滤影响。工具随后保留旧
+baseline、候选 extractor 和已发布 LTP 规则的三方审计信息。
+完整 YAML 报告写入 `/tmp/syscallguard-ltp-audit/<audit-id>/report.yaml`；报告开头的
+`cumulative_summary` 保存同一组总额，后面才是现有审计详情。`--syscalls`
 只过滤报告详情，`full_counts` 始终保留全量统计。`--source` 的解析方式见
 [来源配置](#来源配置)。
 

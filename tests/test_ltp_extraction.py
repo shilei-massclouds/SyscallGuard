@@ -9,7 +9,12 @@ from typing import Any
 
 from syscallguard.adapters.ltp import LtpAdapter, _document_blocks, _struct_arrays
 from syscallguard.common import atomic_write_yaml, content_hash
-from syscallguard.ltp_audit import AUDIT_STATUSES, compare_syscall, run_audit
+from syscallguard.ltp_audit import (
+    AUDIT_STATUSES,
+    compare_syscall,
+    format_cumulative_summary,
+    run_audit,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -416,6 +421,120 @@ class AuditToolTests(unittest.TestCase):
             if path.is_file()
         )
         self.assertEqual(before, after)
+
+    def test_cumulative_summary_counts_unique_source_entities(self) -> None:
+        def write_rule(
+            rule_id: str, syscall: str, source_id: str, source_rows: int = 1
+        ) -> None:
+            atomic_write_yaml(
+                self.root / "library/rules" / f"{rule_id.lower()}.yaml",
+                {
+                    "kind": "syscallguard_rule",
+                    "rule_id": rule_id,
+                    "semantic_hash": f"sha256:{rule_id.lower()}",
+                    "semantics": {"action": {"syscall": syscall}},
+                    "sources": [
+                        {"source_type": "ltp", "source_id": source_id}
+                        for _offset in range(source_rows)
+                    ],
+                },
+            )
+
+        write_rule("RULE_ALPHA", "alpha", "fixture", source_rows=2)
+        write_rule("RULE_BETA", "beta", "fixture")
+        write_rule("RULE_OTHER", "alpha", "other-source")
+        atomic_write_yaml(
+            self.root / "targets/starry/static-checks.yaml",
+            {
+                "kind": "syscallguard_starry_static_check_index",
+                "syscalls": {
+                    "alpha": [
+                        {"check_id": "CHECK_SHARED", "rule_refs": ["RULE_ALPHA"]},
+                        {"check_id": "CHECK_OTHER", "rule_refs": ["RULE_OTHER"]},
+                    ],
+                    "beta": [
+                        {"check_id": "CHECK_SHARED", "rule_refs": ["RULE_BETA"]},
+                        {"check_id": "CHECK_BETA", "rule_refs": ["RULE_BETA"]},
+                    ],
+                },
+            },
+        )
+        atomic_write_yaml(
+            self.root / "targets/starry/dynamic-tests.yaml",
+            {
+                "kind": "syscallguard_starry_dynamic_test_index",
+                "syscalls": {
+                    "alpha": [
+                        {"test_id": "TEST_SHARED", "rule_refs": ["RULE_ALPHA"]}
+                    ],
+                    "beta": [
+                        {"test_id": "TEST_SHARED", "rule_refs": ["RULE_BETA"]}
+                    ],
+                },
+            },
+        )
+        atomic_write_yaml(
+            self.root / "targets/starry/findings/index.yaml",
+            {
+                "kind": "syscallguard_starry_finding_index",
+                "entities": [
+                    {
+                        "id": "FINDING_FIXED",
+                        "rule_id": "RULE_ALPHA",
+                        "resolution": "fixed",
+                    },
+                    {
+                        "id": "FINDING_OPEN",
+                        "rule_id": "RULE_BETA",
+                        "resolution": "open",
+                    },
+                    {
+                        "id": "FINDING_OTHER",
+                        "rule_id": "RULE_OTHER",
+                        "resolution": "fixed",
+                    },
+                ],
+            },
+        )
+
+        _audit_id, _output, report = run_audit(
+            root=self.root,
+            syscalls="alpha",
+            audit_id="audit-summary",
+            output_root=Path(self.temp.name) / "audit-output",
+        )
+
+        self.assertEqual(
+            report["cumulative_summary"],
+            {
+                "description_zh": "当前来源累计，不受 syscall 过滤影响",
+                "extracted_rules": 2,
+                "analyzed_syscalls": 2,
+                "covered_syscalls": 2,
+                "starry_checked_syscalls": 2,
+                "starry_static_checks": 2,
+                "starry_dynamic_tests": 1,
+                "fixed_findings": 1,
+            },
+        )
+        report_text = _output.read_text(encoding="utf-8")
+        self.assertLess(
+            report_text.index("cumulative_summary:"),
+            report_text.index("source:"),
+        )
+        self.assertLess(report_text.index("source:"), report_text.index("full_counts:"))
+        self.assertEqual(
+            format_cumulative_summary(report["cumulative_summary"]),
+            [
+                "累计概要：",
+                "  分析系统调用：2 个",
+                "  当前规则库包含 2 条规则，覆盖 2 个系统调用",
+                "  Starry 合规检查覆盖系统调用：2 个",
+                "  Starry 静态检查：2 条",
+                "  Starry 动态测试：1 项",
+                "  已修复问题：1 个",
+            ],
+        )
 
 
 if __name__ == "__main__":
