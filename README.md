@@ -23,7 +23,8 @@ $修复缺口
 
 - `$提取规则 [source=<alias-or-descriptor>] [count=<N-or-all> | syscalls=<name1,name2,...>]`：
   从配置来源提取目标无关的 syscall 规则。默认从 `ltp-local` 按名字典序处理前 20 个
-  待处理 syscall，更新通用规则库，并生成 `runs/spec-*/report.md`。
+  待处理 syscall，更新通用规则库，并生成 `runs/spec-*/report.md`。`source=` 的解析方式见
+  [来源配置](#来源配置)。
 - `$映射规则 [syscalls=<name1,name2,...>]`：要求用户先在 Starry 中创建并切换到一个干净的
   专用分支，再把通用规则映射为静态检查和动态测试，并生成
   `runs/mapping-*/report.md`。SKILL 不会代替用户创建或切换分支。
@@ -43,7 +44,41 @@ python3 tools/audit_ltp.py [--source <source>] [--syscalls <name1,name2,...>]
 
 该只读工具对旧 baseline、候选 extractor 和已发布 LTP 规则进行三方审计，并输出全量统计。
 完整 YAML 报告写入 `/tmp/syscallguard-ltp-audit/<audit-id>/report.yaml`；`--syscalls`
-只过滤报告详情，`full_counts` 始终保留全量统计。
+只过滤报告详情，`full_counts` 始终保留全量统计。`--source` 的解析方式见
+[来源配置](#来源配置)。
+
+## 来源配置
+
+`$提取规则` 的 `source=` 与统计工具的 `--source` 使用相同的解析规则，可以传
+`sources/index.yaml` 中注册的别名，也可以直接传 source descriptor YAML 路径。省略参数时，
+读取 [sources/index.yaml](sources/index.yaml) 的 `default_source`；当前默认别名 `ltp-local`
+指向 [sources/ltp-local.yaml](sources/ltp-local.yaml)，其中的 `location` 指定 LTP 仓库位置：
+
+```yaml
+source_id: ltp-local
+adapter: ltp
+location: /home/cloud/gitStudy/ltp
+revision: HEAD
+```
+
+使用默认来源、显式别名或 descriptor 的示例：
+
+```text
+$提取规则
+$提取规则 source=ltp-local
+$提取规则 source=/absolute/path/to/custom-ltp.yaml
+```
+
+```bash
+python3 tools/audit_ltp.py
+python3 tools/audit_ltp.py --source ltp-local
+python3 tools/audit_ltp.py --source /absolute/path/to/custom-ltp.yaml
+```
+
+自定义 descriptor 必须提供 `source_id`、`adapter: ltp`、`location` 和 `revision`；建议
+`location` 使用 LTP checkout 的绝对路径。若希望通过短别名调用，还需把 descriptor 注册到
+`sources/index.yaml`。工具不会搜索、克隆或切换 LTP 仓库，而是读取 `location` 当前 checkout
+中的 tracked 文件。
 
 ## 注意
 
