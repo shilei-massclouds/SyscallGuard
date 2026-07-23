@@ -1,0 +1,85 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+syscall: mmap
+rule_id: MAN_18C5488E8D09D6D2--18c5488e8d09
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_MMAP_ACCESS
+  evidence:
+    check_id: STARRY_MMAP_ACCESS
+    rule_refs:
+    - MAN_18C5488E8D09D6D2--18c5488e8d09
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+    patterns:
+    - label: non-regular file mappings are translated to EACCES
+      regex: file_mmap\(\)\.map_err\(\|_\| AxError::PermissionDenied\)\?
+      matched: false
+      line: null
+    - label: all file mappings require read access
+      regex: if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 246
+    - label: shared writable mappings require write access
+      regex: MmapFlags::SHARED[\s\S]*?MmapProt::WRITE[\s\S]*?!flags\.contains\(FileFlags::WRITE\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 150
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t031024z-f246e61e
+  evidence_kind: static
+  source_id: STARRY_MMAP_ACCESS
+  evidence:
+    check_id: STARRY_MMAP_ACCESS
+    rule_refs:
+    - MAN_18C5488E8D09D6D2--18c5488e8d09
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+    patterns:
+    - label: non-regular file mappings are translated to EACCES
+      regex: file_mmap\(\)\.map_err\(\|_\| AxError::PermissionDenied\)\?
+      matched: false
+      line: null
+    - label: all file mappings require read access
+      regex: if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 246
+    - label: shared writable mappings require write access
+      regex: MmapFlags::SHARED[\s\S]*?MmapProt::WRITE[\s\S]*?!flags\.contains\(FileFlags::WRITE\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 150
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t034836z-32b53991
+  evidence_kind: static
+  source_id: STARRY_MMAP_ACCESS
+  evidence:
+    check_id: STARRY_MMAP_ACCESS
+    rule_refs:
+    - MAN_18C5488E8D09D6D2--18c5488e8d09
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+    patterns:
+    - label: non-regular file mappings are translated to EACCES
+      regex: file_mmap\(\)[\s\S]*?\.map_err\(\|_\| AxError::PermissionDenied\)\?
+      matched: false
+      line: null
+    - label: all file mappings require read access
+      regex: if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 246
+    - label: shared writable mappings require write access
+      regex: MmapFlags::SHARED[\s\S]*?MmapProt::WRITE[\s\S]*?!flags\.contains\(FileFlags::WRITE\)[\s\S]*?AxError::PermissionDenied
+      matched: true
+      line: 150
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:50:59.099647Z'
+upstream_dependencies:
+- id: fix-finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:a4ba604731e2bfa77d13a36ced62626cbe31e53ee82293087f641a0c17456835
+fix_ref: fix-finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+fixed_by_run: fix-static-man-20260723-current-v3

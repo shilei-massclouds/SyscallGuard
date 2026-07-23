@@ -1,0 +1,44 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-epoll-ctl-ltp-4953fad330ade150-07800f218f34
+syscall: epoll_ctl
+rule_id: LTP_4953FAD330ADE150
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: no_longer_reproduces
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_EPOLL_CTL_INTEREST
+  evidence:
+    check_id: STARRY_EPOLL_CTL_INTEREST
+    rule_refs:
+    - LTP_4953FAD330ADE150
+    result: fail
+    path: os/StarryOS/kernel/src/file/epoll.rs
+    patterns:
+    - label: monitored descriptors are resolved through the fd table
+      regex: 'fn new\(fd: i32\)[\s\S]*?let file = get_file_like\(fd\)\?;'
+      matched: true
+      line: 135
+    - label: duplicate registrations return AlreadyExists
+      regex: pub fn add\([\s\S]*?guard\.contains_key\(&key\)[\s\S]*?return Err\(AxError::AlreadyExists\);
+      matched: false
+      line: null
+    - label: modifying a missing interest returns NotFound
+      regex: pub fn modify\([\s\S]*?guard\.get_mut\(&key\)\.ok_or\(AxError::NotFound\)\?
+      matched: true
+      line: 599
+    - label: deleting a missing interest returns NotFound
+      regex: pub fn delete\([\s\S]*?\.remove\(&key\)[\s\S]*?\.ok_or\(AxError::NotFound\)\?
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:10:38.941726Z'
+upstream_dependencies:
+- id: LTP_4953FAD330ADE150
+  generated_at_utc: '2026-07-15T10:14:12.969080Z'
+  content_hash: sha256:4953fad330ade1503bf7a6d4d6bf2c353a337844f58042ceb3214149d1025945
+- id: STARRY_EPOLL_CTL_INTEREST
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:432cd717a72ab0632dad3d1b2702aa43469400853a917d4562a935466ea2fb7a

@@ -21,18 +21,18 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
   symbols: []
   scope: file
-  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  file_hash: sha256:de9a17370432776dff53456b2bf05288870b85be725cf2179bca009009fa75b9
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:a792b678a012108e37743173ef2de96643a9dfcaf5674f5d60d50dfc46b2c9eb
+  content_hash: sha256:0032c87828470839dd8ea3d4cbec2a6efafe3244ef892169c03df4fd4a62fa20
 - path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
   symbols:
   - sys_fchmodat
   scope: symbols
-  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  file_hash: sha256:de9a17370432776dff53456b2bf05288870b85be725cf2179bca009009fa75b9
   symbol_hashes:
     sys_fchmodat: sha256:fe8183ad4e35162715838bc8c7db99f33a79930436cbaccc77885c3aac567263
   missing_symbols: []
   content_hash: sha256:f113a0778c4c2faf467af0daf9b279b804aa5de33eaaf5c335dabf750aa7c7a1
-target_content_fingerprint: sha256:29b083b70dab3b003e4bdbf5b7c7017037455499d5dcda160f1ef07e09f52d18
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+target_content_fingerprint: sha256:62abdb855789fac3b19a002ac26c51351764573000386cc862ff4a7752ce34ad
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

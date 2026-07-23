@@ -24,9 +24,9 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/time.rs
   symbols: []
   scope: file
-  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  file_hash: sha256:64eb101d815abffc220477dbb004ae6618d768394de1f82acc68146f4a6ee796
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:5627712698b1a219cfd6979f50739901d84b932915ff6a54e14864b111f5a299
-target_content_fingerprint: sha256:b6327d4b6789ae27e4eb82b36adbd9f29a6f232ca75cc66fd8faccaf6e8d24f7
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:c71f1c6f45e3dc9ad40b11dfc80c4b0148e0774cea009277728b05a483eca0cb
+target_content_fingerprint: sha256:b0fc46e7aa54b5fbb02ba28d4b2852fd1bd3b4b6ff4fe5e7ec027983d2387ac2
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

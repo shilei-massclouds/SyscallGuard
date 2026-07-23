@@ -14,10 +14,12 @@ class ManStaticCatalogTests(unittest.TestCase):
             rule_id for rule_id in rule_to_checks if rule_id.startswith("MAN_")
         }
 
-        self.assertEqual(len(man_rules), 106)
-        self.assertEqual(len(checks), 60)
+        self.assertEqual(len(man_rules), 140)
+        self.assertEqual(len(checks), 80)
         self.assertIn("STARRY_MAN_SECCOMP_VALIDATION", checks)
+        self.assertIn("STARRY_MAN_UMOUNT2_ARGUMENTS", checks)
         self.assertIn("MAN_58936D050A8879DE", rule_to_checks)
+        self.assertIn("MAN_F78F49354EA2C4DD", rule_to_checks)
         self.assertTrue(
             all(
                 check.get("patterns") and check.get("path")

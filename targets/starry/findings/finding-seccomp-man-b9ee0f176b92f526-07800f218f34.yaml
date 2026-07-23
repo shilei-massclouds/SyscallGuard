@@ -1,0 +1,73 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+syscall: seccomp
+rule_id: MAN_B9EE0F176B92F526
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  evidence:
+    check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+    rule_refs:
+    - MAN_B9EE0F176B92F526
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: strict mode requires zero flags
+      regex: SECCOMP_SET_MODE_STRICT => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: true
+      line: 939
+    - label: action availability queries require zero flags
+      regex: SECCOMP_GET_ACTION_AVAIL => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t031024z-f246e61e
+  evidence_kind: static
+  source_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  evidence:
+    check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+    rule_refs:
+    - MAN_B9EE0F176B92F526
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: strict mode requires zero flags
+      regex: SECCOMP_SET_MODE_STRICT => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: true
+      line: 939
+    - label: action availability queries require zero flags
+      regex: SECCOMP_GET_ACTION_AVAIL => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t034836z-32b53991
+  evidence_kind: static
+  source_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  evidence:
+    check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+    rule_refs:
+    - MAN_B9EE0F176B92F526
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/sys.rs
+    patterns:
+    - label: strict mode requires zero flags
+      regex: SECCOMP_SET_MODE_STRICT => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: true
+      line: 939
+    - label: action availability queries require zero flags
+      regex: SECCOMP_GET_ACTION_AVAIL => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:50:59.099647Z'
+upstream_dependencies:
+- id: fix-finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:7a063850747d98351a2532b2e7bb9aabcdcdb28f20c35faccbd6fad1182d28f8
+fix_ref: fix-finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+fixed_by_run: fix-static-man-20260723-current-v3

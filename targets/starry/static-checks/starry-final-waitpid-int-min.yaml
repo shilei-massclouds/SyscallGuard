@@ -21,20 +21,20 @@ upstream_dependencies:
   content_hash: sha256:1691f6f9712c5546d1b81c76cc385ed8b961683e209c8d54e9543a02a199aac5
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/wait.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:8b32999dcd328471fdc1c7708d8c83f5e76da2def2143f3b2e42a71e5a9dabe0
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:21f8508cce98e8bd823aff83633ceb070f356cada1949809b52ff34e7b39b802
+- path: os/StarryOS/kernel/src/syscall/task/wait.rs
   symbols:
   - sys_waitpid
   scope: symbols
-  file_hash: sha256:6b79077ae4ac3d7a18692836c2c9acade3be224ff8ead0feeff112c474dae6ee
+  file_hash: sha256:8b32999dcd328471fdc1c7708d8c83f5e76da2def2143f3b2e42a71e5a9dabe0
   symbol_hashes:
-    sys_waitpid: sha256:9faa693aa54443d46fb1828fa3e69714b69fdfa924350fd305bfc776d9d22201
+    sys_waitpid: sha256:70e711e4984f925ebb7ed22ac21f04a2d8e3b942f2f165acbfe4cb49205e9e3d
   missing_symbols: []
-  content_hash: sha256:a78cd9462e6ed805b3050f485fe7eb61d43ce9967f23367aafb62d3e491c308c
-- path: os/StarryOS/kernel/src/syscall/task/wait.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:6b79077ae4ac3d7a18692836c2c9acade3be224ff8ead0feeff112c474dae6ee
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:ca648927ea1cc5c37bf3d94fc3019a8924dca5b4d3cfe463e96303e890090bab
-target_content_fingerprint: sha256:e8ce12661d9de2c16a516782ef37051897bb0db60bdec3a9bd8b9c0f2ddf76e6
-generated_at_utc: '2026-07-16T10:53:32.721870Z'
+  content_hash: sha256:55871d83430c8ac1ddced869aaf31cfa92582e014ef47717bd8f7ace31a67f9d
+target_content_fingerprint: sha256:3955ec205b812af203f002bc84e56b2e4610cbb42c0e936030e8b4c4dd34d3f9
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

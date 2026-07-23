@@ -20,10 +20,19 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/mod.rs
   symbols: []
   scope: file
-  file_hash: sha256:0b28fde515d0a745a3d1ab7bfbc8325f676a966be3637553ff6845f92a44140e
+  file_hash: sha256:c74130e587a7c1d16975037ed933de89ca5e3a469f6bd82a0b637f063652b4db
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:0f07384a7bcf8c66bc125dceda8aa78e51403cfcea87f3d9bf4f965851341039
+  content_hash: sha256:15270a2630c90f6480ed33df38a4edeab1b4c4d026bd99de2bddbd08bc0b729a
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols:
+  - sys_finit_module
+  scope: symbols
+  file_hash: sha256:5b4873daaa16f851ce0d9f1a636a78e4378b26db51bc68766b8f9dcec07b941d
+  symbol_hashes:
+    sys_finit_module: sha256:f4a094d97174cd1fd51d2f12015299b85d4d0e100c905cdd049159fed8628e82
+  missing_symbols: []
+  content_hash: sha256:1678467138c48e988f7422b856392d86b8a2931f8022582542157777fd4167db
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -32,20 +41,11 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
 - path: os/StarryOS/kernel/src/syscall/kmod.rs
-  symbols:
-  - sys_finit_module
-  scope: symbols
-  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
-  symbol_hashes:
-    sys_finit_module: sha256:142c737cba186eec5d5ca84d736568514e9a04d65fc0a05d5d435928b1942526
-  missing_symbols: []
-  content_hash: sha256:9ab0133e24ce011a32314fa378c1f68bdaa45ecb1b0d6133fc0f7d84e8a89012
-- path: os/StarryOS/kernel/src/syscall/kmod.rs
   symbols: []
   scope: file
-  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
+  file_hash: sha256:5b4873daaa16f851ce0d9f1a636a78e4378b26db51bc68766b8f9dcec07b941d
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:dcd8e9bf36ab723b6d18fb28526fdd5c0a85458c56718fd6dc69faf62ced4441
-target_content_fingerprint: sha256:064016db4973be5f76bc0bd6a076173af17fd3b02bbe2711865e2cfd560c47e1
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:412018efb9abeb185c86099e2cb2bac51c7b08099f5ce29e508460d0932b7c43
+target_content_fingerprint: sha256:5663690f27e30a893668df9d9c2de9ad908da3c96196f7bd8d3a0d01f28b1220
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

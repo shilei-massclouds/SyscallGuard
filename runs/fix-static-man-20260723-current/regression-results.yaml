@@ -1,0 +1,2039 @@
+schema_version: 1
+kind: syscallguard_fix_regression
+run_id: fix-static-man-20260723-current
+generated_at_utc: '2026-07-23T03:13:34.497884Z'
+upstream_dependencies:
+- id: STARRY_CHROOT_PATH
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d817cdc66b7277273694b7530ca5444e592ae6dde4fe282e9706dab3bdb7a88b
+- id: STARRY_CLOSE_BAD_FD_ERRNO
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:3688bede607dda3b8566d02b28e631d99e656c165ca17f247810585f6e6e9d20
+- id: STARRY_CLOSE_FD_TABLE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:5c52e5a49c9de4a97a4082e085fe15ed107d7cfbfac75924dd77e31edfeda387
+- id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:270f978e69107ec932a985c1cda9d40c23fba71e749ab30fb936feed963a9796
+- id: STARRY_CLOSE_RANGE_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:647d3cf0fdb66dd12325ecc9b2512573246e8b70f4d3e76fc3825008fdc13954
+- id: STARRY_CLOSE_SYSCALL
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:098456e0db6f88a9696e9be3f748f7fc3466e747ab9c3fad713e7832f944dec5
+- id: STARRY_CONNECT_ADDRESS_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d1a6e8339cfa112a4c240e163ec01b885aeed46f5ed1e6de3c715e6445ab0c97
+- id: STARRY_CONNECT_ENTRY
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:a483667d4879cf3e66ee135e8a55e72ce34396420812383649fd6fed8fead5d1
+- id: STARRY_COPY_FILE_RANGE_CORE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d3fbeb11a1f0facf48e7447c38ff2b0dcf2c0cbee77889fe5c05cf30698792ca
+- id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  generated_at_utc: '2026-07-16T03:17:56.282688Z'
+  content_hash: sha256:39ebc0849b8fede86d9689ed1dba7fda23315b83937a447b328ffd1a94bdfb34
+- id: STARRY_DUP2_DUP3_BEHAVIOR
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:1814d475d47e2ee693e7440a774842a99ea7bf197f5d0f5a5f38fdf65c455971
+- id: STARRY_DUP_BEHAVIOR
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:10d750a4976d0be8353dcbddf7c80e88682a6c8012c7df7aad87423595f1a3f5
+- id: STARRY_EPOLL_CREATE1_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:f2163883a6167eb0dfabb0b48c02cb981e4bb14c6730811e0b3348a4de8ead23
+- id: STARRY_EPOLL_CTL_ENTRY
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:5e9c5d89216a0956603db791f7735b1ba18813e00b42e81c3a16292fbd905162
+- id: STARRY_EPOLL_CTL_INTEREST
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:2e446049e54d6e8d0b2f86d5455e34f2bf23bb70738f30212ff8f0c84320339a
+- id: STARRY_EPOLL_FACCESS_ERRNO
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:e22921f6310fd12312f5a9094c1b2a7fbfa561ff1c45b5d2578d6e4736cb6a79
+- id: STARRY_EPOLL_FD_LOOKUP
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:189e42bb88fc505c6fe33c7531efb1b30f99aa83aeba33ae39f4362fefc41f46
+- id: STARRY_EPOLL_NESTED_LOOP
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:a051a74deeaa59fdca6eed7d45ab359ade23a502ffa8d19b6f3de98cb94765ce
+- id: STARRY_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:8d9a60adf231f913f00d0778fd209ab68edadef24ab77fdf68d527374a9163c5
+- id: STARRY_EXECVEAT_FACCESSAT_RESOLVE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:b23f34dc7191754d8e39d5c6a62dd40508f1a505de85e96ecbbf63673c9616dc
+- id: STARRY_EXECVEAT_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c76c2cd9e97731a525b77e7c46779eb948ec5d57a2e685f43d66d575e8f35b50
+- id: STARRY_FACCESSAT2_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:2a7c3ad920d88352ba2c16849143d93f64f6da0d95a67ce6f1a8d260c6080d0c
+- id: STARRY_FCHDIR_CORE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:6efabd8ab5037dfcabf4998c5ca0727afbfe837cf43acd4bcc0b0eefafd806eb
+- id: STARRY_FCHDIR_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:fd177e9b3e1499c807d22c42b2ae346718855fa428f5302aa43ecb67b1bd2997
+- id: STARRY_FCHDIR_FD_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:17cf5cd7e876370fda3b89a496c7c087f3827da61a2ee056193ef8401fa1f628
+- id: STARRY_FCHMODAT_FLAG_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:2759b18590554a478af9dd86da5c27e91a163b2987208be937592264c83cfc0f
+- id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:28bfb3f3bebf65fabf66a252f586a8cee8415d3aee3d7482a809d9fdc45938a4
+- id: STARRY_FINAL_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:7335ab25a23d7920d554be244a3f02fe0be4dfd16f61ffbf3a9de5993cadf0c2
+- id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+  generated_at_utc: '2026-07-16T10:53:32.721870Z'
+  content_hash: sha256:eb74c396bf2095b7c842d07e81865c2c859a022c2c163484b47d88041b7cb92f
+- id: STARRY_FINAL_TIMER_DELETE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:e300264bee85147a9a5d2ec81a6280444803b96d858336c30600080c40ee820c
+- id: STARRY_FINAL_TKILL_TID_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:1355e02217d5f3bd03fbb329a928015dcd367ceea991d8e160b1f501c50ad7f7
+- id: STARRY_FINAL_UMOUNT_PRIVILEGE
+  generated_at_utc: '2026-07-16T10:53:32.721870Z'
+  content_hash: sha256:9076327bc10ad8f7970328c88a4b62abfe9cbdc3118616d23772096e764afae7
+- id: STARRY_FINAL_UNSHARE_FILES
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:23a8cf59f4c5c1c94cc6444a60d935388d65982e356d5e91e36acaeef78a9199
+- id: STARRY_FINAL_UNSHARE_FLAG_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c7ffaed34db719fbbb9d362ab17ab42a6a7b58f629b2073e8ff81c9f7a0676b3
+- id: STARRY_FINAL_UNSHARE_NEWNS_PRIVILEGE
+  generated_at_utc: '2026-07-16T10:53:32.721870Z'
+  content_hash: sha256:647346966f4cd913f5bc3219f181a2d9b7f6865ea1decc8e898b1f28751b9842
+- id: STARRY_FINAL_WAITID_OPTIONS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:eaa39e7dda1d0fd8b5bf474137b06c8d05da3caa7736e3fc4521731d28b8802f
+- id: STARRY_FINAL_WAITPID_INT_MIN
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:6439677bbe44b634d0b03458f4f3d5a766778eb4c754fede279254e996de77a8
+- id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:02b5ac507da07f65ee1eb468d782446b05ce6455a8e57c5e7132becd2c08cd07
+- id: STARRY_MAN_CLOCK_GETRES_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:39c59823deb4fa50619416109c4e60818a95fd08b7e778004ad4dad25a46b1f5
+- id: STARRY_MAN_CLOCK_GETTIME_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:2227be48f5b4c7498f1f70ee087020f5f3633478d37994e1ce95be353b554be3
+- id: STARRY_MAN_EVENTFD2_VALIDATION
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:13648156878333adeb78204595c0199fd5930f1b57a0d9dfdbcad2b1a6d2ca3e
+- id: STARRY_MAN_GETRANDOM_ARGUMENTS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c89ce496ae2155da99e328b9ec02e93addb69b9a9502d311b71f8a9541cee940
+- id: STARRY_MAN_INOTIFY_ADD_WATCH_INPUTS
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:e5babd6cb6f55f3c084963bd21bb306a9a5fa7223fac9726e0c46f44d93f0b9b
+- id: STARRY_MAN_INOTIFY_INIT1_VALIDATION
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:9b3a7ef6d751aaa85559093ba95e658d18f1fdd232b1fdbc1f2d84250f0ba95a
+- id: STARRY_MAN_INOTIFY_RM_WATCH_ID
+  generated_at_utc: '2026-07-17T08:16:17.470765Z'
+  content_hash: sha256:eac5c811986b666a85919e0302a8e6bc2ea53016811b0c0c768a0d2ab99766eb
+- id: STARRY_MAN_INOTIFY_RM_WATCH_INPUTS
+  generated_at_utc: '2026-07-17T08:16:17.470765Z'
+  content_hash: sha256:939271cdff41f8344d41706444ac2a4e8c48062080fa87d555f25e4881586e43
+- id: STARRY_MAN_LISTEN_ENTRY
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d03fc9ce42dbb6f8111aaeed4ff4d3090bce65717c6af1899ee061d117b99fe8
+- id: STARRY_MAN_MEMFD_CREATE_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c843b6e0726c72d7600bc65a6579dd95147bd9b64076f3f52b63ce54ea4657e3
+- id: STARRY_MAN_PIPE2_VALIDATION
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:2fc1688a6ae9ee7d6731e73add9ed7573d7b415b42590e62f79528c408203b55
+- id: STARRY_MAN_REBOOT_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:9c70a80c009a123b465beea168b4d650d2c9682e7e0ab8ed3ea5d14bcc0aec21
+- id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:cc9f481eda67f62b6c703372757260c6ff47317ecc46e7c673b798e07782450a
+- id: STARRY_MAN_SECCOMP_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:b30946bfc14afca77aa8e610940bc9b4d739d445bf7544888fc20ccf984b876d
+- id: STARRY_MAN_SETDOMAINNAME_ARGUMENTS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:52bc1e1519f29f80288fb07e135041049fc219b2dcf53f005b0863d9ef17274b
+- id: STARRY_MAN_SETGROUPS_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:8b357dc37a9d23de00b426bc321759a943306e872ec60c3b97b8aa23056d0da2
+- id: STARRY_MAN_SETHOSTNAME_ARGUMENTS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:63ebc4b591412322c7889cc69d118adda45f6e88d266c2033b70cd8073dc2491
+- id: STARRY_MAN_SHUTDOWN_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:5aeedd7b1f0f02eb2e287c818f73ac61c922daf53a3010d1e56b650a16a21727
+- id: STARRY_MAN_SOCKETPAIR_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:98095b1d4f8be3ca5cce69a464e5708fa401b465c44ab29f31bc172d2f331130
+- id: STARRY_MMAP_ACCESS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:de1c0d707169e1e81d3b24bdfbb470fc9fc179213b603ca9e2e5010423b67af5
+- id: STARRY_MMAP_ARGUMENTS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:e83e60fea871601e0384c76e576ddbeee45210d9ff13fd84c816d7ad7dc8a560
+- id: STARRY_MMAP_FD
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:399a5e6488d63e6e7906840fb0cbf3a7b57b7e4cb22564bd069ee535cd09c703
+- id: STARRY_ROUND2_CLOSE_FD_TABLE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:0bcc1abf7fbfc5c92e210ff2a5a21836c969b24d531ee5ee8924399d9c7ef80d
+- id: STARRY_ROUND2_CLOSE_SYSCALL
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d6e7f46d631f54cfbf8c53286c0eff767bfe8fbf9a94d0cecb16ecbbaadd539e
+- id: STARRY_ROUND2_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:44ca1b0e564fb100d4d632b7265d3c7eef30d29f4eead5c61bbb4cab45769537
+- id: STARRY_ROUND3_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:092633b5bbc1d879cf72a97b889f5a99fa41814409197e21307f7c2e928a7b89
+- id: STARRY_ROUND3_FSTATFS_ERRORS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:543941f48be5bbb202d5f8e9e9d82b8243f945d28ac9db8d55d317c0d34dc66e
+- id: STARRY_ROUND3_FSTAT_CORE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:4a7bba46fd86955a89f0f4e4bc2555c1da47362aa295e98efb19f48da45f9049
+- id: STARRY_ROUND3_GETCWD
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:73775de9aebd8a606e4826ecba2a252ab16e507cae2ee06832613491104e3c46
+- id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:21ca3db01eeb28f97c55cb10fa2109985843f45791eb95f17a7c1c6b1eb93986
+- id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  generated_at_utc: '2026-07-16T08:20:59.387945Z'
+  content_hash: sha256:e2e77be33c0c00e8b38780cef8b7b9ff37f7271c1a4f1d1289041b8cf68f4817
+- id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  generated_at_utc: '2026-07-16T08:20:59.387945Z'
+  content_hash: sha256:f63f9870aed5df38afb9076a944d4ea8ccff1c72b65f068727960d38ee0689b6
+- id: STARRY_ROUND3_JOB_ID_LOOKUP
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:ac335083b4908572a3e23dd3e8a0f990d3a62ecbfc7cee0895a57893c140fa9e
+- id: STARRY_ROUND3_PROCESS_LOOKUP
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:da4344fb0b2e8ee152e5d502fd04eb765733baedfbd263f5c95984051c740142
+- id: STARRY_ROUND4_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:9fc9e5adffd48e65065cfd90d7901d1df41a02fc010a735e3d354055346f85dd
+- id: STARRY_ROUND4_MLOCK2_FLAGS
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:451a3c92dd203c594502317904dcedea1b74620e1a9db5c2781345b07c969248
+- id: STARRY_ROUND4_MSYNC_EXCLUSIVE_MODES
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:0578df5fcb3eef561e0d51077bf4724c55f01d277361849b03e0516478f3a30a
+- id: STARRY_ROUND4_MSYNC_UNKNOWN_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:48ef4ae8f5622bf555efb372cbc0025bdf4ab5eb9bc9470b622c68467836e765
+- id: STARRY_ROUND4_MUNMAP_ZERO_LENGTH
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:179cf3a1ea372121ce5d29a1eff7cfc0861ea7bf93a78a20c0c280a972aecec3
+- id: STARRY_ROUND4_OPENAT2_SIZE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:90f4395e66b3445c53574857329bfff21977ce31e516f2429b262fd66af5b056
+- id: STARRY_ROUND4_PIDFD_GETFD_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:92a764693b05210a48253bfc6a2737474f011b2b54aa329d8becd879a60494a5
+- id: STARRY_ROUND4_PIDFD_OPEN_INPUTS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:70ec2374f1dcd688c4fcbdc8ffafcc93af19190f7a10a8fb960c5339837f1c37
+- id: STARRY_ROUND4_PIDFD_SIGNAL_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c4a2f69143da820bc683c34f4d511374d5362c6d6f37c0d56dc44f198944d398
+- id: STARRY_ROUND4_READ_BAD_FD
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:06f24f5a120841e298f8a157ff0169342c935908ee1379dc8975d4b61ce55706
+- id: STARRY_ROUND4_VECTOR_IO_FLAGS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:2d911dc6bd53e6fc8a77a5209ebdc9e8f5bddfff56fde3f3715b7cc3832043a7
+- id: STARRY_ROUND5_ERRNO_TRANSLATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:546b5bc4454aed59688b0b8a987f0207e6499398dd3e25065eb5d44e34c6cf8c
+- id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:1f586167c13a6afbf5a37390f718844077bb1db86b5af03a6727eb05b024a0b7
+- id: STARRY_ROUND5_SCHED_YIELD
+  generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:4b993294f76b39f4d5ea5c02b1ec87ae2fb7bf8602b797cb04f368280bfb66f2
+- id: STARRY_ROUND5_SENDFILE_IN_FD
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c75e772fd1599ff88cc107d1feb67f0646652623adf759665fd42bb6d3cd5aa8
+- id: STARRY_ROUND5_SENDFILE_OUT_FD
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:a6310ca6f51ea5b7f2476cb6c791befea85389f449edf7910cb9e737c76dcb8d
+- id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d98fdcf1f705c6c89ed155d2cedd172ab10c0edfcdd47e440804cfced1dcf47a
+- id: STARRY_ROUND5_SETPGID_NEGATIVE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:e923f0a95c9d3ed1126bc7a86b0ca6c8193477f0035d3cbd51dd1c9b323546c1
+- id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:9cbac9cb08c0446ec8cb0e62deab0da59b922b095489fb8dd540b8f0de3c93d3
+- id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:d2d8afede60aa68d453d70afcadbef69e726ab083280b704d2897d9d62bf31d1
+- id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:c356539030c60bac476550a7a7eaef646d065dfbb22b00c2d1e365071f077092
+- id: STARRY_SOCKET_FD_VALIDATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:4b6bc51f2d193cfb1a8f8ffa1097da5c55ba6a184d9206e76efb55240294733e
+- id: STARRY_FINAL_FS_RUNTIME
+  generated_at_utc: '2026-07-16T08:20:59.387945Z'
+  content_hash: sha256:74f19339cd0cbf3cbe5563a79ce90d92665484515dc3bb2e184412d28073f9dd
+- id: STARRY_FINAL_WAIT_RUNTIME
+  generated_at_utc: '2026-07-16T08:20:59.387945Z'
+  content_hash: sha256:097f4cbfe7a71eeb6388c56404f67f407d9dc62ce2e19c3d4bad524dd750358a
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+static:
+- check_id: STARRY_CHROOT_PATH
+  rule_refs:
+  - MAN_F6CB9D32040E99BA
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: user pathname is loaded and resolved
+    regex: 'pub fn sys_chroot\(path: \*const c_char\)[\s\S]*?vm_load_(?:path_)?string\(path\)\?[\s\S]*?fs\.resolve\(path\)\?'
+    matched: true
+    line: 121
+  - label: non directories are rejected
+    regex: if loc\.node_type\(\) != NodeType::Directory \{[\s\S]*?return Err\(AxError::NotADirectory\);
+    matched: true
+    line: 128
+  - label: valid directory becomes the new filesystem context
+    regex: \*fs = FsContext::new\(loc\);[\s\S]*?Ok\(0\)
+    matched: true
+    line: 131
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_BAD_FD_ERRNO
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: BadFileDescriptor maps to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_FD_TABLE
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - MAN_23E25F7C4136339F
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: close removes the descriptor from the current fd table
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?current_fd_table\(\)\.write\(\)\.remove\(fd as
+      usize\)'
+    matched: true
+    line: 337
+  - label: a removed descriptor succeeds and a missing descriptor is EBADF
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?return Ok\(\(\)\);[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 337
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_RANGE_UNSIGNED_BOUNDS
+  rule_refs:
+  - LTP_425E5A3502541DE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: first and last use unsigned 32-bit syscall semantics
+    regex: 'pub fn sys_close_range\(first: u32, last: u32, flags: u32\)'
+    matched: true
+    line: 541
+  - label: the maximum unsigned range is accepted and capped to open descriptors
+    regex: pub fn sys_close_range\([\s\S]*?for fd in first\.\.=last\.min\(max_index as u32\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 541
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_RANGE_VALIDATION
+  rule_refs:
+  - LTP_31D9D767D6888DDA
+  - LTP_CBF4B6C8A1458A28
+  - LTP_F1DC44813DCA6A05
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: reversed ranges are invalid
+    regex: pub fn sys_close_range\([\s\S]*?if (?:first < 0 \|\| )?last < first \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 541
+  - label: unknown close_range flags are invalid
+    regex: pub fn sys_close_range\([\s\S]*?CloseRangeFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?
+    matched: true
+    line: 541
+  reason: all required patterns matched
+- check_id: STARRY_CLOSE_SYSCALL
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - MAN_494CD34A8C11734B
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: sys_close calls close_file_like and propagates errors
+    regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;'
+    matched: true
+    line: 527
+  - label: successful close returns zero
+    regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;[\s\S]*?Ok\(0\)'
+    matched: true
+    line: 527
+  reason: all required patterns matched
+- check_id: STARRY_CONNECT_ADDRESS_VALIDATION
+  rule_refs:
+  - MAN_392816F25BD330A2
+  - MAN_524B615D8F9A7E12
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/addr.rs
+  patterns:
+  - label: family reads validate the minimum length and use checked user memory access
+    regex: fn read_family\([\s\S]*?size_of::<__kernel_sa_family_t>\(\) > addrlen as usize[\s\S]*?Err\(AxError::InvalidInput\)[\s\S]*?addr\.cast::<__kernel_sa_family_t>\(\)\.get_as_ref\(\)\?
+    matched: true
+    line: 83
+  - label: unsupported top-level address families return EAFNOSUPPORT
+    regex: impl SocketAddrExt for SocketAddrEx[\s\S]*?fn read_from_user\([\s\S]*?_ => Err\(AxError::from\(LinuxError::EAFNOSUPPORT\)\)
+    matched: true
+    line: 320
+  - label: short IPv4 addresses return InvalidInput
+    regex: impl SocketAddrExt for SocketAddrV4[\s\S]*?if addrlen < size_of::<sockaddr_in>\(\) as socklen_t
+      \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 152
+  reason: all required patterns matched
+- check_id: STARRY_CONNECT_ENTRY
+  rule_refs:
+  - MAN_CDD044CBEEED1A80
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: connect validates the fd before reading and normalizing the address
+    regex: pub fn sys_connect\([\s\S]*?Socket::from_fd\(fd\)\?;[\s\S]*?SocketAddrEx::read_from_user\(addr,
+      addrlen\)\?;
+    matched: true
+    line: 173
+  - label: parsed addresses are passed to the socket and errors propagate except nonblocking progress
+    regex: pub fn sys_connect\([\s\S]*?socket\.connect\(addr\)\.map_err\([\s\S]*?AxError::WouldBlock[\s\S]*?AxError::InProgress[\s\S]*?\?;[\s\S]*?Ok\(0\)
+    matched: true
+    line: 173
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_CORE
+  rule_refs:
+  - MAN_BC425C37C792DDEE
+  - MAN_D405972253EA086F
+  - MAN_DBD043A36C2E4926
+  - MAN_FDD174E970AC7930
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: nonzero flags are invalid
+    regex: pub fn sys_copy_file_range\([\s\S]*?if flags != 0 \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 773
+  - label: fd conversion preserves EBADF and EISDIR while rejecting other non-files
+    regex: pub fn sys_copy_file_range\([\s\S]*?let remap = \|e\| match e \{[\s\S]*?AxError::BadFileDescriptor
+      \| AxError::IsADirectory => e,[\s\S]*?_ => AxError::InvalidInput[\s\S]*?File::from_fd\(fd_in\)\.map_err\(remap\)\?;[\s\S]*?File::from_fd\(fd_out\)\.map_err\(remap\)\?;
+    matched: true
+    line: 773
+  - label: directories and other non-regular nodes receive the required errors
+    regex: meta_in\.node_type == NodeType::Directory \|\| meta_out\.node_type == NodeType::Directory[\s\S]*?Err\(AxError::IsADirectory\)[\s\S]*?meta_in\.node_type
+      != NodeType::RegularFile \|\| meta_out\.node_type != NodeType::RegularFile[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 810
+  - label: append-mode output is rejected as EBADF
+    regex: file_out\.inner\(\)\.access\(FileFlags::APPEND\)\.is_ok\(\)[\s\S]*?Err\(AxError::BadFileDescriptor\)
+    matched: true
+    line: 818
+  - label: overlapping ranges in one inode are rejected as EINVAL
+    regex: meta_in\.device == meta_out\.device && meta_in\.inode == meta_out\.inode[\s\S]*?if in_end >=
+      pos_out && pos_in <= out_end \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 834
+  reason: all required patterns matched
+- check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
+  rule_refs:
+  - LTP_74BB3F96CBA52D02
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: oversized len returns Linux EOVERFLOW rather than EINVAL
+    regex: pub fn sys_copy_file_range\([\s\S]*?if len > isize::MAX as usize \{[\s\S]*?return Err\(AxError::from\(LinuxError::EOVERFLOW\)\);
+    matched: true
+    line: 773
+  reason: all required patterns matched
+- check_id: STARRY_DUP2_DUP3_BEHAVIOR
+  rule_refs:
+  - LTP_098AFE0E8E10B0EF
+  - LTP_1726C16756E9651C
+  - LTP_37C625BD7D7C5F1D
+  - LTP_3A7B17AF231D4158
+  - LTP_4F02ACC6E2F6B094
+  - LTP_75D52C5E9C93B6D7
+  - LTP_9B3646398697EA64
+  - LTP_9F560A103CB6F910
+  - LTP_B7F51635806E7E59
+  - LTP_BDA36F61423EEB3E
+  - LTP_D296A517F138A0C0
+  - LTP_EE8E695CF61D6D8A
+  - MAN_794294DBD03CA974
+  - MAN_9BC94E6BD25C05E1
+  - MAN_E99D067CF243EEE8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: dup2 same-fd validates the descriptor and otherwise delegates to dup3
+    regex: 'pub fn sys_dup2\(old_fd: c_int, new_fd: c_int\)[\s\S]*?if old_fd == new_fd \{[\s\S]*?get_file_like\(new_fd\)\?;[\s\S]*?return
+      Ok\(new_fd as _\);[\s\S]*?sys_dup3\(old_fd, new_fd, 0\)'
+    matched: true
+    line: 618
+  - label: dup3 rejects unknown flags and equal descriptors
+    regex: pub fn sys_dup3\([\s\S]*?Dup3Flags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;[\s\S]*?if
+      old_fd == new_fd \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 633
+  - label: dup3 validates the old fd, replaces the target, and returns it
+    regex: pub fn sys_dup3\([\s\S]*?\.get\(old_fd as _\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)\?;[\s\S]*?fd_table\.remove\(new_fd
+      as _\)[\s\S]*?\.add_at\(new_fd as _, f\)[\s\S]*?Ok\(new_fd as _\)
+    matched: true
+    line: 633
+  reason: all required patterns matched
+- check_id: STARRY_DUP_BEHAVIOR
+  rule_refs:
+  - LTP_511185D6DE2A63A0
+  - LTP_84DBE108A850E845
+  - LTP_A774FC10727E8ED2
+  - LTP_ED2BA909DF79625A
+  - MAN_794294DBD03CA974--794294dbd03c
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: dup_fd looks up the old descriptor and returns a newly allocated descriptor
+    regex: 'fn dup_fd\(old_fd: c_int, cloexec: bool\)[\s\S]*?get_file_like\(old_fd\)\?;[\s\S]*?add_file_like\(f,
+      cloexec\)\?;[\s\S]*?Ok\(new_fd as _\)'
+    matched: true
+    line: 586
+  - label: sys_dup requests a non-CLOEXEC duplicate
+    regex: 'pub fn sys_dup\(old_fd: c_int\)[\s\S]*?dup_fd\(old_fd, false\)'
+    matched: true
+    line: 612
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CREATE1_FLAGS
+  rule_refs:
+  - LTP_5D8D2B3BEDA79604
+  - MAN_6B7EED8E43FDD1BA
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  patterns:
+  - label: unknown create flags are rejected as invalid input
+    regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?EpollCreateFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?'
+    matched: true
+    line: 104
+  - label: a valid request creates and installs an epoll descriptor
+    regex: 'pub fn sys_epoll_create1\(flags: u32\)[\s\S]*?Epoll::new\(\)[\s\S]*?\.add_to_fd_table\(flags\.contains\(EpollCreateFlags::CLOEXEC\)\)'
+    matched: true
+    line: 104
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CTL_ENTRY
+  rule_refs:
+  - LTP_6FFB17DB762F3167
+  - LTP_83709E56D6285F71
+  - MAN_DADCFA23F461FBBF
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  patterns:
+  - label: the epoll descriptor is resolved before the operation
+    regex: pub fn sys_epoll_ctl\([\s\S]*?let epoll = Epoll::from_fd\(epfd\)\?;
+    matched: true
+    line: 121
+  - label: adding the epoll descriptor to itself is invalid
+    regex: pub fn sys_epoll_ctl\([\s\S]*?if epfd == fd \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 121
+  - label: only ADD MOD and DEL operations are accepted
+    regex: match op \{[\s\S]*?EPOLL_CTL_ADD =>[\s\S]*?EPOLL_CTL_MOD =>[\s\S]*?EPOLL_CTL_DEL =>[\s\S]*?_
+      => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 149
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_CTL_INTEREST
+  rule_refs:
+  - LTP_4953FAD330ADE150
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll.rs
+  patterns:
+  - label: monitored descriptors are resolved through the fd table
+    regex: 'fn new\(fd: i32\)[\s\S]*?let file = get_file_like\(fd\)\?;'
+    matched: true
+    line: 135
+  - label: duplicate registrations return AlreadyExists
+    regex: fn add_interest\([\s\S]*?interests\.contains_key\(&key\)[\s\S]*?return Err\(AxError::AlreadyExists\);
+    matched: true
+    line: 529
+  - label: modifying a missing interest returns NotFound
+    regex: pub fn modify\([\s\S]*?guard\.get_mut\(&key\)\.ok_or\(AxError::NotFound\)\?
+    matched: true
+    line: 599
+  - label: deleting a missing interest returns NotFound
+    regex: pub fn delete\([\s\S]*?remove_interest_locked\(&key\)[\s\S]*?\.ok_or\(AxError::NotFound\)\?
+    matched: true
+    line: 646
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_FACCESS_ERRNO
+  rule_refs:
+  - LTP_4953FAD330ADE150
+  - LTP_4C1F446C9C520B36
+  - LTP_5D8D2B3BEDA79604
+  - LTP_6FFB17DB762F3167
+  - LTP_83709E56D6285F71
+  - LTP_ACF7A30AF3B10973
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: missing interests map to ENOENT
+    regex: NotFound => ENOENT
+    matched: true
+    line: 249
+  - label: non-directory descriptors map to ENOTDIR
+    regex: NotADirectory => ENOTDIR
+    matched: true
+    line: 243
+  - label: duplicate interests map to EEXIST
+    regex: AlreadyExists => EEXIST
+    matched: true
+    line: 221
+  - label: nested filesystem-style loops map to ELOOP
+    regex: FilesystemLoop => ELOOP
+    matched: true
+    line: 230
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_FD_LOOKUP
+  rule_refs:
+  - LTP_6FFB17DB762F3167
+  - MAN_E32B6349055FCEF9
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: absent descriptors return BadFileDescriptor
+    regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 304
+  - label: a descriptor of the wrong concrete type returns InvalidInput
+    regex: 'fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?\.downcast_arc\(\)[\s\S]*?\.map_err\(\|_\|
+      AxError::InvalidInput\)'
+    matched: true
+    line: 266
+  reason: all required patterns matched
+- check_id: STARRY_EPOLL_NESTED_LOOP
+  rule_refs:
+  - MAN_CDD195853C6DFE14
+  result: pass
+  path: os/StarryOS/kernel/src/file/epoll_topology.rs
+  patterns:
+  - label: nested topology scan rejects cycles
+    regex: prepare_nested_link\([\s\S]*?scan_epoll_topology\(target,[\s\S]*?Some\(source\)\)\?[\s\S]*?downstream\.reached_target[\s\S]*?AxError::FilesystemLoop
+    matched: true
+    line: 48
+  - label: nested topology scan enforces the maximum depth
+    regex: upstream\.max_depth \+ 1 \+ downstream\.max_depth > MAX_NESTED_EPOLL_EDGES[\s\S]*?AxError::FilesystemLoop
+    matched: true
+    line: 61
+  reason: all required patterns matched
+- check_id: STARRY_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_09B39E9C9254ECB2
+  - LTP_51E295101A9F4411
+  - LTP_791DEA825D66980B
+  - LTP_FEACDC300C3E1DD7
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: BadFileDescriptor maps to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: InvalidInput maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: PermissionDenied maps to EACCES
+    regex: PermissionDenied => EACCES
+    matched: true
+    line: 253
+  reason: all required patterns matched
+- check_id: STARRY_EXECVEAT_FACCESSAT_RESOLVE
+  rule_refs:
+  - LTP_4C1F446C9C520B36
+  - LTP_ACF7A30AF3B10973
+  result: pass
+  path: os/StarryOS/kernel/src/file/fs.rs
+  patterns:
+  - label: empty paths require AT_EMPTY_PATH and resolve the supplied descriptor
+    regex: Some\(""\) \| None =>[\s\S]*?flags & AT_EMPTY_PATH == 0[\s\S]*?get_file_like\(dirfd\)\?
+    matched: true
+    line: 62
+  - label: absolute paths ignore dirfd while relative paths resolve through it
+    regex: Some\(path\) =>[\s\S]*?if path\.starts_with\('/'\) \{[\s\S]*?AT_FDCWD[\s\S]*?with_fs\(dirfd,
+    matched: true
+    line: 80
+  - label: relative non-directory descriptors return NotADirectory
+    regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?AxError::NotADirectory'
+    matched: true
+    line: 313
+  reason: all required patterns matched
+- check_id: STARRY_EXECVEAT_VALIDATION
+  rule_refs:
+  - LTP_ACF7A30AF3B10973
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  patterns:
+  - label: unknown execveat flags are invalid
+    regex: pub fn sys_execveat\([\s\S]*?if flags & !\(AT_EMPTY_PATH \| AT_SYMLINK_NOFOLLOW\) != 0 \{[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 45
+  - label: the pathname is loaded and resolved through resolve_at
+    regex: pub fn sys_execveat\([\s\S]*?vm_load_string\(path\)\?;[\s\S]*?resolve_at\(dirfd, Some\(path\.as_str\(\)\),
+      flags\)\?
+    matched: true
+    line: 45
+  reason: all required patterns matched
+- check_id: STARRY_FACCESSAT2_VALIDATION
+  rule_refs:
+  - MAN_147EECDC5DAB119D
+  - MAN_A58EA189B1C9E326
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: only Linux access mode and faccessat2 flag bits are accepted
+    regex: const FACCESSAT2_VALID_FLAGS:[\s\S]*?const FACCESSAT2_VALID_MODE:[\s\S]*?mode & !FACCESSAT2_VALID_MODE
+      != 0 \|\| flags & !FACCESSAT2_VALID_FLAGS != 0[\s\S]*?Err\(AxError::InvalidInput\)
+    matched: true
+    line: 150
+  - label: the optional user path is copied before resolve_at
+    regex: pub fn sys_faccessat2\([\s\S]*?path\.nullable\(\)\.map\(vm_load_path_string\)\.transpose\(\)\?;[\s\S]*?resolve_at\(dirfd,
+      path\.as_deref\(\), flags\)\?
+    matched: true
+    line: 146
+  reason: all required patterns matched
+- check_id: STARRY_FCHDIR_CORE
+  rule_refs:
+  - LTP_17B7A9460939622A
+  - LTP_CCC36F43E9463D3E
+  - MAN_5B2667DFDCB4EB31
+  - MAN_E116073D3FDB5C1F
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: fchdir resolves the descriptor through with_fs
+    regex: 'pub fn sys_fchdir\(dirfd: i32\)[\s\S]*?with_fs\(dirfd,[\s\S]*?current_dir\(\)\.clone\(\)'
+    matched: true
+    line: 99
+  - label: fchdir propagates cwd update errors
+    regex: 'pub fn sys_fchdir\(dirfd: i32\)[\s\S]*?set_current_dir\(entry\)\?;'
+    matched: true
+    line: 99
+  - label: successful fchdir returns zero
+    regex: 'pub fn sys_fchdir\(dirfd: i32\)[\s\S]*?set_current_dir\(entry\)\?;[\s\S]*?Ok\(0\)'
+    matched: true
+    line: 99
+  reason: all required patterns matched
+- check_id: STARRY_FCHDIR_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_CCC36F43E9463D3E
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: BadFileDescriptor maps to EBADF
+    regex: BadFileDescriptor\s*=>\s*EBADF
+    matched: true
+    line: 224
+  reason: all required patterns matched
+- check_id: STARRY_FCHDIR_FD_VALIDATION
+  rule_refs:
+  - LTP_CCC36F43E9463D3E
+  - MAN_5B2667DFDCB4EB31
+  result: pass
+  path: os/StarryOS/kernel/src/file/fs.rs
+  patterns:
+  - label: non-AT_FDCWD uses Directory::from_fd with error propagation
+    regex: pub fn with_fs<[\s\S]*?if dirfd == AT_FDCWD[\s\S]*?Directory::from_fd\(dirfd\)\?
+    matched: true
+    line: 28
+  - label: Directory::from_fd propagates fd lookup failure
+    regex: 'impl FileLike for Directory[\s\S]*?fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?'
+    matched: true
+    line: 313
+  reason: all required patterns matched
+- check_id: STARRY_FCHMODAT_FLAG_VALIDATION
+  rule_refs:
+  - MAN_9A17C8A141B47D41
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: supported fchmodat flags are explicitly bounded
+    regex: 'const FCHMODAT_VALID_FLAGS: u32 = AT_EMPTY_PATH \| AT_SYMLINK_NOFOLLOW;'
+    matched: true
+    line: 620
+  - label: unknown fchmodat flags return InvalidInput
+    regex: if flags & !FCHMODAT_VALID_FLAGS != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 621
+  reason: all required patterns matched
+- check_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+  rule_refs:
+  - LTP_511185D6DE2A63A0
+  - LTP_84DBE108A850E845
+  - LTP_A774FC10727E8ED2
+  - LTP_ED2BA909DF79625A
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: missing descriptors produce BadFileDescriptor
+    regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?current_fd_table\(\)[\s\S]*?\.get\(fd as usize\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 304
+  - label: allocation enforces the current nofile limit as TooManyOpenFiles
+    regex: pub fn add_file_like\([\s\S]*?RLIMIT_NOFILE[\s\S]*?if table\.count\(\) as u64 >= max_nofile
+      \{[\s\S]*?Err\(AxError::TooManyOpenFiles\)
+    matched: true
+    line: 325
+  - label: successful allocation returns the new descriptor
+    regex: pub fn add_file_like\([\s\S]*?Ok\(table\.add\(fd\)\.map_err\(\|_\| AxError::TooManyOpenFiles\)\?
+      as c_int\)
+    matched: true
+    line: 325
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_10B3572DBFA6742B
+  - LTP_9FD87A3F7688FEF1
+  - LTP_FCC236A4D5926B81
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad user addresses translate to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors translate to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid inputs translate to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: permission failures translate to EPERM
+    regex: OperationNotPermitted => EPERM
+    matched: true
+    line: 250
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_SYSLOG_READ_ARGUMENTS
+  rule_refs:
+  - LTP_6B9F97B897EC5C32
+  - LTP_C8376BC347F94A98
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: destructive reads validate their user buffer and signed length
+    regex: SYSLOG_ACTION_READ => \{[\s\S]*?validate_syslog_read_args\(buf, len\)\?;
+    matched: true
+    line: 762
+  - label: read-all validates its user buffer and signed length
+    regex: SYSLOG_ACTION_READ_ALL => \{[\s\S]*?validate_syslog_read_args\(buf, len\)\?;
+    matched: true
+    line: 774
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_TIMER_DELETE
+  rule_refs:
+  - LTP_10B3572DBFA6742B
+  - LTP_9B36D27A4A2994D0
+  - MAN_95930C2D369C878D
+  - MAN_AF1D093225F75E82
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: successful deletion returns zero and an unknown ID is invalid
+    regex: pub fn sys_timer_delete\([\s\S]*?posix_timers\.delete\(timerid\) \{\s*Ok\(0\)\s*\} else \{\s*Err\(AxError::InvalidInput\)
+    matched: true
+    line: 268
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_TKILL_TID_VALIDATION
+  rule_refs:
+  - LTP_FCC236A4D5926B81
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/signal.rs
+  patterns:
+  - label: tkill rejects zero and negative tids with InvalidInput
+    regex: pub fn sys_tkill\([\s\S]*?if tid <= 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 214
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_UMOUNT_PRIVILEGE
+  rule_refs:
+  - LTP_287CF10D893735AB
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/mount.rs
+  patterns:
+  - label: umount rejects callers without CAP_SYS_ADMIN
+    regex: pub fn sys_umount2\([\s\S]*?has_cap_sys_admin\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);
+    matched: true
+    line: 302
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_UNSHARE_FILES
+  rule_refs:
+  - LTP_40A45C5E82D7F4A1
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  patterns:
+  - label: CLONE_FILES is accepted as a supported unshare flag
+    regex: 'const SUPPORTED_NS_FLAGS: u32 =[\s\S]*?CLONE_FILES'
+    matched: true
+    line: 24
+  - label: CLONE_FILES clones and rebinds the descriptor table
+    regex: flags & CLONE_FILES != 0\)\.then\([\s\S]*?current_fd_table\(\)\.read\(\)\.clone\(\)[\s\S]*?FD_TABLE\.scope_mut\(scope\)
+    matched: true
+    line: 38
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_UNSHARE_FLAG_VALIDATION
+  rule_refs:
+  - MAN_B4DD5B60F33FC5E3
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  patterns:
+  - label: unsupported unshare flags return InvalidInput
+    regex: pub fn sys_unshare\([\s\S]*?flags & !SUPPORTED_NS_FLAGS != 0[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 109
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_UNSHARE_NEWNS_PRIVILEGE
+  rule_refs:
+  - LTP_82A8802A27A3D2BF
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  patterns:
+  - label: mount namespace unshare rejects callers without CAP_SYS_ADMIN
+    regex: flags & CLONE_NEWNS != 0[\s\S]*?![\s\S]*?has_cap_sys_admin\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);
+    matched: true
+    line: 64
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_WAITID_OPTIONS
+  rule_refs:
+  - LTP_9FD87A3F7688FEF1
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/wait.rs
+  patterns:
+  - label: waitid rejects calls without exited stopped or continued events
+    regex: if !options[\s\S]*?intersects\(WaitIdOptions::WEXITED \| WaitIdOptions::WUNTRACED \| WaitIdOptions::WCONTINUED\)[\s\S]*?return
+      Err\(AxError::InvalidInput\);
+    matched: true
+    line: 385
+  reason: all required patterns matched
+- check_id: STARRY_FINAL_WAITPID_INT_MIN
+  rule_refs:
+  - LTP_03AF14160F8B59A0
+  - LTP_1691F6F9712C5546
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/wait.rs
+  patterns:
+  - label: INT_MIN returns ESRCH before process-group negation
+    regex: pub fn sys_waitpid\([\s\S]*?if pid == i32::MIN \{\s*return Err\(AxError::from\(LinuxError::ESRCH\)\);\s*\}
+    matched: true
+    line: 234
+  reason: all required patterns matched
+- check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
+  rule_refs:
+  - MAN_2421026C912D8F9E--2421026c912d
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: finit_module names and inspects its flags argument
+    regex: 'pub fn sys_finit_module\(module_fd: i32, param_ptr: \*const u8, flags: u32\)'
+    matched: true
+    line: 52
+  - label: unsupported nonzero flags return InvalidInput
+    regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 52
+  reason: all required patterns matched
+- check_id: STARRY_MAN_CLOCK_GETRES_VALIDATION
+  rule_refs:
+  - MAN_6D665164162723C5--6d6651641627
+  - MAN_DA93975DA79D34AD--da93975da79d
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: unsupported clock IDs return EINVAL
+    regex: pub fn sys_clock_getres[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 62
+  - label: a non-null result uses checked user memory
+    regex: pub fn sys_clock_getres[\s\S]*?res\.nullable\(\)[\s\S]*?res\.vm_write\(timespec::from_time_value\(resolution\)\)\?
+    matched: true
+    line: 62
+  reason: all required patterns matched
+- check_id: STARRY_MAN_CLOCK_GETTIME_VALIDATION
+  rule_refs:
+  - MAN_A67DCE77030808A6
+  - MAN_D84D77F1C6E463F4
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: unsupported clock IDs return EINVAL
+    regex: pub fn sys_clock_gettime[\s\S]*?_ => \{[\s\S]*?return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 18
+  - label: the timestamp is written through checked user memory
+    regex: pub fn sys_clock_gettime[\s\S]*?ts\.vm_write\(timespec::from_time_value\(now\)\)\?
+    matched: true
+    line: 18
+  reason: all required patterns matched
+- check_id: STARRY_MAN_EVENTFD2_VALIDATION
+  rule_refs:
+  - MAN_A5F4BA2371332A4E
+  - MAN_BE929AB9651E5E66
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/event.rs
+  patterns:
+  - label: unsupported flags return EINVAL
+    regex: pub fn sys_eventfd2[\s\S]*?EventFdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?
+    matched: true
+    line: 26
+  - label: the new object is installed and its fd returned
+    regex: pub fn sys_eventfd2[\s\S]*?add_file_like\(event_fd[\s\S]*?\.map\(\|fd\| fd as _\)\?[\s\S]*?Ok\(fd\)
+    matched: true
+    line: 26
+  reason: all required patterns matched
+- check_id: STARRY_MAN_GETRANDOM_ARGUMENTS
+  rule_refs:
+  - MAN_39C5F1849EB3A736
+  - MAN_CEC45E0E1446E3DF
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: unknown and incompatible flags return EINVAL
+    regex: pub fn sys_getrandom[\s\S]*?GetRandomFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?[\s\S]*?INSECURE[\s\S]*?RANDOM[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 850
+  - label: output uses checked user memory
+    regex: pub fn sys_getrandom[\s\S]*?vm_write_slice\(buf, &kbuf\)\?
+    matched: true
+    line: 850
+  reason: all required patterns matched
+- check_id: STARRY_MAN_INOTIFY_ADD_WATCH_INPUTS
+  rule_refs:
+  - MAN_1EFA395D2832F95E
+  - MAN_EFBA9CA2760DA6B8
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: path loading uses checked user memory
+    regex: pub fn sys_inotify_add_watch[\s\S]*?vm_load_path_string\(path\)\?
+    matched: true
+    line: 25
+  - label: fd lookup precedes type validation
+    regex: pub fn sys_inotify_add_watch[\s\S]*?get_file_like\(fd\)\?[\s\S]*?downcast_arc::<Inotify>\(\)
+    matched: true
+    line: 25
+  reason: all required patterns matched
+- check_id: STARRY_MAN_INOTIFY_INIT1_VALIDATION
+  rule_refs:
+  - MAN_330C0628475E2900
+  - MAN_C467D6702AB64674
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: only CLOEXEC and NONBLOCK are accepted
+    regex: pub fn sys_inotify_init1[\s\S]*?valid_flags = IN_CLOEXEC \| IN_NONBLOCK[\s\S]*?flags & !valid_flags
+      != 0[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 12
+  - label: the inotify object is installed and its fd returned
+    regex: pub fn sys_inotify_init1[\s\S]*?add_file_like\(inotify as _, flags & IN_CLOEXEC != 0\)\.map\(\|fd\|
+      fd as _\)
+    matched: true
+    line: 12
+  reason: all required patterns matched
+- check_id: STARRY_MAN_INOTIFY_RM_WATCH_ID
+  rule_refs:
+  - MAN_EA69373DAD6B5B01
+  result: pass
+  path: os/StarryOS/kernel/src/file/inotify.rs
+  patterns:
+  - label: a missing watch descriptor returns EINVAL
+    regex: pub fn rm_watch[\s\S]*?watches\.remove\(&wd\)\.is_none\(\)[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 90
+  reason: all required patterns matched
+- check_id: STARRY_MAN_INOTIFY_RM_WATCH_INPUTS
+  rule_refs:
+  - MAN_C04F44BFF720877B
+  - MAN_EA69373DAD6B5B01
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: fd lookup and inotify type validation are explicit
+    regex: pub fn sys_inotify_rm_watch[\s\S]*?get_file_like\(fd\)\?[\s\S]*?downcast_arc::<Inotify>\(\)[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 40
+  - label: watch removal errors are propagated
+    regex: pub fn sys_inotify_rm_watch[\s\S]*?inotify\.rm_watch\(wd\)\.map\(\|\(\)\| 0\)
+    matched: true
+    line: 40
+  reason: all required patterns matched
+- check_id: STARRY_MAN_LISTEN_ENTRY
+  rule_refs:
+  - MAN_6038BC183A1CE6BF
+  - MAN_7C3C0347FD37CEB9
+  - MAN_AE7C62637F29A4C9
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: listen resolves a Socket from the fd
+    regex: pub fn sys_listen[\s\S]*?Socket::from_fd\(fd\)\?\.listen\(backlog as usize\)\?
+    matched: true
+    line: 192
+  - label: a successful listen returns zero
+    regex: pub fn sys_listen[\s\S]*?Ok\(0\)
+    matched: true
+    line: 192
+  reason: all required patterns matched
+- check_id: STARRY_MAN_MEMFD_CREATE_VALIDATION
+  rule_refs:
+  - MAN_4C50AA2793AB7713
+  - MAN_67ECA3FB50D80BAF
+  - MAN_6FA8F2D41D1B7062
+  - MAN_9E0C30E4205FB415
+  - MAN_DD8A18DB0BF6E8A9
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/memfd.rs
+  patterns:
+  - label: unknown and hugepage flags return EINVAL
+    regex: pub fn sys_memfd_create[\s\S]*?flags & !valid_flags != 0 \|\| flags & MFD_HUGETLB != 0[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 45
+  - label: name loading uses checked user memory
+    regex: 'let name_str: String = vm_load_string\(name\)\?'
+    matched: true
+    line: 55
+  - label: names longer than 249 bytes return EINVAL
+    regex: 'const MEMFD_NAME_MAX: usize = 249;[\s\S]*?name_str\.len\(\) > MEMFD_NAME_MAX[\s\S]*?AxError::InvalidInput'
+    matched: true
+    line: 43
+  - label: the memfd is installed and its fd returned
+    regex: pub fn sys_memfd_create[\s\S]*?add_file_like\(memfd, cloexec\)\.map\(\|fd\| fd as _\)
+    matched: true
+    line: 45
+  reason: all required patterns matched
+- check_id: STARRY_MAN_PIPE2_VALIDATION
+  rule_refs:
+  - MAN_1115E878B4F50CF3
+  - MAN_DD6D48EB9B80CB6B
+  - MAN_EDB775C51FCEA404
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/pipe.rs
+  patterns:
+  - label: unsupported flags return EINVAL
+    regex: pub fn sys_pipe2[\s\S]*?PipeFlags::from_bits\(flags\)[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 21
+  - label: output uses checked user memory with fd rollback
+    regex: if let Err\(err\) = fds\.vm_write\(\[read_fd, write_fd\]\)[\s\S]*?close_file_like\(read_fd\)[\s\S]*?close_file_like\(write_fd\)[\s\S]*?return
+      Err\(err\.into\(\)\)
+    matched: true
+    line: 38
+  - label: valid creation returns zero
+    regex: pub fn sys_pipe2[\s\S]*?Ok\(0\)
+    matched: true
+    line: 21
+  reason: all required patterns matched
+- check_id: STARRY_MAN_REBOOT_VALIDATION
+  rule_refs:
+  - MAN_03E8B237E962C1D2
+  - MAN_F84F01B63ABC178D
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: reboot requires CAP_SYS_BOOT
+    regex: pub fn sys_reboot[\s\S]*?has_cap_sys_boot\(\)[\s\S]*?LinuxError::EPERM
+    matched: true
+    line: 128
+  - label: bad magic values return EINVAL
+    regex: magic != LINUX_REBOOT_MAGIC1[\s\S]*?LINUX_REBOOT_MAGIC2C[\s\S]*?LinuxError::EINVAL
+    matched: true
+    line: 133
+  - label: unknown commands return EINVAL
+    regex: match cmd \{[\s\S]*?_ => Err\(AxError::from\(LinuxError::EINVAL\)\)
+    matched: true
+    line: 145
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  rule_refs:
+  - MAN_B9EE0F176B92F526
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: strict mode requires zero flags
+    regex: SECCOMP_SET_MODE_STRICT => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 939
+  - label: action availability queries require zero flags
+    regex: SECCOMP_GET_ACTION_AVAIL => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 955
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SECCOMP_VALIDATION
+  rule_refs:
+  - MAN_02D976F1ED01493F
+  - MAN_20A10178D28B400B
+  - MAN_73E054548B324267
+  - MAN_8609DB2EE85AF88E
+  - MAN_BE74B0D21973DAEC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: installation requires no_new_privs or CAP_SYS_ADMIN
+    regex: fn check_seccomp_install_permission[\s\S]*?no_new_privs\(\)[\s\S]*?has_cap_sys_admin\(\)[\s\S]*?AxError::OperationNotPermitted
+    matched: true
+    line: 876
+  - label: null and empty filter programs are rejected
+    regex: fn read_seccomp_filter[\s\S]*?args\.is_null\(\)[\s\S]*?AxError::BadAddress[\s\S]*?prog\.len
+      == 0 \|\| prog\.filter\.is_null\(\)[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 886
+  - label: unavailable actions return EOPNOTSUPP
+    regex: fn seccomp_action_available[\s\S]*?_ => Err\(AxError::OperationNotSupported\)
+    matched: true
+    line: 902
+  - label: flags and operations are bounded and success returns zero
+    regex: pub fn sys_seccomp[\s\S]*?flags & !SECCOMP_ALLOWED_FLAGS != 0[\s\S]*?match op[\s\S]*?_ => return
+      Err\(AxError::InvalidInput\)[\s\S]*?Ok\(0\)
+    matched: true
+    line: 933
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SETDOMAINNAME_ARGUMENTS
+  rule_refs:
+  - MAN_027D17C587997F75
+  - MAN_083368964C7623C0
+  - MAN_968D07C7039689E5
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: overlong names return EINVAL
+    regex: pub fn sys_setdomainname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 695
+  - label: the name is read through checked user memory
+    regex: pub fn sys_setdomainname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?
+    matched: true
+    line: 695
+  - label: a valid update returns zero
+    regex: pub fn sys_setdomainname[\s\S]*?domainname = domainname;[\s\S]*?Ok\(0\)
+    matched: true
+    line: 695
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SETGROUPS_VALIDATION
+  rule_refs:
+  - MAN_0F2C1ABA8AF5C15E
+  - MAN_8D160F5D77EC235B
+  - MAN_FD5BF4CD3984BECF
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: CAP_SETGID is required
+    regex: pub fn sys_setgroups[\s\S]*?!old\.has_cap_setgid\(\)[\s\S]*?AxError::OperationNotPermitted
+    matched: true
+    line: 627
+  - label: namespace setgroups denial is enforced
+    regex: thread\.setgroups_deny\(\)[\s\S]*?AxError::OperationNotPermitted
+    matched: true
+    line: 637
+  - label: oversized group vectors are rejected
+    regex: 'const NGROUPS_MAX: usize = 65536;[\s\S]*?if size > NGROUPS_MAX[\s\S]*?AxError::InvalidInput'
+    matched: true
+    line: 625
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SETHOSTNAME_ARGUMENTS
+  rule_refs:
+  - MAN_6998D4E70F807B13
+  - MAN_9E12AA9A59F1BBE9
+  - MAN_DA06B43ED3D9DBBC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: overlong names return EINVAL
+    regex: pub fn sys_sethostname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput
+    matched: true
+    line: 675
+  - label: the name is read through checked user memory
+    regex: pub fn sys_sethostname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?
+    matched: true
+    line: 675
+  - label: a valid update returns zero
+    regex: pub fn sys_sethostname[\s\S]*?nodename = nodename;[\s\S]*?Ok\(0\)
+    matched: true
+    line: 675
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SHUTDOWN_VALIDATION
+  rule_refs:
+  - MAN_5B4118BF4C21F770
+  - MAN_5F5865EF1A8D5904
+  - MAN_8812ADE8E360DB8F
+  - MAN_CAA0FFEFF7C64A82
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: shutdown resolves a Socket from the fd
+    regex: pub fn sys_shutdown[\s\S]*?Socket::from_fd\(fd\)\?
+    matched: true
+    line: 239
+  - label: only SHUT_RD SHUT_WR and SHUT_RDWR are accepted
+    regex: let how = match how \{[\s\S]*?SHUT_RD[\s\S]*?SHUT_WR[\s\S]*?SHUT_RDWR[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 243
+  - label: a valid shutdown returns zero
+    regex: socket\.shutdown\(how\)\.map\(\|_\| 0\)
+    matched: true
+    line: 249
+  reason: all required patterns matched
+- check_id: STARRY_MAN_SOCKETPAIR_VALIDATION
+  rule_refs:
+  - MAN_43BBCE48C452BDDD
+  - MAN_9452D425539B8023
+  - MAN_B121E5340A1BEFEE
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: unsupported families return EAFNOSUPPORT
+    regex: pub fn sys_socketpair[\s\S]*?if domain != AF_UNIX[\s\S]*?LinuxError::EAFNOSUPPORT
+    matched: true
+    line: 252
+  - label: fd output uses checked user memory
+    regex: pub fn sys_socketpair[\s\S]*?\*fds\.get_as_mut\(\)\? = \[
+    matched: true
+    line: 252
+  - label: successful pair creation returns zero
+    regex: pub fn sys_socketpair[\s\S]*?Ok\(0\)
+    matched: true
+    line: 252
+  reason: all required patterns matched
+- check_id: STARRY_MMAP_ACCESS
+  rule_refs:
+  - MAN_18C5488E8D09D6D2--18c5488e8d09
+  result: fail
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: non-regular file mappings are translated to EACCES
+    regex: file_mmap\(\)\.map_err\(\|_\| AxError::PermissionDenied\)\?
+    matched: false
+    line: null
+  - label: all file mappings require read access
+    regex: if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied
+    matched: true
+    line: 246
+  - label: shared writable mappings require write access
+    regex: MmapFlags::SHARED[\s\S]*?MmapProt::WRITE[\s\S]*?!flags\.contains\(FileFlags::WRITE\)[\s\S]*?AxError::PermissionDenied
+    matched: true
+    line: 150
+  reason: one or more required patterns did not match
+- check_id: STARRY_MMAP_ARGUMENTS
+  rule_refs:
+  - LTP_51E295101A9F4411
+  - LTP_FEACDC300C3E1DD7
+  - MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+  - MAN_DE03A6A5B1731AF7--de03a6a5b173
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: zero length is invalid input
+    regex: pub fn sys_mmap\([\s\S]*?if length == 0 \{[\s\S]*?return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 128
+  - label: map type must be shared private or shared validate
+    regex: let map_type = match flags & MmapFlags::TYPE\.bits\(\)[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+    matched: true
+    line: 160
+  reason: all required patterns matched
+- check_id: STARRY_MMAP_FD
+  rule_refs:
+  - LTP_791DEA825D66980B
+  - MAN_35AF4698AC57ED3F--35af4698ac57
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: negative file descriptor is rejected as EBADF
+    regex: if !anonymous && fd < 0 \{[\s\S]*?return Err\(AxError::BadFileDescriptor\);
+    matched: true
+    line: 170
+  - label: non-anonymous mmap resolves the descriptor through get_file_like
+    regex: let file = if anonymous \{[\s\S]*?None[\s\S]*?\} else \{[\s\S]*?Some\(get_file_like\(fd\)\?\)
+    matched: true
+    line: 203
+  reason: all required patterns matched
+- check_id: STARRY_ROUND2_CLOSE_FD_TABLE
+  rule_refs:
+  - LTP_2BDE60C0E64B4DC8
+  - LTP_BF2428964ADD116F
+  - LTP_E520E500AB3AE851
+  result: pass
+  path: os/StarryOS/kernel/src/file/mod.rs
+  patterns:
+  - label: close removes the descriptor independently of its file-like type
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?current_fd_table\(\)\.write\(\)\.remove\(fd as
+      usize\)[\s\S]*?if let Some\(f\) = removed[\s\S]*?return Ok\(\(\)\);'
+    matched: true
+    line: 337
+  - label: only a missing descriptor is rejected
+    regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+    matched: true
+    line: 337
+  reason: all required patterns matched
+- check_id: STARRY_ROUND2_CLOSE_SYSCALL
+  rule_refs:
+  - LTP_2BDE60C0E64B4DC8
+  - LTP_BF2428964ADD116F
+  - LTP_E520E500AB3AE851
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: sys_close invokes the fd-table close helper and returns zero
+    regex: 'pub fn sys_close\(fd: c_int\)[\s\S]*?close_file_like\(fd\)\?;[\s\S]*?Ok\(0\)'
+    matched: true
+    line: 527
+  reason: all required patterns matched
+- check_id: STARRY_ROUND2_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_098AFE0E8E10B0EF
+  - LTP_31D9D767D6888DDA
+  - LTP_37C625BD7D7C5F1D
+  - LTP_4F02ACC6E2F6B094
+  - LTP_75D52C5E9C93B6D7
+  - LTP_9B3646398697EA64
+  - LTP_9F560A103CB6F910
+  - LTP_BDA36F61423EEB3E
+  - LTP_CBF4B6C8A1458A28
+  - LTP_D296A517F138A0C0
+  - LTP_F1DC44813DCA6A05
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: exhausted descriptor limits map to EMFILE
+    regex: TooManyOpenFiles => EMFILE
+    matched: true
+    line: 258
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: non-sockets map to ENOTSOCK
+    regex: NotASocket => ENOTSOCK
+    matched: true
+    line: 244
+  - label: directories map to EISDIR
+    regex: IsADirectory => EISDIR
+    matched: true
+    line: 237
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_53E3454ED6EFD842
+  - LTP_729222947741DFD6
+  - LTP_88D300A8FB407324
+  - LTP_8C1C2578972FCA1D
+  - LTP_9461AA782926BAB4
+  - LTP_F8FD511858BB650D
+  - LTP_FC1E41C3414E7F21
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad user addresses map to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors map to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid input maps to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: missing processes map to ESRCH
+    regex: NoSuchProcess => ESRCH
+    matched: true
+    line: 242
+  - label: permission failure maps to EPERM
+    regex: OperationNotPermitted => EPERM
+    matched: true
+    line: 250
+  - label: short output buffers map to ERANGE
+    regex: OutOfRange => ERANGE
+    matched: true
+    line: 252
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_FSTATFS_ERRORS
+  rule_refs:
+  - MAN_48B52042FE3DEA4C--48b52042fe3d
+  - MAN_5378890AE3F832EE--5378890ae3f8
+  - MAN_8153E21BD727F6A0
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: fstatfs obtains a real file from the descriptor
+    regex: 'pub fn sys_fstatfs\(fd: i32, buf: \*mut statfs\)[\s\S]*?File::from_fd\(fd\)\?'
+    matched: true
+    line: 244
+  - label: fstatfs writes via checked VM access
+    regex: buf\.vm_write\(statfs\([\s\S]*?\)\?\)\?;
+    matched: true
+    line: 234
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_FSTAT_CORE
+  rule_refs:
+  - MAN_37A8B25C745F91BB--37a8b25c745f
+  - MAN_AA8C115068BD5D76--aa8c115068bd
+  - MAN_DFDB86CEA63B78D3--dfdb86cea63b
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  patterns:
+  - label: fstat uses the descriptor form of fstatat
+    regex: 'pub fn sys_fstat\(fd: i32, statbuf: \*mut stat\)[\s\S]*?sys_fstatat\(fd, core::ptr::null\(\),
+      statbuf, AT_EMPTY_PATH\)'
+    matched: true
+    line: 43
+  - label: fstatat resolves the supplied descriptor and path
+    regex: pub fn sys_fstatat\([\s\S]*?let loc = resolve_at\(dirfd, path\.as_deref\(\), flags\)\?;
+    matched: true
+    line: 57
+  - label: stat output is copied through checked VM access
+    regex: statbuf\.vm_write\(loc\.stat\(\)\?\.into\(\)\)\?;
+    matched: true
+    line: 75
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETCWD
+  rule_refs:
+  - LTP_53E3454ED6EFD842
+  - LTP_729222947741DFD6
+  - LTP_FC1E41C3414E7F21
+  - MAN_0D9E79AEB44B7510
+  - MAN_45A2B6F5ADF14C3F
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: signed size conversion rejects impossible sizes
+    regex: 'pub fn sys_getcwd\([\s\S]*?let size: usize = size\.try_into\(\)\.map_err\(\|_\| AxError::BadAddress\)\?;'
+    matched: true
+    line: 431
+  - label: the C string length includes its terminator
+    regex: let cwd = cwd\.as_bytes_with_nul\(\);
+    matched: true
+    line: 441
+  - label: short buffers return OutOfRange
+    regex: if cwd\.len\(\) <= size \{[\s\S]*?vm_write_slice\(buf, cwd\)\?;[\s\S]*?\} else \{\s*Err\(AxError::OutOfRange\)
+    matched: true
+    line: 443
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
+  rule_refs:
+  - LTP_88D300A8FB407324
+  - MAN_B1A8365C419E3164--b1a8365c419e
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: unknown which values return InvalidInput
+    regex: pub fn sys_getpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+    matched: true
+    line: 237
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
+  rule_refs:
+  - LTP_6C14DE68E3C0CC24
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: handler accepts both timeval and timezone pointers
+    regex: 'pub fn sys_gettimeofday\(ts: \*mut timeval, tz: \*mut Timezone\)'
+    matched: true
+    line: 43
+  - label: non-null timezone output uses checked VM access
+    regex: tz\.nullable\(\)[\s\S]*?tz\.vm_write\(Timezone::default\(\)\)\?;
+    matched: true
+    line: 47
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_INIT_MODULE_PERMISSION
+  rule_refs:
+  - LTP_D246498B20D9CB2C
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: shared module guard checks CAP_SYS_MODULE
+    regex: fn require_module_privilege\(\)[\s\S]*?has_cap_sys_module\(\)[\s\S]*?Err\(AxError::OperationNotPermitted\)
+    matched: true
+    line: 21
+  - label: permission failure precedes user-buffer access
+    regex: pub fn sys_init_module\([\s\S]*?require_module_privilege\(\)\?;[\s\S]*?VmBytes::new
+    matched: true
+    line: 30
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_JOB_ID_LOOKUP
+  rule_refs:
+  - LTP_8C1C2578972FCA1D
+  - LTP_9461AA782926BAB4
+  - LTP_F8FD511858BB650D
+  - MAN_045719AC8992819E--045719ac8992
+  - MAN_81F4F1C3AD4F3217
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/job.rs
+  patterns:
+  - label: getsid resolves the requested process
+    regex: 'pub fn sys_getsid\(pid: Pid\)[\s\S]*?get_process\(pid\)\?\.group\(\)\.session\(\)\.sid\(\)'
+    matched: true
+    line: 10
+  - label: getpgid resolves the requested process
+    regex: 'pub fn sys_getpgid\(pid: Pid\)[\s\S]*?get_process\(pid\)\?\.group\(\)\.pgid\(\)'
+    matched: true
+    line: 30
+  reason: all required patterns matched
+- check_id: STARRY_ROUND3_PROCESS_LOOKUP
+  rule_refs:
+  - LTP_8C1C2578972FCA1D
+  - LTP_9461AA782926BAB4
+  - LTP_F8FD511858BB650D
+  - MAN_045719AC8992819E--045719ac8992
+  - MAN_81F4F1C3AD4F3217
+  result: pass
+  path: os/StarryOS/kernel/src/task/ops.rs
+  patterns:
+  - label: pid zero selects the current process
+    regex: 'pub fn get_process\(pid: Pid\)[\s\S]*?if pid == 0 \{\s*return Ok\(current\(\)\.as_thread\(\)\.proc_data\.proc\.clone\(\)\);'
+    matched: true
+    line: 255
+  - label: missing live and zombie processes return NoSuchProcess
+    regex: get_zombie_process\(pid\)\.ok_or\(AxError::NoSuchProcess\)
+    matched: true
+    line: 262
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_0087F445CEB63414
+  - LTP_026CB4A1CA7CDC6B
+  - LTP_08F05BA6ED1CEE6A
+  - LTP_1AACAC53BAF23BA9
+  - LTP_1BB76939FF2A40B5
+  - LTP_26AE3C69D80D35F8
+  - LTP_3743BC827FB4F981
+  - LTP_D0800876342DE939
+  - LTP_D2E2A5F40B2313E5
+  - LTP_EA90C626D9AA6C08
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad addresses translate to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors translate to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid inputs translate to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  - label: no memory translates to ENOMEM
+    regex: NoMemory => ENOMEM
+    matched: true
+    line: 239
+  - label: unsupported operations translate to EOPNOTSUPP
+    regex: OperationNotSupported => EOPNOTSUPP
+    matched: true
+    line: 251
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_MLOCK2_FLAGS
+  rule_refs:
+  - MAN_362BD9184BA2B5C7
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: unknown flags return InvalidInput
+    regex: pub fn sys_mlock2\([\s\S]*?if flags & !MLOCK_ONFAULT != 0 \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 1083
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_MSYNC_EXCLUSIVE_MODES
+  rule_refs:
+  - LTP_D2E2A5F40B2313E5
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: MS_SYNC and MS_ASYNC together return InvalidInput
+    regex: if flags & MS_SYNC != 0 && flags & MS_ASYNC != 0 \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 1037
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_MSYNC_UNKNOWN_FLAGS
+  rule_refs:
+  - LTP_EA90C626D9AA6C08
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: unknown flag bits return InvalidInput
+    regex: let valid_flags = MS_SYNC \| MS_ASYNC \| MS_INVALIDATE;\s*if flags & !valid_flags != 0 \{\s*return
+      Err\(AxError::InvalidInput\);
+    matched: true
+    line: 1033
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_MUNMAP_ZERO_LENGTH
+  rule_refs:
+  - LTP_26AE3C69D80D35F8
+  - MAN_8DB0AB4E3B90CB50
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: zero length returns InvalidInput
+    regex: pub fn sys_munmap\([\s\S]*?if length == 0 \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 594
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_OPENAT2_SIZE
+  rule_refs:
+  - LTP_026CB4A1CA7CDC6B
+  - LTP_D0800876342DE939
+  - MAN_25CD94348F7360E1
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  patterns:
+  - label: undersized open_how returns InvalidInput
+    regex: pub fn sys_openat2\([\s\S]*?let base_size = size_of::<OpenHow>\(\);\s*if size < base_size \{\s*return
+      Err\(AxError::InvalidInput\);
+    matched: true
+    line: 428
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_PIDFD_GETFD_FLAGS
+  rule_refs:
+  - MAN_58936D050A8879DE
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  patterns:
+  - label: nonzero flags return InvalidInput first
+    regex: pub fn sys_pidfd_getfd\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}[\s\S]*?PidFd::from_fd
+    matched: true
+    line: 86
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_PIDFD_OPEN_INPUTS
+  rule_refs:
+  - LTP_1BB76939FF2A40B5
+  - LTP_3743BC827FB4F981
+  - MAN_0BA66331CB4B2091
+  - MAN_DC37B979EC91203E
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  patterns:
+  - label: unknown flags return InvalidInput
+    regex: let flags = PidFdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+    matched: true
+    line: 61
+  - label: nonpositive pids return InvalidInput
+    regex: if \(pid as i32\) <= 0 \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 64
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_PIDFD_SIGNAL_FLAGS
+  rule_refs:
+  - LTP_08F05BA6ED1CEE6A
+  - MAN_6D77B363EA967C8F
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  patterns:
+  - label: unknown flags return InvalidInput
+    regex: pub fn sys_pidfd_send_signal\([\s\S]*?PidFdSignalFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
+    matched: true
+    line: 123
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_READ_BAD_FD
+  rule_refs:
+  - LTP_0087F445CEB63414
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: read propagates descriptor lookup errors
+    regex: pub fn sys_read\([\s\S]*?get_file_like\(fd\)\?\.read
+    matched: true
+    line: 123
+  reason: all required patterns matched
+- check_id: STARRY_ROUND4_VECTOR_IO_FLAGS
+  rule_refs:
+  - LTP_1AACAC53BAF23BA9
+  - MAN_B5E18528035F6F87
+  - MAN_F12635B7646C0E9B
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: nonzero RWF flags return OperationNotSupported
+    regex: 'fn validate_rwf_flags\(flags: u32\)[\s\S]*?if flags != 0 \{\s*return Err\(AxError::OperationNotSupported\);'
+    matched: true
+    line: 505
+  - label: both vector I/O paths validate flags before operating
+    regex: pub fn sys_preadv2\([\s\S]*?validate_rwf_flags\(flags\)\?;[\s\S]*?pub fn sys_pwritev2\([\s\S]*?validate_rwf_flags\(flags\)\?;
+    matched: true
+    line: 512
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_ERRNO_TRANSLATION
+  rule_refs:
+  - LTP_39B1E5C574F2D3DC
+  - LTP_4308D71D8BD6519D
+  - LTP_44DC5382746D773D
+  - LTP_585CC852338F38EE
+  - LTP_7BC885B5878C95B6
+  - LTP_971DB17D32C51561
+  result: pass
+  path: components/axerrno/src/lib.rs
+  patterns:
+  - label: bad addresses translate to EFAULT
+    regex: BadAddress \| BadState => EFAULT
+    matched: true
+    line: 223
+  - label: bad descriptors translate to EBADF
+    regex: BadFileDescriptor => EBADF
+    matched: true
+    line: 224
+  - label: invalid inputs translate to EINVAL
+    regex: InvalidInput \| InvalidData => EINVAL
+    matched: true
+    line: 235
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SCHED_SETAFFINITY_EMPTY_MASK
+  rule_refs:
+  - LTP_585CC852338F38EE
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: empty mask returns invalid input
+    regex: pub fn sys_sched_setaffinity\([\s\S]*?if cpu_mask\.is_empty\(\) \{\s*return Err\(AxError::InvalidInput\);
+    matched: true
+    line: 141
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SCHED_YIELD
+  rule_refs:
+  - LTP_A9BC7EBC1784A722
+  - MAN_254F60FBFDA7A2BB
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: sched_yield yields once and returns zero
+    regex: pub fn sys_sched_yield\(\) -> AxResult<isize> \{\s*ax_task::yield_now\(\);\s*Ok\(0\)\s*\}
+    matched: true
+    line: 30
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDFILE_IN_FD
+  rule_refs:
+  - LTP_39B1E5C574F2D3DC
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: direct input descriptor uses File lookup
+    regex: pub fn sys_sendfile\([\s\S]*?let _in_file = File::from_fd\(in_fd\)\?;
+    matched: true
+    line: 741
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDFILE_OUT_FD
+  rule_refs:
+  - LTP_7BC885B5878C95B6
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: output descriptor is looked up first
+    regex: pub fn sys_sendfile\([\s\S]*?let out_file = get_file_like\(out_fd\)\?;
+    matched: true
+    line: 741
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+  rule_refs:
+  - MAN_AE68C41A115C80FC--ae68c41a115c
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/io.rs
+  patterns:
+  - label: the message header uses checked user access
+    regex: pub fn sys_sendmsg[\s\S]*?msg\.get_as_ref\(\)\?
+    matched: true
+    line: 137
+  - label: control messages use checked user access
+    regex: fn parse_send_cmsgs[\s\S]*?UserConstPtr::<cmsghdr>::from\(ptr\)\.get_as_ref\(\)\?
+    matched: true
+    line: 41
+  - label: the I/O vector is validated before sending
+    regex: pub fn sys_sendmsg[\s\S]*?IoVectorBuf::new\(msg\.msg_iov as \*const IoVec, msg\.msg_iovlen\)\?
+    matched: true
+    line: 137
+  - label: a non-null destination address is decoded through checked access
+    regex: fn send_impl[\s\S]*?SocketAddrEx::read_from_user\(addr, addrlen\)\?
+    matched: true
+    line: 73
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SETPGID_NEGATIVE
+  rule_refs:
+  - LTP_4308D71D8BD6519D
+  - MAN_44D6BD8077F837B5
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/job.rs
+  patterns:
+  - label: setpgid preserves signed syscall arguments
+    regex: 'pub fn sys_setpgid\(pid: i32, pgid: i32\) -> AxResult<isize>'
+    matched: true
+    line: 40
+  - label: negative pid or pgid is rejected with invalid input
+    regex: pub fn sys_setpgid\([\s\S]*?if pid < 0 \|\| pgid < 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
+    matched: true
+    line: 40
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+  rule_refs:
+  - LTP_44DC5382746D773D
+  - MAN_B1A8365C419E3164
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  patterns:
+  - label: unknown which value is invalid input
+    regex: pub fn sys_setpriority\([\s\S]*?match which \{[\s\S]*?_ => Err\(AxError::InvalidInput\),\s*\}
+    matched: true
+    line: 270
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  rule_refs:
+  - LTP_971DB17D32C51561
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: unsupported type in a supported domain is invalid input
+    regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK, _\)
+      \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn sys_bind
+    matched: true
+    line: 34
+  reason: all required patterns matched
+- check_id: STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS
+  rule_refs:
+  - LTP_6B29B31CE99466E6
+  - LTP_A4A662687B98D33F
+  - LTP_AF8D38878ED1A9DA
+  - LTP_DD2E1A555B603C7B
+  - LTP_E316C28E36E136DA
+  - MAN_732160952277CD16
+  - MAN_A1CD98CE32C423E4
+  result: pass
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: TCP sockets reject non-TCP protocols
+    regex: \(AF_INET \| AF_INET6, SOCK_STREAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_TCP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 62
+  - label: UDP sockets reject non-UDP protocols
+    regex: \(AF_INET \| AF_INET6, SOCK_DGRAM\) => \{[\s\S]*?proto != 0 && proto != IPPROTO_UDP as _[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 68
+  - label: raw IPv4 sockets reject unsupported protocols
+    regex: \(AF_INET, SOCK_RAW\) => \{[\s\S]*?proto != IPPROTO_ICMP as u32[\s\S]*?LinuxError::EPROTONOSUPPORT
+    matched: true
+    line: 93
+  - label: unknown domains return EAFNOSUPPORT
+    regex: _ => \{\s*return Err\(AxError::from\(LinuxError::EAFNOSUPPORT\)\);\s*\}
+    matched: true
+    line: 106
+  reason: all required patterns matched
+- check_id: STARRY_SOCKET_FD_VALIDATION
+  rule_refs:
+  - MAN_5B4118BF4C21F770
+  - MAN_5F5865EF1A8D5904
+  - MAN_6038BC183A1CE6BF
+  - MAN_AE7C62637F29A4C9
+  - MAN_CDD044CBEEED1A80
+  result: pass
+  path: os/StarryOS/kernel/src/file/net.rs
+  patterns:
+  - label: Socket from_fd propagates fd lookup and maps type mismatch to NotASocket
+    regex: 'fn from_fd\(fd: c_int\)[\s\S]*?get_file_like\(fd\)\?[\s\S]*?\.downcast_arc\(\)[\s\S]*?\.map_err\(\|_\|
+      AxError::NotASocket\)'
+    matched: true
+    line: 391
+  reason: all required patterns matched
+dynamic:
+- test_id: STARRY_FINAL_FS_RUNTIME
+  rule_refs:
+  - LTP_04236FD5B061DEB9
+  - LTP_21FCBFC328D1815A
+  - LTP_38432B154B641410
+  - LTP_43728156B00FF104
+  - LTP_58C8C307B1FF2510
+  - LTP_6F4B3A38B8BF4C7E
+  - LTP_6F77CAA9FC4423BA
+  - LTP_71DD72481EF5740E
+  - LTP_86144BF50FB25D3A
+  - LTP_B0433B78A1641F24
+  - LTP_D254EE40E8B5957E
+  - LTP_DCC88B2C458969EA
+  - LTP_DDA854712C50CD6A
+  result: not_run
+  reason: test patch was not applied
+  diagnostic_log: /home/cloud/gitLinux/SyscallGuard/runs/fix-static-man-20260723-current/logs/dynamic-starry-final-fs-runtime.log
+- test_id: STARRY_FINAL_WAIT_RUNTIME
+  rule_refs:
+  - LTP_2F3E34FD672DBF34
+  - LTP_4494B70BBA693D42
+  - LTP_614C018F61C078A0
+  - LTP_7B0F966046AECA7E
+  - LTP_9C2FB7732A0B90B6
+  - LTP_A2934B80997B62C9
+  - LTP_AD3A4B98FF201ABE
+  - LTP_C13C4F63D58904BC
+  - LTP_C24E55F06625D564
+  - LTP_D1A18560E485E146
+  - LTP_DA64FD04E43656E6
+  - LTP_DF5B725563FDFB31
+  - LTP_ECD986F27CF15E1E
+  - LTP_FC8BA85373EA2D8F
+  result: not_run
+  reason: test patch was not applied
+  diagnostic_log: /home/cloud/gitLinux/SyscallGuard/runs/fix-static-man-20260723-current/logs/dynamic-starry-final-wait-runtime.log
+blockers:
+- kind: test_injection
+  entity_ids:
+  - STARRY_FINAL_FS_RUNTIME
+  - STARRY_FINAL_WAIT_RUNTIME
+  reason: git apply failed for dynamic test patch
+  diagnostic_log: /home/cloud/gitLinux/SyscallGuard/runs/fix-static-man-20260723-current/logs/patch-starry-final-runtime-patch.log
+- kind: test_injection
+  entity_ids:
+  - STARRY_FINAL_FS_RUNTIME
+  reason: test patch was not applied
+  diagnostic_log: /home/cloud/gitLinux/SyscallGuard/runs/fix-static-man-20260723-current/logs/dynamic-starry-final-fs-runtime.log
+- kind: test_injection
+  entity_ids:
+  - STARRY_FINAL_WAIT_RUNTIME
+  reason: test patch was not applied
+  diagnostic_log: /home/cloud/gitLinux/SyscallGuard/runs/fix-static-man-20260723-current/logs/dynamic-starry-final-wait-runtime.log

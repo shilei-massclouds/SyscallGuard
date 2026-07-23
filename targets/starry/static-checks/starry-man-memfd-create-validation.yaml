@@ -40,9 +40,9 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/memfd.rs
   symbols: []
   scope: file
-  file_hash: sha256:53cdf6750e20f61e87dd37791346cde16fe0f7c1d5d65be428d50556a1b487e6
+  file_hash: sha256:2270c0e658cc1e419bd494c61d9112b606f6942a1171876d5dc25bb8dad82b09
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:bfb414e8e76b83689556878d3371d207ada4efe5695f2c705758f5c227460e14
-target_content_fingerprint: sha256:9684f754a40163a4048d9d4be038c611dd7586bc8ba7f4365574ffeed7a26b77
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:c8b740644bdaea22d6f4ca468109fe6d701047840495a75da4b8f67b7f95976a
+target_content_fingerprint: sha256:17e7e17beee69be041bc2a1f124c6c98b17f47f0578a5f02a37a49b8feea3236
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

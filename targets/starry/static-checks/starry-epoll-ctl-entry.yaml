@@ -32,25 +32,20 @@ target_dependencies:
   symbols:
   - sys_execveat
   scope: symbols
-  file_hash: sha256:41612e40819cf89f7d6c6dd9ccffd9dc8dee0857fb2d200bfdbade9ae036542d
+  file_hash: sha256:6301851cc6d19c4975c007c358870ffe9abbe2be5d349feed357260a44f15aa3
   symbol_hashes:
     sys_execveat: sha256:d6d86dd90f2558edc739dc31bb45261901911a99ef93a17c8203ec6b138102b7
   missing_symbols: []
   content_hash: sha256:053f961d4ed11ae1471e01d9c395601d4516827c0e6271858bdbc775ef05f83a
-- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:17d7a04e1a8a303c1b2023167d9b6092b11aafde6f56442bfa85ef971aade4b1
 - path: os/StarryOS/kernel/src/file/mod.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
-  symbol_hashes: {}
+  symbols:
+  - get_file_like
+  scope: symbols
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
+  symbol_hashes:
+    get_file_like: sha256:4b1186107e4b29232dfcbf933a108fb714647bd7d7dc8e72783b02446330500b
   missing_symbols: []
-  content_hash: sha256:1b1472ac5d08d398db454166f6752cbd71d0f3ce9f7dca73fa9325ffb45852d9
+  content_hash: sha256:18f724599edaeb2e692a6e679fb39a948e4c7752fb9371916bc060b8d8148e30
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -58,13 +53,34 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/file/epoll.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:dfe33890c25e49571df48e70118672f9f641ab2ae03e61a7b5f35f79e1c0cda7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:4d8764964f16001a7332bb9c1ab61d4f4d9137246b720deb7615415d57eb7f72
 - path: os/StarryOS/kernel/src/file/fs.rs
   symbols: []
   scope: file
-  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  file_hash: sha256:6b88c4b7bca793a2f0f67ba75fc20dc5780d693bd22dfad30e631ec6080e1c7a
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:7cc750f1650beea4c4b002e42b33c687e9c9c7ef5bc286d38ad97159eadba7e2
+  content_hash: sha256:5e355d66b281941b2e98d905d37fda8e15967f74fa04e04ddb3a02ddf3a3cf8c
+- path: os/StarryOS/kernel/src/syscall/task/execve.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:6301851cc6d19c4975c007c358870ffe9abbe2be5d349feed357260a44f15aa3
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:5fcf4940ac500dd5d1162358a6e447f95768fa9fc7f44ea99116d888d95d48f1
+- path: os/StarryOS/kernel/src/syscall/fs/stat.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:9d2372abc85208c59d6ff44fd8ec420899bc4a76b6059b4dad247d02cf8076df
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:82fd67788eef94960feed07f6c56f8c98f23bb8ccc2a09222dfa9783c4c34f27
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
   - sys_epoll_create1
@@ -74,22 +90,6 @@ target_dependencies:
     sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
   missing_symbols: []
   content_hash: sha256:8b1f3a635fd16e577f2008b648f0d0e423ee30f9fda039c2e1ed8a1aae3da884
-- path: os/StarryOS/kernel/src/file/mod.rs
-  symbols:
-  - get_file_like
-  scope: symbols
-  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
-  symbol_hashes:
-    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
-  missing_symbols: []
-  content_hash: sha256:a0ac4f88598370fae1b30592b26c7f4bc7ec59aaecd3083ab5a806fd86592985
-- path: os/StarryOS/kernel/src/file/epoll.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:d5211ace3d1bda6f44c007dfd231f44f8059fbc1997424891f1cf8f2a502cdb6
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:a0e4acaf6ae3284af85e4c39ac34a90e122495b558edcacbd32c149d59a25275
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols: []
   scope: file
@@ -101,7 +101,7 @@ target_dependencies:
   symbols:
   - resolve_at
   scope: symbols
-  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  file_hash: sha256:6b88c4b7bca793a2f0f67ba75fc20dc5780d693bd22dfad30e631ec6080e1c7a
   symbol_hashes:
     resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
   missing_symbols: []
@@ -110,18 +110,18 @@ target_dependencies:
   symbols:
   - sys_faccessat2
   scope: symbols
-  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  file_hash: sha256:9d2372abc85208c59d6ff44fd8ec420899bc4a76b6059b4dad247d02cf8076df
   symbol_hashes:
     sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
   missing_symbols: []
   content_hash: sha256:b9d3889e8fbb42df5c189b100603b8ef0b4dc10a215e57e67299745e99c479bd
-- path: os/StarryOS/kernel/src/syscall/task/execve.rs
+- path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
   scope: file
-  file_hash: sha256:41612e40819cf89f7d6c6dd9ccffd9dc8dee0857fb2d200bfdbade9ae036542d
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:c3cb998175e3b1e9dbdb94429aee95905800e94079ea7e8184fd3bb508753dd7
+  content_hash: sha256:c8f617254d0cbbf1be5c046219a9dfc9fb6fef2a19bd0367a55a1d1a08281ed6
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
   - sys_epoll_ctl
@@ -142,5 +142,5 @@ target_dependencies:
     sys_epoll_wait: sha256:35cea4c0b882c6dfb79cbf625e90c08ec1fd9810bec449614cc8cca633ec5507
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
-target_content_fingerprint: sha256:b1802eeb4315757d577fa1d7cbcbd03db33148c64c2c4bd9bb944c1d1d08cb06
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+target_content_fingerprint: sha256:8260a33f8fe30b4ecad27443168394dd7f21cf83b56cc8d114e34838ac929ed6
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

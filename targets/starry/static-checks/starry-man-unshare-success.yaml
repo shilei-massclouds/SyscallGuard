@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_UNSHARE_SUCCESS
+title: unshare commits the prepared context and returns zero
+rule_refs:
+- MAN_F78F49354EA2C4DD
+applies_to_syscalls:
+- unshare
+path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+patterns:
+- label: prepared context is committed before fixed success
+  regex: pub fn sys_unshare[\s\S]*?PreparedUnshare::prepare\(flags, thread\)\?[\s\S]*?prepared\.commit\(thread\);[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_F78F49354EA2C4DD
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:f78f49354ea2c4dd4fc8efc5efbe2dcec9980cb76e4b7bb182a1c864a217dcec
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:45093915ad8cf7f653509019ecd63ddad1c7cbbed8c86be7c9665784ce2f14ed
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:cadaf2a78db1ed3dba953e283da82a18daf77dd8da0cddf22d12bd624559ab77
+target_content_fingerprint: sha256:7eb916ac8b51fd04bccb17334ce9dad0aab40eb5bab068aa3c0b09ed02ea9bee
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

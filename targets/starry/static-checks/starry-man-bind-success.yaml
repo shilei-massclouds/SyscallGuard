@@ -1,0 +1,29 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_BIND_SUCCESS
+title: bind returns zero after each supported socket family binds successfully
+rule_refs:
+- MAN_82592148B6764875
+applies_to_syscalls:
+- bind
+path: os/StarryOS/kernel/src/syscall/net/socket.rs
+patterns:
+- label: netlink and packet binds return zero
+  regex: pub fn sys_bind[\s\S]*?NetlinkSocket::from_fd[\s\S]*?socket\.bind\(addr\)\?;[\s\S]*?return Ok\(0\)[\s\S]*?PacketSocket::from_fd[\s\S]*?packet\.bind_ll\(addr\)\?;[\s\S]*?return
+    Ok\(0\)
+- label: regular socket bind returns zero
+  regex: pub fn sys_bind[\s\S]*?Socket::from_fd\(fd\)\?[\s\S]*?socket\.bind\(addr\)\?[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_82592148B6764875
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:82592148b6764875d13828ae1c0df2f96ccae40ca54bcde36da1db3608c4cfe4
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:21b60b93f65f026adbec72858de2184114e9a4e5f1c0881f8831f94a60c06425
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0e24b68c37911119f215deefaf94e4ecdc227db8ce95a752a752b626424aed15
+target_content_fingerprint: sha256:42dbc3f09b63f15a070ec284abe59bd72dcbf2f170e5ec61474b6f8bd6be1e95
+generated_at_utc: '2026-07-23T03:56:41.509888Z'

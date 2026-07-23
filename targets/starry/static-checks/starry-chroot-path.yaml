@@ -3,6 +3,7 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_CHROOT_PATH
 title: chroot loads and resolves a directory before replacing FsContext
 rule_refs:
+- MAN_2BA50C0DF3547FCF
 - MAN_F6CB9D32040E99BA
 applies_to_syscalls:
 - chroot
@@ -15,26 +16,27 @@ patterns:
 - label: valid directory becomes the new filesystem context
   regex: \*fs = FsContext::new\(loc\);[\s\S]*?Ok\(0\)
 upstream_dependencies:
+- id: MAN_2BA50C0DF3547FCF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:2ba50c0df3547fcf5f115ec991bdc2d5ceecef57d9a0666bab463057a2ab979d
 - id: MAN_F6CB9D32040E99BA
   generated_at_utc: '2026-07-17T05:18:12.210893Z'
   content_hash: sha256:f6cb9d32040e99ba94bc763eb811bd6525692b756fc3d04af406dcbe6c69a122
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
-  symbols:
-  - sys_chroot
-  scope: symbols
-  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
-  symbol_hashes:
-    sys_chroot: sha256:bc9de7a363f6bce3900023d3dbafecd371fdedb2abe005c7f3d86c8ce95072fd
+  symbols: []
+  scope: file
+  file_hash: sha256:de9a17370432776dff53456b2bf05288870b85be725cf2179bca009009fa75b9
+  symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:0a97329e3b3ca8f95f02121663a8a8beffd2a953737185ce7484509d299b37e2
+  content_hash: sha256:0032c87828470839dd8ea3d4cbec2a6efafe3244ef892169c03df4fd4a62fa20
 - path: os/arceos/modules/axfs-ng/src/fs_core/context.rs
   symbols:
   - resolve
   - resolve_inner
   - try_resolve_symlink
   scope: symbols
-  file_hash: sha256:12a2e42cfd5699826f7115c9462b25e3d5ff1aa8d55da4bddb3a21b5ef331d81
+  file_hash: sha256:cd90afa108ae99056f78d50cbbcc8f01958b2872d34a61a97afc30711009f7e0
   symbol_hashes:
     resolve: sha256:14a2b52408caa4b091a4b90ec30e6412155884199bbc592741da38777fc3581a
     resolve_inner: sha256:702d76c45f2ff1046f5d437d0e459366482b7ef2e76b1cfb259d536be7b52cc5
@@ -66,7 +68,7 @@ target_dependencies:
   - resolve_inner
   - try_resolve_symlink
   scope: symbols
-  file_hash: sha256:12a2e42cfd5699826f7115c9462b25e3d5ff1aa8d55da4bddb3a21b5ef331d81
+  file_hash: sha256:cd90afa108ae99056f78d50cbbcc8f01958b2872d34a61a97afc30711009f7e0
   symbol_hashes:
     new: sha256:1bcd2659bab35965fce1fa88342b70b1b804b7030617f1d1236201100770a271
     resolve: sha256:14a2b52408caa4b091a4b90ec30e6412155884199bbc592741da38777fc3581a
@@ -103,19 +105,12 @@ target_dependencies:
   - sys_access
   - sys_faccessat2
   scope: symbols
-  file_hash: sha256:3c84c238555dbca4549363aac6855b7a4a7b920fabe7981eb97eebffd517ccc4
+  file_hash: sha256:9d2372abc85208c59d6ff44fd8ec420899bc4a76b6059b4dad247d02cf8076df
   symbol_hashes:
     sys_access: sha256:e53d5b954a3ef9ff58ed71b80472fb3f2b0ccaa44cb3004d725642a4a4689410
     sys_faccessat2: sha256:2b709c3ba051efeb9d68846547ada28d8b8cac5b8611e1be55b6fce8e6cab756
   missing_symbols: []
   content_hash: sha256:a54fce312aa6a1f336b085bc3620f03cb300748c4b561a5eef4e55d55de13ed0
-- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:a792b678a012108e37743173ef2de96643a9dfcaf5674f5d60d50dfc46b2c9eb
 - path: components/axfs-ng-vfs/src/path.rs
   symbols:
   - verify_entry_name
@@ -129,7 +124,7 @@ target_dependencies:
   symbols:
   - resolve_at
   scope: symbols
-  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  file_hash: sha256:6b88c4b7bca793a2f0f67ba75fc20dc5780d693bd22dfad30e631ec6080e1c7a
   symbol_hashes:
     resolve_at: sha256:ec9e7f57add9a1db10191664fd7c77c9236ea7f33e3df9b43ce8fd66ddc0a01f
   missing_symbols: []
@@ -156,6 +151,15 @@ target_dependencies:
     vm_load_string: sha256:cee098cc352143ede741ebb982ba6d15f7eac71b6667871500b4a5ac4d42bb2e
   missing_symbols: []
   content_hash: sha256:e17a288c5843ae74a5c3e12ef6048c2572a8793b06467613638d615ffc385958
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols:
+  - sys_chroot
+  scope: symbols
+  file_hash: sha256:de9a17370432776dff53456b2bf05288870b85be725cf2179bca009009fa75b9
+  symbol_hashes:
+    sys_chroot: sha256:ccfbdd269f06ecc0d99776af3ec3c5f64d0d871ad1eefdd6814e2f52515d14ac
+  missing_symbols: []
+  content_hash: sha256:eb8215a2e177e74834a476198d512a71d3a83ce4a9908d3b522dc032b2f00239
 - path: os/StarryOS/kernel/src/mm/access.rs
   symbols:
   - vm_load_path_string
@@ -167,5 +171,5 @@ target_dependencies:
     vm_load_string: sha256:cee098cc352143ede741ebb982ba6d15f7eac71b6667871500b4a5ac4d42bb2e
   missing_symbols: []
   content_hash: sha256:f6fdd2214052ea5f56fef51f35d895763600c89e1aba847f54432d0346f2d3d4
-target_content_fingerprint: sha256:821b05445bdd47e81a979e4ca0ad144e8d4070a7b99fe96a74e257ff795e04b5
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+target_content_fingerprint: sha256:232198564b9359949c238021e41219b817d3745da7480e9bae2698f9ab0b2bf6
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

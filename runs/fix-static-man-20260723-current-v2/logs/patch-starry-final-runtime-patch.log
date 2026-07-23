@@ -1,0 +1,9 @@
+error: test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/CMakeLists.txt: already exists in working directory
+error: test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c: already exists in working directory
+error: test-suit/starryos/qemu/system/syscallguard-final-mount-runtime/CMakeLists.txt: already exists in working directory
+error: test-suit/starryos/qemu/system/syscallguard-final-mount-runtime/src/main.c: already exists in working directory
+error: test-suit/starryos/qemu/system/syscallguard-final-wait-runtime/CMakeLists.txt: already exists in working directory
+error: test-suit/starryos/qemu/system/syscallguard-final-wait-runtime/src/main.c: already exists in working directory
+error: patch failed: test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c:1
+error: test-suit/starryos/qemu/system/syscallguard-final-fs-runtime/src/main.c: patch does not apply
+dynamic test patch is superseded; all selected test sources are already present

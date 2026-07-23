@@ -1,0 +1,40 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_MODULE_SUCCESS
+title: implemented module operations return zero after their core operation succeeds
+rule_refs:
+- MAN_6DCBB46C48EC79F8
+- MAN_B05C5A299862E91C
+- MAN_B05C5A299862E91C--b05c5a299862
+applies_to_syscalls:
+- delete_module
+- finit_module
+- init_module
+path: os/StarryOS/kernel/src/syscall/kmod.rs
+patterns:
+- label: init_module returns zero after loading
+  regex: pub fn sys_init_module[\s\S]*?crate::kmod::init_module\([\s\S]*?\)\?;[\s\S]*?Ok\(0\)
+- label: finit_module returns zero after loading
+  regex: pub fn sys_finit_module[\s\S]*?crate::kmod::init_module\([\s\S]*?\)\?;[\s\S]*?Ok\(0\)
+- label: delete_module returns zero after deletion
+  regex: pub fn sys_delete_module[\s\S]*?crate::kmod::delete_module\(&name\)\?;[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_6DCBB46C48EC79F8
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:6dcbb46c48ec79f853074c5836b44639a700b48b7a1c93ecc76da215c815a851
+- id: MAN_B05C5A299862E91C
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:336e37e59b81c2845fac47f499c1571d304d9d41dd72d88abb537ef39c6c482e
+- id: MAN_B05C5A299862E91C--b05c5a299862
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:b05c5a299862e91c448343bd3888f0c5db80438e0cbd2e83a76f3106abdb1fcb
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:5b4873daaa16f851ce0d9f1a636a78e4378b26db51bc68766b8f9dcec07b941d
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:412018efb9abeb185c86099e2cb2bac51c7b08099f5ce29e508460d0932b7c43
+target_content_fingerprint: sha256:f04fc78c46ea7654520c21bb16789e27db4306783b0fe2c499f7fe3de5745054
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

@@ -99,6 +99,20 @@ man-pages。它要求 descriptor 提供 `adapter: man_pages`、`location`、`lin
 `--branch <专用分支> --run-id <mapping-id>` 交给 mapping finalizer 原子发布。该流程只读
 Starry 目标工作树，并固定使用 `static-only`，不会创建动态测试。
 
+完成一个纯静态批次后，可相对冻结的 mapping 基线生成增量收口报告：
+
+```bash
+python3 tools/report_static_closure.py \
+  --baseline <baseline-mapping-id> \
+  --final <final-mapping-id> \
+  --run-id <static-closure-id> \
+  --fix-run <successful-fix-run-id>
+```
+
+报告只读取 active 规则和一级静态检查索引，分别统计新候选、新映射、rule→check 关系、
+新增/复用/更新检查实体和去重后的 fixed finding；最终 mapping 若遗漏任一 active Manual
+静态候选，工具会拒绝发布。未产生成功修复时可省略 `--fix-run`，多个成功修复批次可重复传入。
+
 ## 注意
 
 - 五个 SKILL 相互独立；快速开始中的后续步骤不会自动执行。

@@ -5,6 +5,7 @@ title: close_range ignores absent descriptors and closes present descriptors in 
 rule_refs:
 - LTP_76BFF56F735A0074
 - LTP_F4DE81D703447628
+- MAN_2D25F3BCC51E9E86
 applies_to_syscalls:
 - close_range
 path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
@@ -21,22 +22,25 @@ upstream_dependencies:
 - id: LTP_F4DE81D703447628
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:f4de81d70344762893139769a2724588ddb7213c4667529ce501948b3b6b43c5
+- id: MAN_2D25F3BCC51E9E86
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:2d25f3bcc51e9e8668b8975407c689d8a4dcb94f064cca32da41f12a1b2c4a66
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols:
   - sys_close_range
   scope: symbols
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
   symbol_hashes:
-    sys_close_range: sha256:7c6451c5a5b1ae0b87827be48057fc21b8957da656ec859a28bbefb5d217f971
+    sys_close_range: sha256:3032573954b10dee2dc8b20690b6cd0cf818d78593d91b01ca737287667eb4b2
   missing_symbols: []
-  content_hash: sha256:3f9d9533f67b0d6df032ca2249b938b9ae788a6c27f7063128f8e835f5538952
+  content_hash: sha256:65ab0ed0d4cbce1a5ea2f4eb2cf10256cc941e3dce25c048e2775bc0b3e391a5
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols: []
   scope: file
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
-target_content_fingerprint: sha256:7a2abd1815ef9c2a5534b288a2285df2913faf6eab2f22931332df7ea59f4e27
-generated_at_utc: '2026-07-17T05:27:45.361967Z'
+  content_hash: sha256:77d44e25d84e08208d0809fd36486354402ef6fe8d71653bdcd9a2e0de199af7
+target_content_fingerprint: sha256:e9e1630cf220d1c0c32fe687e6478b50db2fc0511f77fe4979bab21adff5e516
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

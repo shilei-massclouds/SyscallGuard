@@ -6,11 +6,16 @@ kind: syscallguard_starry_man_static_check_catalog
 # without duplicating the check itself.
 existing_check_refs:
   STARRY_CHROOT_PATH:
+  - MAN_2BA50C0DF3547FCF
   - MAN_F6CB9D32040E99BA
   STARRY_CLOSE_FD_TABLE:
   - MAN_23E25F7C4136339F
   STARRY_CLOSE_SYSCALL:
   - MAN_494CD34A8C11734B
+  STARRY_CLOSE_RANGE_SWEEP:
+  - MAN_2D25F3BCC51E9E86
+  STARRY_CLOSE_RANGE_VALIDATION:
+  - MAN_FB2AAE15BE87AA16
   STARRY_CONNECT_ADDRESS_VALIDATION:
   - MAN_392816F25BD330A2
   - MAN_524B615D8F9A7E12
@@ -28,6 +33,7 @@ existing_check_refs:
   - MAN_DBD043A36C2E4926
   - MAN_FDD174E970AC7930
   STARRY_DUP_BEHAVIOR:
+  - MAN_18D7BFF5ED1AAF47--18d7bff5ed1a
   - MAN_794294DBD03CA974--794294dbd03c
   STARRY_DUP2_DUP3_BEHAVIOR:
   - MAN_794294DBD03CA974
@@ -37,6 +43,9 @@ existing_check_refs:
   - MAN_6B7EED8E43FDD1BA
   STARRY_EPOLL_CTL_ENTRY:
   - MAN_DADCFA23F461FBBF
+  STARRY_EPOLL_CTL_INTEREST:
+  - MAN_463AA50F45210CB8
+  - MAN_838355DDB1BE708E
   STARRY_EPOLL_FD_LOOKUP:
   - MAN_E32B6349055FCEF9
   STARRY_EPOLL_NESTED_LOOP:
@@ -51,11 +60,26 @@ existing_check_refs:
   - MAN_5B2667DFDCB4EB31
   STARRY_FCHMODAT_FLAG_VALIDATION:
   - MAN_9A17C8A141B47D41
+  STARRY_FD_TABLE_LOOKUP_ALLOCATION:
+  - MAN_7F34A257DE64CAFE--7f34a257de64
+  STARRY_FINAL_SYSINFO_COPYOUT:
+  - MAN_AA342D41284C8043
   STARRY_FINAL_TIMER_DELETE:
   - MAN_95930C2D369C878D
   - MAN_AF1D093225F75E82
+  STARRY_FINAL_UMOUNT_MOUNTPOINT:
+  - MAN_3BA310149156EEEB
+  STARRY_FINAL_UMOUNT_PRIVILEGE:
+  - MAN_06DC94E90357CD37
+  STARRY_FINAL_UMOUNT_USER_PATH:
+  - MAN_E619B3D21855BAD1
+  STARRY_FINAL_UNAME_COPYOUT:
+  - MAN_DB49E539DD5F962B
+  - MAN_E770DAFD189C2AA6
   STARRY_FINAL_UNSHARE_FLAG_VALIDATION:
   - MAN_B4DD5B60F33FC5E3
+  STARRY_FINAL_WAITID_OPTIONS:
+  - MAN_1034AB80AF5590DD
   STARRY_FINIT_MODULE_FLAG_VALIDATION:
   - MAN_2421026C912D8F9E--2421026c912d
   STARRY_MMAP_ARGUMENTS:
@@ -100,6 +124,8 @@ existing_check_refs:
   - MAN_F12635B7646C0E9B
   STARRY_ROUND5_SCHED_YIELD:
   - MAN_254F60FBFDA7A2BB
+  STARRY_ROUND5_SIGNALFD_FLAGS:
+  - MAN_CC49DE83F3AA9ACF
   STARRY_ROUND5_SETPGID_NEGATIVE:
   - MAN_44D6BD8077F837B5
   STARRY_ROUND5_SETPRIORITY_SELECTOR:
@@ -351,7 +377,7 @@ checks:
   path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
   patterns:
   - label: non-regular file mappings are translated to EACCES
-    regex: 'file_mmap\(\)\.map_err\(\|_\| AxError::PermissionDenied\)\?'
+    regex: 'file_mmap\(\)[\s\S]*?\.map_err\(\|_\| AxError::PermissionDenied\)\?'
   - label: all file mappings require read access
     regex: 'if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied'
   - label: shared writable mappings require write access
@@ -419,3 +445,129 @@ checks:
     regex: 'pub fn sys_socketpair[\s\S]*?\*fds\.get_as_mut\(\)\? = \['
   - label: successful pair creation returns zero
     regex: 'pub fn sys_socketpair[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_BIND_SUCCESS
+  title: bind returns zero after each supported socket family binds successfully
+  rule_refs:
+  - MAN_82592148B6764875
+  applies_to_syscalls: [bind]
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: netlink and packet binds return zero
+    regex: 'pub fn sys_bind[\s\S]*?NetlinkSocket::from_fd[\s\S]*?socket\.bind\(addr\)\?;[\s\S]*?return Ok\(0\)[\s\S]*?PacketSocket::from_fd[\s\S]*?packet\.bind_ll\(addr\)\?;[\s\S]*?return Ok\(0\)'
+  - label: regular socket bind returns zero
+    regex: 'pub fn sys_bind[\s\S]*?Socket::from_fd\(fd\)\?[\s\S]*?socket\.bind\(addr\)\?[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_CHDIR_ARGUMENTS
+  title: chdir checks the user path and returns zero after updating cwd
+  rule_refs:
+  - MAN_05C23E092147A21E--05c23e092147
+  - MAN_E116073D3FDB5C1F--e116073d3fdb
+  applies_to_syscalls: [chdir]
+  path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  patterns:
+  - label: path loading uses checked user memory
+    regex: 'pub fn sys_chdir[\s\S]*?vm_load_path_string\(path\)\?'
+  - label: a successful directory update returns zero
+    regex: 'pub fn sys_chdir[\s\S]*?fs\.set_current_dir\(entry\)\?[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_MODULE_USER_MEMORY
+  title: module syscalls read their user buffers and strings through checked access
+  rule_refs:
+  - MAN_0394E66422CE04BA
+  - MAN_D69AA1715418F1C3
+  - MAN_D69AA1715418F1C3--d69aa1715418
+  applies_to_syscalls: [delete_module, finit_module, init_module]
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: init_module checks image bytes and optional parameters
+    regex: 'pub fn sys_init_module[\s\S]*?VmBytes::new\(module_ptr[\s\S]*?module_buf\.read\(&mut module_data\)\?[\s\S]*?vm_load_string\(param_ptr as _\)\?'
+  - label: finit_module checks optional parameters
+    regex: 'pub fn sys_finit_module[\s\S]*?vm_load_string\(param_ptr as _\)\?'
+  - label: delete_module checks the module name
+    regex: 'pub fn sys_delete_module[\s\S]*?vm_load_string\(name_ptr as _\)\?'
+
+- check_id: STARRY_MAN_MODULE_SUCCESS
+  title: implemented module operations return zero after their core operation succeeds
+  rule_refs:
+  - MAN_6DCBB46C48EC79F8
+  - MAN_B05C5A299862E91C
+  - MAN_B05C5A299862E91C--b05c5a299862
+  applies_to_syscalls: [delete_module, finit_module, init_module]
+  path: os/StarryOS/kernel/src/syscall/kmod.rs
+  patterns:
+  - label: init_module returns zero after loading
+    regex: 'pub fn sys_init_module[\s\S]*?crate::kmod::init_module\([\s\S]*?\)\?;[\s\S]*?Ok\(0\)'
+  - label: finit_module returns zero after loading
+    regex: 'pub fn sys_finit_module[\s\S]*?crate::kmod::init_module\([\s\S]*?\)\?;[\s\S]*?Ok\(0\)'
+  - label: delete_module returns zero after deletion
+    regex: 'pub fn sys_delete_module[\s\S]*?crate::kmod::delete_module\(&name\)\?;[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_FADVISE64_VALIDATION
+  title: fadvise64 validates the object kind and advice and returns zero
+  rule_refs:
+  - MAN_1E7A18D70D0A3428
+  - MAN_80D85D82B47F304D
+  - MAN_E9F079A1D7478DB3
+  applies_to_syscalls: [fadvise64]
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: pipes and other unsupported fd kinds return ESPIPE
+    regex: 'pub fn sys_fadvise64[\s\S]*?downcast_ref::<File>[\s\S]*?downcast_ref::<Directory>[\s\S]*?downcast_ref::<Memfd>[\s\S]*?LinuxError::ESPIPE'
+  - label: advice values above the supported enum return EINVAL
+    regex: 'pub fn sys_fadvise64[\s\S]*?if advice > 5[\s\S]*?AxError::InvalidInput'
+  - label: valid advice returns zero
+    regex: 'pub fn sys_fadvise64[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_FTRUNCATE_SUCCESS
+  title: ftruncate returns zero after memfd or regular-file truncation succeeds
+  rule_refs:
+  - MAN_5C52DBC7100B1A0C--5c52dbc7100b
+  applies_to_syscalls: [ftruncate]
+  path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  patterns:
+  - label: sealed memfd truncation returns zero on success
+    regex: 'pub fn sys_ftruncate[\s\S]*?memfd\.set_len_sealed\(length as u64\)\?;[\s\S]*?return Ok\(0\)'
+  - label: regular-file truncation returns zero on success
+    regex: 'pub fn sys_ftruncate[\s\S]*?access\(FileFlags::WRITE\)\?\.set_len\(length as _\)\?;[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_SIGNALFD_SUCCESS
+  title: signalfd4 returns the updated or newly allocated descriptor
+  rule_refs:
+  - MAN_4CF2EE50643C6D9A
+  applies_to_syscalls: [signalfd4]
+  path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+  patterns:
+  - label: existing descriptors are updated and returned
+    regex: 'pub fn sys_signalfd4[\s\S]*?signalfd\.update_mask\(mask\)[\s\S]*?return Ok\(fd as _\)'
+  - label: new descriptors are allocated and returned
+    regex: 'pub fn sys_signalfd4[\s\S]*?add_file_like\(signalfd as _,[\s\S]*?\.map\(\|fd\| fd as _\)'
+
+- check_id: STARRY_MAN_UMOUNT2_ARGUMENTS
+  title: umount2 validates flags, expiry combinations, and fixed results
+  rule_refs:
+  - MAN_31D07EC9847501EF
+  - MAN_3F7E04D796AED484
+  - MAN_B579CA52E8AA4E73
+  - MAN_B776E385902BFBDD
+  applies_to_syscalls: [umount2]
+  path: os/StarryOS/kernel/src/syscall/fs/mount.rs
+  patterns:
+  - label: unknown flag bits return EINVAL
+    regex: 'pub fn sys_umount2[\s\S]*?flags & !VALID_UMOUNT_FLAGS[\s\S]*?AxError::InvalidInput'
+  - label: MNT_EXPIRE conflicts return EINVAL
+    regex: 'flags & MNT_EXPIRE[\s\S]*?flags & \(MNT_FORCE \| MNT_DETACH\)[\s\S]*?AxError::InvalidInput'
+  - label: first successful expiry marking returns EAGAIN
+    regex: 'flags & MNT_EXPIRE[\s\S]*?!target\.mountpoint\(\)\.mark_expired\(\)[\s\S]*?LinuxError::EAGAIN'
+  - label: detach and regular unmount success return zero
+    regex: 'flags & MNT_DETACH[\s\S]*?target\.detach_mount\(\)\?;[\s\S]*?return Ok\(0\)[\s\S]*?target\.unmount\(\)\?[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_UNSHARE_SUCCESS
+  title: unshare commits the prepared context and returns zero
+  rule_refs:
+  - MAN_F78F49354EA2C4DD
+  applies_to_syscalls: [unshare]
+  path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+  patterns:
+  - label: prepared context is committed before fixed success
+    regex: 'pub fn sys_unshare[\s\S]*?PreparedUnshare::prepare\(flags, thread\)\?[\s\S]*?prepared\.commit\(thread\);[\s\S]*?Ok\(0\)'

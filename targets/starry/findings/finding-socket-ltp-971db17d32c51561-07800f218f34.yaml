@@ -1,0 +1,67 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-socket-ltp-971db17d32c51561-07800f218f34
+syscall: socket
+rule_id: LTP_971DB17D32C51561
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: fixed
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  evidence:
+    check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+    rule_refs:
+    - LTP_971DB17D32C51561
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/net/socket.rs
+    patterns:
+    - label: unsupported type in a supported domain is invalid input
+      regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK,
+        _\) \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn
+        sys_bind
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t031024z-f246e61e
+  evidence_kind: static
+  source_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  evidence:
+    check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+    rule_refs:
+    - LTP_971DB17D32C51561
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/net/socket.rs
+    patterns:
+    - label: unsupported type in a supported domain is invalid input
+      regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK,
+        _\) \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn
+        sys_bind
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+- check_report_id: check-20260723t034836z-32b53991
+  evidence_kind: static
+  source_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+  evidence:
+    check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
+    rule_refs:
+    - LTP_971DB17D32C51561
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/net/socket.rs
+    patterns:
+    - label: unsupported type in a supported domain is invalid input
+      regex: pub fn sys_socket\([\s\S]*?\(AF_INET \| AF_INET6, _\) \| \(AF_UNIX, _\) \| \(AF_NETLINK,
+        _\) \| \(AF_VSOCK, _\) => \{[\s\S]*?return Err\(AxError::InvalidInput\);[\s\S]*?\n\}\n\npub fn
+        sys_bind
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:50:59.099647Z'
+upstream_dependencies:
+- id: fix-finding-socket-ltp-971db17d32c51561-07800f218f34
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:85caf4bb07c480992e4d99072413428bcbe2c8d818d8081c34b1c01e4767d2d5
+fix_ref: fix-finding-socket-ltp-971db17d32c51561-07800f218f34
+fixed_by_run: fix-static-man-20260723-current-v3

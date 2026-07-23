@@ -391,9 +391,25 @@ def validate_mapping_reports(
             errors.append(f"invalid mapping report identity: {path.relative_to(ROOT)}")
             continue
         reports[report_id] = value
-        extras = [item.name for item in path.parent.iterdir() if item.name != "report.md"]
+        allowed_artifacts = {"report.md", "static-closure-baseline.yaml"}
+        extras = [
+            item.name for item in path.parent.iterdir() if item.name not in allowed_artifacts
+        ]
         if extras:
             errors.append(f"mapping report directory {report_id} has extra artifacts: {sorted(extras)}")
+        baseline_path = path.parent / "static-closure-baseline.yaml"
+        if baseline_path.is_file():
+            baseline = load(baseline_path, errors)
+            check_ids = baseline.get("active_static_check_ids") if isinstance(baseline, dict) else None
+            if (
+                not isinstance(baseline, dict)
+                or baseline.get("kind") != "syscallguard_static_closure_baseline"
+                or baseline.get("report_id") != report_id
+                or not isinstance(check_ids, list)
+                or any(not isinstance(item, str) for item in check_ids)
+                or len(check_ids) != len(set(check_ids))
+            ):
+                errors.append(f"invalid static closure baseline: {baseline_path.relative_to(ROOT)}")
         if not isinstance(value.get("generated_at_utc"), str):
             errors.append(f"mapping report {report_id} has no generated_at_utc")
         if not isinstance(value.get("rule_index_hash"), str):
@@ -461,6 +477,72 @@ def validate_mapping_reports(
                 entity
             ):
                 errors.append(f"latest mapping report has stale rule version for {rule_id}")
+    return reports
+
+
+def validate_static_closure_reports(
+    errors: list[str], mapping_reports: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    for path in sorted((ROOT / "runs").glob("static-closure-*/report.md")):
+        value = frontmatter(path, errors)
+        if not isinstance(value, dict):
+            continue
+        report_id = path.parent.name
+        if (
+            value.get("kind") != "syscallguard_static_closure_report"
+            or value.get("report_id") != report_id
+            or value.get("status") != "completed"
+            or not isinstance(value.get("generated_at_utc"), str)
+        ):
+            errors.append(f"invalid static closure report identity: {path.relative_to(ROOT)}")
+            continue
+        reports[report_id] = value
+        extras = [item.name for item in path.parent.iterdir() if item.name != "report.md"]
+        if extras:
+            errors.append(
+                f"static closure report directory {report_id} has extra artifacts: {sorted(extras)}"
+            )
+        for section in ("baseline", "final"):
+            row = value.get(section)
+            mapping_id = row.get("report_id") if isinstance(row, dict) else None
+            if not isinstance(mapping_id, str) or mapping_id not in mapping_reports:
+                errors.append(f"static closure report {report_id} has invalid {section} mapping")
+        metrics = value.get("metrics")
+        if not isinstance(metrics, dict):
+            errors.append(f"static closure report {report_id} has no metrics")
+            continue
+        counted_lists = (
+            ("new_static_candidate_rules", "rule_ids"),
+            ("newly_mapped_manual_rules", "rule_ids"),
+            ("new_rule_check_edges", "edges"),
+            ("new_static_check_entities", "check_ids"),
+            ("fixed_starry_findings", "finding_ids"),
+        )
+        for metric_name, list_name in counted_lists:
+            metric = metrics.get(metric_name)
+            rows = metric.get(list_name) if isinstance(metric, dict) else None
+            if (
+                not isinstance(metric, dict)
+                or not isinstance(metric.get("count"), int)
+                or not isinstance(rows, list)
+                or metric["count"] != len(rows)
+            ):
+                errors.append(
+                    f"static closure report {report_id} has invalid {metric_name} count"
+                )
+        checks = metrics.get("new_static_check_entities", {})
+        for prefix in ("reused", "updated"):
+            ids = checks.get(f"{prefix}_check_ids") if isinstance(checks, dict) else None
+            if (
+                not isinstance(ids, list)
+                or checks.get(f"{prefix}_count") != len(ids)
+            ):
+                errors.append(
+                    f"static closure report {report_id} has invalid {prefix} check count"
+                )
+        if value.get("final_dynamic_execution_scope_count") != 0:
+            errors.append(f"static closure report {report_id} has dynamic execution scope")
     return reports
 
 
@@ -984,6 +1066,7 @@ def main() -> int:
     validate_syscall_index(errors, rules)
     reports = validate_reports(errors)
     mapping_reports = validate_mapping_reports(errors, rules)
+    closure_reports = validate_static_closure_reports(errors, mapping_reports)
     check_reports = validate_check_reports(errors, mapping_reports)
     runs = validate_runs(errors, check_reports)
     shared_entities = validate_indexes(errors)
@@ -1001,7 +1084,8 @@ def main() -> int:
     print(
         f"skills={len(SKILLS)} ingest_reports={len(reports)} "
         f"mapping_reports={len(mapping_reports)} check_reports={len(check_reports)} "
-        f"rules={len(rules)} fix_runs={len(runs)}"
+        f"static_closure_reports={len(closure_reports)} rules={len(rules)} "
+        f"fix_runs={len(runs)}"
     )
     return 0
 

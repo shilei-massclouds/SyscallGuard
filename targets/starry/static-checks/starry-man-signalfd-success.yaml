@@ -1,0 +1,28 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SIGNALFD_SUCCESS
+title: signalfd4 returns the updated or newly allocated descriptor
+rule_refs:
+- MAN_4CF2EE50643C6D9A
+applies_to_syscalls:
+- signalfd4
+path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+patterns:
+- label: existing descriptors are updated and returned
+  regex: pub fn sys_signalfd4[\s\S]*?signalfd\.update_mask\(mask\)[\s\S]*?return Ok\(fd as _\)
+- label: new descriptors are allocated and returned
+  regex: pub fn sys_signalfd4[\s\S]*?add_file_like\(signalfd as _,[\s\S]*?\.map\(\|fd\| fd as _\)
+upstream_dependencies:
+- id: MAN_4CF2EE50643C6D9A
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:4cf2ee50643c6d9a795a25165bb59ec814b5d3b037eb6b82babf9370ac23fd6e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:b8be77d26bb765cf8415302a9d5321d62fc33f96f7856d55f9e69da5a5fdb958
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:36d67dec1b6e084abd53d9099256a7a894ee427672d8d21d67c7f44930f714e1
+target_content_fingerprint: sha256:ccad4ad98cc0651c85607f61badd8c9b30fc069e98b5669b1f0d24e83ccabeb7
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

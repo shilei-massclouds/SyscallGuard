@@ -1,0 +1,44 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_UMOUNT2_ARGUMENTS
+title: umount2 validates flags, expiry combinations, and fixed results
+rule_refs:
+- MAN_31D07EC9847501EF
+- MAN_3F7E04D796AED484
+- MAN_B579CA52E8AA4E73
+- MAN_B776E385902BFBDD
+applies_to_syscalls:
+- umount2
+path: os/StarryOS/kernel/src/syscall/fs/mount.rs
+patterns:
+- label: unknown flag bits return EINVAL
+  regex: pub fn sys_umount2[\s\S]*?flags & !VALID_UMOUNT_FLAGS[\s\S]*?AxError::InvalidInput
+- label: MNT_EXPIRE conflicts return EINVAL
+  regex: flags & MNT_EXPIRE[\s\S]*?flags & \(MNT_FORCE \| MNT_DETACH\)[\s\S]*?AxError::InvalidInput
+- label: first successful expiry marking returns EAGAIN
+  regex: flags & MNT_EXPIRE[\s\S]*?!target\.mountpoint\(\)\.mark_expired\(\)[\s\S]*?LinuxError::EAGAIN
+- label: detach and regular unmount success return zero
+  regex: flags & MNT_DETACH[\s\S]*?target\.detach_mount\(\)\?;[\s\S]*?return Ok\(0\)[\s\S]*?target\.unmount\(\)\?[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_31D07EC9847501EF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:31d07ec9847501ef65583c013cf8d12d90a143252bbedcb3b91539a6434a6d29
+- id: MAN_3F7E04D796AED484
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:3f7e04d796aed484fbcc1ae50485f81d2ff7781087d32606701174e08a5486d0
+- id: MAN_B579CA52E8AA4E73
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:b579ca52e8aa4e7345220e5754c6a7d6604ed8f9cdca0b3864874c152b848f8e
+- id: MAN_B776E385902BFBDD
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:b776e385902bfbdd518cd4ec4f67b868c079d901a924c09939de6a69b454d389
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/mount.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3836cf9bfbcd1bb8b449668d3bafa130911db83811881c6ea8f56822cb8cb347
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c68fb93e0db217b8358fe9d0c0c53760ff28a8161a07589076e3f0e66e504222
+target_content_fingerprint: sha256:bdc6151868fa29070a1b6f06b2d5fb9bab8efe6ef9a9eceaedad11b570202901
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

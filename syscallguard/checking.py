@@ -266,6 +266,8 @@ def _extend_revalidation_scope(
     findings: dict[str, dict[str, Any]],
     current_snapshot: str,
     current_branch: str,
+    *,
+    allowed_evidence_kinds: set[str] | None = None,
 ) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """Add sources for old snapshots or findings lacking current-branch evidence."""
     added = {"rules": set(), "static_checks": set(), "dynamic_tests": set()}
@@ -296,6 +298,11 @@ def _extend_revalidation_scope(
         if not needs_revalidation:
             continue
         for evidence_kind, source_id in sorted(_finding_sources(finding)):
+            if (
+                allowed_evidence_kinds is not None
+                and evidence_kind not in allowed_evidence_kinds
+            ):
+                continue
             section = "static_checks" if evidence_kind == "static" else "dynamic_tests"
             directory = (
                 "targets/starry/static-checks"
@@ -444,8 +451,35 @@ def _apply_test_patches(
             blocked_tests.update(test_ids)
             continue
         result = git(worktree, ["apply", "--whitespace=nowarn", str(patch)], check=False)
-        atomic_write_text(log_path, result.stdout + result.stderr)
+        log = result.stdout + result.stderr
         if result.returncode != 0:
+            reverse = git(
+                worktree,
+                ["apply", "--reverse", "--check", "--whitespace=nowarn", str(patch)],
+                check=False,
+            )
+            log += reverse.stdout + reverse.stderr
+            if reverse.returncode == 0:
+                atomic_write_text(log_path, log + "dynamic test patch is already present\n")
+                continue
+            existing_sources = []
+            for test_id in test_ids:
+                source = tests[test_id].get("test_source")
+                if not isinstance(source, str) or not source:
+                    break
+                source_path = worktree / safe_relative_path(source)
+                if not source_path.is_file():
+                    break
+                existing_sources.append(source)
+            else:
+                atomic_write_text(
+                    log_path,
+                    log
+                    + "dynamic test patch is superseded; all selected test sources "
+                    + "are already present\n",
+                )
+                continue
+            atomic_write_text(log_path, log)
             blockers.append(
                 {
                     "kind": "test_injection",
@@ -456,6 +490,7 @@ def _apply_test_patches(
             )
             blocked_tests.update(test_ids)
         else:
+            atomic_write_text(log_path, log)
             applied.add(patch_value)
     return blocked_tests, blockers, applied
 
@@ -1271,8 +1306,18 @@ def run_check(
             root, mapped_snapshot
         )
         entities = {kind: dict(rows) for kind, rows in base_entities.items()}
+        allowed_revalidation_kinds = (
+            {"static"}
+            if mapping_report.get("coverage_mode") == "static-only"
+            else {"static", "dynamic"}
+        )
         revalidation_scope, unresolved_revalidation = _extend_revalidation_scope(
-            root, entities, open_findings, mapped_snapshot, mapped_branch
+            root,
+            entities,
+            open_findings,
+            mapped_snapshot,
+            mapped_branch,
+            allowed_evidence_kinds=allowed_revalidation_kinds,
         )
         historical_regression_scope, unresolved_historical_regressions = (
             _extend_revalidation_scope(
@@ -1281,6 +1326,7 @@ def run_check(
                 historical_fixed_findings,
                 mapped_snapshot,
                 mapped_branch,
+                allowed_evidence_kinds=allowed_revalidation_kinds,
             )
         )
         hashes = {

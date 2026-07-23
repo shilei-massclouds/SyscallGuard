@@ -1,7 +1,52 @@
 schema_version: 1
 kind: syscallguard_starry_finding_index
-updated_at_utc: '2026-07-16T13:52:36.624532Z'
+updated_at_utc: '2026-07-23T03:57:41.391643Z'
 entities:
+- id: finding-close-ltp-09b39e9c9254ecb2-07800f218f34
+  path: targets/starry/findings/finding-close-ltp-09b39e9c9254ecb2-07800f218f34.yaml
+  syscall: close
+  rule_id: LTP_09B39E9C9254ECB2
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:07596ecc2a0a2c9f8de70051327d5f5f767fe7bd2e782657dd6e90401ffa3a96
+- id: finding-close-ltp-2bde60c0e64b4dc8-07800f218f34
+  path: targets/starry/findings/finding-close-ltp-2bde60c0e64b4dc8-07800f218f34.yaml
+  syscall: close
+  rule_id: LTP_2BDE60C0E64B4DC8
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:adb0074668c33012f3e824762c2f20470bf8feacfdd996f9e307adb2500a0a3a
+- id: finding-close-ltp-bf2428964add116f-07800f218f34
+  path: targets/starry/findings/finding-close-ltp-bf2428964add116f-07800f218f34.yaml
+  syscall: close
+  rule_id: LTP_BF2428964ADD116F
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:156fa5222bef7f964cc1b562e71d9f1356b4c4a6873225e49f76845c0420a4a5
+- id: finding-close-ltp-e520e500ab3ae851-07800f218f34
+  path: targets/starry/findings/finding-close-ltp-e520e500ab3ae851-07800f218f34.yaml
+  syscall: close
+  rule_id: LTP_E520E500AB3AE851
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:379256e825c23a741bb333a01870d24fa5bf359bb477822e1b2cf8ac1535f0bc
+- id: finding-close-man-23e25f7c4136339f-07800f218f34
+  path: targets/starry/findings/finding-close-man-23e25f7c4136339f-07800f218f34.yaml
+  syscall: close
+  rule_id: MAN_23E25F7C4136339F
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:af7c5a7cc8df4c6ba9e583615ad3318d331a3ff71ba3bf5dbdd899f024d76ceb
 - id: finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/findings/finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
   syscall: close_range
@@ -38,6 +83,51 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-15T10:48:47.469083Z'
   content_hash: sha256:699f276e4d20fb528e40dd6c5279a108a940cee40e421af2968ac700e1d588c3
+- id: finding-dup-ltp-511185d6de2a63a0-07800f218f34
+  path: targets/starry/findings/finding-dup-ltp-511185d6de2a63a0-07800f218f34.yaml
+  syscall: dup
+  rule_id: LTP_511185D6DE2A63A0
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:0a20d969a33d0dd6e78d831dab1676769e617d1caa3cd3d5a2ff886a753679f2
+- id: finding-dup-ltp-84dbe108a850e845-07800f218f34
+  path: targets/starry/findings/finding-dup-ltp-84dbe108a850e845-07800f218f34.yaml
+  syscall: dup
+  rule_id: LTP_84DBE108A850E845
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:07164ce4d03b5dc8146f0a9071fd1a2aecba2f0ccdcf80b9b8ea10e0391f6b5a
+- id: finding-dup-ltp-a774fc10727e8ed2-07800f218f34
+  path: targets/starry/findings/finding-dup-ltp-a774fc10727e8ed2-07800f218f34.yaml
+  syscall: dup
+  rule_id: LTP_A774FC10727E8ED2
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:9ada7cd4928997848e6187c627003c5f2e3577fd11571e6524453418919bf2fa
+- id: finding-dup-ltp-ed2ba909df79625a-07800f218f34
+  path: targets/starry/findings/finding-dup-ltp-ed2ba909df79625a-07800f218f34.yaml
+  syscall: dup
+  rule_id: LTP_ED2BA909DF79625A
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:bf78f52e529c8c1a89c03c70402e9da876a97c06adaf934006b161f4000df645
+- id: finding-epoll-ctl-ltp-4953fad330ade150-07800f218f34
+  path: targets/starry/findings/finding-epoll-ctl-ltp-4953fad330ade150-07800f218f34.yaml
+  syscall: epoll_ctl
+  rule_id: LTP_4953FAD330ADE150
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:820cf539b2d63225bbaa53e6ff290754030c511e46605dd5053410c79dc1fb20
 - id: finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55
   path: targets/starry/findings/finding-epoll-ctl-ltp-66c670178b06e9f3-a166ddf02b55.yaml
   syscall: epoll_ctl
@@ -74,6 +164,24 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-16T03:48:12.083545Z'
   content_hash: sha256:f723838d8222f9b5817421ca11fc90b5a88706de9b04e54b21696e4ae6a95cc3
+- id: finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+  path: targets/starry/findings/finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34.yaml
+  syscall: mmap
+  rule_id: MAN_18C5488E8D09D6D2--18c5488e8d09
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:f8c201279f1636176df5aadf7f5f07005270efcfa6430d1933d07161945d984d
+- id: finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+  path: targets/starry/findings/finding-seccomp-man-b9ee0f176b92f526-07800f218f34.yaml
+  syscall: seccomp
+  rule_id: MAN_B9EE0F176B92F526
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:bc075e281649bcaadb7ce886564ad9ec42025bcd30deae53346a42854a1a8a5f
 - id: finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
   path: targets/starry/findings/finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780.yaml
   syscall: setpgid
@@ -83,6 +191,15 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-16T05:29:55.408016Z'
   content_hash: sha256:d9ca742fe03104fd3d9091a40c809ec6dc91d2af01f3545b1859118f06b8d136
+- id: finding-socket-ltp-971db17d32c51561-07800f218f34
+  path: targets/starry/findings/finding-socket-ltp-971db17d32c51561-07800f218f34.yaml
+  syscall: socket
+  rule_id: LTP_971DB17D32C51561
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:199fe0d4b09a71ae06bc34536e4536f87fd6f8115d1cee6491b5badc67ffcf26
 - id: finding-socket-ltp-971db17d32c51561-606a4cfde780
   path: targets/starry/findings/finding-socket-ltp-971db17d32c51561-606a4cfde780.yaml
   syscall: socket
@@ -173,6 +290,15 @@ entities:
   resolution: fixed
   generated_at_utc: '2026-07-16T13:52:36.624532Z'
   content_hash: sha256:868f3a9ef8497317ef42eecefb25cf32830eb9ffb67954fc26339393551c8c19
+- id: finding-unshare-ltp-40a45c5e82d7f4a1-07800f218f34
+  path: targets/starry/findings/finding-unshare-ltp-40a45c5e82d7f4a1-07800f218f34.yaml
+  syscall: unshare
+  rule_id: LTP_40A45C5E82D7F4A1
+  target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+  status: confirmed
+  resolution: no_longer_reproduces
+  generated_at_utc: '2026-07-23T03:10:38.941726Z'
+  content_hash: sha256:9a2c262eaa094c0f694ea8e3943d515433825fdcf4d8b900fdde87e2ed654f56
 - id: finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99
   path: targets/starry/findings/finding-unshare-ltp-40a45c5e82d7f4a1-444533f79a99.yaml
   syscall: unshare

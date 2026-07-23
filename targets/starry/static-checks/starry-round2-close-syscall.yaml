@@ -27,19 +27,33 @@ target_dependencies:
   symbols:
   - close_file_like
   scope: symbols
-  file_hash: sha256:6155028f03d0acfe42f410b0b3e553b6a32411988d08a78e6ee03e09fa80e716
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
   symbol_hashes:
-    close_file_like: sha256:4d1f8d29801b3d463bb4413e8325214d7af8f86f0cae7ada5006dd90e18be8e8
+    close_file_like: sha256:903b7cdec24c2a73cf482c474c6bdf99b59126ac9e4d8a08ec175231c6821831
   missing_symbols: []
-  content_hash: sha256:58a89ea09d3782630014814fc50f8c47c237503228195d53faf41af2f40d4026
+  content_hash: sha256:53548dc399e00dee8e5bfb201e1b7737b6d70ebd349a9e0057f03f2996348b28
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:77d44e25d84e08208d0809fd36486354402ef6fe8d71653bdcd9a2e0de199af7
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols:
   - sys_close
   scope: symbols
-  file_hash: sha256:e78cf0bf497f11b5dab1dd55689ef3a4f450f55c492ad1703bc748022d61152b
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
   symbol_hashes:
     sys_close: sha256:e7aca9df1278d812347be922bb2ca7b5be5fff1cf995a42300adc9a77de496ba
   missing_symbols: []
   content_hash: sha256:83f68616aa28981b6d088330cf93b948e1e4c0eb2a3029552811f0b4b8789a12
-target_content_fingerprint: sha256:1f9479c31c656079eb33bc482998193451e88e6c3ce03416f49fe6c5d772635b
-generated_at_utc: '2026-07-15T05:39:36.212938Z'
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c8f617254d0cbbf1be5c046219a9dfc9fb6fef2a19bd0367a55a1d1a08281ed6
+target_content_fingerprint: sha256:f5aec32a32bcc8a60193c342386d38317777feae13f5e73555cd562bf982efa2
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

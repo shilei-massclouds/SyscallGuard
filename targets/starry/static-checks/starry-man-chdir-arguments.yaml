@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_CHDIR_ARGUMENTS
+title: chdir checks the user path and returns zero after updating cwd
+rule_refs:
+- MAN_05C23E092147A21E--05c23e092147
+- MAN_E116073D3FDB5C1F--e116073d3fdb
+applies_to_syscalls:
+- chdir
+path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+patterns:
+- label: path loading uses checked user memory
+  regex: pub fn sys_chdir[\s\S]*?vm_load_path_string\(path\)\?
+- label: a successful directory update returns zero
+  regex: pub fn sys_chdir[\s\S]*?fs\.set_current_dir\(entry\)\?[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_05C23E092147A21E--05c23e092147
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:05c23e092147a21ec9bf5d55e3144fee5ebbd032b04efa2168ee225a85a95fba
+- id: MAN_E116073D3FDB5C1F--e116073d3fdb
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:e116073d3fdb5c1f7c6e2b179a1672c11a4ae049e36444ff6119e152187a88bf
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:de9a17370432776dff53456b2bf05288870b85be725cf2179bca009009fa75b9
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0032c87828470839dd8ea3d4cbec2a6efafe3244ef892169c03df4fd4a62fa20
+target_content_fingerprint: sha256:b1d9e0de247e64f3cf5b9e1cd580f0841e9ca6f3c4c8ceeed8fffdcfea3443dd
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

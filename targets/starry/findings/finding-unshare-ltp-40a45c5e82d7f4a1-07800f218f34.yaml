@@ -1,0 +1,36 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-unshare-ltp-40a45c5e82d7f4a1-07800f218f34
+syscall: unshare
+rule_id: LTP_40A45C5E82D7F4A1
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: no_longer_reproduces
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_FINAL_UNSHARE_FILES
+  evidence:
+    check_id: STARRY_FINAL_UNSHARE_FILES
+    rule_refs:
+    - LTP_40A45C5E82D7F4A1
+    result: fail
+    path: os/StarryOS/kernel/src/syscall/task/namespace.rs
+    patterns:
+    - label: CLONE_FILES is accepted as a supported unshare flag
+      regex: 'const SUPPORTED_NS_FLAGS: u32 =[\s\S]*?CLONE_FILES'
+      matched: true
+      line: 24
+    - label: CLONE_FILES clones and rebinds the descriptor table
+      regex: if flags & CLONE_FILES != 0 \{[\s\S]*?FD_TABLE\.read\(\)\.clone\(\)[\s\S]*?FD_TABLE\.scope_mut\(scope\)
+      matched: false
+      line: null
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:10:38.941726Z'
+upstream_dependencies:
+- id: LTP_40A45C5E82D7F4A1
+  generated_at_utc: '2026-07-16T07:55:00.843723Z'
+  content_hash: sha256:40a45c5e82d7f4a1748fc7b7d74b4700d4498c801e0fdbad387797d941bb7a7b
+- id: STARRY_FINAL_UNSHARE_FILES
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:59906058d6dd4abe0669d7409fb79dc5e2851be551e778dc1d477000e21000fa

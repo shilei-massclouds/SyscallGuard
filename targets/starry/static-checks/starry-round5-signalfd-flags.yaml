@@ -3,23 +3,24 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_ROUND5_SIGNALFD_FLAGS
 title: signalfd rejects unknown creation flags
 rule_refs:
-- LTP_2C867F470A477D29
+- MAN_CC49DE83F3AA9ACF
 applies_to_syscalls:
 - signalfd
+- signalfd4
 path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
 patterns:
 - label: unknown flag bits are invalid input
   regex: let flags = SignalfdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?;
 upstream_dependencies:
-- id: LTP_2C867F470A477D29
-  generated_at_utc: '2026-07-16T05:14:25.198516Z'
-  content_hash: sha256:2c867f470a477d292a4a2d40ee43a337e4f77bb80811d916445beb2036cebbb8
+- id: MAN_CC49DE83F3AA9ACF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:cc49de83f3aa9acfc73f1168f0b78549b22355bf4d19a6744fd689b2f783bd2a
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/io.rs
   symbols:
   - sys_sendmsg
   scope: symbols
-  file_hash: sha256:7beaa618cfbc8dcdce1eaf3e9c6b650ace1a2337a67e5f8e4596ab4cdfd0b93f
+  file_hash: sha256:444a92fc74427a891e2a07c4aec266dbb50b423f248297996740cce2fd416208
   symbol_hashes:
     sys_sendmsg: sha256:2fdb20599fd1b74ef5bf3a6fb602f358272952051d0287c80199b7ebaf2d33d8
   missing_symbols: []
@@ -69,7 +70,7 @@ target_dependencies:
   symbols:
   - sys_sendfile
   scope: symbols
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  file_hash: sha256:56e70b5be11cf26621b0c96bb380195a7b1cdcab75f21b5f06ddb19fa0fd5b8f
   symbol_hashes:
     sys_sendfile: sha256:e30bef400169fa733e84288c55e6a6a99d92858d9ac81a7f40015a214c641d05
   missing_symbols: []
@@ -78,7 +79,7 @@ target_dependencies:
   symbols:
   - sys_socket
   scope: symbols
-  file_hash: sha256:5314123c79615dd7bc360eca2c2c6c0f434fe28ec165b863b3e1979973eaa399
+  file_hash: sha256:21b60b93f65f026adbec72858de2184114e9a4e5f1c0881f8831f94a60c06425
   symbol_hashes:
     sys_socket: sha256:0a3a53e6cb8d81833ea3be701c69f4989ad3cc4b72107702d7202665435ed892
   missing_symbols: []
@@ -101,5 +102,5 @@ target_dependencies:
     sys_setpriority: sha256:e6535d205fae2e42b3798c304f1654ca39576862e5476cddb11569a84aea7012
   missing_symbols: []
   content_hash: sha256:b2d439c04549f3568e947c8af4e9a0a1a6d7cac2f4c2a011c0f2bd6945587566
-target_content_fingerprint: sha256:f47b41299dcc81d1c6c12746606914e39e86457727af64737153f9a68716ecc2
-generated_at_utc: '2026-07-16T08:20:59.387945Z'
+target_content_fingerprint: sha256:965dd0e3ecf3ef87bb2df01c0c35d1b174dcd4bf6998e73effeddb760b4f5d48
+generated_at_utc: '2026-07-23T03:56:41.509888Z'

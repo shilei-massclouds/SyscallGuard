@@ -10,9 +10,9 @@ applies_to_syscalls:
 path: os/StarryOS/kernel/src/syscall/sys.rs
 patterns:
 - label: destructive reads validate their user buffer and signed length
-  regex: SYSLOG_ACTION_READ => \{\s*validate_syslog_read_args\(buf, len\)\?;
+  regex: SYSLOG_ACTION_READ => \{[\s\S]*?validate_syslog_read_args\(buf, len\)\?;
 - label: read-all validates its user buffer and signed length
-  regex: SYSLOG_ACTION_READ_ALL => \{\s*validate_syslog_read_args\(buf, len\)\?;
+  regex: SYSLOG_ACTION_READ_ALL => \{[\s\S]*?validate_syslog_read_args\(buf, len\)\?;
 upstream_dependencies:
 - id: LTP_6B9F97B897EC5C32
   generated_at_utc: '2026-07-16T07:55:00.843723Z'

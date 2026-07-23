@@ -30,9 +30,9 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/socket.rs
   symbols: []
   scope: file
-  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  file_hash: sha256:21b60b93f65f026adbec72858de2184114e9a4e5f1c0881f8831f94a60c06425
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:12acde55ac6a168ea9d9e1b6540b3011215272b51f4ad9b0cb3b7dc9bfa8a4fa
-target_content_fingerprint: sha256:14ae41bf9b0bffe718c4395f0a0063638daed6c59425c23e94a03df0151630e3
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:0e24b68c37911119f215deefaf94e4ecdc227db8ce95a752a752b626424aed15
+target_content_fingerprint: sha256:42dbc3f09b63f15a070ec284abe59bd72dcbf2f170e5ec61474b6f8bd6be1e95
+generated_at_utc: '2026-07-23T03:56:41.509888Z'

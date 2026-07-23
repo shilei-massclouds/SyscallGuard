@@ -1,0 +1,28 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_FTRUNCATE_SUCCESS
+title: ftruncate returns zero after memfd or regular-file truncation succeeds
+rule_refs:
+- MAN_5C52DBC7100B1A0C--5c52dbc7100b
+applies_to_syscalls:
+- ftruncate
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: sealed memfd truncation returns zero on success
+  regex: pub fn sys_ftruncate[\s\S]*?memfd\.set_len_sealed\(length as u64\)\?;[\s\S]*?return Ok\(0\)
+- label: regular-file truncation returns zero on success
+  regex: pub fn sys_ftruncate[\s\S]*?access\(FileFlags::WRITE\)\?\.set_len\(length as _\)\?;[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_5C52DBC7100B1A0C--5c52dbc7100b
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:5c52dbc7100b1a0c59430595eca4de7ca61d4d9d25adff15706cdba8e436eda9
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:56e70b5be11cf26621b0c96bb380195a7b1cdcab75f21b5f06ddb19fa0fd5b8f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0bbad2e64b9addb8b1900e63b219f3595524a4760be752744b6d098fae81f0e6
+target_content_fingerprint: sha256:d8e088d0a1342481a8346ad61b93b5d1bc73ace7dbd121b30190f8aca326a1c0
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

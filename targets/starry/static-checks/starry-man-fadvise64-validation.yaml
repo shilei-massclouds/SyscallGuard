@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_FADVISE64_VALIDATION
+title: fadvise64 validates the object kind and advice and returns zero
+rule_refs:
+- MAN_1E7A18D70D0A3428
+- MAN_80D85D82B47F304D
+- MAN_E9F079A1D7478DB3
+applies_to_syscalls:
+- fadvise64
+path: os/StarryOS/kernel/src/syscall/fs/io.rs
+patterns:
+- label: pipes and other unsupported fd kinds return ESPIPE
+  regex: pub fn sys_fadvise64[\s\S]*?downcast_ref::<File>[\s\S]*?downcast_ref::<Directory>[\s\S]*?downcast_ref::<Memfd>[\s\S]*?LinuxError::ESPIPE
+- label: advice values above the supported enum return EINVAL
+  regex: pub fn sys_fadvise64[\s\S]*?if advice > 5[\s\S]*?AxError::InvalidInput
+- label: valid advice returns zero
+  regex: pub fn sys_fadvise64[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_1E7A18D70D0A3428
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:1e7a18d70d0a342890bc3285f89a9b6f38791bd5cc59e4657f05e14c1221f73f
+- id: MAN_80D85D82B47F304D
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:80d85d82b47f304d9f75b8e03e28acceae1cdcd56550d808c8a03295c4cd7f12
+- id: MAN_E9F079A1D7478DB3
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:e9f079a1d7478db39db593a992ab91f3b74d22dfc7673382123903671a2e17f5
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:56e70b5be11cf26621b0c96bb380195a7b1cdcab75f21b5f06ddb19fa0fd5b8f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0bbad2e64b9addb8b1900e63b219f3595524a4760be752744b6d098fae81f0e6
+target_content_fingerprint: sha256:d8e088d0a1342481a8346ad61b93b5d1bc73ace7dbd121b30190f8aca326a1c0
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

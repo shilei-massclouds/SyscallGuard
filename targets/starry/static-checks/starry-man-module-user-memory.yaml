@@ -1,0 +1,41 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_MODULE_USER_MEMORY
+title: module syscalls read their user buffers and strings through checked access
+rule_refs:
+- MAN_0394E66422CE04BA
+- MAN_D69AA1715418F1C3
+- MAN_D69AA1715418F1C3--d69aa1715418
+applies_to_syscalls:
+- delete_module
+- finit_module
+- init_module
+path: os/StarryOS/kernel/src/syscall/kmod.rs
+patterns:
+- label: init_module checks image bytes and optional parameters
+  regex: pub fn sys_init_module[\s\S]*?VmBytes::new\(module_ptr[\s\S]*?module_buf\.read\(&mut module_data\)\?[\s\S]*?vm_load_string\(param_ptr
+    as _\)\?
+- label: finit_module checks optional parameters
+  regex: pub fn sys_finit_module[\s\S]*?vm_load_string\(param_ptr as _\)\?
+- label: delete_module checks the module name
+  regex: pub fn sys_delete_module[\s\S]*?vm_load_string\(name_ptr as _\)\?
+upstream_dependencies:
+- id: MAN_0394E66422CE04BA
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:0394e66422ce04baaa265b217ace88014f544006926d03866d39d1a5036591f0
+- id: MAN_D69AA1715418F1C3
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:91b275f6fd20f21a0fc9c1ae67943d919be713b94394d00abb342453fa8465fd
+- id: MAN_D69AA1715418F1C3--d69aa1715418
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:d69aa1715418f1c3f73a8f471fd1dc497cc642700fef2869a398fc24cccb7a0e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/kmod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:5b4873daaa16f851ce0d9f1a636a78e4378b26db51bc68766b8f9dcec07b941d
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:412018efb9abeb185c86099e2cb2bac51c7b08099f5ce29e508460d0932b7c43
+target_content_fingerprint: sha256:f04fc78c46ea7654520c21bb16789e27db4306783b0fe2c499f7fe3de5745054
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

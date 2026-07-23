@@ -1,0 +1,39 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-close-ltp-2bde60c0e64b4dc8-07800f218f34
+syscall: close
+rule_id: LTP_2BDE60C0E64B4DC8
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: no_longer_reproduces
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_ROUND2_CLOSE_FD_TABLE
+  evidence:
+    check_id: STARRY_ROUND2_CLOSE_FD_TABLE
+    rule_refs:
+    - LTP_2BDE60C0E64B4DC8
+    - LTP_BF2428964ADD116F
+    - LTP_E520E500AB3AE851
+    result: fail
+    path: os/StarryOS/kernel/src/file/mod.rs
+    patterns:
+    - label: close removes the descriptor independently of its file-like type
+      regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?FD_TABLE\.write\(\)\.remove\(fd as usize\)[\s\S]*?if
+        let Some\(f\) = removed[\s\S]*?return Ok\(\(\)\);'
+      matched: false
+      line: null
+    - label: only a missing descriptor is rejected
+      regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+      matched: true
+      line: 337
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:10:38.941726Z'
+upstream_dependencies:
+- id: LTP_2BDE60C0E64B4DC8
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:2bde60c0e64b4dc8fc4b1e23c70973364d891d517c1f8020f709fabec59e6d0f
+- id: STARRY_ROUND2_CLOSE_FD_TABLE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:f66aba3c652105df45d6cf102d1672da083636ee12d2d3ff019789aacca6bcc1

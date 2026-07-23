@@ -16,12 +16,14 @@ upstream_dependencies:
   content_hash: sha256:58936d050a8879deb833d1f0c26fd82f6c34633567c82a71e42be27d416f55ce
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
-  symbol_hashes: {}
+  symbols:
+  - sys_pidfd_getfd
+  scope: symbols
+  file_hash: sha256:030c76bf6679531de36af004ca3159ca2a69818ebcd5f56d8556ed56d7d8edf7
+  symbol_hashes:
+    sys_pidfd_getfd: sha256:6d418e3572a0e9db171461329d98ffcfdb94b37bf31c72c300ece31eabfa115a
   missing_symbols: []
-  content_hash: sha256:2c46ff021d5494567a7c2df3cf87e684773994741f83a7db682011a90a7553be
+  content_hash: sha256:3313bb2579f9f939e2805d828b21a267ea52a529e232cee707dc088a2167e773
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -30,13 +32,11 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
 - path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
-  symbols:
-  - sys_pidfd_getfd
-  scope: symbols
-  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
-  symbol_hashes:
-    sys_pidfd_getfd: sha256:c09f015f5a9ee2d001a71868b33bde4624d37dd0f832100d744ecd29cc9a56cf
+  symbols: []
+  scope: file
+  file_hash: sha256:030c76bf6679531de36af004ca3159ca2a69818ebcd5f56d8556ed56d7d8edf7
+  symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:cadce326e338d88c68096d1d642cb141ad391cd18aeb1797045732b8b151d056
-target_content_fingerprint: sha256:3c422858762f9f217e92aa7ed3b8a115f47068c3c3a3225664e50bcc099a9a4c
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+  content_hash: sha256:e28117a150296f93ecac2fad0f4a1a2acf3ec312f6b47bafe66babb800bf9c69
+target_content_fingerprint: sha256:474ea71495f00bd1f5ee8e7305395607a0a5882fccae1aab70c6ceda6cee65de
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

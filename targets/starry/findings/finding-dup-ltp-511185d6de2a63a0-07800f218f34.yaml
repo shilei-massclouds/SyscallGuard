@@ -1,0 +1,45 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-dup-ltp-511185d6de2a63a0-07800f218f34
+syscall: dup
+rule_id: LTP_511185D6DE2A63A0
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: no_longer_reproduces
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+  evidence:
+    check_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+    rule_refs:
+    - LTP_511185D6DE2A63A0
+    - LTP_84DBE108A850E845
+    - LTP_A774FC10727E8ED2
+    - LTP_ED2BA909DF79625A
+    result: fail
+    path: os/StarryOS/kernel/src/file/mod.rs
+    patterns:
+    - label: missing descriptors produce BadFileDescriptor
+      regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?FD_TABLE[\s\S]*?\.get\(fd as usize\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+      matched: false
+      line: null
+    - label: allocation enforces the current nofile limit as TooManyOpenFiles
+      regex: pub fn add_file_like\([\s\S]*?RLIMIT_NOFILE[\s\S]*?if table\.count\(\) as u64 >= max_nofile
+        \{[\s\S]*?Err\(AxError::TooManyOpenFiles\)
+      matched: true
+      line: 325
+    - label: successful allocation returns the new descriptor
+      regex: pub fn add_file_like\([\s\S]*?Ok\(table\.add\(fd\)\.map_err\(\|_\| AxError::TooManyOpenFiles\)\?
+        as c_int\)
+      matched: true
+      line: 325
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:10:38.941726Z'
+upstream_dependencies:
+- id: LTP_511185D6DE2A63A0
+  generated_at_utc: '2026-07-15T05:26:39.098440Z'
+  content_hash: sha256:511185d6de2a63a045d2f5f65babdf4c25b4066ece863b9f121419045563d4c9
+- id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:4bd01e5c33cabcf5458b72c9f3e8863f6e7ce37a1db5127e622bcec36267a2f4

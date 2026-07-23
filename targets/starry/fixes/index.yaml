@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_fix_index
-updated_at_utc: '2026-07-16T13:52:36.624532Z'
+updated_at_utc: '2026-07-23T03:50:59.099647Z'
 entities:
 - id: fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327
   path: targets/starry/fixes/fix-finding-close-range-ltp-425e5a3502541de8-041c7ef6f327.yaml
@@ -58,6 +58,20 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-16T03:48:12.083545Z'
   content_hash: sha256:3a1d12426a0c6263be3e3045a5525dbafd3e29dd94d619a1010bfd2a38c4cbda
+- id: fix-finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+  path: targets/starry/fixes/fix-finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34.yaml
+  finding_refs:
+  - finding-mmap-man-18c5488e8d09d6d2-18c5488e8d09-07800f218f34
+  status: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:a4ba604731e2bfa77d13a36ced62626cbe31e53ee82293087f641a0c17456835
+- id: fix-finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+  path: targets/starry/fixes/fix-finding-seccomp-man-b9ee0f176b92f526-07800f218f34.yaml
+  finding_refs:
+  - finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+  status: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:7a063850747d98351a2532b2e7bb9aabcdcdb28f20c35faccbd6fad1182d28f8
 - id: fix-finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780
   path: targets/starry/fixes/fix-finding-setpgid-ltp-4308d71d8bd6519d-606a4cfde780.yaml
   finding_refs:
@@ -65,6 +79,13 @@ entities:
   status: fixed
   generated_at_utc: '2026-07-16T05:29:55.408016Z'
   content_hash: sha256:2edb2320ab4c10bdc5e9052cb03112e1933e2a58a84818f35756a16685686181
+- id: fix-finding-socket-ltp-971db17d32c51561-07800f218f34
+  path: targets/starry/fixes/fix-finding-socket-ltp-971db17d32c51561-07800f218f34.yaml
+  finding_refs:
+  - finding-socket-ltp-971db17d32c51561-07800f218f34
+  status: fixed
+  generated_at_utc: '2026-07-23T03:50:59.099647Z'
+  content_hash: sha256:85caf4bb07c480992e4d99072413428bcbe2c8d818d8081c34b1c01e4767d2d5
 - id: fix-finding-socket-ltp-971db17d32c51561-606a4cfde780
   path: targets/starry/fixes/fix-finding-socket-ltp-971db17d32c51561-606a4cfde780.yaml
   finding_refs:

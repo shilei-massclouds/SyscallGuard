@@ -38,6 +38,22 @@ upstream_dependencies:
   generated_at_utc: '2026-07-17T05:18:12.210893Z'
   content_hash: sha256:fdd174e970ac79301953bdd92e44970778a716c86428b4b554bcd57d2a2c4f6a
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:56e70b5be11cf26621b0c96bb380195a7b1cdcab75f21b5f06ddb19fa0fd5b8f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0bbad2e64b9addb8b1900e63b219f3595524a4760be752744b6d098fae81f0e6
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_copy_file_range
+  scope: symbols
+  file_hash: sha256:56e70b5be11cf26621b0c96bb380195a7b1cdcab75f21b5f06ddb19fa0fd5b8f
+  symbol_hashes:
+    sys_copy_file_range: sha256:45ac848195d3c96bb1ff11cdb3e0e91ffabf3fdcafabd87347af566458e6ac6c
+  missing_symbols: []
+  content_hash: sha256:32fcd418c328c2a1b0b7f5a5a1b10fb6e62b697b779769095f5eef505a53627a
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -45,21 +61,5 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-- path: os/StarryOS/kernel/src/syscall/fs/io.rs
-  symbols:
-  - sys_copy_file_range
-  scope: symbols
-  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
-  symbol_hashes:
-    sys_copy_file_range: sha256:0bf45fc95653833e9f8492ac962a8ebb5609ce71169a1135863918078290685b
-  missing_symbols: []
-  content_hash: sha256:9a146deace9e9b40b34b1911ef8463685941f261dccc54cceae8a06a2df9b5e2
-- path: os/StarryOS/kernel/src/syscall/fs/io.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:f5120c36722f0f04288c370e3b748aa3a8d275528a06d9f4d723532e48f95f2c
-target_content_fingerprint: sha256:1bafad6dd2b0ce1af075ff6401b70889913503664131dfe1bc79a6d6466bc700
-generated_at_utc: '2026-07-17T07:32:33.916128Z'
+target_content_fingerprint: sha256:f69d9c0135d80dd0351be2724dfd506b49abda08bd7084dea79ade1c4f490788
+generated_at_utc: '2026-07-23T03:01:49.216844Z'

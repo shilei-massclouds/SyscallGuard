@@ -7,12 +7,13 @@ rule_refs:
 - LTP_84DBE108A850E845
 - LTP_A774FC10727E8ED2
 - LTP_ED2BA909DF79625A
+- MAN_7F34A257DE64CAFE--7f34a257de64
 applies_to_syscalls:
 - dup
 path: os/StarryOS/kernel/src/file/mod.rs
 patterns:
 - label: missing descriptors produce BadFileDescriptor
-  regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?FD_TABLE[\s\S]*?\.get\(fd as usize\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
+  regex: 'pub fn get_file_like\(fd: c_int\)[\s\S]*?current_fd_table\(\)[\s\S]*?\.get\(fd as usize\)[\s\S]*?\.ok_or\(AxError::BadFileDescriptor\)'
 - label: allocation enforces the current nofile limit as TooManyOpenFiles
   regex: pub fn add_file_like\([\s\S]*?RLIMIT_NOFILE[\s\S]*?if table\.count\(\) as u64 >= max_nofile \{[\s\S]*?Err\(AxError::TooManyOpenFiles\)
 - label: successful allocation returns the new descriptor
@@ -31,14 +32,10 @@ upstream_dependencies:
 - id: LTP_ED2BA909DF79625A
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:ed2ba909df79625a7857c363efc0303c51fef469ee87970e6b322004f28779a5
+- id: MAN_7F34A257DE64CAFE--7f34a257de64
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:7f34a257de64cafee279c771c2acbea7a0867468d9f877e9194368fd553486c1
 target_dependencies:
-- path: os/StarryOS/kernel/src/file/mod.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:1b1472ac5d08d398db454166f6752cbd71d0f3ce9f7dca73fa9325ffb45852d9
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -49,31 +46,38 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols: []
   scope: file
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
+  content_hash: sha256:77d44e25d84e08208d0809fd36486354402ef6fe8d71653bdcd9a2e0de199af7
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols:
   - add_file_like
   - get_file_like
   scope: symbols
-  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
   symbol_hashes:
-    add_file_like: sha256:b5cf9dea5d6bd10b0f15fdb84c2c98a676cb28fecdfa13cc8c9b458d2ef0cc18
-    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
+    add_file_like: sha256:cadd6bfa7d5bf68f64f01d5357f466fe04ed23ea353275be1ecf731d31d529d6
+    get_file_like: sha256:4b1186107e4b29232dfcbf933a108fb714647bd7d7dc8e72783b02446330500b
   missing_symbols: []
-  content_hash: sha256:accae0bd44f82207f244b85e252120122e3b3901e4993ca1e9d0d58d21c015cf
+  content_hash: sha256:bce2e384557858938228434e73d89712e5875ff5bc8a9d85758db998f5ccde52
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:87b214e9290ba5b0ff4565e4043d87b7ab5685bc8d01984a5c1d4507871b5e5b
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:c8f617254d0cbbf1be5c046219a9dfc9fb6fef2a19bd0367a55a1d1a08281ed6
 - path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
   symbols:
   - dup_fd
   - sys_dup
   scope: symbols
-  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  file_hash: sha256:cd4983c19068e6416f24a8fc2a81abfcbcdb65cb4c2298d3f332a3f6d8d64b56
   symbol_hashes:
     dup_fd: sha256:eaec9c14d0e633561d5e7dab7814d80af12077a8ac49269599fbb20d08c1608e
     sys_dup: sha256:5e9bb21b22d3d2d0a1ac3ef1e283fe060fb06087f994c793ba135cc476cf133c
   missing_symbols: []
   content_hash: sha256:d0701994de39f5838c32092d701b853fb90fb05609a6e509f2562b12fac6b7b9
-target_content_fingerprint: sha256:b6aec054573da41c1c7eb2251cccfbcaac3b5caf012c31768edfa49c9d4e68fe
-generated_at_utc: '2026-07-17T05:28:28.281302Z'
+target_content_fingerprint: sha256:f5cf7f586507ad7478a15385e178421abf2255efc00ce064c5148f9e03d3c848
+generated_at_utc: '2026-07-23T03:44:21.437913Z'

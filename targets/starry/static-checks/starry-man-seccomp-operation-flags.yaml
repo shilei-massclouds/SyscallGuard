@@ -20,9 +20,9 @@ target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/sys.rs
   symbols: []
   scope: file
-  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  file_hash: sha256:156990a109051c618a7403810f588074c78699954a1d30d4a5654c384100aca0
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
-target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
-generated_at_utc: '2026-07-17T08:16:17.470765Z'
+  content_hash: sha256:cefa0098fbe4bef4e795af9c90ac71c26e8ba3d29920010ef09ab979648f2b8c
+target_content_fingerprint: sha256:c7ef3b0e1d50fcf6ed0dabc8fec28d80b59fde0c342ceb804448d0285b4e1b4b
+generated_at_utc: '2026-07-23T03:56:41.509888Z'

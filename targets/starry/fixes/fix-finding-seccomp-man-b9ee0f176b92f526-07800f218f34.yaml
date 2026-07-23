@@ -1,0 +1,26 @@
+schema_version: 1
+kind: syscallguard_starry_fix
+fix_id: fix-finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+finding_refs:
+- finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+source_check_report_ids:
+- check-20260723t034836z-32b53991
+patch: runs/fix-static-man-20260723-current-v3/implementation.patch
+starry_repository: /home/cloud/gitLinux/tgoskits
+starry_branch: dev-syscalls-compliance-2
+regression: runs/fix-static-man-20260723-current-v3/regression-results.yaml
+status: fixed
+generated_at_utc: '2026-07-23T03:50:59.099647Z'
+upstream_dependencies:
+- id: finding-seccomp-man-b9ee0f176b92f526-07800f218f34
+  generated_at_utc: '2026-07-23T03:02:33.663221Z'
+  content_hash: sha256:ca8756822c3c5f30073f7824cb94e7aebf0faa42919efbb3c7f4292e1c65f4c0
+- id: check-20260723t034836z-32b53991
+  generated_at_utc: '2026-07-23T03:48:47.943947Z'
+  content_hash: sha256:ac98ce11fbbf83b3b65f97da0aa76c1e63e5cc6bab6b3f11b9e4e595be33435f
+- id: implementation.patch
+  generated_at_utc: '2026-07-23T03:50:58.789128Z'
+  content_hash: sha256:e930c12ee73f597111b02a9e26d8c75fd41407af4b61daa58e8be06ed2ab4e3d
+- id: fix-static-man-20260723-current-v3
+  generated_at_utc: '2026-07-23T03:50:58.860559Z'
+  content_hash: sha256:d89587122066f14e609cea508a02a478b126db608acb2549cee0bfb2e39a337f

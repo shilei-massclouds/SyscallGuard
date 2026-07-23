@@ -1,0 +1,37 @@
+schema_version: 1
+kind: syscallguard_starry_finding
+finding_id: finding-close-ltp-09b39e9c9254ecb2-07800f218f34
+syscall: close
+rule_id: LTP_09B39E9C9254ECB2
+target_snapshot_hash: sha256:07800f218f3431ae837e9c825fa3b384a0c18d0c8d83dd8ff01c728add06c9e7
+status: confirmed
+resolution: no_longer_reproduces
+occurrences:
+- check_report_id: check-20260723t030225z-60f534a3
+  evidence_kind: static
+  source_id: STARRY_CLOSE_FD_TABLE
+  evidence:
+    check_id: STARRY_CLOSE_FD_TABLE
+    rule_refs:
+    - LTP_09B39E9C9254ECB2
+    - MAN_23E25F7C4136339F
+    result: fail
+    path: os/StarryOS/kernel/src/file/mod.rs
+    patterns:
+    - label: close removes the descriptor from the current fd table
+      regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?FD_TABLE\.write\(\)\.remove\(fd as usize\)'
+      matched: false
+      line: null
+    - label: a removed descriptor succeeds and a missing descriptor is EBADF
+      regex: 'pub fn close_file_like\(fd: c_int\)[\s\S]*?return Ok\(\(\)\);[\s\S]*?Err\(AxError::BadFileDescriptor\)'
+      matched: true
+      line: 337
+    reason: one or more required patterns did not match
+generated_at_utc: '2026-07-23T03:10:38.941726Z'
+upstream_dependencies:
+- id: LTP_09B39E9C9254ECB2
+  generated_at_utc: '2026-07-14T13:35:02.567816Z'
+  content_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
+- id: STARRY_CLOSE_FD_TABLE
+  generated_at_utc: '2026-07-23T03:01:49.216844Z'
+  content_hash: sha256:22b2aabe82905f32747892948a313452c321a5bd727a48114ab60cd9f4a7d6e0

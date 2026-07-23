@@ -8,10 +8,10 @@ applies_to_syscalls:
 - init_module
 path: os/StarryOS/kernel/src/syscall/kmod.rs
 patterns:
-- label: init_module checks CAP_SYS_MODULE
-  regex: pub fn sys_init_module\([\s\S]*?if !current\(\)\.as_thread\(\)\.cred\(\)\.has_cap_sys_module\(\)
+- label: shared module guard checks CAP_SYS_MODULE
+  regex: fn require_module_privilege\(\)[\s\S]*?has_cap_sys_module\(\)[\s\S]*?Err\(AxError::OperationNotPermitted\)
 - label: permission failure precedes user-buffer access
-  regex: pub fn sys_init_module\([\s\S]*?has_cap_sys_module\(\)[\s\S]*?return Err\(AxError::OperationNotPermitted\);[\s\S]*?VmBytes::new
+  regex: pub fn sys_init_module\([\s\S]*?require_module_privilege\(\)\?;[\s\S]*?VmBytes::new
 upstream_dependencies:
 - id: LTP_D246498B20D9CB2C
   generated_at_utc: '2026-07-16T03:35:24.146836Z'

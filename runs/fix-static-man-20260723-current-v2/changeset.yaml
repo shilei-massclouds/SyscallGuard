@@ -1,0 +1,6 @@
+schema_version: 1
+kind: syscallguard_changeset
+run_id: fix-static-man-20260723-current-v2
+stage: fix
+changes: []
+conflicts: []
