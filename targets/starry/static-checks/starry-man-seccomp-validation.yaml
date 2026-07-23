@@ -1,0 +1,50 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SECCOMP_VALIDATION
+title: seccomp validates operation, flags, pointers, filters, and privilege
+rule_refs:
+- MAN_02D976F1ED01493F
+- MAN_20A10178D28B400B
+- MAN_73E054548B324267
+- MAN_8609DB2EE85AF88E
+- MAN_BE74B0D21973DAEC
+applies_to_syscalls:
+- seccomp
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: installation requires no_new_privs or CAP_SYS_ADMIN
+  regex: fn check_seccomp_install_permission[\s\S]*?no_new_privs\(\)[\s\S]*?has_cap_sys_admin\(\)[\s\S]*?AxError::OperationNotPermitted
+- label: null and empty filter programs are rejected
+  regex: fn read_seccomp_filter[\s\S]*?args\.is_null\(\)[\s\S]*?AxError::BadAddress[\s\S]*?prog\.len ==
+    0 \|\| prog\.filter\.is_null\(\)[\s\S]*?AxError::InvalidInput
+- label: unavailable actions return EOPNOTSUPP
+  regex: fn seccomp_action_available[\s\S]*?_ => Err\(AxError::OperationNotSupported\)
+- label: flags and operations are bounded and success returns zero
+  regex: pub fn sys_seccomp[\s\S]*?flags & !SECCOMP_ALLOWED_FLAGS != 0[\s\S]*?match op[\s\S]*?_ => return
+    Err\(AxError::InvalidInput\)[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_02D976F1ED01493F
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:02d976f1ed01493f72fb104c4224a2317b6a211ea5d88d288550abb85fe93611
+- id: MAN_20A10178D28B400B
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:20a10178d28b400be0dea7081db5fc3fb17a2fba31e8b7e593c977436359511e
+- id: MAN_73E054548B324267
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:73e054548b32426705dd168ebed070bc65b8221d91db2f3cd7c07cdc97c6b7ec
+- id: MAN_8609DB2EE85AF88E
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:8609db2ee85af88e75f0e70480a79070e6b311fae426664f6100a0b5c83248c4
+- id: MAN_BE74B0D21973DAEC
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:be74b0d21973daecfa7f765d37067b4f38de4207b0a1063e18f9cff01b73aa93
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T08:16:17.470765Z'

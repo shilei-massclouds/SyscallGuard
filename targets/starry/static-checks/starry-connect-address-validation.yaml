@@ -3,9 +3,8 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_CONNECT_ADDRESS_VALIDATION
 title: socket address parsing checks pointer access, length, and address family
 rule_refs:
-- LTP_4C3A8A7664F22B7F
-- LTP_6AEB77CEC03D0E6E
-- LTP_74E00510F4C1B849
+- MAN_392816F25BD330A2
+- MAN_524B615D8F9A7E12
 applies_to_syscalls:
 - connect
 path: os/StarryOS/kernel/src/syscall/net/addr.rs
@@ -18,15 +17,12 @@ patterns:
   regex: impl SocketAddrExt for SocketAddrV4[\s\S]*?if addrlen < size_of::<sockaddr_in>\(\) as socklen_t
     \{[\s\S]*?Err\(AxError::InvalidInput\)
 upstream_dependencies:
-- id: LTP_4C3A8A7664F22B7F
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:4c3a8a7664f22b7f2983c449e5c15d82b53d634db19f0a87e67849d4feb2fb77
-- id: LTP_6AEB77CEC03D0E6E
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:6aeb77cec03d0e6eaa956bea440fe8e71843fa521eafcf9611595dee8394b4bb
-- id: LTP_74E00510F4C1B849
-  generated_at_utc: '2026-07-15T05:26:39.098440Z'
-  content_hash: sha256:74e00510f4c1b849cf8495790f1acd5cf1dc690a2ffcef67fc897e0c910fed22
+- id: MAN_392816F25BD330A2
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:392816f25bd330a2b56467326a64e62e3fac1facf59a1a5b96c34a73901b9e82
+- id: MAN_524B615D8F9A7E12
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:524b615d8f9a7e1244839aa157afec4239cedd15f1b943f88820252fdf625eb1
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/addr.rs
   symbols: []
@@ -52,4 +48,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:85205e9c20a18b15589838878522ebe758e337f9337f33178d64559ac3f70df2
 target_content_fingerprint: sha256:e283f041b58be778fa3856a395d0b47598c2507fc2d658780191305ddf02e997
-generated_at_utc: '2026-07-15T05:39:36.212938Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

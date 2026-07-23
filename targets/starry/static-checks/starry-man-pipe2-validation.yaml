@@ -1,0 +1,39 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_PIPE2_VALIDATION
+title: pipe2 validates flags, rolls back bad output pointers, and returns zero
+rule_refs:
+- MAN_1115E878B4F50CF3
+- MAN_DD6D48EB9B80CB6B
+- MAN_EDB775C51FCEA404
+applies_to_syscalls:
+- pipe2
+path: os/StarryOS/kernel/src/syscall/fs/pipe.rs
+patterns:
+- label: unsupported flags return EINVAL
+  regex: pub fn sys_pipe2[\s\S]*?PipeFlags::from_bits\(flags\)[\s\S]*?AxError::InvalidInput
+- label: output uses checked user memory with fd rollback
+  regex: if let Err\(err\) = fds\.vm_write\(\[read_fd, write_fd\]\)[\s\S]*?close_file_like\(read_fd\)[\s\S]*?close_file_like\(write_fd\)[\s\S]*?return
+    Err\(err\.into\(\)\)
+- label: valid creation returns zero
+  regex: pub fn sys_pipe2[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_1115E878B4F50CF3
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:1115e878b4f50cf36f15d4ead1bd50ea131bde28efdf9a461c7e207a8984bd76
+- id: MAN_DD6D48EB9B80CB6B
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:dd6d48eb9b80cb6b2d5fe9d47fc4810243c093bd9b8659332800977b9a134923
+- id: MAN_EDB775C51FCEA404
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:edb775c51fcea404016cb3f6da328eef236bf5d00a21db4c724aeb77a38e9509
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/pipe.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:8d56abf189a3798ecb99fba8572c92dbb0105241620015623b9f4cc3ed0efc89
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:cc58d5e58ba4fb4a63dd95b4c415f2d4380fdd9c096a40504c928240a3c9ff80
+target_content_fingerprint: sha256:43b7cc01fc80680baf3792321b7bf49faec8e95de8ca8a6b9d5fd06eb7c3a635
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

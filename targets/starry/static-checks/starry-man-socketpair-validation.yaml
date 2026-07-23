@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SOCKETPAIR_VALIDATION
+title: socketpair validates the family and output pointer and returns zero
+rule_refs:
+- MAN_43BBCE48C452BDDD
+- MAN_9452D425539B8023
+- MAN_B121E5340A1BEFEE
+applies_to_syscalls:
+- socketpair
+path: os/StarryOS/kernel/src/syscall/net/socket.rs
+patterns:
+- label: unsupported families return EAFNOSUPPORT
+  regex: pub fn sys_socketpair[\s\S]*?if domain != AF_UNIX[\s\S]*?LinuxError::EAFNOSUPPORT
+- label: fd output uses checked user memory
+  regex: pub fn sys_socketpair[\s\S]*?\*fds\.get_as_mut\(\)\? = \[
+- label: successful pair creation returns zero
+  regex: pub fn sys_socketpair[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_43BBCE48C452BDDD
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:43bbce48c452bddd06147e2192897e4fc4a09fa385581fb17623e8ebffabded5
+- id: MAN_9452D425539B8023
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:9452d425539b802321ed45714ff13d6c1fd7bedd7ab201adab57f734dcbf8d04
+- id: MAN_B121E5340A1BEFEE
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:b121e5340a1befee27d9cf92690b4f7e0255b871a8235f4fa5739aa1411a566f
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:12acde55ac6a168ea9d9e1b6540b3011215272b51f4ad9b0cb3b7dc9bfa8a4fa
+target_content_fingerprint: sha256:14ae41bf9b0bffe718c4395f0a0063638daed6c59425c23e94a03df0151630e3
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

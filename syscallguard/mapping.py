@@ -686,6 +686,7 @@ def prepare_mapping(
     requested_run_id: str | None = None,
     branch: str | None = None,
     coverage: str = "full",
+    force_rule_ids: Iterable[str] | None = None,
 ) -> str:
     root = (root or repo_root()).resolve()
     if not isinstance(branch, str) or not branch.strip():
@@ -696,6 +697,17 @@ def prepare_mapping(
     coverage_mode = resolve_coverage(coverage)
     requested_syscalls = resolve_syscalls(syscalls)
     rules, versions, rule_syscalls, syscall_rules, rule_index_hash = _rule_library(root)
+    forced = {
+        str(rule_id).strip()
+        for rule_id in (force_rule_ids or [])
+        if str(rule_id).strip()
+    }
+    unknown_forced = sorted(forced - set(rules))
+    if unknown_forced:
+        raise SyscallGuardError(
+            "forced mapping rules do not exist in the active rule library: "
+            + ", ".join(unknown_forced)
+        )
     if requested_syscalls is not None:
         unknown = sorted(set(requested_syscalls) - set(syscall_rules))
         if unknown:
@@ -727,6 +739,9 @@ def prepare_mapping(
         )
         for rule_id in rules
     }
+    for rule_id in forced:
+        if "explicit_static_analysis" not in pending_reasons[rule_id]:
+            pending_reasons[rule_id].append("explicit_static_analysis")
     pending = sorted(rule_id for rule_id, reasons in pending_reasons.items() if reasons)
     scope = (
         set(rules)
@@ -785,6 +800,7 @@ def prepare_mapping(
             "prior_report_id": prior.get("report_id") if prior else None,
             "prior_report_hash": content_hash(prior) if prior else None,
             "requested_syscalls": requested_syscalls,
+            "forced_rule_ids": sorted(forced),
             "coverage_mode": coverage_mode,
             "pending_rule_ids": pending,
             "selected_rule_ids": selected,

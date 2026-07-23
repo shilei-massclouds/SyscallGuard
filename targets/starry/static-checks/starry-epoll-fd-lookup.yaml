@@ -4,6 +4,7 @@ check_id: STARRY_EPOLL_FD_LOOKUP
 title: epoll lookup distinguishes absent descriptors from descriptors of another type
 rule_refs:
 - LTP_6FFB17DB762F3167
+- MAN_E32B6349055FCEF9
 applies_to_syscalls:
 - epoll_ctl
 - epoll_wait
@@ -18,6 +19,9 @@ upstream_dependencies:
 - id: LTP_6FFB17DB762F3167
   generated_at_utc: '2026-07-15T10:14:12.969080Z'
   content_hash: sha256:6ffb17db762f3167790a052bae0fa49f44b1075991c29dcec06f56509e9ae743
+- id: MAN_E32B6349055FCEF9
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:e32b6349055fcef9e6437dc8e1eaf495d3d56f10b316987a403c37553056a544
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/execve.rs
   symbols:
@@ -134,4 +138,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
 target_content_fingerprint: sha256:b1802eeb4315757d577fa1d7cbcbd03db33148c64c2c4bd9bb944c1d1d08cb06
-generated_at_utc: '2026-07-17T05:28:28.281302Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

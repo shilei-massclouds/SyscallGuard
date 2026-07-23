@@ -1,25 +1,40 @@
 schema_version: 1
 kind: syscallguard_starry_static_check
 check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
-title: sendmsg validates the message header user pointer before use
+title: sendmsg validates header, vector, control, and destination pointers
 rule_refs:
-- LTP_A2098D60C40310A2
+- MAN_AE68C41A115C80FC--ae68c41a115c
 applies_to_syscalls:
 - sendmsg
 path: os/StarryOS/kernel/src/syscall/net/io.rs
 patterns:
-- label: message header uses checked user access
-  regex: pub fn sys_sendmsg\([\s\S]*?let msg = msg\.get_as_ref\(\)\?;
+- label: the message header uses checked user access
+  regex: pub fn sys_sendmsg[\s\S]*?msg\.get_as_ref\(\)\?
+- label: control messages use checked user access
+  regex: fn parse_send_cmsgs[\s\S]*?UserConstPtr::<cmsghdr>::from\(ptr\)\.get_as_ref\(\)\?
+- label: the I/O vector is validated before sending
+  regex: pub fn sys_sendmsg[\s\S]*?IoVectorBuf::new\(msg\.msg_iov as \*const IoVec, msg\.msg_iovlen\)\?
+- label: a non-null destination address is decoded through checked access
+  regex: fn send_impl[\s\S]*?SocketAddrEx::read_from_user\(addr, addrlen\)\?
 upstream_dependencies:
-- id: LTP_A2098D60C40310A2
-  generated_at_utc: '2026-07-16T05:14:25.198516Z'
-  content_hash: sha256:a2098d60c40310a201cf1ee9258fa49ff832fae788c0f99896d048e0cd323d61
+- id: MAN_AE68C41A115C80FC--ae68c41a115c
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:ae68c41a115c80fc4017a217740267206206c6d203d671fee845b58442a6e922
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols:
+  - sys_socket
+  scope: symbols
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes:
+    sys_socket: sha256:91fb573aa9a607625c4e561e5d88aef05004e04924cabdd1daabbff94343cc2e
+  missing_symbols: []
+  content_hash: sha256:021fa706590e385e97a11066c2446f832f74697a23552eaf0e6e26deebcc8ee1
 - path: os/StarryOS/kernel/src/syscall/net/io.rs
   symbols:
   - sys_sendmsg
   scope: symbols
-  file_hash: sha256:7beaa618cfbc8dcdce1eaf3e9c6b650ace1a2337a67e5f8e4596ab4cdfd0b93f
+  file_hash: sha256:444a92fc74427a891e2a07c4aec266dbb50b423f248297996740cce2fd416208
   symbol_hashes:
     sys_sendmsg: sha256:2fdb20599fd1b74ef5bf3a6fb602f358272952051d0287c80199b7ebaf2d33d8
   missing_symbols: []
@@ -33,13 +48,6 @@ target_dependencies:
     sys_set_robust_list: sha256:732c3a996c876086a2d60a77d8e32dcd9483fbf3b68deefb4f44f518ddbff125
   missing_symbols: []
   content_hash: sha256:1aac8433a9fc23836a706d44b8c4706b45ba6ada5ed5c8ea691d6a9e34b0de31
-- path: os/StarryOS/kernel/src/syscall/net/io.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:7beaa618cfbc8dcdce1eaf3e9c6b650ace1a2337a67e5f8e4596ab4cdfd0b93f
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:299b46862ee76ab169a491683ab1f87276d82ce5852ac0e037657cbbd3604d2f
 - path: os/StarryOS/kernel/src/syscall/fs/signalfd.rs
   symbols:
   - sys_signalfd4
@@ -56,33 +64,22 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-- path: os/StarryOS/kernel/src/syscall/task/job.rs
-  symbols:
-  - sys_setpgid
-  scope: symbols
-  file_hash: sha256:d56b7d1084aa7ced27dfed7079690a6c619d652dcbc560adb14ad48d6ea04153
-  symbol_hashes:
-    sys_setpgid: sha256:0ed1da71c358aba99d56768d335c81e4d758b3f7cf92ea60463a96a1ea7fd473
+- path: os/StarryOS/kernel/src/syscall/net/io.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:444a92fc74427a891e2a07c4aec266dbb50b423f248297996740cce2fd416208
+  symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:50bcf0ccd341480f2b75f77e60cffdb1702acd570b1c0070afe089548a095779
+  content_hash: sha256:5f1380215fc3b8162bea7fffe88990d7fe3ed5cf209b9ae90afd2279dfe642fa
 - path: os/StarryOS/kernel/src/syscall/fs/io.rs
   symbols:
   - sys_sendfile
   scope: symbols
-  file_hash: sha256:879d21c0e8a892a23c6e2aa0ac1693f9a534c263e3c9932a9f859f51783ea65b
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
   symbol_hashes:
     sys_sendfile: sha256:e30bef400169fa733e84288c55e6a6a99d92858d9ac81a7f40015a214c641d05
   missing_symbols: []
   content_hash: sha256:74420f02c69cda8b9fafc880a31ce754b0c43beee7525de0b5b15dc704e4e138
-- path: os/StarryOS/kernel/src/syscall/net/socket.rs
-  symbols:
-  - sys_socket
-  scope: symbols
-  file_hash: sha256:5314123c79615dd7bc360eca2c2c6c0f434fe28ec165b863b3e1979973eaa399
-  symbol_hashes:
-    sys_socket: sha256:0a3a53e6cb8d81833ea3be701c69f4989ad3cc4b72107702d7202665435ed892
-  missing_symbols: []
-  content_hash: sha256:8a3912abeda116a11e706a49b54a22cb65552c7ce69574acbeddacc9f50ebf08
 - path: os/StarryOS/kernel/src/syscall/task/schedule.rs
   symbols:
   - sys_sched_setaffinity
@@ -101,5 +98,14 @@ target_dependencies:
     sys_setpriority: sha256:e6535d205fae2e42b3798c304f1654ca39576862e5476cddb11569a84aea7012
   missing_symbols: []
   content_hash: sha256:b2d439c04549f3568e947c8af4e9a0a1a6d7cac2f4c2a011c0f2bd6945587566
-target_content_fingerprint: sha256:e4662540cae222231af70bb0b9c0d9211a7532b0b312564ede8885e2c7d40bf2
-generated_at_utc: '2026-07-16T08:20:59.387945Z'
+- path: os/StarryOS/kernel/src/syscall/task/job.rs
+  symbols:
+  - sys_setpgid
+  scope: symbols
+  file_hash: sha256:a028bda9fb89a9dd7cb112542e74b72af633471c5eceedf0413ab87e9f3679fa
+  symbol_hashes:
+    sys_setpgid: sha256:1caa4918bc9789fbc1fa5874942680c05d0d27a5a9f6b558eedc5b50aa7b179e
+  missing_symbols: []
+  content_hash: sha256:dcde35f7bb096f86de601b220787c10480d62cde7052b4cb2afddd3159001e2e
+target_content_fingerprint: sha256:91eed1bfa28d1a3ad443f86fd226aa2f756dc9d53c2d1a1ef96cf53c952be499
+generated_at_utc: '2026-07-17T08:16:17.470765Z'

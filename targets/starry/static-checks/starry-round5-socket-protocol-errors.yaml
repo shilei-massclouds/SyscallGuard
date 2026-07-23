@@ -8,6 +8,8 @@ rule_refs:
 - LTP_AF8D38878ED1A9DA
 - LTP_DD2E1A555B603C7B
 - LTP_E316C28E36E136DA
+- MAN_732160952277CD16
+- MAN_A1CD98CE32C423E4
 applies_to_syscalls:
 - socket
 path: os/StarryOS/kernel/src/syscall/net/socket.rs
@@ -36,6 +38,12 @@ upstream_dependencies:
 - id: LTP_E316C28E36E136DA
   generated_at_utc: '2026-07-16T05:14:25.198516Z'
   content_hash: sha256:e316c28e36e136da592847ed1389e06538d4842d55259bc0bd80dbb61b78d10e
+- id: MAN_732160952277CD16
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:732160952277cd1606608f4af9b0045a9446a37910b8072a6cd154c5d3afdf4f
+- id: MAN_A1CD98CE32C423E4
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:a1cd98ce32c423e4e842945e6b013cb6636ddeeb0d6d9c0c7a031027bdd1c896
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/socket.rs
   symbols:
@@ -54,4 +62,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:12acde55ac6a168ea9d9e1b6540b3011215272b51f4ad9b0cb3b7dc9bfa8a4fa
 target_content_fingerprint: sha256:59872ee0b1232f250cb22a03da795e39096176279b85fa8c2f3280e9c67dbd4a
-generated_at_utc: '2026-07-17T05:35:14.259448Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

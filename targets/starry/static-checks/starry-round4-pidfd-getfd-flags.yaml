@@ -3,8 +3,7 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_ROUND4_PIDFD_GETFD_FLAGS
 title: pidfd_getfd rejects nonzero flags before descriptor lookup
 rule_refs:
-- LTP_5322AC28C2EB6C16
-- LTP_EA7E63D027CD6941
+- MAN_58936D050A8879DE
 applies_to_syscalls:
 - pidfd_getfd
 path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
@@ -12,13 +11,17 @@ patterns:
 - label: nonzero flags return InvalidInput first
   regex: pub fn sys_pidfd_getfd\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}[\s\S]*?PidFd::from_fd
 upstream_dependencies:
-- id: LTP_5322AC28C2EB6C16
-  generated_at_utc: '2026-07-16T04:20:06.737209Z'
-  content_hash: sha256:5322ac28c2eb6c1633ef3aad4c16cc30f0be65c7bd19e5571d85d60bbf93ee8a
-- id: LTP_EA7E63D027CD6941
-  generated_at_utc: '2026-07-16T04:20:06.737209Z'
-  content_hash: sha256:ea7e63d027cd6941db5f635805ab7fcdb3274ef77bf7291058741dd9da669775
+- id: MAN_58936D050A8879DE
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:58936d050a8879deb833d1f0c26fd82f6c34633567c82a71e42be27d416f55ce
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/pidfd.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:d36c15b86d521556669b2550ce59d6b5435ba76ff024285b3d623a80082b77e1
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:2c46ff021d5494567a7c2df3cf87e684773994741f83a7db682011a90a7553be
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -35,5 +38,5 @@ target_dependencies:
     sys_pidfd_getfd: sha256:c09f015f5a9ee2d001a71868b33bde4624d37dd0f832100d744ecd29cc9a56cf
   missing_symbols: []
   content_hash: sha256:cadce326e338d88c68096d1d642cb141ad391cd18aeb1797045732b8b151d056
-target_content_fingerprint: sha256:e1a41f075adce64fb0a5a9dda6070a92632abdfbc714ea59f5a370af653ade84
-generated_at_utc: '2026-07-16T04:30:54.819863Z'
+target_content_fingerprint: sha256:3c422858762f9f217e92aa7ed3b8a115f47068c3c3a3225664e50bcc099a9a4c
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

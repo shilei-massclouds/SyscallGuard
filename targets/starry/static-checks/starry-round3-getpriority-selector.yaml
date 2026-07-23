@@ -4,6 +4,7 @@ check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
 title: getpriority rejects selector values outside PRIO_PROCESS, PRIO_PGRP, and PRIO_USER
 rule_refs:
 - LTP_88D300A8FB407324
+- MAN_B1A8365C419E3164--b1a8365c419e
 applies_to_syscalls:
 - getpriority
 path: os/StarryOS/kernel/src/syscall/task/schedule.rs
@@ -14,6 +15,9 @@ upstream_dependencies:
 - id: LTP_88D300A8FB407324
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:88d300a8fb407324aefbe09d1b569b46d87628a1639509250755357a2c634c1a
+- id: MAN_B1A8365C419E3164--b1a8365c419e
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:b1a8365c419e3164dc03060e2b7dc24203874a70076a8529e21fdbd338b522b1
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/schedule.rs
   symbols: []
@@ -151,4 +155,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:f756bb906d6069259209ff3f5cbd15174b8d4fd2247525dd51e318b05a02ef54
 target_content_fingerprint: sha256:fd2a1e17c675bc57a5e18e25e7cc5ed02a53c0f7d16757574f989161a0fc67c0
-generated_at_utc: '2026-07-17T05:29:50.139264Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

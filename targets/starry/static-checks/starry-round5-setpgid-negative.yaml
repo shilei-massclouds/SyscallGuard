@@ -4,6 +4,7 @@ check_id: STARRY_ROUND5_SETPGID_NEGATIVE
 title: setpgid rejects negative pid and pgid arguments before lookup
 rule_refs:
 - LTP_4308D71D8BD6519D
+- MAN_44D6BD8077F837B5
 applies_to_syscalls:
 - setpgid
 path: os/StarryOS/kernel/src/syscall/task/job.rs
@@ -16,6 +17,9 @@ upstream_dependencies:
 - id: LTP_4308D71D8BD6519D
   generated_at_utc: '2026-07-16T05:14:25.198516Z'
   content_hash: sha256:4308d71d8bd6519d6d2c15cb0c6d1925eed73874700fd6f1c1cc8a86199632a4
+- id: MAN_44D6BD8077F837B5
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:44d6bd8077f837b59f4b7446204b778b7317b21c8005c20d9ac23e0747df9c40
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/socket.rs
   symbols:
@@ -146,4 +150,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:f5120c36722f0f04288c370e3b748aa3a8d275528a06d9f4d723532e48f95f2c
 target_content_fingerprint: sha256:503e2ad2892d37575d8bff4be3eb92900dc277af042fe52eea0f21f147a471ff
-generated_at_utc: '2026-07-17T05:33:54.775781Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

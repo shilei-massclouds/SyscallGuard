@@ -4,6 +4,7 @@ check_id: STARRY_ROUND5_SCHED_YIELD
 title: sched_yield delegates to the scheduler and returns success
 rule_refs:
 - LTP_A9BC7EBC1784A722
+- MAN_254F60FBFDA7A2BB
 applies_to_syscalls:
 - sched_yield
 path: os/StarryOS/kernel/src/syscall/task/schedule.rs
@@ -14,7 +15,17 @@ upstream_dependencies:
 - id: LTP_A9BC7EBC1784A722
   generated_at_utc: '2026-07-16T05:14:25.198516Z'
   content_hash: sha256:a9bc7ebc1784a72263646142685fb7ed3bb7aec45b58cfc208bd762f44d7c8fe
+- id: MAN_254F60FBFDA7A2BB
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:254f60fbfda7a2bb6fc59f9a7e57c7bc0e2156bdb128297d07e503c9ed2ec6af
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/task/schedule.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:684acd5855be20e71ea11ed432f131c63dd10b22ecfbfb35485b932bb50d292f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0ce3f2dda1c2a4c1b19267286744e6436675e555025b1e5b3b10dba6d3fe0aab
 - path: os/StarryOS/kernel/src/syscall/task/schedule.rs
   symbols:
   - sys_sched_yield
@@ -24,5 +35,5 @@ target_dependencies:
     sys_sched_yield: sha256:65655a58da49afb12fb0e8f67275e96dd9b9acd91f1784f76771e7bf96a40f82
   missing_symbols: []
   content_hash: sha256:e51427ee002f522aec4f60510bcd89875ec03136f4ec28734c9429b1bb05a90e
-target_content_fingerprint: sha256:66a773c03d182dc1ae1b71d40ef937ddc3fca3c6852c9bc89ff4005e455a0baa
-generated_at_utc: '2026-07-16T05:25:46.137226Z'
+target_content_fingerprint: sha256:ab653a7bb60f80d23746d81a920c843234c3d29c69dae936deef89b0a4b41d23
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

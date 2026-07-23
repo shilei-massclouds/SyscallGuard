@@ -4,6 +4,7 @@ check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
 title: setpriority rejects an unknown selector
 rule_refs:
 - LTP_44DC5382746D773D
+- MAN_B1A8365C419E3164
 applies_to_syscalls:
 - setpriority
 path: os/StarryOS/kernel/src/syscall/task/schedule.rs
@@ -14,6 +15,9 @@ upstream_dependencies:
 - id: LTP_44DC5382746D773D
   generated_at_utc: '2026-07-16T05:14:25.198516Z'
   content_hash: sha256:44dc5382746d773d253ddf7ccb3ede2e242b978ebfb3e0756367ceb4d839956d
+- id: MAN_B1A8365C419E3164
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:0f82bcd2e050e382f7d68a136dda8b3b92679a71cb1e05533aa8674c7a4edf6f
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/net/socket.rs
   symbols:
@@ -144,4 +148,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:f5120c36722f0f04288c370e3b748aa3a8d275528a06d9f4d723532e48f95f2c
 target_content_fingerprint: sha256:503e2ad2892d37575d8bff4be3eb92900dc277af042fe52eea0f21f147a471ff
-generated_at_utc: '2026-07-17T05:33:54.775781Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

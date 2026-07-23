@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_CLOCK_GETTIME_VALIDATION
+title: clock_gettime rejects invalid clocks and checks its result pointer
+rule_refs:
+- MAN_A67DCE77030808A6
+- MAN_D84D77F1C6E463F4
+applies_to_syscalls:
+- clock_gettime
+path: os/StarryOS/kernel/src/syscall/time.rs
+patterns:
+- label: unsupported clock IDs return EINVAL
+  regex: pub fn sys_clock_gettime[\s\S]*?_ => \{[\s\S]*?return Err\(AxError::InvalidInput\)
+- label: the timestamp is written through checked user memory
+  regex: pub fn sys_clock_gettime[\s\S]*?ts\.vm_write\(timespec::from_time_value\(now\)\)\?
+upstream_dependencies:
+- id: MAN_A67DCE77030808A6
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:a67dce77030808a6cdedab3615677b094ce676615691e2de52a6fb4b0db926a7
+- id: MAN_D84D77F1C6E463F4
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:d84d77f1c6e463f4f4c3d85ef5c089b81c00e7507cda07eeb705c75bee97da05
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:5627712698b1a219cfd6979f50739901d84b932915ff6a54e14864b111f5a299
+target_content_fingerprint: sha256:b6327d4b6789ae27e4eb82b36adbd9f29a6f232ca75cc66fd8faccaf6e8d24f7
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

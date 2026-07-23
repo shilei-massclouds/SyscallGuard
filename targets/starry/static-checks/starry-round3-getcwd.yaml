@@ -6,6 +6,8 @@ rule_refs:
 - LTP_53E3454ED6EFD842
 - LTP_729222947741DFD6
 - LTP_FC1E41C3414E7F21
+- MAN_0D9E79AEB44B7510
+- MAN_45A2B6F5ADF14C3F
 applies_to_syscalls:
 - getcwd
 path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
@@ -26,6 +28,12 @@ upstream_dependencies:
 - id: LTP_FC1E41C3414E7F21
   generated_at_utc: '2026-07-16T03:35:24.146836Z'
   content_hash: sha256:fc1e41c3414e7f214284f077070cc39320ebd294786eda043234fca8d9f5da6d
+- id: MAN_0D9E79AEB44B7510
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:0d9e79aeb44b7510ce5ee4e104044aeede91e05c93347751fa947026b35c616a
+- id: MAN_45A2B6F5ADF14C3F
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:45a2b6f5adf14c3f7b93136e2c9e0ed6dbd68a1be6c97d8f268a59cec40e51d1
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/schedule.rs
   symbols: []
@@ -163,4 +171,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:f756bb906d6069259209ff3f5cbd15174b8d4fd2247525dd51e318b05a02ef54
 target_content_fingerprint: sha256:fd2a1e17c675bc57a5e18e25e7cc5ed02a53c0f7d16757574f989161a0fc67c0
-generated_at_utc: '2026-07-17T05:29:50.139264Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

@@ -4,6 +4,7 @@ check_id: STARRY_MMAP_FD
 title: file-backed mmap validates its descriptor
 rule_refs:
 - LTP_791DEA825D66980B
+- MAN_35AF4698AC57ED3F--35af4698ac57
 applies_to_syscalls:
 - mmap
 path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
@@ -16,6 +17,9 @@ upstream_dependencies:
 - id: LTP_791DEA825D66980B
   generated_at_utc: '2026-07-14T13:38:13.033184Z'
   content_hash: sha256:791dea825d66980bfded73936e4745cf7b914f20652b9489e65a7a59509b897b
+- id: MAN_35AF4698AC57ED3F--35af4698ac57
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:35af4698ac57ed3fbd4027d53da28632f649d4584832089f17a1313728568044
 target_dependencies:
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
@@ -82,4 +86,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:b00878b78bdd0b60cc15ad5627dfe7d96862f7dd53787c0869ec28e3f427efcd
 target_content_fingerprint: sha256:eb09276a3b7f4875286f1b105ab515bcd365e6b1fc4ae28ff00976eb0c8a3f48
-generated_at_utc: '2026-07-17T05:27:45.361967Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

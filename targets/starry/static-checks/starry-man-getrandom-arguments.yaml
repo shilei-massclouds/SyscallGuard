@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_GETRANDOM_ARGUMENTS
+title: getrandom rejects invalid flags and checks its output buffer
+rule_refs:
+- MAN_39C5F1849EB3A736
+- MAN_CEC45E0E1446E3DF
+applies_to_syscalls:
+- getrandom
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: unknown and incompatible flags return EINVAL
+  regex: pub fn sys_getrandom[\s\S]*?GetRandomFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?[\s\S]*?INSECURE[\s\S]*?RANDOM[\s\S]*?AxError::InvalidInput
+- label: output uses checked user memory
+  regex: pub fn sys_getrandom[\s\S]*?vm_write_slice\(buf, &kbuf\)\?
+upstream_dependencies:
+- id: MAN_39C5F1849EB3A736
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:39c5f1849eb3a736f911044c97e17681db8edb9ecd3a8e363ecdaa8d8c5cf788
+- id: MAN_CEC45E0E1446E3DF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:cec45e0e1446e3df175d83de317b062067cc1252be8ac188e2685182a8f20608
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

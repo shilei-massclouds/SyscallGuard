@@ -3,7 +3,7 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
 title: finit_module rejects unsupported nonzero flags with EINVAL
 rule_refs:
-- LTP_DA65D6C7A0E4ABBC
+- MAN_2421026C912D8F9E--2421026c912d
 applies_to_syscalls:
 - finit_module
 path: os/StarryOS/kernel/src/syscall/kmod.rs
@@ -13,10 +13,17 @@ patterns:
 - label: unsupported nonzero flags return InvalidInput
   regex: pub fn sys_finit_module\([\s\S]*?if flags != 0 \{\s*return Err\(AxError::InvalidInput\);\s*\}
 upstream_dependencies:
-- id: LTP_DA65D6C7A0E4ABBC
-  generated_at_utc: '2026-07-16T02:52:01.871423Z'
-  content_hash: sha256:da65d6c7a0e4abbc12ba61464384db59b2ccc9a4215469858de691a4c6deb562
+- id: MAN_2421026C912D8F9E--2421026c912d
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:2421026c912d8f9ec305c5e9751f0d1163b29ca9fe10d9174b6eee31c9ffceb9
 target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/mod.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:0b28fde515d0a745a3d1ab7bfbc8325f676a966be3637553ff6845f92a44140e
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:0f07384a7bcf8c66bc125dceda8aa78e51403cfcea87f3d9bf4f965851341039
 - path: components/axerrno/src/lib.rs
   symbols: []
   scope: file
@@ -24,28 +31,21 @@ target_dependencies:
   symbol_hashes: {}
   missing_symbols: []
   content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
-- path: os/StarryOS/kernel/src/syscall/mod.rs
-  symbols: []
-  scope: file
-  file_hash: sha256:22af2a4f7e463d4867e9489dcdd8f37d67cdd1f2c101ab52dce33e094cae029c
-  symbol_hashes: {}
-  missing_symbols: []
-  content_hash: sha256:5c62bcf8e4f696da055ae4d63f934efaa3690e0ceef7d7f1ff5ffe5b33bc6794
 - path: os/StarryOS/kernel/src/syscall/kmod.rs
   symbols:
   - sys_finit_module
   scope: symbols
-  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
+  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
   symbol_hashes:
-    sys_finit_module: sha256:a04ce76044a3317f5cb0d90d139e54496710ddeef060a0a920ca326ac0ed8c12
+    sys_finit_module: sha256:142c737cba186eec5d5ca84d736568514e9a04d65fc0a05d5d435928b1942526
   missing_symbols: []
-  content_hash: sha256:d864130a8360b84bf9ca0327afcd40f6bb785c993ab2d8b1741751befff71516
+  content_hash: sha256:9ab0133e24ce011a32314fa378c1f68bdaa45ecb1b0d6133fc0f7d84e8a89012
 - path: os/StarryOS/kernel/src/syscall/kmod.rs
   symbols: []
   scope: file
-  file_hash: sha256:30f52ef49fc2200bd6442dcab1c6a1136ffa4ec3befa1bd5264eaed1dd544785
+  file_hash: sha256:16f095665fbf08ad0e407ae0747543349a6fa8015fb83805569ef1077921440a
   symbol_hashes: {}
   missing_symbols: []
-  content_hash: sha256:f7e1a336824e1784cff6ae1eca8bf56268455e96026a73116518bc941064b1f8
-target_content_fingerprint: sha256:dddab9259f4a481560437bcde8080c10a4263016fc50860dfbc019df44a2a122
-generated_at_utc: '2026-07-16T04:30:54.819863Z'
+  content_hash: sha256:dcd8e9bf36ab723b6d18fb28526fdd5c0a85458c56718fd6dc69faf62ced4441
+target_content_fingerprint: sha256:064016db4973be5f76bc0bd6a076173af17fd3b02bbe2711865e2cfd560c47e1
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

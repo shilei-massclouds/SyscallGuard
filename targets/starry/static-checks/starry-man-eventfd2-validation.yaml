@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_EVENTFD2_VALIDATION
+title: eventfd2 validates flags and returns an installed descriptor
+rule_refs:
+- MAN_A5F4BA2371332A4E
+- MAN_BE929AB9651E5E66
+applies_to_syscalls:
+- eventfd2
+path: os/StarryOS/kernel/src/syscall/fs/event.rs
+patterns:
+- label: unsupported flags return EINVAL
+  regex: pub fn sys_eventfd2[\s\S]*?EventFdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?
+- label: the new object is installed and its fd returned
+  regex: pub fn sys_eventfd2[\s\S]*?add_file_like\(event_fd[\s\S]*?\.map\(\|fd\| fd as _\)\?[\s\S]*?Ok\(fd\)
+upstream_dependencies:
+- id: MAN_A5F4BA2371332A4E
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:a5f4ba2371332a4e5ad6c94bd808ca1e5d12b3f4ebba27c6a38bce0993ea1676
+- id: MAN_BE929AB9651E5E66
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:be929ab9651e5e66a59780b20d2a800f62ea7b43b007b17615da59afb2cdd5b3
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/event.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:1d074813c1f71f23ce97cf2fb7897555c3714b76b798c2262ae684bbfc988e06
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:df09081aee4bbbfc8be96c22c22843518a7811d6174aa453c78c14dfcf6bcc2a
+target_content_fingerprint: sha256:e034ad30d1fc564e4e09b8b04d959d09c71cab69f05c17ad7e5c60f28eb058b7
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

@@ -4,6 +4,7 @@ check_id: STARRY_CLOSE_FD_TABLE
 title: close removes existing descriptors and rejects missing descriptors
 rule_refs:
 - LTP_09B39E9C9254ECB2
+- MAN_23E25F7C4136339F
 applies_to_syscalls:
 - close
 path: os/StarryOS/kernel/src/file/mod.rs
@@ -16,6 +17,9 @@ upstream_dependencies:
 - id: LTP_09B39E9C9254ECB2
   generated_at_utc: '2026-07-14T13:35:02.567816Z'
   content_hash: sha256:09b39e9c9254ecb24ccb5288c3f12281e9adc0b698de5c706a4f071599c3ce60
+- id: MAN_23E25F7C4136339F
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:23e25f7c4136339fc233a376594c3e51adbc670feb4e07f06388abcb1a9fbe72
 target_dependencies:
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
@@ -82,4 +86,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:b00878b78bdd0b60cc15ad5627dfe7d96862f7dd53787c0869ec28e3f427efcd
 target_content_fingerprint: sha256:eb09276a3b7f4875286f1b105ab515bcd365e6b1fc4ae28ff00976eb0c8a3f48
-generated_at_utc: '2026-07-17T05:27:45.361967Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

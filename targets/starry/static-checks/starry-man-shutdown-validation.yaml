@@ -1,0 +1,141 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SHUTDOWN_VALIDATION
+title: shutdown validates the socket descriptor and shutdown direction
+rule_refs:
+- MAN_5B4118BF4C21F770
+- MAN_5F5865EF1A8D5904
+- MAN_8812ADE8E360DB8F
+- MAN_CAA0FFEFF7C64A82
+applies_to_syscalls:
+- shutdown
+path: os/StarryOS/kernel/src/syscall/net/socket.rs
+patterns:
+- label: shutdown resolves a Socket from the fd
+  regex: pub fn sys_shutdown[\s\S]*?Socket::from_fd\(fd\)\?
+- label: only SHUT_RD SHUT_WR and SHUT_RDWR are accepted
+  regex: let how = match how \{[\s\S]*?SHUT_RD[\s\S]*?SHUT_WR[\s\S]*?SHUT_RDWR[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+- label: a valid shutdown returns zero
+  regex: socket\.shutdown\(how\)\.map\(\|_\| 0\)
+upstream_dependencies:
+- id: MAN_5B4118BF4C21F770
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:5b4118bf4c21f7706bc594975201f277d04ee8ddcd6b25776ae13c9441ab5d10
+- id: MAN_5F5865EF1A8D5904
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:5f5865ef1a8d5904288de6b5062ee6d1e7fb74125ddf77ba8807847569a6d951
+- id: MAN_8812ADE8E360DB8F
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:8812ade8e360db8f8860c3534585321d58461d8a1b01b3614f8e6d175e7d1ebf
+- id: MAN_CAA0FFEFF7C64A82
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:caa0ffeff7c64a82bf218a9fb6d7c5dde87bcb41e8fb0795fc7bd39adf6f36ca
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
+  symbols:
+  - sys_epoll_create
+  - sys_epoll_create1
+  scope: symbols
+  file_hash: sha256:2039766517d15bd388cb8cd59fcfca268dbfbde28c14be2c4a3f5e4143b5b9e2
+  symbol_hashes:
+    sys_epoll_create: sha256:e304d9af962de72d0c494a0d1e65c9b0d6bb775b6c4ef932bcd80d4f093d26bb
+    sys_epoll_create1: sha256:6d09dae7b9b8f5374063ad0fc198d532af191b961799b655a8ae3a62ef012906
+  missing_symbols: []
+  content_hash: sha256:0ad60a780900236db787a7407dc15621008e9ce86d621b6753c82b2a5fc211e2
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:12acde55ac6a168ea9d9e1b6540b3011215272b51f4ad9b0cb3b7dc9bfa8a4fa
+- path: os/StarryOS/kernel/src/syscall/net/addr.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:919b4e73b5589a1398816303fe516726b062b90f432ae2ec1e8070e7f44f1c6a
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:1ed4ae5bd39b5ca9ec44afa9f274799be9e067405d921b852007abf34ee308b3
+- path: components/axerrno/src/lib.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:a94d230d7f4b07c158c929df62ba63188107d6730a15dff8871c128d420b37f7
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:3afe6feb7c29a71ed7166317a7a138c45b37ac9557817d98b565bfeac2408b6d
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_close_range
+  scope: symbols
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes:
+    sys_close_range: sha256:7c6451c5a5b1ae0b87827be48057fc21b8957da656ec859a28bbefb5d217f971
+  missing_symbols: []
+  content_hash: sha256:3f9d9533f67b0d6df032ca2249b938b9ae788a6c27f7063128f8e835f5538952
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:45fbbc4f407002003c52510716f151b7c03e9b57a8e081b4254bd23307354fd1
+- path: os/StarryOS/kernel/src/file/net.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:3c179c512b5f59b2d5cd6c4e73f573b189c12ede8d8a1324217792686832294f
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:78ffe4df1a73f3ddd359ad4a4c58a643b1417e9006326fd9756597dafdb0c475
+- path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  symbols:
+  - sys_connect
+  scope: symbols
+  file_hash: sha256:2ff9953a5b5ceb435b3231443f25f8143d2fc0c1d54c2bf158805afdf0d3aa92
+  symbol_hashes:
+    sys_connect: sha256:5e3031bc0f968eb84e7e7ec2cbd7de6650844bd46d67ce5a79d72e3d3075f616
+  missing_symbols: []
+  content_hash: sha256:85205e9c20a18b15589838878522ebe758e337f9337f33178d64559ac3f70df2
+- path: os/StarryOS/kernel/src/syscall/fs/io.rs
+  symbols:
+  - sys_copy_file_range
+  scope: symbols
+  file_hash: sha256:4487e5d3d52880a36e23ab0724acc2be52f047ff684be45bd84812c193915729
+  symbol_hashes:
+    sys_copy_file_range: sha256:0bf45fc95653833e9f8492ac962a8ebb5609ce71169a1135863918078290685b
+  missing_symbols: []
+  content_hash: sha256:9a146deace9e9b40b34b1911ef8463685941f261dccc54cceae8a06a2df9b5e2
+- path: os/StarryOS/kernel/src/file/mod.rs
+  symbols:
+  - add_file_like
+  - get_file_like
+  scope: symbols
+  file_hash: sha256:5f7dbf8aa1073abd967cca120befb22c9ba26cb0c37c4433ba1b14430cba097e
+  symbol_hashes:
+    add_file_like: sha256:b5cf9dea5d6bd10b0f15fdb84c2c98a676cb28fecdfa13cc8c9b458d2ef0cc18
+    get_file_like: sha256:01d10faef084ccb22e1f2c14980d2539cb091a2af833bd1ed6baa8abe08785b5
+  missing_symbols: []
+  content_hash: sha256:accae0bd44f82207f244b85e252120122e3b3901e4993ca1e9d0d58d21c015cf
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - dup_fd
+  - sys_dup
+  scope: symbols
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes:
+    dup_fd: sha256:eaec9c14d0e633561d5e7dab7814d80af12077a8ac49269599fbb20d08c1608e
+    sys_dup: sha256:5e9bb21b22d3d2d0a1ac3ef1e283fe060fb06087f994c793ba135cc476cf133c
+  missing_symbols: []
+  content_hash: sha256:d0701994de39f5838c32092d701b853fb90fb05609a6e509f2562b12fac6b7b9
+- path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
+  symbols:
+  - sys_dup2
+  - sys_dup3
+  scope: symbols
+  file_hash: sha256:7890300205eb51aea1c446bbb529d07d84e66f64c97d72ca3dcdd09ff7477169
+  symbol_hashes:
+    sys_dup2: sha256:9dcd640b2bdfbc58cae2e8ae6d95a49c870ac6a57c4782238887d0ce8f559b08
+    sys_dup3: sha256:601d6c8ea8ef9c64dad4312a6de2c09db675ea1b518834d2447757c7965d5192
+  missing_symbols: []
+  content_hash: sha256:e0ca835a6d2370ba9451f18940b811cb38ab5cdef062bb5bc528105813bd6a95
+target_content_fingerprint: sha256:02c7e377f2a616f553ed0e6b14d268619d510a9a9db704210dbd4dc6ad315afa
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

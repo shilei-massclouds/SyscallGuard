@@ -1,4 +1,3 @@
-# External source trees are not committed by default.
-# Existing tracked baseline fixtures remain tracked; new evidence copies need git add -f.
-/snapshots/ltp/starry-sources/
-/snapshots/ltp/test-sources/
+__pycache__/
+*.py[cod]
+

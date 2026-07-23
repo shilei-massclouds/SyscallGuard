@@ -5,6 +5,8 @@ title: mmap rejects zero length and missing map type
 rule_refs:
 - LTP_51E295101A9F4411
 - LTP_FEACDC300C3E1DD7
+- MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+- MAN_DE03A6A5B1731AF7--de03a6a5b173
 applies_to_syscalls:
 - mmap
 path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
@@ -20,6 +22,12 @@ upstream_dependencies:
 - id: LTP_FEACDC300C3E1DD7
   generated_at_utc: '2026-07-14T13:38:13.033184Z'
   content_hash: sha256:feacdc300c3e1dd754c7925df645b95995a6f17fd0ebcb6a50578071e2f9636f
+- id: MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:8db0ab4e3b90cb5034fa16053963c87b696afd01c42ca53f05b3f82f4a75bf18
+- id: MAN_DE03A6A5B1731AF7--de03a6a5b173
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:de03a6a5b1731af7337b6fe64330f8a02f628f42dd87260aa00bf3c01e843fb6
 target_dependencies:
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
@@ -86,4 +94,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:b00878b78bdd0b60cc15ad5627dfe7d96862f7dd53787c0869ec28e3f427efcd
 target_content_fingerprint: sha256:eb09276a3b7f4875286f1b105ab515bcd365e6b1fc4ae28ff00976eb0c8a3f48
-generated_at_utc: '2026-07-17T05:27:45.361967Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

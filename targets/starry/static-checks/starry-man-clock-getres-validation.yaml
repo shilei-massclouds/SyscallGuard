@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_CLOCK_GETRES_VALIDATION
+title: clock_getres rejects invalid clocks and checks a non-null result pointer
+rule_refs:
+- MAN_6D665164162723C5--6d6651641627
+- MAN_DA93975DA79D34AD--da93975da79d
+applies_to_syscalls:
+- clock_getres
+path: os/StarryOS/kernel/src/syscall/time.rs
+patterns:
+- label: unsupported clock IDs return EINVAL
+  regex: pub fn sys_clock_getres[\s\S]*?_ => return Err\(AxError::InvalidInput\)
+- label: a non-null result uses checked user memory
+  regex: pub fn sys_clock_getres[\s\S]*?res\.nullable\(\)[\s\S]*?res\.vm_write\(timespec::from_time_value\(resolution\)\)\?
+upstream_dependencies:
+- id: MAN_6D665164162723C5--6d6651641627
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:6d665164162723c5927f1e69624afc5e14e7a2f8dba1118fc63496a505136b1d
+- id: MAN_DA93975DA79D34AD--da93975da79d
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:da93975da79d34add410b3d856d570f7ed0b241558c683ba8f06e3511488bbae
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/time.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:9d266694ec051fd8a6b61482adabe2ef11941964ceefba8490172b50670fffcb
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:5627712698b1a219cfd6979f50739901d84b932915ff6a54e14864b111f5a299
+target_content_fingerprint: sha256:b6327d4b6789ae27e4eb82b36adbd9f29a6f232ca75cc66fd8faccaf6e8d24f7
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

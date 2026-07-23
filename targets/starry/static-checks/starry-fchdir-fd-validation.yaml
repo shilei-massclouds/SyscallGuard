@@ -4,6 +4,7 @@ check_id: STARRY_FCHDIR_FD_VALIDATION
 title: with_fs resolves non-AT_FDCWD descriptors as directories
 rule_refs:
 - LTP_CCC36F43E9463D3E
+- MAN_5B2667DFDCB4EB31
 applies_to_syscalls:
 - fchdir
 path: os/StarryOS/kernel/src/file/fs.rs
@@ -16,6 +17,9 @@ upstream_dependencies:
 - id: LTP_CCC36F43E9463D3E
   generated_at_utc: '2026-07-16T02:52:01.871423Z'
   content_hash: sha256:ccc36f43e9463d3e65e732efa9e9d62af421e5d01bac07a5d343fc88f368505c
+- id: MAN_5B2667DFDCB4EB31
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:61cb0a48e7b670defc81b89b80d5581ec43033a0f92fbaf3d5455e52694ec5f1
 target_dependencies:
 - path: components/axerrno/src/lib.rs
   symbols: []
@@ -34,6 +38,20 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:712e6dabf0a0b1401667ef16f03ba9f82583b4b4bf807f3dc95a41695ead718d
 - path: os/StarryOS/kernel/src/file/fs.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:550e894d6abfbc7221d14420c4a3b9ed85ff072e792e108c2f8b7f8a6dceeefd
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:7cc750f1650beea4c4b002e42b33c687e9c9c7ef5bc286d38ad97159eadba7e2
+- path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:c1bcef3a9817748a53084fa314945c6241c8f0591daa32872890509f01d03a53
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:a792b678a012108e37743173ef2de96643a9dfcaf5674f5d60d50dfc46b2c9eb
+- path: os/StarryOS/kernel/src/file/fs.rs
   symbols:
   - with_fs
   scope: symbols
@@ -42,5 +60,5 @@ target_dependencies:
     with_fs: sha256:25c05b1a7fa048a60a847f773bfca9333d04b9bdfa957714822a0bd22859a58f
   missing_symbols: []
   content_hash: sha256:b629ca54b2064ebf8312fc8a9f339be70549d7e467ef5edddc405be63ef578ef
-target_content_fingerprint: sha256:ac5ccb500b3e82e6d3e3622c32bb19f4bed7691e91297548c60bb8b29d8beb0b
-generated_at_utc: '2026-07-16T03:17:56.282688Z'
+target_content_fingerprint: sha256:ce6285056475f281ea07c32d62b19396fa98596ffc3b05e82714dc0cd3b1af93
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

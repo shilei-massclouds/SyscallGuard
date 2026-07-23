@@ -5,6 +5,7 @@ title: epoll_ctl validates the epoll descriptor operation and self registration
 rule_refs:
 - LTP_6FFB17DB762F3167
 - LTP_83709E56D6285F71
+- MAN_DADCFA23F461FBBF
 applies_to_syscalls:
 - epoll_ctl
 path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
@@ -23,6 +24,9 @@ upstream_dependencies:
 - id: LTP_83709E56D6285F71
   generated_at_utc: '2026-07-15T10:14:12.969080Z'
   content_hash: sha256:83709e56d6285f71dce5dcd5f54aa0ba99d44ddef002f1e6cc53f2fce6075678
+- id: MAN_DADCFA23F461FBBF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:dadcfa23f461fbbf9a88ff1f9b10e85b6e1e7dac4e37ca8986fc8e414a12fa89
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/execve.rs
   symbols:
@@ -139,4 +143,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
 target_content_fingerprint: sha256:b1802eeb4315757d577fa1d7cbcbd03db33148c64c2c4bd9bb944c1d1d08cb06
-generated_at_utc: '2026-07-17T05:28:28.281302Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

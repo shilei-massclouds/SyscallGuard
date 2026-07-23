@@ -5,6 +5,8 @@ title: timer_delete distinguishes valid and invalid POSIX timer IDs
 rule_refs:
 - LTP_10B3572DBFA6742B
 - LTP_9B36D27A4A2994D0
+- MAN_95930C2D369C878D
+- MAN_AF1D093225F75E82
 applies_to_syscalls:
 - timer_delete
 path: os/StarryOS/kernel/src/syscall/time.rs
@@ -18,6 +20,12 @@ upstream_dependencies:
 - id: LTP_9B36D27A4A2994D0
   generated_at_utc: '2026-07-16T07:55:00.843723Z'
   content_hash: sha256:9b36d27a4a2994d0fb9becad9ddba6985ba56fddf7db2169f2efef4819243591
+- id: MAN_95930C2D369C878D
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:95930c2d369c878df9727170ea77dede88f30b28d88f4134d230836b09c56ffd
+- id: MAN_AF1D093225F75E82
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:af1d093225f75e82ca0aa65cd8a7665ef9c04e7e9e605b0ba70a468bd1912a09
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/time.rs
   symbols:
@@ -242,4 +250,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:fc1e90e772c8ae272cb0ddf2c6564e6ddae488afceadbb1a3ea859b05135e15f
 target_content_fingerprint: sha256:a9117565be398bd231ba67d226cd57439bc4ddf279e435568f3abac39c1aadae
-generated_at_utc: '2026-07-17T05:35:14.259448Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

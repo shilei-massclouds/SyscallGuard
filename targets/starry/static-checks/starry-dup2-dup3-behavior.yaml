@@ -15,6 +15,9 @@ rule_refs:
 - LTP_BDA36F61423EEB3E
 - LTP_D296A517F138A0C0
 - LTP_EE8E695CF61D6D8A
+- MAN_794294DBD03CA974
+- MAN_9BC94E6BD25C05E1
+- MAN_E99D067CF243EEE8
 applies_to_syscalls:
 - dup2
 - dup3
@@ -66,6 +69,15 @@ upstream_dependencies:
 - id: LTP_EE8E695CF61D6D8A
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:ee8e695cf61d6d8aa981eb6e30bf3a8a53c8e8a4ad435ff362bbd78971d17088
+- id: MAN_794294DBD03CA974
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:d902d1f5fea87f82fb55ca1f8cde202501fd23595ec05f804e4b48f30a3c046b
+- id: MAN_9BC94E6BD25C05E1
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:9bc94e6bd25c05e12b4495102575eb27a9d617116c52c0fe32bc96ccf6993130
+- id: MAN_E99D067CF243EEE8
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:e99d067cf243eee89be17d52596c12b3fc5286b1f5d8c8481a26cafeeff1a239
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
   symbols:
@@ -174,4 +186,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:e0ca835a6d2370ba9451f18940b811cb38ab5cdef062bb5bc528105813bd6a95
 target_content_fingerprint: sha256:02c7e377f2a616f553ed0e6b14d268619d510a9a9db704210dbd4dc6ad315afa
-generated_at_utc: '2026-07-17T05:27:45.361967Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

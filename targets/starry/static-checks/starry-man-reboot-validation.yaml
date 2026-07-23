@@ -1,0 +1,34 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_REBOOT_VALIDATION
+title: reboot enforces privilege, magic values, and supported commands
+rule_refs:
+- MAN_03E8B237E962C1D2
+- MAN_F84F01B63ABC178D
+applies_to_syscalls:
+- reboot
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: reboot requires CAP_SYS_BOOT
+  regex: pub fn sys_reboot[\s\S]*?has_cap_sys_boot\(\)[\s\S]*?LinuxError::EPERM
+- label: bad magic values return EINVAL
+  regex: magic != LINUX_REBOOT_MAGIC1[\s\S]*?LINUX_REBOOT_MAGIC2C[\s\S]*?LinuxError::EINVAL
+- label: unknown commands return EINVAL
+  regex: match cmd \{[\s\S]*?_ => Err\(AxError::from\(LinuxError::EINVAL\)\)
+upstream_dependencies:
+- id: MAN_03E8B237E962C1D2
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:03e8b237e962c1d2ded1178a8a856c9a8f05fa2f554080f72e5640a75e8bf73e
+- id: MAN_F84F01B63ABC178D
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:f84f01b63abc178d1fe5bc1fa49113ceabd5237e70e1ce2ad10aa7debb586f7a
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

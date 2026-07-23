@@ -1,0 +1,48 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_MEMFD_CREATE_VALIDATION
+title: memfd_create validates flags, name pointer, and name length
+rule_refs:
+- MAN_4C50AA2793AB7713
+- MAN_67ECA3FB50D80BAF
+- MAN_6FA8F2D41D1B7062
+- MAN_9E0C30E4205FB415
+- MAN_DD8A18DB0BF6E8A9
+applies_to_syscalls:
+- memfd_create
+path: os/StarryOS/kernel/src/syscall/fs/memfd.rs
+patterns:
+- label: unknown and hugepage flags return EINVAL
+  regex: pub fn sys_memfd_create[\s\S]*?flags & !valid_flags != 0 \|\| flags & MFD_HUGETLB != 0[\s\S]*?AxError::InvalidInput
+- label: name loading uses checked user memory
+  regex: 'let name_str: String = vm_load_string\(name\)\?'
+- label: names longer than 249 bytes return EINVAL
+  regex: 'const MEMFD_NAME_MAX: usize = 249;[\s\S]*?name_str\.len\(\) > MEMFD_NAME_MAX[\s\S]*?AxError::InvalidInput'
+- label: the memfd is installed and its fd returned
+  regex: pub fn sys_memfd_create[\s\S]*?add_file_like\(memfd, cloexec\)\.map\(\|fd\| fd as _\)
+upstream_dependencies:
+- id: MAN_4C50AA2793AB7713
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:4c50aa2793ab77139ef13b2b4a4f37b26f6d5834f8f175d9bf2af1c1a6222d67
+- id: MAN_67ECA3FB50D80BAF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:67eca3fb50d80bafa77df16282f3438f9c9c4920b7fd07decae94b227fe61da6
+- id: MAN_6FA8F2D41D1B7062
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:6fa8f2d41d1b7062512f7ef14612d6d6594e7f36cb6ef236fbebd35f0c135f4b
+- id: MAN_9E0C30E4205FB415
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:9e0c30e4205fb415e37882ebeeb276505c96311a3f6ea5e043d380fa4e7ffcce
+- id: MAN_DD8A18DB0BF6E8A9
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:dd8a18db0bf6e8a9df4e19403f6d40f6d4028bb331dc3c61bc496ea26ddacf38
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/memfd.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:53cdf6750e20f61e87dd37791346cde16fe0f7c1d5d65be428d50556a1b487e6
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:bfb414e8e76b83689556878d3371d207ada4efe5695f2c705758f5c227460e14
+target_content_fingerprint: sha256:9684f754a40163a4048d9d4be038c611dd7586bc8ba7f4365574ffeed7a26b77
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

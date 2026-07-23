@@ -93,6 +93,12 @@ man-pages。它要求 descriptor 提供 `adapter: man_pages`、`location`、`lin
 `missing_documentation`，不会阻断其他 syscall。规则分析优先沿 `ERRORS` 逐条形成 errno 规则；
 `RETURN VALUE` 只补充可无歧义解析的简单成功结果。
 
+可静态证明的 man-pages 条款维护在
+`targets/starry/man-static-checks.yaml`。维护者可先运行
+`python3 tools/map_man_static_checks.py --validate-only` 校验规则归属和正则定义，再通过
+`--branch <专用分支> --run-id <mapping-id>` 交给 mapping finalizer 原子发布。该流程只读
+Starry 目标工作树，并固定使用 `static-only`，不会创建动态测试。
+
 ## 注意
 
 - 五个 SKILL 相互独立；快速开始中的后续步骤不会自动执行。

@@ -1,0 +1,421 @@
+schema_version: 1
+kind: syscallguard_starry_man_static_check_catalog
+
+# Existing executable checks whose implementation evidence also proves the
+# listed active man-pages rules.  The publication helper merges these refs
+# without duplicating the check itself.
+existing_check_refs:
+  STARRY_CHROOT_PATH:
+  - MAN_F6CB9D32040E99BA
+  STARRY_CLOSE_FD_TABLE:
+  - MAN_23E25F7C4136339F
+  STARRY_CLOSE_SYSCALL:
+  - MAN_494CD34A8C11734B
+  STARRY_CONNECT_ADDRESS_VALIDATION:
+  - MAN_392816F25BD330A2
+  - MAN_524B615D8F9A7E12
+  STARRY_CONNECT_ENTRY:
+  - MAN_CDD044CBEEED1A80
+  STARRY_SOCKET_FD_VALIDATION:
+  - MAN_CDD044CBEEED1A80
+  - MAN_5B4118BF4C21F770
+  - MAN_5F5865EF1A8D5904
+  - MAN_6038BC183A1CE6BF
+  - MAN_AE7C62637F29A4C9
+  STARRY_COPY_FILE_RANGE_CORE:
+  - MAN_BC425C37C792DDEE
+  - MAN_D405972253EA086F
+  - MAN_DBD043A36C2E4926
+  - MAN_FDD174E970AC7930
+  STARRY_DUP_BEHAVIOR:
+  - MAN_794294DBD03CA974--794294dbd03c
+  STARRY_DUP2_DUP3_BEHAVIOR:
+  - MAN_794294DBD03CA974
+  - MAN_9BC94E6BD25C05E1
+  - MAN_E99D067CF243EEE8
+  STARRY_EPOLL_CREATE1_FLAGS:
+  - MAN_6B7EED8E43FDD1BA
+  STARRY_EPOLL_CTL_ENTRY:
+  - MAN_DADCFA23F461FBBF
+  STARRY_EPOLL_FD_LOOKUP:
+  - MAN_E32B6349055FCEF9
+  STARRY_EPOLL_NESTED_LOOP:
+  - MAN_CDD195853C6DFE14
+  STARRY_FACCESSAT2_VALIDATION:
+  - MAN_147EECDC5DAB119D
+  - MAN_A58EA189B1C9E326
+  STARRY_FCHDIR_CORE:
+  - MAN_5B2667DFDCB4EB31
+  - MAN_E116073D3FDB5C1F
+  STARRY_FCHDIR_FD_VALIDATION:
+  - MAN_5B2667DFDCB4EB31
+  STARRY_FCHMODAT_FLAG_VALIDATION:
+  - MAN_9A17C8A141B47D41
+  STARRY_FINAL_TIMER_DELETE:
+  - MAN_95930C2D369C878D
+  - MAN_AF1D093225F75E82
+  STARRY_FINAL_UNSHARE_FLAG_VALIDATION:
+  - MAN_B4DD5B60F33FC5E3
+  STARRY_FINIT_MODULE_FLAG_VALIDATION:
+  - MAN_2421026C912D8F9E--2421026c912d
+  STARRY_MMAP_ARGUMENTS:
+  - MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+  - MAN_DE03A6A5B1731AF7--de03a6a5b173
+  STARRY_MMAP_FD:
+  - MAN_35AF4698AC57ED3F--35af4698ac57
+  STARRY_ROUND3_FSTAT_CORE:
+  - MAN_37A8B25C745F91BB--37a8b25c745f
+  - MAN_AA8C115068BD5D76--aa8c115068bd
+  - MAN_DFDB86CEA63B78D3--dfdb86cea63b
+  STARRY_ROUND3_FSTATFS_ERRORS:
+  - MAN_48B52042FE3DEA4C--48b52042fe3d
+  - MAN_5378890AE3F832EE--5378890ae3f8
+  - MAN_8153E21BD727F6A0
+  STARRY_ROUND3_GETCWD:
+  - MAN_0D9E79AEB44B7510
+  - MAN_45A2B6F5ADF14C3F
+  STARRY_ROUND3_GETPRIORITY_SELECTOR:
+  - MAN_B1A8365C419E3164--b1a8365c419e
+  STARRY_ROUND3_JOB_ID_LOOKUP:
+  - MAN_045719AC8992819E--045719ac8992
+  - MAN_81F4F1C3AD4F3217
+  STARRY_ROUND3_PROCESS_LOOKUP:
+  - MAN_045719AC8992819E--045719ac8992
+  - MAN_81F4F1C3AD4F3217
+  STARRY_ROUND4_MLOCK2_FLAGS:
+  - MAN_362BD9184BA2B5C7
+  STARRY_ROUND4_MUNMAP_ZERO_LENGTH:
+  - MAN_8DB0AB4E3B90CB50
+  STARRY_ROUND4_OPENAT2_SIZE:
+  - MAN_25CD94348F7360E1
+  STARRY_ROUND4_PIDFD_GETFD_FLAGS:
+  - MAN_58936D050A8879DE
+  STARRY_ROUND4_PIDFD_OPEN_INPUTS:
+  - MAN_0BA66331CB4B2091
+  - MAN_DC37B979EC91203E
+  STARRY_ROUND4_PIDFD_SIGNAL_FLAGS:
+  - MAN_6D77B363EA967C8F
+  STARRY_ROUND4_VECTOR_IO_FLAGS:
+  - MAN_B5E18528035F6F87
+  - MAN_F12635B7646C0E9B
+  STARRY_ROUND5_SCHED_YIELD:
+  - MAN_254F60FBFDA7A2BB
+  STARRY_ROUND5_SETPGID_NEGATIVE:
+  - MAN_44D6BD8077F837B5
+  STARRY_ROUND5_SETPRIORITY_SELECTOR:
+  - MAN_B1A8365C419E3164
+  STARRY_ROUND5_SOCKET_PROTOCOL_ERRORS:
+  - MAN_732160952277CD16
+  - MAN_A1CD98CE32C423E4
+
+# New checks are intentionally limited to properties that can be established
+# from a concrete guard, checked user-memory access, or fixed success return.
+checks:
+- check_id: STARRY_MAN_REBOOT_VALIDATION
+  title: reboot enforces privilege, magic values, and supported commands
+  rule_refs:
+  - MAN_03E8B237E962C1D2
+  - MAN_F84F01B63ABC178D
+  applies_to_syscalls: [reboot]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: reboot requires CAP_SYS_BOOT
+    regex: 'pub fn sys_reboot[\s\S]*?has_cap_sys_boot\(\)[\s\S]*?LinuxError::EPERM'
+  - label: bad magic values return EINVAL
+    regex: 'magic != LINUX_REBOOT_MAGIC1[\s\S]*?LINUX_REBOOT_MAGIC2C[\s\S]*?LinuxError::EINVAL'
+  - label: unknown commands return EINVAL
+    regex: 'match cmd \{[\s\S]*?_ => Err\(AxError::from\(LinuxError::EINVAL\)\)'
+
+- check_id: STARRY_MAN_SETGROUPS_VALIDATION
+  title: setgroups enforces privilege, namespace denial, and NGROUPS_MAX
+  rule_refs:
+  - MAN_0F2C1ABA8AF5C15E
+  - MAN_8D160F5D77EC235B
+  - MAN_FD5BF4CD3984BECF
+  applies_to_syscalls: [setgroups]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: CAP_SETGID is required
+    regex: 'pub fn sys_setgroups[\s\S]*?!old\.has_cap_setgid\(\)[\s\S]*?AxError::OperationNotPermitted'
+  - label: namespace setgroups denial is enforced
+    regex: 'thread\.setgroups_deny\(\)[\s\S]*?AxError::OperationNotPermitted'
+  - label: oversized group vectors are rejected
+    regex: 'const NGROUPS_MAX: usize = 65536;[\s\S]*?if size > NGROUPS_MAX[\s\S]*?AxError::InvalidInput'
+
+- check_id: STARRY_MAN_SETHOSTNAME_ARGUMENTS
+  title: sethostname validates length and user memory before success
+  rule_refs:
+  - MAN_6998D4E70F807B13
+  - MAN_9E12AA9A59F1BBE9
+  - MAN_DA06B43ED3D9DBBC
+  applies_to_syscalls: [sethostname]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: overlong names return EINVAL
+    regex: 'pub fn sys_sethostname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput'
+  - label: the name is read through checked user memory
+    regex: 'pub fn sys_sethostname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?'
+  - label: a valid update returns zero
+    regex: 'pub fn sys_sethostname[\s\S]*?nodename = nodename;[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_SETDOMAINNAME_ARGUMENTS
+  title: setdomainname validates length and user memory before success
+  rule_refs:
+  - MAN_027D17C587997F75
+  - MAN_083368964C7623C0
+  - MAN_968D07C7039689E5
+  applies_to_syscalls: [setdomainname]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: overlong names return EINVAL
+    regex: 'pub fn sys_setdomainname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput'
+  - label: the name is read through checked user memory
+    regex: 'pub fn sys_setdomainname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?'
+  - label: a valid update returns zero
+    regex: 'pub fn sys_setdomainname[\s\S]*?domainname = domainname;[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_GETRANDOM_ARGUMENTS
+  title: getrandom rejects invalid flags and checks its output buffer
+  rule_refs:
+  - MAN_39C5F1849EB3A736
+  - MAN_CEC45E0E1446E3DF
+  applies_to_syscalls: [getrandom]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: unknown and incompatible flags return EINVAL
+    regex: 'pub fn sys_getrandom[\s\S]*?GetRandomFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?[\s\S]*?INSECURE[\s\S]*?RANDOM[\s\S]*?AxError::InvalidInput'
+  - label: output uses checked user memory
+    regex: 'pub fn sys_getrandom[\s\S]*?vm_write_slice\(buf, &kbuf\)\?'
+
+- check_id: STARRY_MAN_SECCOMP_VALIDATION
+  title: seccomp validates operation, flags, pointers, filters, and privilege
+  rule_refs:
+  - MAN_02D976F1ED01493F
+  - MAN_20A10178D28B400B
+  - MAN_73E054548B324267
+  - MAN_8609DB2EE85AF88E
+  - MAN_BE74B0D21973DAEC
+  applies_to_syscalls: [seccomp]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: installation requires no_new_privs or CAP_SYS_ADMIN
+    regex: 'fn check_seccomp_install_permission[\s\S]*?no_new_privs\(\)[\s\S]*?has_cap_sys_admin\(\)[\s\S]*?AxError::OperationNotPermitted'
+  - label: null and empty filter programs are rejected
+    regex: 'fn read_seccomp_filter[\s\S]*?args\.is_null\(\)[\s\S]*?AxError::BadAddress[\s\S]*?prog\.len == 0 \|\| prog\.filter\.is_null\(\)[\s\S]*?AxError::InvalidInput'
+  - label: unavailable actions return EOPNOTSUPP
+    regex: 'fn seccomp_action_available[\s\S]*?_ => Err\(AxError::OperationNotSupported\)'
+  - label: flags and operations are bounded and success returns zero
+    regex: 'pub fn sys_seccomp[\s\S]*?flags & !SECCOMP_ALLOWED_FLAGS != 0[\s\S]*?match op[\s\S]*?_ => return Err\(AxError::InvalidInput\)[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+  title: seccomp rejects flags that are invalid for the selected operation
+  rule_refs:
+  - MAN_B9EE0F176B92F526
+  applies_to_syscalls: [seccomp]
+  path: os/StarryOS/kernel/src/syscall/sys.rs
+  patterns:
+  - label: strict mode requires zero flags
+    regex: 'SECCOMP_SET_MODE_STRICT => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput'
+  - label: action availability queries require zero flags
+    regex: 'SECCOMP_GET_ACTION_AVAIL => \{[\s\S]*?if flags != 0[\s\S]*?AxError::InvalidInput'
+
+- check_id: STARRY_MAN_CLOCK_GETTIME_VALIDATION
+  title: clock_gettime rejects invalid clocks and checks its result pointer
+  rule_refs:
+  - MAN_A67DCE77030808A6
+  - MAN_D84D77F1C6E463F4
+  applies_to_syscalls: [clock_gettime]
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: unsupported clock IDs return EINVAL
+    regex: 'pub fn sys_clock_gettime[\s\S]*?_ => \{[\s\S]*?return Err\(AxError::InvalidInput\)'
+  - label: the timestamp is written through checked user memory
+    regex: 'pub fn sys_clock_gettime[\s\S]*?ts\.vm_write\(timespec::from_time_value\(now\)\)\?'
+
+- check_id: STARRY_MAN_CLOCK_GETRES_VALIDATION
+  title: clock_getres rejects invalid clocks and checks a non-null result pointer
+  rule_refs:
+  - MAN_6D665164162723C5--6d6651641627
+  - MAN_DA93975DA79D34AD--da93975da79d
+  applies_to_syscalls: [clock_getres]
+  path: os/StarryOS/kernel/src/syscall/time.rs
+  patterns:
+  - label: unsupported clock IDs return EINVAL
+    regex: 'pub fn sys_clock_getres[\s\S]*?_ => return Err\(AxError::InvalidInput\)'
+  - label: a non-null result uses checked user memory
+    regex: 'pub fn sys_clock_getres[\s\S]*?res\.nullable\(\)[\s\S]*?res\.vm_write\(timespec::from_time_value\(resolution\)\)\?'
+
+- check_id: STARRY_MAN_PIPE2_VALIDATION
+  title: pipe2 validates flags, rolls back bad output pointers, and returns zero
+  rule_refs:
+  - MAN_1115E878B4F50CF3
+  - MAN_DD6D48EB9B80CB6B
+  - MAN_EDB775C51FCEA404
+  applies_to_syscalls: [pipe2]
+  path: os/StarryOS/kernel/src/syscall/fs/pipe.rs
+  patterns:
+  - label: unsupported flags return EINVAL
+    regex: 'pub fn sys_pipe2[\s\S]*?PipeFlags::from_bits\(flags\)[\s\S]*?AxError::InvalidInput'
+  - label: output uses checked user memory with fd rollback
+    regex: 'if let Err\(err\) = fds\.vm_write\(\[read_fd, write_fd\]\)[\s\S]*?close_file_like\(read_fd\)[\s\S]*?close_file_like\(write_fd\)[\s\S]*?return Err\(err\.into\(\)\)'
+  - label: valid creation returns zero
+    regex: 'pub fn sys_pipe2[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_EVENTFD2_VALIDATION
+  title: eventfd2 validates flags and returns an installed descriptor
+  rule_refs:
+  - MAN_A5F4BA2371332A4E
+  - MAN_BE929AB9651E5E66
+  applies_to_syscalls: [eventfd2]
+  path: os/StarryOS/kernel/src/syscall/fs/event.rs
+  patterns:
+  - label: unsupported flags return EINVAL
+    regex: 'pub fn sys_eventfd2[\s\S]*?EventFdFlags::from_bits\(flags\)\.ok_or\(AxError::InvalidInput\)\?'
+  - label: the new object is installed and its fd returned
+    regex: 'pub fn sys_eventfd2[\s\S]*?add_file_like\(event_fd[\s\S]*?\.map\(\|fd\| fd as _\)\?[\s\S]*?Ok\(fd\)'
+
+- check_id: STARRY_MAN_MEMFD_CREATE_VALIDATION
+  title: memfd_create validates flags, name pointer, and name length
+  rule_refs:
+  - MAN_4C50AA2793AB7713
+  - MAN_67ECA3FB50D80BAF
+  - MAN_6FA8F2D41D1B7062
+  - MAN_9E0C30E4205FB415
+  - MAN_DD8A18DB0BF6E8A9
+  applies_to_syscalls: [memfd_create]
+  path: os/StarryOS/kernel/src/syscall/fs/memfd.rs
+  patterns:
+  - label: unknown and hugepage flags return EINVAL
+    regex: 'pub fn sys_memfd_create[\s\S]*?flags & !valid_flags != 0 \|\| flags & MFD_HUGETLB != 0[\s\S]*?AxError::InvalidInput'
+  - label: name loading uses checked user memory
+    regex: 'let name_str: String = vm_load_string\(name\)\?'
+  - label: names longer than 249 bytes return EINVAL
+    regex: 'const MEMFD_NAME_MAX: usize = 249;[\s\S]*?name_str\.len\(\) > MEMFD_NAME_MAX[\s\S]*?AxError::InvalidInput'
+  - label: the memfd is installed and its fd returned
+    regex: 'pub fn sys_memfd_create[\s\S]*?add_file_like\(memfd, cloexec\)\.map\(\|fd\| fd as _\)'
+
+- check_id: STARRY_MAN_INOTIFY_INIT1_VALIDATION
+  title: inotify_init1 validates flags and returns an installed descriptor
+  rule_refs:
+  - MAN_330C0628475E2900
+  - MAN_C467D6702AB64674
+  applies_to_syscalls: [inotify_init1]
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: only CLOEXEC and NONBLOCK are accepted
+    regex: 'pub fn sys_inotify_init1[\s\S]*?valid_flags = IN_CLOEXEC \| IN_NONBLOCK[\s\S]*?flags & !valid_flags != 0[\s\S]*?AxError::InvalidInput'
+  - label: the inotify object is installed and its fd returned
+    regex: 'pub fn sys_inotify_init1[\s\S]*?add_file_like\(inotify as _, flags & IN_CLOEXEC != 0\)\.map\(\|fd\| fd as _\)'
+
+- check_id: STARRY_MAN_INOTIFY_ADD_WATCH_INPUTS
+  title: inotify_add_watch checks the path and descriptor before use
+  rule_refs:
+  - MAN_1EFA395D2832F95E
+  - MAN_EFBA9CA2760DA6B8
+  applies_to_syscalls: [inotify_add_watch]
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: path loading uses checked user memory
+    regex: 'pub fn sys_inotify_add_watch[\s\S]*?vm_load_path_string\(path\)\?'
+  - label: fd lookup precedes type validation
+    regex: 'pub fn sys_inotify_add_watch[\s\S]*?get_file_like\(fd\)\?[\s\S]*?downcast_arc::<Inotify>\(\)'
+
+- check_id: STARRY_MAN_INOTIFY_RM_WATCH_INPUTS
+  title: inotify_rm_watch distinguishes invalid fds, types, and watch IDs
+  rule_refs:
+  - MAN_C04F44BFF720877B
+  - MAN_EA69373DAD6B5B01
+  applies_to_syscalls: [inotify_rm_watch]
+  path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  patterns:
+  - label: fd lookup and inotify type validation are explicit
+    regex: 'pub fn sys_inotify_rm_watch[\s\S]*?get_file_like\(fd\)\?[\s\S]*?downcast_arc::<Inotify>\(\)[\s\S]*?AxError::InvalidInput'
+  - label: watch removal errors are propagated
+    regex: 'pub fn sys_inotify_rm_watch[\s\S]*?inotify\.rm_watch\(wd\)\.map\(\|\(\)\| 0\)'
+
+- check_id: STARRY_MAN_INOTIFY_RM_WATCH_ID
+  title: inotify watch removal rejects an unknown watch descriptor
+  rule_refs:
+  - MAN_EA69373DAD6B5B01
+  applies_to_syscalls: [inotify_rm_watch]
+  path: os/StarryOS/kernel/src/file/inotify.rs
+  patterns:
+  - label: a missing watch descriptor returns EINVAL
+    regex: 'pub fn rm_watch[\s\S]*?watches\.remove\(&wd\)\.is_none\(\)[\s\S]*?AxError::InvalidInput'
+
+- check_id: STARRY_MMAP_ACCESS
+  title: file-backed mmap enforces regular-file and access-mode requirements
+  rule_refs:
+  - MAN_18C5488E8D09D6D2--18c5488e8d09
+  applies_to_syscalls: [mmap]
+  path: os/StarryOS/kernel/src/syscall/mm/mmap.rs
+  patterns:
+  - label: non-regular file mappings are translated to EACCES
+    regex: 'file_mmap\(\)\.map_err\(\|_\| AxError::PermissionDenied\)\?'
+  - label: all file mappings require read access
+    regex: 'if needs_file_mmap_checks[\s\S]*?!flags\.contains\(FileFlags::READ\)[\s\S]*?AxError::PermissionDenied'
+  - label: shared writable mappings require write access
+    regex: 'MmapFlags::SHARED[\s\S]*?MmapProt::WRITE[\s\S]*?!flags\.contains\(FileFlags::WRITE\)[\s\S]*?AxError::PermissionDenied'
+
+- check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
+  title: sendmsg validates header, vector, control, and destination pointers
+  rule_refs:
+  - MAN_AE68C41A115C80FC--ae68c41a115c
+  applies_to_syscalls: [sendmsg]
+  path: os/StarryOS/kernel/src/syscall/net/io.rs
+  patterns:
+  - label: the message header uses checked user access
+    regex: 'pub fn sys_sendmsg[\s\S]*?msg\.get_as_ref\(\)\?'
+  - label: control messages use checked user access
+    regex: 'fn parse_send_cmsgs[\s\S]*?UserConstPtr::<cmsghdr>::from\(ptr\)\.get_as_ref\(\)\?'
+  - label: the I/O vector is validated before sending
+    regex: 'pub fn sys_sendmsg[\s\S]*?IoVectorBuf::new\(msg\.msg_iov as \*const IoVec, msg\.msg_iovlen\)\?'
+  - label: a non-null destination address is decoded through checked access
+    regex: 'fn send_impl[\s\S]*?SocketAddrEx::read_from_user\(addr, addrlen\)\?'
+
+- check_id: STARRY_MAN_LISTEN_ENTRY
+  title: listen validates the socket descriptor and returns zero on success
+  rule_refs:
+  - MAN_6038BC183A1CE6BF
+  - MAN_7C3C0347FD37CEB9
+  - MAN_AE7C62637F29A4C9
+  applies_to_syscalls: [listen]
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: listen resolves a Socket from the fd
+    regex: 'pub fn sys_listen[\s\S]*?Socket::from_fd\(fd\)\?\.listen\(backlog as usize\)\?'
+  - label: a successful listen returns zero
+    regex: 'pub fn sys_listen[\s\S]*?Ok\(0\)'
+
+- check_id: STARRY_MAN_SHUTDOWN_VALIDATION
+  title: shutdown validates the socket descriptor and shutdown direction
+  rule_refs:
+  - MAN_5B4118BF4C21F770
+  - MAN_5F5865EF1A8D5904
+  - MAN_8812ADE8E360DB8F
+  - MAN_CAA0FFEFF7C64A82
+  applies_to_syscalls: [shutdown]
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: shutdown resolves a Socket from the fd
+    regex: 'pub fn sys_shutdown[\s\S]*?Socket::from_fd\(fd\)\?'
+  - label: only SHUT_RD SHUT_WR and SHUT_RDWR are accepted
+    regex: 'let how = match how \{[\s\S]*?SHUT_RD[\s\S]*?SHUT_WR[\s\S]*?SHUT_RDWR[\s\S]*?_ => return Err\(AxError::InvalidInput\)'
+  - label: a valid shutdown returns zero
+    regex: 'socket\.shutdown\(how\)\.map\(\|_\| 0\)'
+
+- check_id: STARRY_MAN_SOCKETPAIR_VALIDATION
+  title: socketpair validates the family and output pointer and returns zero
+  rule_refs:
+  - MAN_43BBCE48C452BDDD
+  - MAN_9452D425539B8023
+  - MAN_B121E5340A1BEFEE
+  applies_to_syscalls: [socketpair]
+  path: os/StarryOS/kernel/src/syscall/net/socket.rs
+  patterns:
+  - label: unsupported families return EAFNOSUPPORT
+    regex: 'pub fn sys_socketpair[\s\S]*?if domain != AF_UNIX[\s\S]*?LinuxError::EAFNOSUPPORT'
+  - label: fd output uses checked user memory
+    regex: 'pub fn sys_socketpair[\s\S]*?\*fds\.get_as_mut\(\)\? = \['
+  - label: successful pair creation returns zero
+    regex: 'pub fn sys_socketpair[\s\S]*?Ok\(0\)'

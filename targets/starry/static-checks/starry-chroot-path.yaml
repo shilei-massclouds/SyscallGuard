@@ -3,12 +3,7 @@ kind: syscallguard_starry_static_check
 check_id: STARRY_CHROOT_PATH
 title: chroot loads and resolves a directory before replacing FsContext
 rule_refs:
-- LTP_245CD61DAA19DC98
-- LTP_71C54C624831C7F0
-- LTP_99DF5C34778032E1
-- LTP_EBD54180D0CAB16B
-- LTP_EE7A979F212D6C0C
-- LTP_FF9C0F9669A39525
+- MAN_F6CB9D32040E99BA
 applies_to_syscalls:
 - chroot
 path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
@@ -20,24 +15,9 @@ patterns:
 - label: valid directory becomes the new filesystem context
   regex: \*fs = FsContext::new\(loc\);[\s\S]*?Ok\(0\)
 upstream_dependencies:
-- id: LTP_245CD61DAA19DC98
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:245cd61daa19dc987195efcf282a428df3dfc7429cd89bcc1fbc741e96407c30
-- id: LTP_71C54C624831C7F0
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:71c54c624831c7f01c5ac8d48046dc370b784af8dc2099633843d4269593e9f7
-- id: LTP_99DF5C34778032E1
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:99df5c34778032e1483871676a4cbb8fc57a3bbfcd2fd0c74f90f83147e1a5f8
-- id: LTP_EBD54180D0CAB16B
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:ebd54180d0cab16b9271d149769e3e3e522ef97222514360017b81114bcc90e1
-- id: LTP_EE7A979F212D6C0C
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:ee7a979f212d6c0c9e2e3e7cf8fe3078537cd1d9a5e51d2b9d1800e88e29a363
-- id: LTP_FF9C0F9669A39525
-  generated_at_utc: '2026-07-15T03:09:52.149069Z'
-  content_hash: sha256:ff9c0f9669a39525986267a75a9b66e6249d23f8939029c388c3f8f1c9ec1472
+- id: MAN_F6CB9D32040E99BA
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:f6cb9d32040e99ba94bc763eb811bd6525692b756fc3d04af406dcbe6c69a122
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/fs/ctl.rs
   symbols:
@@ -188,4 +168,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:f6fdd2214052ea5f56fef51f35d895763600c89e1aba847f54432d0346f2d3d4
 target_content_fingerprint: sha256:821b05445bdd47e81a979e4ca0ad144e8d4070a7b99fe96a74e257ff795e04b5
-generated_at_utc: '2026-07-15T10:30:27.733209Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

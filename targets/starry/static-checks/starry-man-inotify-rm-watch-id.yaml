@@ -1,0 +1,33 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_INOTIFY_RM_WATCH_ID
+title: inotify watch removal rejects an unknown watch descriptor
+rule_refs:
+- MAN_EA69373DAD6B5B01
+applies_to_syscalls:
+- inotify_rm_watch
+path: os/StarryOS/kernel/src/file/inotify.rs
+patterns:
+- label: a missing watch descriptor returns EINVAL
+  regex: pub fn rm_watch[\s\S]*?watches\.remove\(&wd\)\.is_none\(\)[\s\S]*?AxError::InvalidInput
+upstream_dependencies:
+- id: MAN_EA69373DAD6B5B01
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:ea69373dad6b5b01efa066131eae0c26137143575cc80c1f62c733bb373d255c
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:b1fecbc0e14273ec616d8dae62b90d5aca54b6bf3772ee420edeeac6d209c147
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:7ba6f7020992e9cf80304d684556f5d3dbd568fba4b1a91f3c69be492c0e55dd
+- path: os/StarryOS/kernel/src/file/inotify.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:05c502074ab4d4d44e754f4558d6d56792e24360ee9108b04c651f6c084ff947
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:ed301664e0b5e9b1750dee44326cec7a9580e8494f595349628e1ebc2a91fd70
+target_content_fingerprint: sha256:c7af28fcb9cbc9595d5feb94d1e043e410912a0d166b663885bb24b941f2e98f
+generated_at_utc: '2026-07-17T08:16:17.470765Z'

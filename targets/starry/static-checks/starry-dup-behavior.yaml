@@ -7,6 +7,7 @@ rule_refs:
 - LTP_84DBE108A850E845
 - LTP_A774FC10727E8ED2
 - LTP_ED2BA909DF79625A
+- MAN_794294DBD03CA974--794294dbd03c
 applies_to_syscalls:
 - dup
 path: os/StarryOS/kernel/src/syscall/fs/fd_ops.rs
@@ -29,6 +30,9 @@ upstream_dependencies:
 - id: LTP_ED2BA909DF79625A
   generated_at_utc: '2026-07-15T05:26:39.098440Z'
   content_hash: sha256:ed2ba909df79625a7857c363efc0303c51fef469ee87970e6b322004f28779a5
+- id: MAN_794294DBD03CA974--794294dbd03c
+  generated_at_utc: '2026-07-17T05:51:19.977994Z'
+  content_hash: sha256:794294dbd03ca974251a37571bebb81f309c66afce642709f6645806303fb1b3
 target_dependencies:
 - path: os/StarryOS/kernel/src/file/mod.rs
   symbols: []
@@ -74,4 +78,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:d0701994de39f5838c32092d701b853fb90fb05609a6e509f2562b12fac6b7b9
 target_content_fingerprint: sha256:b6aec054573da41c1c7eb2251cccfbcaac3b5caf012c31768edfa49c9d4e68fe
-generated_at_utc: '2026-07-17T05:28:28.281302Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

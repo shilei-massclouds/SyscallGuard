@@ -1,0 +1,34 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_INOTIFY_INIT1_VALIDATION
+title: inotify_init1 validates flags and returns an installed descriptor
+rule_refs:
+- MAN_330C0628475E2900
+- MAN_C467D6702AB64674
+applies_to_syscalls:
+- inotify_init1
+path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+patterns:
+- label: only CLOEXEC and NONBLOCK are accepted
+  regex: pub fn sys_inotify_init1[\s\S]*?valid_flags = IN_CLOEXEC \| IN_NONBLOCK[\s\S]*?flags & !valid_flags
+    != 0[\s\S]*?AxError::InvalidInput
+- label: the inotify object is installed and its fd returned
+  regex: pub fn sys_inotify_init1[\s\S]*?add_file_like\(inotify as _, flags & IN_CLOEXEC != 0\)\.map\(\|fd\|
+    fd as _\)
+upstream_dependencies:
+- id: MAN_330C0628475E2900
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:330c0628475e2900e27001852e2e2d51f47e6f6667c807d5f1a6e80b28d0151a
+- id: MAN_C467D6702AB64674
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:c467d6702ab646745acbc033419c24bcf3adba7e9de7c3bd5daab671fe46446e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:b1fecbc0e14273ec616d8dae62b90d5aca54b6bf3772ee420edeeac6d209c147
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:7ba6f7020992e9cf80304d684556f5d3dbd568fba4b1a91f3c69be492c0e55dd
+target_content_fingerprint: sha256:2b149e987eab5e7c5ad3742f7a643b481c8fe2ff4af08494cedadd8f1e9b57d2
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

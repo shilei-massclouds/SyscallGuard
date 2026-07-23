@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SETDOMAINNAME_ARGUMENTS
+title: setdomainname validates length and user memory before success
+rule_refs:
+- MAN_027D17C587997F75
+- MAN_083368964C7623C0
+- MAN_968D07C7039689E5
+applies_to_syscalls:
+- setdomainname
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: overlong names return EINVAL
+  regex: pub fn sys_setdomainname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput
+- label: the name is read through checked user memory
+  regex: pub fn sys_setdomainname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?
+- label: a valid update returns zero
+  regex: pub fn sys_setdomainname[\s\S]*?domainname = domainname;[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_027D17C587997F75
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:027d17c587997f75256e072b071c3a273ff5d10188d90df72df4c83f01dfba17
+- id: MAN_083368964C7623C0
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:083368964c7623c00bfaf93f1479ca2edacd56be42c734756ec078cd57dee064
+- id: MAN_968D07C7039689E5
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:968d07c7039689e56f444d642d58d2627cf5570c9fb49d87d6174715532b082e
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

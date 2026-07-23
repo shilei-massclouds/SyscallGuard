@@ -1,6 +1,6 @@
 schema_version: 1
 kind: syscallguard_starry_static_check_index
-updated_at_utc: '2026-07-17T05:56:25.247487Z'
+updated_at_utc: '2026-07-17T08:16:17.470765Z'
 syscalls:
   access:
   - check_id: STARRY_ACCESS_PATH_RESOLUTION
@@ -60,6 +60,19 @@ syscalls:
     - LTP_6D86AFD541A61388
     - LTP_E06D53042C10C99E
     - LTP_EC23768761E40E9F
+  chdir:
+  - check_id: STARRY_FCHDIR_CORE
+    path: targets/starry/static-checks/starry-fchdir-core.yaml
+    rule_refs: &id007
+    - LTP_17B7A9460939622A
+    - LTP_CCC36F43E9463D3E
+    - MAN_5B2667DFDCB4EB31
+    - MAN_E116073D3FDB5C1F
+  - check_id: STARRY_FCHDIR_FD_VALIDATION
+    path: targets/starry/static-checks/starry-fchdir-fd-validation.yaml
+    rule_refs: &id008
+    - LTP_CCC36F43E9463D3E
+    - MAN_5B2667DFDCB4EB31
   chroot:
   - check_id: STARRY_BATCH_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-batch-errno-translation.yaml
@@ -67,12 +80,19 @@ syscalls:
   - check_id: STARRY_CHROOT_PATH
     path: targets/starry/static-checks/starry-chroot-path.yaml
     rule_refs:
-    - LTP_245CD61DAA19DC98
-    - LTP_71C54C624831C7F0
-    - LTP_99DF5C34778032E1
-    - LTP_EBD54180D0CAB16B
-    - LTP_EE7A979F212D6C0C
-    - LTP_FF9C0F9669A39525
+    - MAN_F6CB9D32040E99BA
+  clock_getres:
+  - check_id: STARRY_MAN_CLOCK_GETRES_VALIDATION
+    path: targets/starry/static-checks/starry-man-clock-getres-validation.yaml
+    rule_refs:
+    - MAN_6D665164162723C5--6d6651641627
+    - MAN_DA93975DA79D34AD--da93975da79d
+  clock_gettime:
+  - check_id: STARRY_MAN_CLOCK_GETTIME_VALIDATION
+    path: targets/starry/static-checks/starry-man-clock-gettime-validation.yaml
+    rule_refs:
+    - MAN_A67DCE77030808A6
+    - MAN_D84D77F1C6E463F4
   close:
   - check_id: STARRY_CLOSE_BAD_FD_ERRNO
     path: targets/starry/static-checks/starry-close-bad-fd-errno.yaml
@@ -82,13 +102,15 @@ syscalls:
     path: targets/starry/static-checks/starry-close-fd-table.yaml
     rule_refs:
     - LTP_09B39E9C9254ECB2
+    - MAN_23E25F7C4136339F
   - check_id: STARRY_CLOSE_SYSCALL
     path: targets/starry/static-checks/starry-close-syscall.yaml
     rule_refs:
     - LTP_09B39E9C9254ECB2
+    - MAN_494CD34A8C11734B
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: &id011
+    rule_refs: &id013
     - LTP_09B39E9C9254ECB2
     - LTP_51E295101A9F4411
     - LTP_791DEA825D66980B
@@ -123,7 +145,7 @@ syscalls:
     - LTP_F1DC44813DCA6A05
   - check_id: STARRY_ROUND2_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round2-errno-translation.yaml
-    rule_refs: &id002
+    rule_refs: &id003
     - LTP_098AFE0E8E10B0EF
     - LTP_31D9D767D6888DDA
     - LTP_37C625BD7D7C5F1D
@@ -139,55 +161,36 @@ syscalls:
   - check_id: STARRY_CONNECT_ADDRESS_VALIDATION
     path: targets/starry/static-checks/starry-connect-address-validation.yaml
     rule_refs:
-    - LTP_4C3A8A7664F22B7F
-    - LTP_6AEB77CEC03D0E6E
-    - LTP_74E00510F4C1B849
+    - MAN_392816F25BD330A2
+    - MAN_524B615D8F9A7E12
   - check_id: STARRY_CONNECT_ENTRY
     path: targets/starry/static-checks/starry-connect-entry.yaml
     rule_refs:
-    - LTP_0FCE63CBC47F69DA
-    - LTP_2F153EBAAD2A779C
+    - MAN_CDD044CBEEED1A80
   - check_id: STARRY_SOCKET_FD_VALIDATION
     path: targets/starry/static-checks/starry-socket-fd-validation.yaml
-    rule_refs:
-    - LTP_0FCE63CBC47F69DA
-    - LTP_2F153EBAAD2A779C
+    rule_refs: &id012
+    - MAN_5B4118BF4C21F770
+    - MAN_5F5865EF1A8D5904
+    - MAN_6038BC183A1CE6BF
+    - MAN_AE7C62637F29A4C9
+    - MAN_CDD044CBEEED1A80
   copy_file_range:
   - check_id: STARRY_COPY_FILE_RANGE_CORE
     path: targets/starry/static-checks/starry-copy-file-range-core.yaml
     rule_refs:
-    - LTP_09370275EF5F3065
-    - LTP_6A2F1D2BB0EE8C22
-    - LTP_7E1612F09CACE33D
-    - LTP_AE3908C408304451
-    - LTP_B87A71DE5DE1260E
-    - LTP_BAE8F852378DD9F4
-    - LTP_C16D549555A00E55
-    - LTP_CC9037A76978B569
-    - LTP_E2196C3F0F58862B
+    - MAN_BC425C37C792DDEE
+    - MAN_D405972253EA086F
+    - MAN_DBD043A36C2E4926
+    - MAN_FDD174E970AC7930
   - check_id: STARRY_COPY_FILE_RANGE_OVERFLOW_ERRNO
     path: targets/starry/static-checks/starry-copy-file-range-overflow-errno.yaml
     rule_refs:
     - LTP_74BB3F96CBA52D02
   dup:
-  - check_id: STARRY_DUP_BEHAVIOR
-    path: targets/starry/static-checks/starry-dup-behavior.yaml
-    rule_refs:
-    - LTP_511185D6DE2A63A0
-    - LTP_84DBE108A850E845
-    - LTP_A774FC10727E8ED2
-    - LTP_ED2BA909DF79625A
-  - check_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
-    path: targets/starry/static-checks/starry-fd-table-lookup-allocation.yaml
-    rule_refs:
-    - LTP_511185D6DE2A63A0
-    - LTP_84DBE108A850E845
-    - LTP_A774FC10727E8ED2
-    - LTP_ED2BA909DF79625A
-  dup2:
   - check_id: STARRY_DUP2_DUP3_BEHAVIOR
     path: targets/starry/static-checks/starry-dup2-dup3-behavior.yaml
-    rule_refs: &id003
+    rule_refs: &id002
     - LTP_098AFE0E8E10B0EF
     - LTP_1726C16756E9651C
     - LTP_37C625BD7D7C5F1D
@@ -200,16 +203,38 @@ syscalls:
     - LTP_BDA36F61423EEB3E
     - LTP_D296A517F138A0C0
     - LTP_EE8E695CF61D6D8A
+    - MAN_794294DBD03CA974
+    - MAN_9BC94E6BD25C05E1
+    - MAN_E99D067CF243EEE8
+  - check_id: STARRY_DUP_BEHAVIOR
+    path: targets/starry/static-checks/starry-dup-behavior.yaml
+    rule_refs:
+    - LTP_511185D6DE2A63A0
+    - LTP_84DBE108A850E845
+    - LTP_A774FC10727E8ED2
+    - LTP_ED2BA909DF79625A
+    - MAN_794294DBD03CA974--794294dbd03c
+  - check_id: STARRY_FD_TABLE_LOOKUP_ALLOCATION
+    path: targets/starry/static-checks/starry-fd-table-lookup-allocation.yaml
+    rule_refs:
+    - LTP_511185D6DE2A63A0
+    - LTP_84DBE108A850E845
+    - LTP_A774FC10727E8ED2
+    - LTP_ED2BA909DF79625A
+  dup2:
+  - check_id: STARRY_DUP2_DUP3_BEHAVIOR
+    path: targets/starry/static-checks/starry-dup2-dup3-behavior.yaml
+    rule_refs: *id002
   - check_id: STARRY_ROUND2_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round2-errno-translation.yaml
-    rule_refs: *id002
+    rule_refs: *id003
   dup3:
   - check_id: STARRY_DUP2_DUP3_BEHAVIOR
     path: targets/starry/static-checks/starry-dup2-dup3-behavior.yaml
-    rule_refs: *id003
+    rule_refs: *id002
   - check_id: STARRY_ROUND2_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round2-errno-translation.yaml
-    rule_refs: *id002
+    rule_refs: *id003
   epoll_create:
   - check_id: STARRY_EPOLL_CREATE
     path: targets/starry/static-checks/starry-epoll-create.yaml
@@ -222,6 +247,7 @@ syscalls:
     path: targets/starry/static-checks/starry-epoll-create1-flags.yaml
     rule_refs:
     - LTP_5D8D2B3BEDA79604
+    - MAN_6B7EED8E43FDD1BA
   - check_id: STARRY_EPOLL_FACCESS_ERRNO
     path: targets/starry/static-checks/starry-epoll-faccess-errno.yaml
     rule_refs: &id004
@@ -237,6 +263,7 @@ syscalls:
     rule_refs:
     - LTP_6FFB17DB762F3167
     - LTP_83709E56D6285F71
+    - MAN_DADCFA23F461FBBF
   - check_id: STARRY_EPOLL_CTL_INTEREST
     path: targets/starry/static-checks/starry-epoll-ctl-interest.yaml
     rule_refs:
@@ -248,10 +275,11 @@ syscalls:
     path: targets/starry/static-checks/starry-epoll-fd-lookup.yaml
     rule_refs:
     - LTP_6FFB17DB762F3167
+    - MAN_E32B6349055FCEF9
   - check_id: STARRY_EPOLL_NESTED_LOOP
     path: targets/starry/static-checks/starry-epoll-nested-loop.yaml
     rule_refs:
-    - LTP_66C670178B06E9F3
+    - MAN_CDD195853C6DFE14
   epoll_wait:
   - check_id: STARRY_EPOLL_WAIT_VALIDATION
     path: targets/starry/static-checks/starry-epoll-wait-validation.yaml
@@ -265,6 +293,12 @@ syscalls:
     rule_refs:
     - LTP_1AA7F21DA5C55800
     - LTP_5622491E8A2227F2
+  eventfd2:
+  - check_id: STARRY_MAN_EVENTFD2_VALIDATION
+    path: targets/starry/static-checks/starry-man-eventfd2-validation.yaml
+    rule_refs:
+    - MAN_A5F4BA2371332A4E
+    - MAN_BE929AB9651E5E66
   execveat:
   - check_id: STARRY_EPOLL_FACCESS_ERRNO
     path: targets/starry/static-checks/starry-epoll-faccess-errno.yaml
@@ -278,6 +312,12 @@ syscalls:
     path: targets/starry/static-checks/starry-execveat-validation.yaml
     rule_refs:
     - LTP_ACF7A30AF3B10973
+  faccessat:
+  - check_id: STARRY_FACCESSAT2_VALIDATION
+    path: targets/starry/static-checks/starry-faccessat2-validation.yaml
+    rule_refs: &id006
+    - MAN_147EECDC5DAB119D
+    - MAN_A58EA189B1C9E326
   faccessat2:
   - check_id: STARRY_EPOLL_FACCESS_ERRNO
     path: targets/starry/static-checks/starry-epoll-faccess-errno.yaml
@@ -287,52 +327,42 @@ syscalls:
     rule_refs: *id005
   - check_id: STARRY_FACCESSAT2_VALIDATION
     path: targets/starry/static-checks/starry-faccessat2-validation.yaml
-    rule_refs:
-    - LTP_4BCFF61005DC2E9A
-    - LTP_4D51F55F25C6F2A3
-    - LTP_6885CE6A54F7716E
+    rule_refs: *id006
   fchdir:
   - check_id: STARRY_FCHDIR_CORE
     path: targets/starry/static-checks/starry-fchdir-core.yaml
-    rule_refs:
-    - LTP_17B7A9460939622A
-    - LTP_CCC36F43E9463D3E
+    rule_refs: *id007
   - check_id: STARRY_FCHDIR_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-fchdir-errno-translation.yaml
     rule_refs:
     - LTP_CCC36F43E9463D3E
   - check_id: STARRY_FCHDIR_FD_VALIDATION
     path: targets/starry/static-checks/starry-fchdir-fd-validation.yaml
-    rule_refs:
-    - LTP_CCC36F43E9463D3E
+    rule_refs: *id008
   fchmodat:
   - check_id: STARRY_FCHMODAT_FLAG_VALIDATION
     path: targets/starry/static-checks/starry-fchmodat-flag-validation.yaml
-    rule_refs: &id006
-    - LTP_628FD2848734A58A
-    - LTP_8BD2C43CB1EC6794
-  fchmodat2:
-  - check_id: STARRY_FCHMODAT_FLAG_VALIDATION
-    path: targets/starry/static-checks/starry-fchmodat-flag-validation.yaml
-    rule_refs: *id006
+    rule_refs:
+    - MAN_9A17C8A141B47D41
   finit_module:
   - check_id: STARRY_FINIT_MODULE_FLAG_VALIDATION
     path: targets/starry/static-checks/starry-finit-module-flag-validation.yaml
     rule_refs:
-    - LTP_DA65D6C7A0E4ABBC
+    - MAN_2421026C912D8F9E--2421026c912d
   fstat:
   - check_id: STARRY_ROUND3_FSTAT_CORE
     path: targets/starry/static-checks/starry-round3-fstat-core.yaml
     rule_refs:
-    - LTP_466F01834F965621
-    - LTP_64B1B6EEEC3F79FC
-    - LTP_A363671517C058B1
+    - MAN_37A8B25C745F91BB--37a8b25c745f
+    - MAN_AA8C115068BD5D76--aa8c115068bd
+    - MAN_DFDB86CEA63B78D3--dfdb86cea63b
   fstatfs:
   - check_id: STARRY_ROUND3_FSTATFS_ERRORS
     path: targets/starry/static-checks/starry-round3-fstatfs-errors.yaml
     rule_refs:
-    - LTP_EB1B734A0943248E
-    - LTP_F92A1A6292F40811
+    - MAN_48B52042FE3DEA4C--48b52042fe3d
+    - MAN_5378890AE3F832EE--5378890ae3f8
+    - MAN_8153E21BD727F6A0
   ftruncate:
   - check_id: STARRY_ROUND3_FTRUNCATE_NEGATIVE
     path: targets/starry/static-checks/starry-round3-ftruncate-negative.yaml
@@ -341,7 +371,7 @@ syscalls:
   getcwd:
   - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round3-errno-translation.yaml
-    rule_refs: &id007
+    rule_refs: &id009
     - LTP_53E3454ED6EFD842
     - LTP_729222947741DFD6
     - LTP_88D300A8FB407324
@@ -355,30 +385,55 @@ syscalls:
     - LTP_53E3454ED6EFD842
     - LTP_729222947741DFD6
     - LTP_FC1E41C3414E7F21
+    - MAN_0D9E79AEB44B7510
+    - MAN_45A2B6F5ADF14C3F
+  getgroups:
+  - check_id: STARRY_MAN_SETGROUPS_VALIDATION
+    path: targets/starry/static-checks/starry-man-setgroups-validation.yaml
+    rule_refs: &id018
+    - MAN_0F2C1ABA8AF5C15E
+    - MAN_8D160F5D77EC235B
+    - MAN_FD5BF4CD3984BECF
   getpgid:
   - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round3-errno-translation.yaml
-    rule_refs: *id007
+    rule_refs: *id009
   - check_id: STARRY_ROUND3_JOB_ID_LOOKUP
     path: targets/starry/static-checks/starry-round3-job-id-lookup.yaml
-    rule_refs: &id008
+    rule_refs: &id010
     - LTP_8C1C2578972FCA1D
     - LTP_9461AA782926BAB4
     - LTP_F8FD511858BB650D
+    - MAN_045719AC8992819E--045719ac8992
+    - MAN_81F4F1C3AD4F3217
   - check_id: STARRY_ROUND3_PROCESS_LOOKUP
     path: targets/starry/static-checks/starry-round3-process-lookup.yaml
-    rule_refs: &id009
+    rule_refs: &id011
     - LTP_8C1C2578972FCA1D
     - LTP_9461AA782926BAB4
     - LTP_F8FD511858BB650D
+    - MAN_045719AC8992819E--045719ac8992
+    - MAN_81F4F1C3AD4F3217
   getpriority:
   - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round3-errno-translation.yaml
-    rule_refs: *id007
+    rule_refs: *id009
   - check_id: STARRY_ROUND3_GETPRIORITY_SELECTOR
     path: targets/starry/static-checks/starry-round3-getpriority-selector.yaml
     rule_refs:
     - LTP_88D300A8FB407324
+    - MAN_B1A8365C419E3164--b1a8365c419e
+  - check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
+    path: targets/starry/static-checks/starry-round5-setpriority-selector.yaml
+    rule_refs: &id019
+    - LTP_44DC5382746D773D
+    - MAN_B1A8365C419E3164
+  getrandom:
+  - check_id: STARRY_MAN_GETRANDOM_ARGUMENTS
+    path: targets/starry/static-checks/starry-man-getrandom-arguments.yaml
+    rule_refs:
+    - MAN_39C5F1849EB3A736
+    - MAN_CEC45E0E1446E3DF
   getrlimit:
   - check_id: STARRY_ROUND3_GETRLIMIT_CORE
     path: targets/starry/static-checks/starry-round3-getrlimit-core.yaml
@@ -423,13 +478,13 @@ syscalls:
   getsid:
   - check_id: STARRY_ROUND3_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round3-errno-translation.yaml
-    rule_refs: *id007
+    rule_refs: *id009
   - check_id: STARRY_ROUND3_JOB_ID_LOOKUP
     path: targets/starry/static-checks/starry-round3-job-id-lookup.yaml
-    rule_refs: *id008
+    rule_refs: *id010
   - check_id: STARRY_ROUND3_PROCESS_LOOKUP
     path: targets/starry/static-checks/starry-round3-process-lookup.yaml
-    rule_refs: *id009
+    rule_refs: *id011
   gettimeofday:
   - check_id: STARRY_ROUND3_GETTIMEOFDAY_TIMEZONE
     path: targets/starry/static-checks/starry-round3-gettimeofday-timezone.yaml
@@ -445,68 +500,96 @@ syscalls:
     path: targets/starry/static-checks/starry-round3-init-module-permission.yaml
     rule_refs:
     - LTP_D246498B20D9CB2C
+  inotify_add_watch:
+  - check_id: STARRY_MAN_INOTIFY_ADD_WATCH_INPUTS
+    path: targets/starry/static-checks/starry-man-inotify-add-watch-inputs.yaml
+    rule_refs:
+    - MAN_1EFA395D2832F95E
+    - MAN_EFBA9CA2760DA6B8
+  inotify_init1:
+  - check_id: STARRY_MAN_INOTIFY_INIT1_VALIDATION
+    path: targets/starry/static-checks/starry-man-inotify-init1-validation.yaml
+    rule_refs:
+    - MAN_330C0628475E2900
+    - MAN_C467D6702AB64674
+  inotify_rm_watch:
+  - check_id: STARRY_MAN_INOTIFY_RM_WATCH_ID
+    path: targets/starry/static-checks/starry-man-inotify-rm-watch-id.yaml
+    rule_refs:
+    - MAN_EA69373DAD6B5B01
+  - check_id: STARRY_MAN_INOTIFY_RM_WATCH_INPUTS
+    path: targets/starry/static-checks/starry-man-inotify-rm-watch-inputs.yaml
+    rule_refs:
+    - MAN_C04F44BFF720877B
+    - MAN_EA69373DAD6B5B01
+  listen:
+  - check_id: STARRY_MAN_LISTEN_ENTRY
+    path: targets/starry/static-checks/starry-man-listen-entry.yaml
+    rule_refs:
+    - MAN_6038BC183A1CE6BF
+    - MAN_7C3C0347FD37CEB9
+    - MAN_AE7C62637F29A4C9
+  - check_id: STARRY_SOCKET_FD_VALIDATION
+    path: targets/starry/static-checks/starry-socket-fd-validation.yaml
+    rule_refs: *id012
+  memfd_create:
+  - check_id: STARRY_MAN_MEMFD_CREATE_VALIDATION
+    path: targets/starry/static-checks/starry-man-memfd-create-validation.yaml
+    rule_refs:
+    - MAN_4C50AA2793AB7713
+    - MAN_67ECA3FB50D80BAF
+    - MAN_6FA8F2D41D1B7062
+    - MAN_9E0C30E4205FB415
+    - MAN_DD8A18DB0BF6E8A9
   mincore:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: &id010
-    - LTP_0087F445CEB63414
-    - LTP_026CB4A1CA7CDC6B
-    - LTP_08F05BA6ED1CEE6A
-    - LTP_15EC9351D2422944
-    - LTP_1AACAC53BAF23BA9
-    - LTP_1BB76939FF2A40B5
-    - LTP_26AE3C69D80D35F8
-    - LTP_34A03F3861C10C4E
-    - LTP_3743BC827FB4F981
-    - LTP_3F60BBC08D86D573
-    - LTP_5322AC28C2EB6C16
-    - LTP_5A2FE2DE55DC96EB
-    - LTP_CA1E4549CF7692F9
-    - LTP_D0800876342DE939
-    - LTP_D1D51B0412DFB097
-    - LTP_D2E2A5F40B2313E5
-    - LTP_D7936678BF685610
-    - LTP_D9418F7424E86C28
-    - LTP_EA7E63D027CD6941
-    - LTP_EA90C626D9AA6C08
   - check_id: STARRY_ROUND4_MINCORE_NULL_VECTOR
     path: targets/starry/static-checks/starry-round4-mincore-null-vector.yaml
     rule_refs:
     - LTP_34A03F3861C10C4E
   mlock2:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_MLOCK2_FLAGS
     path: targets/starry/static-checks/starry-round4-mlock2-flags.yaml
     rule_refs:
-    - LTP_D9418F7424E86C28
+    - MAN_362BD9184BA2B5C7
   mmap:
   - check_id: STARRY_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-errno-translation.yaml
-    rule_refs: *id011
+    rule_refs: *id013
   - check_id: STARRY_MMAP_ACCESS
     path: targets/starry/static-checks/starry-mmap-access.yaml
     rule_refs:
-    - LTP_36C99C10CD38F8DB
-    - LTP_45439D8F2BAB0832
-    - LTP_52BAFC01DEA6E172
-    - LTP_C346EFF1233F7061
-    - LTP_F36F8C0CC1A6D840
-    - LTP_FD1B65B0BCC88E0D
+    - MAN_18C5488E8D09D6D2--18c5488e8d09
   - check_id: STARRY_MMAP_ARGUMENTS
     path: targets/starry/static-checks/starry-mmap-arguments.yaml
     rule_refs:
     - LTP_51E295101A9F4411
     - LTP_FEACDC300C3E1DD7
+    - MAN_8DB0AB4E3B90CB50--8db0ab4e3b90
+    - MAN_DE03A6A5B1731AF7--de03a6a5b173
   - check_id: STARRY_MMAP_FD
     path: targets/starry/static-checks/starry-mmap-fd.yaml
     rule_refs:
     - LTP_791DEA825D66980B
+    - MAN_35AF4698AC57ED3F--35af4698ac57
+  - check_id: STARRY_ROUND4_MUNMAP_ZERO_LENGTH
+    path: targets/starry/static-checks/starry-round4-munmap-zero-length.yaml
+    rule_refs: &id015
+    - LTP_26AE3C69D80D35F8
+    - MAN_8DB0AB4E3B90CB50
   msync:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: &id014
+    - LTP_0087F445CEB63414
+    - LTP_026CB4A1CA7CDC6B
+    - LTP_08F05BA6ED1CEE6A
+    - LTP_1AACAC53BAF23BA9
+    - LTP_1BB76939FF2A40B5
+    - LTP_26AE3C69D80D35F8
+    - LTP_3743BC827FB4F981
+    - LTP_D0800876342DE939
+    - LTP_D2E2A5F40B2313E5
+    - LTP_EA90C626D9AA6C08
   - check_id: STARRY_ROUND4_MSYNC_EXCLUSIVE_MODES
     path: targets/starry/static-checks/starry-round4-msync-exclusive-modes.yaml
     rule_refs:
@@ -518,50 +601,53 @@ syscalls:
   munmap:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_MUNMAP_ZERO_LENGTH
     path: targets/starry/static-checks/starry-round4-munmap-zero-length.yaml
-    rule_refs:
-    - LTP_26AE3C69D80D35F8
+    rule_refs: *id015
   openat2:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_OPENAT2_SIZE
     path: targets/starry/static-checks/starry-round4-openat2-size.yaml
     rule_refs:
     - LTP_026CB4A1CA7CDC6B
     - LTP_D0800876342DE939
+    - MAN_25CD94348F7360E1
   pidfd_getfd:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_PIDFD_GETFD_FLAGS
     path: targets/starry/static-checks/starry-round4-pidfd-getfd-flags.yaml
     rule_refs:
-    - LTP_5322AC28C2EB6C16
-    - LTP_EA7E63D027CD6941
+    - MAN_58936D050A8879DE
   pidfd_open:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_PIDFD_OPEN_INPUTS
     path: targets/starry/static-checks/starry-round4-pidfd-open-inputs.yaml
     rule_refs:
     - LTP_1BB76939FF2A40B5
     - LTP_3743BC827FB4F981
+    - MAN_0BA66331CB4B2091
+    - MAN_DC37B979EC91203E
   pidfd_send_signal:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_PIDFD_SIGNAL_FLAGS
     path: targets/starry/static-checks/starry-round4-pidfd-signal-flags.yaml
     rule_refs:
     - LTP_08F05BA6ED1CEE6A
+    - MAN_6D77B363EA967C8F
+  pipe2:
+  - check_id: STARRY_MAN_PIPE2_VALIDATION
+    path: targets/starry/static-checks/starry-man-pipe2-validation.yaml
+    rule_refs:
+    - MAN_1115E878B4F50CF3
+    - MAN_DD6D48EB9B80CB6B
+    - MAN_EDB775C51FCEA404
   pread64:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_PREAD64_NEGATIVE_OFFSET
     path: targets/starry/static-checks/starry-round4-pread64-negative-offset.yaml
     rule_refs:
@@ -569,47 +655,42 @@ syscalls:
   preadv2:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_VECTOR_IO_FLAGS
     path: targets/starry/static-checks/starry-round4-vector-io-flags.yaml
-    rule_refs: &id012
+    rule_refs: &id016
     - LTP_1AACAC53BAF23BA9
-    - LTP_D1D51B0412DFB097
+    - MAN_B5E18528035F6F87
+    - MAN_F12635B7646C0E9B
   pwrite64:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_PWRITE64_NEGATIVE_OFFSET
     path: targets/starry/static-checks/starry-round4-pwrite64-negative-offset.yaml
     rule_refs:
     - LTP_15EC9351D2422944
   pwritev2:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_VECTOR_IO_FLAGS
     path: targets/starry/static-checks/starry-round4-vector-io-flags.yaml
-    rule_refs: *id012
+    rule_refs: *id016
   read:
   - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
+    rule_refs: *id014
   - check_id: STARRY_ROUND4_READ_BAD_FD
     path: targets/starry/static-checks/starry-round4-read-bad-fd.yaml
     rule_refs:
     - LTP_0087F445CEB63414
   readlinkat:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_READLINKAT_ZERO_SIZE
     path: targets/starry/static-checks/starry-round4-readlinkat-zero-size.yaml
     rule_refs:
     - LTP_5A2FE2DE55DC96EB
+  reboot:
+  - check_id: STARRY_MAN_REBOOT_VALIDATION
+    path: targets/starry/static-checks/starry-man-reboot-validation.yaml
+    rule_refs:
+    - MAN_03E8B237E962C1D2
+    - MAN_F84F01B63ABC178D
   rename:
-  - check_id: STARRY_ROUND4_ERRNO_TRANSLATION
-    path: targets/starry/static-checks/starry-round4-errno-translation.yaml
-    rule_refs: *id010
   - check_id: STARRY_ROUND4_RENAME_USER_PATHS
     path: targets/starry/static-checks/starry-round4-rename-user-paths.yaml
     rule_refs:
@@ -618,7 +699,7 @@ syscalls:
   sched_setaffinity:
   - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round5-errno-translation.yaml
-    rule_refs: &id013
+    rule_refs: &id017
     - LTP_39B1E5C574F2D3DC
     - LTP_4308D71D8BD6519D
     - LTP_44DC5382746D773D
@@ -638,10 +719,24 @@ syscalls:
     path: targets/starry/static-checks/starry-round5-sched-yield.yaml
     rule_refs:
     - LTP_A9BC7EBC1784A722
+    - MAN_254F60FBFDA7A2BB
+  seccomp:
+  - check_id: STARRY_MAN_SECCOMP_OPERATION_FLAGS
+    path: targets/starry/static-checks/starry-man-seccomp-operation-flags.yaml
+    rule_refs:
+    - MAN_B9EE0F176B92F526
+  - check_id: STARRY_MAN_SECCOMP_VALIDATION
+    path: targets/starry/static-checks/starry-man-seccomp-validation.yaml
+    rule_refs:
+    - MAN_02D976F1ED01493F
+    - MAN_20A10178D28B400B
+    - MAN_73E054548B324267
+    - MAN_8609DB2EE85AF88E
+    - MAN_BE74B0D21973DAEC
   sendfile:
   - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round5-errno-translation.yaml
-    rule_refs: *id013
+    rule_refs: *id017
   - check_id: STARRY_ROUND5_SENDFILE_IN_FD
     path: targets/starry/static-checks/starry-round5-sendfile-in-fd.yaml
     rule_refs:
@@ -658,29 +753,58 @@ syscalls:
   - check_id: STARRY_ROUND5_SENDMSG_MESSAGE_POINTER
     path: targets/starry/static-checks/starry-round5-sendmsg-message-pointer.yaml
     rule_refs:
-    - LTP_A2098D60C40310A2
+    - MAN_AE68C41A115C80FC--ae68c41a115c
   set_robust_list:
   - check_id: STARRY_ROUND5_ROBUST_LIST
     path: targets/starry/static-checks/starry-round5-robust-list.yaml
     rule_refs:
     - LTP_40024D6BE4C6AECC
     - LTP_E0470C189C2D1DE3
+  setdomainname:
+  - check_id: STARRY_MAN_SETDOMAINNAME_ARGUMENTS
+    path: targets/starry/static-checks/starry-man-setdomainname-arguments.yaml
+    rule_refs:
+    - MAN_027D17C587997F75
+    - MAN_083368964C7623C0
+    - MAN_968D07C7039689E5
+  setgroups:
+  - check_id: STARRY_MAN_SETGROUPS_VALIDATION
+    path: targets/starry/static-checks/starry-man-setgroups-validation.yaml
+    rule_refs: *id018
+  sethostname:
+  - check_id: STARRY_MAN_SETHOSTNAME_ARGUMENTS
+    path: targets/starry/static-checks/starry-man-sethostname-arguments.yaml
+    rule_refs:
+    - MAN_6998D4E70F807B13
+    - MAN_9E12AA9A59F1BBE9
+    - MAN_DA06B43ED3D9DBBC
   setpgid:
   - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round5-errno-translation.yaml
-    rule_refs: *id013
+    rule_refs: *id017
   - check_id: STARRY_ROUND5_SETPGID_NEGATIVE
     path: targets/starry/static-checks/starry-round5-setpgid-negative.yaml
     rule_refs:
     - LTP_4308D71D8BD6519D
+    - MAN_44D6BD8077F837B5
   setpriority:
   - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round5-errno-translation.yaml
-    rule_refs: *id013
+    rule_refs: *id017
   - check_id: STARRY_ROUND5_SETPRIORITY_SELECTOR
     path: targets/starry/static-checks/starry-round5-setpriority-selector.yaml
+    rule_refs: *id019
+  shutdown:
+  - check_id: STARRY_MAN_SHUTDOWN_VALIDATION
+    path: targets/starry/static-checks/starry-man-shutdown-validation.yaml
     rule_refs:
-    - LTP_44DC5382746D773D
+    - MAN_5B4118BF4C21F770
+    - MAN_5F5865EF1A8D5904
+    - MAN_8812ADE8E360DB8F
+    - MAN_CAA0FFEFF7C64A82
+  - check_id: STARRY_SOCKET_FD_VALIDATION
+    path: targets/starry/static-checks/starry-socket-fd-validation.yaml
+    rule_refs: *id012
   signalfd:
   - check_id: STARRY_ROUND5_SIGNALFD_FLAGS
     path: targets/starry/static-checks/starry-round5-signalfd-flags.yaml
@@ -689,7 +813,7 @@ syscalls:
   socket:
   - check_id: STARRY_ROUND5_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-round5-errno-translation.yaml
-    rule_refs: *id013
+    rule_refs: *id017
   - check_id: STARRY_ROUND5_SOCKET_INVALID_TYPE
     path: targets/starry/static-checks/starry-round5-socket-invalid-type.yaml
     rule_refs:
@@ -702,6 +826,15 @@ syscalls:
     - LTP_AF8D38878ED1A9DA
     - LTP_DD2E1A555B603C7B
     - LTP_E316C28E36E136DA
+    - MAN_732160952277CD16
+    - MAN_A1CD98CE32C423E4
+  socketpair:
+  - check_id: STARRY_MAN_SOCKETPAIR_VALIDATION
+    path: targets/starry/static-checks/starry-man-socketpair-validation.yaml
+    rule_refs:
+    - MAN_43BBCE48C452BDDD
+    - MAN_9452D425539B8023
+    - MAN_B121E5340A1BEFEE
   symlink:
   - check_id: STARRY_FINAL_SYMLINK_USER_POINTERS
     path: targets/starry/static-checks/starry-final-symlink-user-pointers.yaml
@@ -743,7 +876,7 @@ syscalls:
   timer_delete:
   - check_id: STARRY_FINAL_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-final-errno-translation.yaml
-    rule_refs: &id014
+    rule_refs: &id020
     - LTP_10B3572DBFA6742B
     - LTP_9FD87A3F7688FEF1
     - LTP_FCC236A4D5926B81
@@ -752,10 +885,12 @@ syscalls:
     rule_refs:
     - LTP_10B3572DBFA6742B
     - LTP_9B36D27A4A2994D0
+    - MAN_95930C2D369C878D
+    - MAN_AF1D093225F75E82
   tkill:
   - check_id: STARRY_FINAL_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-final-errno-translation.yaml
-    rule_refs: *id014
+    rule_refs: *id020
   - check_id: STARRY_FINAL_TKILL_TID_VALIDATION
     path: targets/starry/static-checks/starry-final-tkill-tid-validation.yaml
     rule_refs:
@@ -786,7 +921,7 @@ syscalls:
   - check_id: STARRY_FINAL_UNSHARE_FLAG_VALIDATION
     path: targets/starry/static-checks/starry-final-unshare-flag-validation.yaml
     rule_refs:
-    - LTP_F92CEB15161CB23C
+    - MAN_B4DD5B60F33FC5E3
   - check_id: STARRY_FINAL_UNSHARE_NEWNS_PRIVILEGE
     path: targets/starry/static-checks/starry-final-unshare-newns-privilege.yaml
     rule_refs:
@@ -794,13 +929,13 @@ syscalls:
   wait4:
   - check_id: STARRY_FINAL_WAITPID_INT_MIN
     path: targets/starry/static-checks/starry-final-waitpid-int-min.yaml
-    rule_refs: &id015
+    rule_refs: &id021
     - LTP_03AF14160F8B59A0
     - LTP_1691F6F9712C5546
   waitid:
   - check_id: STARRY_FINAL_ERRNO_TRANSLATION
     path: targets/starry/static-checks/starry-final-errno-translation.yaml
-    rule_refs: *id014
+    rule_refs: *id020
   - check_id: STARRY_FINAL_WAITID_OPTIONS
     path: targets/starry/static-checks/starry-final-waitid-options.yaml
     rule_refs:
@@ -808,7 +943,7 @@ syscalls:
   waitpid:
   - check_id: STARRY_FINAL_WAITPID_INT_MIN
     path: targets/starry/static-checks/starry-final-waitpid-int-min.yaml
-    rule_refs: *id015
+    rule_refs: *id021
   - check_id: STARRY_FINAL_WAITPID_OPTIONS
     path: targets/starry/static-checks/starry-final-waitpid-options.yaml
     rule_refs:

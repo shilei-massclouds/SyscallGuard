@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SETGROUPS_VALIDATION
+title: setgroups enforces privilege, namespace denial, and NGROUPS_MAX
+rule_refs:
+- MAN_0F2C1ABA8AF5C15E
+- MAN_8D160F5D77EC235B
+- MAN_FD5BF4CD3984BECF
+applies_to_syscalls:
+- setgroups
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: CAP_SETGID is required
+  regex: pub fn sys_setgroups[\s\S]*?!old\.has_cap_setgid\(\)[\s\S]*?AxError::OperationNotPermitted
+- label: namespace setgroups denial is enforced
+  regex: thread\.setgroups_deny\(\)[\s\S]*?AxError::OperationNotPermitted
+- label: oversized group vectors are rejected
+  regex: 'const NGROUPS_MAX: usize = 65536;[\s\S]*?if size > NGROUPS_MAX[\s\S]*?AxError::InvalidInput'
+upstream_dependencies:
+- id: MAN_0F2C1ABA8AF5C15E
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:8e637ce17c0ce4dad505a8ee948a1df3424d2623d4b863c685520a3f58cd3ff2
+- id: MAN_8D160F5D77EC235B
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:54210d6fff8e0fa3f43acdedb25432b12ed74ba277b19e28044dbcc7eab2fd73
+- id: MAN_FD5BF4CD3984BECF
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:fd5bf4cd3984becf55d9ca41296368832467ab7133e075ca462dc2f7053f0e61
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

@@ -1,0 +1,38 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_SETHOSTNAME_ARGUMENTS
+title: sethostname validates length and user memory before success
+rule_refs:
+- MAN_6998D4E70F807B13
+- MAN_9E12AA9A59F1BBE9
+- MAN_DA06B43ED3D9DBBC
+applies_to_syscalls:
+- sethostname
+path: os/StarryOS/kernel/src/syscall/sys.rs
+patterns:
+- label: overlong names return EINVAL
+  regex: pub fn sys_sethostname[\s\S]*?if len > 64[\s\S]*?AxError::InvalidInput
+- label: the name is read through checked user memory
+  regex: pub fn sys_sethostname[\s\S]*?vm_read_slice\(name\.cast::<u8>\(\), &mut buf\)\?
+- label: a valid update returns zero
+  regex: pub fn sys_sethostname[\s\S]*?nodename = nodename;[\s\S]*?Ok\(0\)
+upstream_dependencies:
+- id: MAN_6998D4E70F807B13
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:6998d4e70f807b1346ca12410e36102afece3730fa03bdccb9dd4be8b2b6259e
+- id: MAN_9E12AA9A59F1BBE9
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:9e12aa9a59f1bbe932067a7bea2f5fc6bb12af2006617ce2eead4b1f96df9d5e
+- id: MAN_DA06B43ED3D9DBBC
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:da06b43ed3d9dbbc3baa4d137c27c73d6d10ff2ca57f477db761b7b388b41eef
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/sys.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:24e275a92090d465e92b77733e4e3f5015a5dfc8a1eec628889b25acf0b13e21
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:dc71fb91fe72aa7719e2600a0a1fbec27f10740b596711b6651fe23c7d0b71f2
+target_content_fingerprint: sha256:9269cd7e774b527c0494d537b7f6f054dd6682e0f6e9d3012941c4755d6f1f91
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

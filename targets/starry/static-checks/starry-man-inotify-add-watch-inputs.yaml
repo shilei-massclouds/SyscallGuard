@@ -1,0 +1,32 @@
+schema_version: 1
+kind: syscallguard_starry_static_check
+check_id: STARRY_MAN_INOTIFY_ADD_WATCH_INPUTS
+title: inotify_add_watch checks the path and descriptor before use
+rule_refs:
+- MAN_1EFA395D2832F95E
+- MAN_EFBA9CA2760DA6B8
+applies_to_syscalls:
+- inotify_add_watch
+path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+patterns:
+- label: path loading uses checked user memory
+  regex: pub fn sys_inotify_add_watch[\s\S]*?vm_load_path_string\(path\)\?
+- label: fd lookup precedes type validation
+  regex: pub fn sys_inotify_add_watch[\s\S]*?get_file_like\(fd\)\?[\s\S]*?downcast_arc::<Inotify>\(\)
+upstream_dependencies:
+- id: MAN_1EFA395D2832F95E
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:1efa395d2832f95e4f5fcbcffe3d54ff5c2f016f77f317ffbb582b6f0f42aaa2
+- id: MAN_EFBA9CA2760DA6B8
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:efba9ca2760da6b8da59e494c821bf6f038bb5c311b7214f2f4e492ffd37d106
+target_dependencies:
+- path: os/StarryOS/kernel/src/syscall/fs/inotify.rs
+  symbols: []
+  scope: file
+  file_hash: sha256:b1fecbc0e14273ec616d8dae62b90d5aca54b6bf3772ee420edeeac6d209c147
+  symbol_hashes: {}
+  missing_symbols: []
+  content_hash: sha256:7ba6f7020992e9cf80304d684556f5d3dbd568fba4b1a91f3c69be492c0e55dd
+target_content_fingerprint: sha256:2b149e987eab5e7c5ad3742f7a643b481c8fe2ff4af08494cedadd8f1e9b57d2
+generated_at_utc: '2026-07-17T07:32:33.916128Z'

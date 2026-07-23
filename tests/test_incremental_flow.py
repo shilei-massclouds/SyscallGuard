@@ -724,6 +724,48 @@ class IngestTests(FlowTestCase):
 
 
 class MappingTests(FlowTestCase):
+    def test_explicit_static_analysis_requeues_same_snapshot(self) -> None:
+        self.prepare_spec_run()
+        repo, _descriptor, _snapshot = self.make_target("implementation\n")
+        commit_file(
+            repo,
+            "os/StarryOS/kernel/src/syscall/mod.rs",
+            "fn dispatch() { match sysno { Sysno::alpha => implementation(), } }\n",
+        )
+        run_mapping(
+            None,
+            self.root,
+            "mapping-static-initial",
+            target_branch(self.root),
+            coverage="static-only",
+        )
+
+        run_id = prepare_mapping(
+            None,
+            self.root,
+            "mapping-static-explicit",
+            target_branch(self.root),
+            coverage="static-only",
+            force_rule_ids=["RULE_ONE"],
+        )
+        preparation = load_mapping(TEMP_ROOT / run_id / "preparation.yaml")
+        self.assertEqual(preparation["forced_rule_ids"], ["RULE_ONE"])
+        self.assertEqual(preparation["selected_rule_ids"], ["RULE_ONE"])
+        self.assertEqual(
+            preparation["pending_reasons"]["RULE_ONE"],
+            ["explicit_static_analysis"],
+        )
+
+        with self.assertRaisesRegex(SyscallGuardError, "forced mapping rules do not exist"):
+            prepare_mapping(
+                None,
+                self.root,
+                "mapping-static-unknown",
+                target_branch(self.root),
+                coverage="static-only",
+                force_rule_ids=["RULE_MISSING"],
+            )
+
     def test_static_only_defers_dynamic_and_full_requeues_it(self) -> None:
         self.prepare_spec_run()
         self.add_dynamic_test("TEST_ONE", ["/bin/true"])

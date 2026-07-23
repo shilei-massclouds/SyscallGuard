@@ -4,6 +4,7 @@ check_id: STARRY_EPOLL_CREATE1_FLAGS
 title: epoll_create1 accepts only EPOLL_CLOEXEC and installs a new descriptor
 rule_refs:
 - LTP_5D8D2B3BEDA79604
+- MAN_6B7EED8E43FDD1BA
 applies_to_syscalls:
 - epoll_create1
 path: os/StarryOS/kernel/src/syscall/io_mpx/epoll.rs
@@ -16,6 +17,9 @@ upstream_dependencies:
 - id: LTP_5D8D2B3BEDA79604
   generated_at_utc: '2026-07-15T10:14:12.969080Z'
   content_hash: sha256:5d8d2b3beda79604301b79695ead77bb1cca6ec4c1e6b679aabacb702befdccf
+- id: MAN_6B7EED8E43FDD1BA
+  generated_at_utc: '2026-07-17T05:18:12.210893Z'
+  content_hash: sha256:6b7eed8e43fdd1baacff9af9940105f4955ac0d16ac86e722e3c31fce38962d3
 target_dependencies:
 - path: os/StarryOS/kernel/src/syscall/task/execve.rs
   symbols:
@@ -132,4 +136,4 @@ target_dependencies:
   missing_symbols: []
   content_hash: sha256:fab3e009b1951bd7b0e1f7345d832013d9140d4c24ac718899e58c80fef71fd4
 target_content_fingerprint: sha256:b1802eeb4315757d577fa1d7cbcbd03db33148c64c2c4bd9bb944c1d1d08cb06
-generated_at_utc: '2026-07-17T05:28:28.281302Z'
+generated_at_utc: '2026-07-17T07:32:33.916128Z'
